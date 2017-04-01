@@ -347,35 +347,37 @@
                     new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2,
                         e.Bounds.Height - itemPadding * 2), stringFormat);
             }
+
+            graphics.Dispose();
         }
 
         protected override void OnDrawItem(DrawListViewItemEventArgs e)
         {
             // We draw the current line of items (= item with subitems) on a temp bitmap, then draw the bitmap at once. This is to reduce flickering.
-            Bitmap b = new Bitmap(e.Item.Bounds.Width, e.Item.Bounds.Height);
-            Graphics g = Graphics.FromImage(b);
+            Bitmap bitmap = new Bitmap(e.Item.Bounds.Width, e.Item.Bounds.Height);
+            Graphics graphics = Graphics.FromImage(bitmap);
 
-            //// always draw default background
-            g.FillRectangle(new SolidBrush(BackColor), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
+            // always draw default background
+            graphics.FillRectangle(new SolidBrush(BackColor), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
 
             if (e.State.HasFlag(ListViewItemStates.Selected))
             {
                 // selected background
-                g.FillRectangle(new SolidBrush(itemSelected), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
+                graphics.FillRectangle(new SolidBrush(itemSelected), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
             }
             else if (e.Bounds.Contains(MouseLocation) && controlState == ControlState.Hover)
             {
                 // hover background
-                g.FillRectangle(new SolidBrush(itemHover), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
+                graphics.FillRectangle(new SolidBrush(itemHover), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
             }
 
             // Draw separator
-            g.DrawLine(new Pen(Style.BorderColor(0)), e.Bounds.Left, 0, e.Bounds.Right, 0);
+            graphics.DrawLine(new Pen(Style.BorderColor(0)), e.Bounds.Left, 0, e.Bounds.Right, 0);
 
             foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
             {
                 // Draw text
-                g.DrawString(subItem.Text, Font, new SolidBrush(Color.Black),
+                graphics.DrawString(subItem.Text, Font, new SolidBrush(Color.Black),
                     new Rectangle(subItem.Bounds.X + itemPadding, itemPadding, subItem.Bounds.Width - 2 * itemPadding,
                         subItem.Bounds.Height - 2 * itemPadding),
                     GetStringFormat());
@@ -404,9 +406,9 @@
                 e.DrawText();
             }
 
-            e.Graphics.DrawImage((Image)b.Clone(), new Point(0, e.Item.Bounds.Location.Y));
-            g.Dispose();
-            b.Dispose();
+            e.Graphics.DrawImage((Image)bitmap.Clone(), new Point(0, e.Item.Bounds.Location.Y));
+            graphics.Dispose();
+            bitmap.Dispose();
         }
 
         protected override void OnDrawSubItem(DrawListViewSubItemEventArgs e)
