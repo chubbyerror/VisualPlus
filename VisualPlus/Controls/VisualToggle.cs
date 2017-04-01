@@ -51,17 +51,20 @@
         private Color backgroundColor1 = Style.BackgroundColor(0);
 
         private Rectangle barSlider;
+        private Color borderColor = Style.BorderColor(0);
+        private Color borderHoverColor = Style.BorderColor(1);
         private bool borderHoverVisible = true;
 
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = true;
         private Color buttonColor1 = Style.ButtonNormalColor;
+        private Color controlDisabled = Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
         private Size sizeHandle = new Size(15, 20);
+        private Color textColor = StylesManager.DefaultValue.TextColor;
+        private Color textDisabled = Style.TextDisabled;
         private string textProcessor;
         private bool toggled;
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
         private int toggleLocation;
         private ToggleTypes toggleType = ToggleTypes.YesNo;
         private int xBar;
@@ -86,6 +89,21 @@
         public delegate void ToggledChangedEventHandler();
 
         public event ToggledChangedEventHandler ToggledChanged;
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color BackgroundColor1
+        {
+            get
+            {
+                return backgroundColor1;
+            }
+
+            set
+            {
+                backgroundColor1 = value;
+                Invalidate();
+            }
+        }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
         public Color BorderColor
@@ -113,21 +131,6 @@
             set
             {
                 borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
-        {
-            get
-            {
-                return backgroundColor1;
-            }
-
-            set
-            {
-                backgroundColor1 = value;
                 Invalidate();
             }
         }
@@ -195,6 +198,21 @@
             set
             {
                 buttonColor1 = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return textColor;
+            }
+
+            set
+            {
+                textColor = value;
                 Invalidate();
             }
         }
@@ -292,8 +310,20 @@
                     sizeHandle.Width,
                     sizeHandle.Height - 5);
 
+                Color controlTemp;
+
+                // Draw control state
+                if (Enabled)
+                {
+                    controlTemp = backgroundColor1;
+                }
+                else
+                {
+                    controlTemp = controlDisabled;
+                }
+
                 // Background color
-                graphics.FillPath(new SolidBrush(backgroundColor1), pillPath);
+                graphics.FillPath(new SolidBrush(controlTemp), pillPath);
 
                 // Draw pill border
                 if (borderVisible)
@@ -317,7 +347,6 @@
 
                 // Button border
                 GDI.DrawBorder(graphics, buttonPath, 1, Style.BorderColor(0));
-
             }
         }
 
@@ -402,6 +431,18 @@
                     }
             }
 
+            Color textTemp;
+
+            // Draw text state
+            if (Enabled)
+            {
+                textTemp = textColor;
+            }
+            else
+            {
+                textTemp = textDisabled;
+            }
+
             // Draw string
             StringFormat stringFormat = new StringFormat
                 {
@@ -409,11 +450,10 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-
             graphics.DrawString(
                 textProcessor,
                 new Font(Font.FontFamily, 7f, Font.Style),
-                new SolidBrush(ForeColor),
+                new SolidBrush(textTemp),
                 xBar,
                 barSlider.Y,
                 stringFormat);
