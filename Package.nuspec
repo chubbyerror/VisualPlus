@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>VisualPlus</id>
+    <version>1.0.0-alpha</version>
+    <authors>DarkByte7</authors>
+    <owners>VisualPlus</owners>
+    <licenseUrl>https://github.com/DarkByte7/VisualPlus/blob/master/License.md</licenseUrl>
+    <projectUrl>https://github.com/DarkByte7/VisualPlus</projectUrl>
+    <iconUrl>http://i.imgur.com/PBJi6Ot.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Windows Forms UI Toolbox</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright 2016-2017</copyright>
+    <tags>UI Framework Development</tags>
+  </metadata>
+  <files>
+  <file src="VisualPlus\bin\Release\VisualPlus.dll" target="lib\VisualPlus.dll"></file>
+  </files>
+</package>

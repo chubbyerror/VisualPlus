@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F5712892-4BFC-428D-8E79-D09EFC42AB1A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VisualPlus</RootNamespace>
+    <AssemblyName>VisualPlus</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\BehaviorDesign\VisualCircleProgressBarDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualContextMenuDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualListViewDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualTrackBarDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualToggleDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualTextBoxDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualTabDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualSeparatorDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualRichTextBoxDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualRadioButtonDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualProgressIndicatorDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualProgressBarDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualPanelDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualNumericUpDownDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualGroupBoxDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualComboBoxDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualButtonDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualCheckBoxDesigner.cs" />
+    <Compile Include="Controls\VisualButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\ExceptionHandler.cs" />
+    <Compile Include="Framework\GDI\ColorHelper.cs" />
+    <Compile Include="Framework\Extensions.cs" />
+    <Compile Include="Framework\GDI\VFX.cs" />
+    <Compile Include="Framework\GDI\VFXManager.cs" />
+    <Compile Include="Framework\MathHelper.cs" />
+    <Compile Include="Framework\Styles\BlackAndYellow.cs" />
+    <Compile Include="Framework\Styles\IStyle.cs" />
+    <Compile Include="Framework\StylesManager.cs" />
+    <Compile Include="Framework\Styles\Visual.cs" />
+    <Compile Include="Enums\Animation.cs" />
+    <Compile Include="Enums\BorderShape.cs" />
+    <Compile Include="Enums\BorderStyle.cs" />
+    <Compile Include="Controls\VisualComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualProgressIndicator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualRadioButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualCircleProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualToggle.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualTrackBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\GDI\GDI.cs" />
+    <Compile Include="Enums\BrushType.cs" />
+    <Compile Include="Enums\SplitterStyle.cs" />
+    <Compile Include="Enums\ControlState.cs" />
+    <Compile Include="Localization\Localization.cs" />
+    <Compile Include="Framework\VSDesigner.cs" />
+    <Compile Include="Controls\VisualProgressSpinner.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
