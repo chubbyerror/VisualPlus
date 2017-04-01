@@ -1,4 +1,4 @@
-﻿namespace VisualPlus
+﻿namespace VisualPlus.Controls
 {
     using System;
     using System.ComponentModel;
