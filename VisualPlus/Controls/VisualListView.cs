@@ -62,6 +62,8 @@
 
         private bool drawStandardHeader;
 
+        private Font headerFont = new Font("Helvetica", 10, FontStyle.Regular);
+
         private Color headerText = StylesManager.DefaultValue.TextColor;
         private Color itemBackground = Style.BackgroundColor(3);
         private Color itemHover = Style.ItemHover(0);
@@ -204,6 +206,21 @@
             }
         }
 
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentFont)]
+        public Font HeaderFont
+        {
+            get
+            {
+                return headerFont;
+            }
+
+            set
+            {
+                headerFont = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color HeaderText
         {
@@ -310,7 +327,6 @@
                 // Draw column header background
                 e.Graphics.FillRectangle(new SolidBrush(columnHeaderBackground), columnHeaderRectangle);
             }
-            
 
             if (borderVisible)
             {
@@ -325,8 +341,7 @@
                 };
 
             // Draw the header text.
-            using (Font headerFont =
-                new Font("Helvetica", 10, FontStyle.Regular))
+            using (headerFont)
             {
                 e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText),
                     new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2,
