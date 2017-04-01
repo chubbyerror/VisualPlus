@@ -416,9 +416,10 @@
 
                 // Draw the text and background for a subitem with a 
                 // negative value. 
+                double subItemValue;
                 if (e.ColumnIndex > 0 && double.TryParse(
                         e.SubItem.Text, NumberStyles.Currency,
-                        NumberFormatInfo.CurrentInfo, out double subItemValue) &&
+                        NumberFormatInfo.CurrentInfo, out subItemValue) &&
                     subItemValue < 0)
                 {
                     // Unless the item is selected, draw the standard 
