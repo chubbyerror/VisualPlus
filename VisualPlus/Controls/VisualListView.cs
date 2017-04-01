@@ -4,12 +4,14 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
     using System.Globalization;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
+    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
@@ -50,23 +52,17 @@
         private const int itemPadding = 12;
 
         private static readonly IStyle Style = new Visual();
-        private bool borderHoverVisible = true;
-        private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private BorderShape borderShape = BorderShape.Rounded;
-
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-
-        private Color columnHeader = Style.BackgroundColor(3);
-        private GraphicsPath controlGraphicsPath;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color columnBorder = Style.BorderColor(0);
+        private Color columnHeaderBackground = Style.BackgroundColor(3);
 
         private ControlState controlState = ControlState.Normal;
+        private bool drawFocusRectangle;
 
-        private bool drawFocusRectangle = false;
+        private bool drawStandardHeader;
 
-        private bool drawStandardHeader = false;
-
-        private Color headerText = Color.Black;
+        private Color headerText = StylesManager.DefaultValue.TextColor;
         private Color itemBackground = Style.BackgroundColor(3);
         private Color itemHover = Style.ItemHover(0);
         private Color itemSelected = Style.BorderColor(1);
@@ -142,17 +138,68 @@
                 };
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color ColumnHeader
+        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
+         Description(Localize.Description.BorderSize)]
+        public int BorderSize
         {
             get
             {
-                return columnHeader;
+                return borderSize;
             }
 
             set
             {
-                columnHeader = value;
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                {
+                    borderSize = value;
+                }
+
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+         Description(Localize.Description.BorderVisible)]
+        public bool BorderVisible
+        {
+            get
+            {
+                return borderVisible;
+            }
+
+            set
+            {
+                borderVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color ColumnBackground
+        {
+            get
+            {
+                return columnHeaderBackground;
+            }
+
+            set
+            {
+                columnHeaderBackground = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(false), Category(Localize.Category.Behavior)]
+        public bool FocusVisible
+        {
+            get
+            {
+                return drawFocusRectangle;
+            }
+
+            set
+            {
+                drawFocusRectangle = value;
                 Invalidate();
             }
         }
@@ -220,6 +267,21 @@
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
+        [DefaultValue(false), Category(Localize.Category.Behavior)]
+        public bool StandardHeader
+        {
+            get
+            {
+                return drawStandardHeader;
+            }
+
+            set
+            {
+                drawStandardHeader = value;
+                Invalidate();
+            }
+        }
+
         [Browsable(false)]
         private ListViewItem HoveredItem { get; set; }
 
@@ -229,19 +291,38 @@
 
         protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
         {
+            Graphics graphics = e.Graphics;
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
+
+            Rectangle columnHeaderRectangle = new Rectangle(e.Bounds.X, e.Bounds.Y, Width, e.Bounds.Height);
+            GraphicsPath columnHeaderPath = new GraphicsPath();
+            columnHeaderPath.AddRectangle(columnHeaderRectangle);
+            columnHeaderPath.CloseAllFigures();
+
             if (drawStandardHeader)
             {
                 // Draw the standard header background.
                 e.DrawBackground();
             }
+            else
+            {
+                // Draw column header background
+                e.Graphics.FillRectangle(new SolidBrush(columnHeaderBackground), columnHeaderRectangle);
+            }
+            
 
-            // Column header background
-            e.Graphics.FillRectangle(new SolidBrush(columnHeader), new Rectangle(e.Bounds.X, e.Bounds.Y, Width, e.Bounds.Height));
+            if (borderVisible)
+            {
+                // Draw column header border
+                GDI.DrawBorder(graphics, columnHeaderPath, borderSize, columnBorder);
+            }
 
-            StringFormat stringFormat = new StringFormat();
-
-            stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
+            StringFormat stringFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
             // Draw the header text.
             using (Font headerFont =
@@ -282,7 +363,7 @@
                 g.DrawString(subItem.Text, Font, new SolidBrush(Color.Black),
                     new Rectangle(subItem.Bounds.X + itemPadding, itemPadding, subItem.Bounds.Width - 2 * itemPadding,
                         subItem.Bounds.Height - 2 * itemPadding),
-                    getStringFormat());
+                    GetStringFormat());
             }
 
             if ((e.State & ListViewItemStates.Selected) != 0)
@@ -335,10 +416,9 @@
 
                 // Draw the text and background for a subitem with a 
                 // negative value. 
-                double subItemValue;
                 if (e.ColumnIndex > 0 && double.TryParse(
                         e.SubItem.Text, NumberStyles.Currency,
-                        NumberFormatInfo.CurrentInfo, out subItemValue) &&
+                        NumberFormatInfo.CurrentInfo, out double subItemValue) &&
                     subItemValue < 0)
                 {
                     // Unless the item is selected, draw the standard 
@@ -388,7 +468,7 @@
             Invalidate();
         }
 
-        private StringFormat getStringFormat()
+        private static StringFormat GetStringFormat()
         {
             return new StringFormat
                 {
@@ -397,14 +477,6 @@
                     Alignment = StringAlignment.Near,
                     LineAlignment = StringAlignment.Center
                 };
-        }
-
-        private void ResizeListViewColumns(ListView lv)
-        {
-            foreach (ColumnHeader column in lv.Columns)
-            {
-                column.Width = -1;
-            }
         }
 
         #endregion
