@@ -52,7 +52,7 @@
         private Color borderHoverColor = Style.BorderColor(1);
         private bool borderHoverVisible = true;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private BorderShape borderShape = BorderShape.Rectangle;
+        private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = true;
 
