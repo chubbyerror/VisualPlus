@@ -1,7 +1,7 @@
 # VisualPlus
 Windows Forms UI Toolbox.
 
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/DarkByte7/VisualPlus)](https://ci.appveyor.com/project/DarkByte7/visualplus)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/DarkByte7/VisualPlus?svg=true)](https://ci.appveyor.com/project/DarkByte7/visualplus)
 
 ## Compiling
 1. Open the project in Visual Studio and click build. To generate a ```VisualPlus.dll``` file in ```VisualPlus\VisualPlus\bin\Debug```.
