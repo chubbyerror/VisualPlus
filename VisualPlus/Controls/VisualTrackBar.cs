@@ -12,15 +12,6 @@
     using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
-    public enum TrackBarTypes
-    {
-        /// <summary>The horizontal trackbar.</summary>
-        Horizontal,
-
-        /// <summary>The vertical trackbar.</summary>
-        Vertical
-    }
-
     public enum ValueDivisor
     {
         /// <summary>The by 1.</summary>
@@ -46,7 +37,7 @@
         private static ControlState controlState = ControlState.Normal;
         private static Color hatchBackColor = Style.HatchColor;
         private static Color progressColor1 = Style.ProgressColor;
-        private static TrackBarTypes trackBarType = TrackBarTypes.Horizontal;
+        private static Orientation trackBarType = Orientation.Horizontal;
         private Color backgroundColor1 = Style.BackgroundColor(0);
         private Color borderColor = Style.BorderColor(0);
         private Color borderHoverColor = Style.BorderColor(1);
@@ -373,7 +364,7 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.TrackBarType)]
-        public TrackBarTypes TrackBarType
+        public Orientation TrackBarType
         {
             get
             {
@@ -383,6 +374,27 @@
             set
             {
                 trackBarType = value;
+
+                if (trackBarType == Orientation.Horizontal)
+                {
+                    if (Width < Height)
+                    {
+                        int temp = Width;
+                        Width = Height;
+                        Height = temp;
+                    }
+                } 
+                else 
+                {
+                    // Vertical
+                    if (Width > Height)
+                    {
+                        int temp = Width;
+                        Width = Height;
+                        Height = temp;
+                    }
+                }
+
                 Invalidate();
             }
         }
@@ -452,7 +464,7 @@
             // Jump to mouse position
             if (e.Button == MouseButtons.Left)
             {
-                if (trackBarType == TrackBarTypes.Vertical)
+                if (trackBarType == Orientation.Vertical)
                 {
                     progressDrawer = (int)Math.Round((Value - Minimum) / (double)(Maximum - Minimum) * (Height - 11));
                     trackBarHandleRectangle = new Rectangle(0, progressDrawer, 20, 10);
@@ -489,7 +501,7 @@
         protected override void OnMouseHover(EventArgs e)
         {
             base.OnMouseHover(e);
-            if (trackBarType == TrackBarTypes.Vertical)
+            if (trackBarType == Orientation.Vertical)
             {
                 Cursor = Cursors.SizeNS;
             }
@@ -509,7 +521,7 @@
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (trackBarType == TrackBarTypes.Vertical)
+            if (trackBarType == Orientation.Vertical)
             {
                 if (cap && e.Y > -1 && e.Y < Height + 1)
                 {
@@ -539,7 +551,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-            if (trackBarType == TrackBarTypes.Vertical)
+            if (trackBarType == Orientation.Vertical)
             {
                 pipeRectangle = new Rectangle(6, 0, 8, Height); // TODO
 
@@ -662,7 +674,7 @@
             base.OnResize(e);
 
             // TODO: Refactor sizing
-            if (trackBarType == TrackBarTypes.Vertical)
+            if (trackBarType == Orientation.Vertical)
             {
                 // Width = 20;
             }
