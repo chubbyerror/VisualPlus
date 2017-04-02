@@ -27,8 +27,11 @@
         #region  ${0} Variables
 
         private static new readonly IStyle Style = new Visual();
+
+        private bool backgrounCircleVisible = true;
         private Color backgroundCircleColor = Style.BackgroundProgressCircle;
         private Color foregroundCircleColor = Style.ForegroundProgressCircle;
+        private bool foregroundCircleVisible = true;
         private float gradientRotation;
 
         // private long maximumValue = 100;
@@ -60,6 +63,21 @@
             UpdateStyles();
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        public bool BackCircleVisible
+        {
+            get
+            {
+                return backgrounCircleVisible;
+            }
+
+            set
+            {
+                backgrounCircleVisible = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color BackgroundCircle
         {
@@ -71,6 +89,21 @@
             set
             {
                 backgroundCircleColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        public bool ForeCircleVisible
+        {
+            get
+            {
+                return foregroundCircleVisible;
+            }
+
+            set
+            {
+                foregroundCircleVisible = value;
                 Invalidate();
             }
         }
@@ -192,8 +225,11 @@
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
 
-            // Background circle
-            graphics.FillEllipse(new SolidBrush(backgroundCircleColor), 0x18 - 4, 0x18 - 4, Width - 0x30 + 8, Height - 0x30 + 8);
+            if (backgrounCircleVisible)
+            {
+                // Draw background circle
+                graphics.FillEllipse(new SolidBrush(backgroundCircleColor), 0x18 - 4, 0x18 - 4, Width - 0x30 + 8, Height - 0x30 + 8);
+            }
 
             // Progress
             using (LinearGradientBrush progressBrush = new LinearGradientBrush(
@@ -228,8 +264,11 @@
                 }
             }
 
-            // Foreground circle
-            graphics.FillEllipse(new SolidBrush(foregroundCircleColor), 0x18, 0x18, Width - 0x30, Height - 0x30);
+            if (foregroundCircleVisible)
+            {
+                // Draw foreground circle
+                graphics.FillEllipse(new SolidBrush(foregroundCircleColor), 0x18, 0x18, Width - 0x30, Height - 0x30);
+            }
 
             // String percentage
             if (textVisible)
