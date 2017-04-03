@@ -466,12 +466,12 @@
             {
                 if (trackBarType == Orientation.Vertical)
                 {
-                    progressDrawer = (int)Math.Round((Value - Minimum) / (double)(Maximum - Minimum) * (Height - 11));
+                    progressDrawer = (int)Math.Round((Value - Minimum) / (double)(Maximum - Minimum) * (Height + 11));
                     trackBarHandleRectangle = new Rectangle(0, progressDrawer, 20, 10);
 
                     if (JumpToMouse)
                     {
-                        Value = Minimum + (int)Math.Round((Maximum - Minimum) * (e.X / (double)Height));
+                        Value = Minimum + (int)Math.Round((Maximum - Minimum) * (e.Y / (double)Height));
                     }
                 }
                 else
