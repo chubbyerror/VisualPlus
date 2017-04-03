@@ -9,10 +9,10 @@
     <projectUrl>https://github.com/DarkByte7/VisualPlus</projectUrl>
     <iconUrl>http://i.imgur.com/PBJi6Ot.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Windows Forms UI Toolbox</description>
+    <description>VisualPlus allows you the developer to quickly build professional looking .NET applications. With these clean and easily customizable controls to meet your development needs.</description>
     <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright 2016-2017</copyright>
-    <tags>UI Framework Development</tags>
+    <tags>UI Framework Development Toolbox Windows Forms VisualStudio Visual-Studio .NET</tags>
   </metadata>
   <files>
   <file src="VisualPlus\bin\Release\VisualPlus.dll" target="lib\VisualPlus.dll"></file>
