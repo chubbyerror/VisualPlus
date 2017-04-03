@@ -383,8 +383,8 @@
                         Width = Height;
                         Height = temp;
                     }
-                } 
-                else 
+                }
+                else
                 {
                     // Vertical
                     if (Width > Height)
@@ -689,6 +689,8 @@
 
         #endregion
 
+        #region ${0} Methods
+
         public new void SetRange(int minimumValue, int maximumValue)
         {
             Minimum = minimumValue;
@@ -712,5 +714,7 @@
 
             Invalidate();
         }
+
+        #endregion
     }
 }
