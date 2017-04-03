@@ -23,10 +23,7 @@
         Vertical,
 
         /// <summary>Rating type.</summary>
-        Rating,
-
-        /// <summary>Signal type.</summary>
-        Signal
+        Rating
     }
 
     /// <summary>The visual ProgressBar.</summary>
@@ -570,13 +567,6 @@
                         break;
                     }
 
-                case ProgressBarTypes.Signal:
-                    {
-                        Size minimumSize = new Size(60, 20);
-                        MinimumSize = minimumSize;
-                        break;
-                    }
-
                 case ProgressBarTypes.Vertical:
                     {
                         Size minimumSize = new Size(10, 60);
@@ -774,11 +764,6 @@
                             break;
                         }
 
-                    case ProgressBarTypes.Signal:
-                        {
-                            break;
-                        }
-
                     case ProgressBarTypes.Vertical:
                         {
                             barStyle = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
@@ -851,11 +836,6 @@
                     {
                         barLocation = new Point(10, 10);
                         barSpacing = 25;
-                        break;
-                    }
-
-                case ProgressBarTypes.Signal:
-                    {
                         break;
                     }
 
