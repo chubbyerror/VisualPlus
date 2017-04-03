@@ -688,5 +688,29 @@
         }
 
         #endregion
+
+        public new void SetRange(int minimumValue, int maximumValue)
+        {
+            Minimum = minimumValue;
+
+            if (Minimum > Value)
+            {
+                Value = Minimum;
+            }
+
+            Maximum = maximumValue;
+
+            if (Maximum < Value)
+            {
+                Value = Maximum;
+            }
+
+            if (Maximum < Minimum)
+            {
+                Minimum = Maximum;
+            }
+
+            Invalidate();
+        }
     }
 }
