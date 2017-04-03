@@ -23,6 +23,7 @@
         private Timer animationSpeed = new Timer();
         private SolidBrush baseColor = new SolidBrush(Color.DarkGray);
         private BufferedGraphics buffGraphics;
+        private float diameter = 7.5F;
         private PointF[] floatPoint;
         private BufferedGraphicsContext graphicsContext = BufferedGraphicsManager.Current;
         private int indicatorIndex;
@@ -102,6 +103,22 @@
             set
             {
                 circleSize = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(7.5F), Category(Localize.Category.Layout), Description(Localize.Description.ComponentDiameter)]
+        public float Diameter
+        {
+            get
+            {
+                return diameter;
+            }
+
+            set
+            {
+                diameter = value;
+                SetPoints();
                 Invalidate();
             }
         }
@@ -196,7 +213,7 @@
             {
                 SetValue(startingFloatPoint, (int)Math.Round(Width / 2.0 - 15.0), i);
                 PointF endPoint = EndPoint;
-                endPoint = new PointF(endPoint.X - 7.5f, endPoint.Y - 7.5f);
+                endPoint = new PointF(endPoint.X - diameter, endPoint.Y - diameter);
                 stack.Push(endPoint);
             }
 
