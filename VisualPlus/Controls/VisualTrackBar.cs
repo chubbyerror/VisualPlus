@@ -539,11 +539,12 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
 
             if (trackBarType == Orientation.Vertical)
             {
-                pipeRectangle = new Rectangle(6, 0, 8, Height); // TODO
+                pipeRectangle = new Rectangle(6, 0, 8, Height);
 
                 // Determine border shape of total progress path
                 progressPath = GDI.GetBorderShape(pipeRectangle, borderShape, borderRounding);

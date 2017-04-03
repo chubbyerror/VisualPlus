@@ -20,7 +20,7 @@
     {
         #region  ${0} Variables
 
-        private static BorderShape borderShape = BorderShape.Rectangle;
+        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
@@ -30,6 +30,7 @@
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color groupBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Color titleBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(1);
         private GraphicsPath titleBoxPath;
@@ -48,6 +49,7 @@
                 true);
 
             BackColor = Color.Transparent;
+            ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
 
             Size = new Size(212, 104);
             MinimumSize = new Size(136, 50);
@@ -191,6 +193,36 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return textColor;
+            }
+
+            set
+            {
+                textColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabled
+        {
+            get
+            {
+                return textDisabled;
+            }
+
+            set
+            {
+                textDisabled = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TitleBoxColor
         {
@@ -244,21 +276,22 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
             UpdateLocationPoints();
 
-            Color textColor;
+            Color tempTextColor;
 
             if (Enabled)
             {
-                textColor = ForeColor;
+                tempTextColor = textColor;
             }
             else
             {
-                textColor = textDisabled;
+                tempTextColor = textDisabled;
             }
 
             // Draw the body of the GroupBoxColor
@@ -298,11 +331,13 @@
             }
 
             // Draw the specified string from 'Text' property inside the title box
-            StringFormat stringFormat = new StringFormat();
+            StringFormat stringFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
-            stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
-            graphics.DrawString(Text, Font, new SolidBrush(textColor), titleBoxRectangle, stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(tempTextColor), titleBoxRectangle, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

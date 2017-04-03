@@ -4,6 +4,7 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
@@ -19,15 +20,18 @@
 
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         public TextBox TextBoxObject = new TextBox();
-        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color controlDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
+        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -51,16 +55,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
+        public Color BackgroundColor
         {
             get
             {
-                return backgroundColor1;
+                return backgroundColor;
             }
 
             set
             {
-                backgroundColor1 = value;
+                backgroundColor = value;
                 Invalidate();
             }
         }
@@ -185,6 +189,36 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return textColor;
+            }
+
+            set
+            {
+                textColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabled
+        {
+            get
+            {
+                return textDisabled;
+            }
+
+            set
+            {
+                textDisabled = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region ${0} Events
@@ -225,19 +259,37 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Bitmap bitmap = new Bitmap(Width, Height);
-            Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.Clear(Color.Transparent);
+            Graphics graphics = e.Graphics;
+            graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+            Color textTemp;
+            Color controlTemp;
+
+            // Draw control state
+            if (Enabled)
+            {
+                textTemp = textColor;
+                controlTemp = backgroundColor;
+            }
+            else
+            {
+                textTemp = textDisabled;
+                controlTemp = controlDisabled;
+            }
+
+            TextBoxObject.BackColor = controlTemp;
+            TextBoxObject.ForeColor = textTemp;
 
             // Setup internal textbox object
             TextBoxObject.Width = Width - 10;
             TextBoxObject.TextAlign = TextAlign;
             TextBoxObject.UseSystemPasswordChar = UseSystemPasswordChar;
-            TextBoxObject.BackColor = backgroundColor1;
 
             // Draw background backcolor
-            graphics.FillPath(new SolidBrush(backgroundColor1), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
 
             // Draw border
             if (borderVisible)
@@ -253,10 +305,6 @@
             }
 
             graphics.SetClip(controlGraphicsPath);
-
-            e.Graphics.DrawImage((Image)bitmap.Clone(), 0, 0);
-            graphics.Dispose();
-            bitmap.Dispose();
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -317,7 +365,7 @@
 
         public void CreateTextBox()
         {
-            // BackColor = backgroundColor1;
+            // BackColor = backgroundColor;
             TextBox tb = TextBoxObject;
             tb.Size = new Size(Width, Height);
             tb.Location = new Point(5, 2);
@@ -326,7 +374,7 @@
             tb.TextAlign = HorizontalAlignment.Left;
             tb.Font = Font;
             tb.ForeColor = ForeColor;
-            tb.BackColor = backgroundColor1;
+            tb.BackColor = backgroundColor;
             tb.UseSystemPasswordChar = UseSystemPasswordChar;
             tb.Multiline = false;
 

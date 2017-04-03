@@ -19,7 +19,7 @@
         #region  ${0} Variables
 
         private const int spacing = 2;
-        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
@@ -53,16 +53,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
+        public Color BackgroundColor
         {
             get
             {
-                return backgroundColor1;
+                return backgroundColor;
             }
 
             set
             {
-                backgroundColor1 = value;
+                backgroundColor = value;
                 Invalidate();
             }
         }
@@ -164,6 +164,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color RadioButtonDisabled
+        {
+            get
+            {
+                return checkMarkDisabled;
+            }
+
+            set
+            {
+                checkMarkDisabled = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -175,6 +190,21 @@
             set
             {
                 textColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabled
+        {
+            get
+            {
+                return textDisabled;
+            }
+
+            set
+            {
+                textDisabled = value;
                 Invalidate();
             }
         }
@@ -217,12 +247,13 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
             // CheckMark background color
-            graphics.FillPath(new SolidBrush(backgroundColor1), boxGraphicsPath);
+            graphics.FillPath(new SolidBrush(backgroundColor), boxGraphicsPath);
 
             // Draw border
             if (borderVisible)

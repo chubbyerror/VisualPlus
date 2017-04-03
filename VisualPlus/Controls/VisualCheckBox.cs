@@ -19,30 +19,22 @@
         #region  ${0} Variables
 
         private const int spacing = 2;
-
         private bool animation = true;
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-
         private Point boxLocation = new Point(0, 0);
         private Size boxSize = new Size(13, 13);
-
         private Color checkBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
-
         private GraphicsPath checkBoxPath;
         private Rectangle checkBoxRectangle;
         private Color checkMarkColor = StylesManager.MainColor;
         private Color checkMarkDisabled = StylesManager.DefaultValue.Style.TextDisabled;
-
         private ControlState controlState = ControlState.Normal;
-
         private VFXManager effectsManager;
         private VFXManager rippleEffectsManager;
         private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
@@ -58,6 +50,8 @@
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
+
+            BackColor = Color.Transparent;
 
             // Setup effects animation
             effectsManager = new VFXManager

@@ -20,7 +20,7 @@
         #region  ${0} Variables
 
         private static BorderShape borderShape = BorderShape.Rectangle;
-        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
@@ -50,16 +50,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
+        public Color BackgroundColor
         {
             get
             {
-                return backgroundColor1;
+                return backgroundColor;
             }
 
             set
             {
-                backgroundColor1 = value;
+                backgroundColor = value;
                 Invalidate();
             }
         }
@@ -210,7 +210,7 @@
             UpdateLocationPoints();
 
             // Draw background
-            graphics.FillPath(new SolidBrush(backgroundColor1), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
 
             // Setup control border
             if (borderVisible)

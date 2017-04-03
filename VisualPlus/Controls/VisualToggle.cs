@@ -53,7 +53,7 @@
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color buttonColor1 = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
         private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
         private Size sizeHandle = new Size(15, 20);
@@ -184,16 +184,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color ButtonColor1
+        public Color ButtonColor
         {
             get
             {
-                return buttonColor1;
+                return buttonColor;
             }
 
             set
             {
-                buttonColor1 = value;
+                buttonColor = value;
                 Invalidate();
             }
         }
@@ -209,6 +209,21 @@
             set
             {
                 textColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabled
+        {
+            get
+            {
+                return textDisabled;
+            }
+
+            set
+            {
+                textDisabled = value;
                 Invalidate();
             }
         }
@@ -279,6 +294,7 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
@@ -339,7 +355,7 @@
 
                 // Button
                 GraphicsPath buttonPath = GDI.DrawRoundedRectangle(buttonRectangle, 15);
-                graphics.FillPath(new SolidBrush(buttonColor1), buttonPath);
+                graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
 
                 // Button border
                 GDI.DrawBorder(graphics, buttonPath, 1, StylesManager.DefaultValue.Style.BorderColor(0));

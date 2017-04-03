@@ -59,6 +59,7 @@
             Margin = new Padding(4, 6, 4, 6);
             Padding = new Padding(0);
             Size = new Size(100, 25);
+            BackColor = Color.Transparent;
 
             // Setup effects animation
             effectsManager = new VFXManager(false)
@@ -215,6 +216,21 @@
             set
             {
                 borderVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ButtonDisabled
+        {
+            get
+            {
+                return buttonDisabled;
+            }
+
+            set
+            {
+                buttonDisabled = value;
                 Invalidate();
             }
         }
@@ -424,6 +440,7 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 

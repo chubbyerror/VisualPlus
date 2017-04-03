@@ -32,6 +32,7 @@
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private Size buttonSize = new Size(19, 19);
+        private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color inputFieldColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
@@ -39,6 +40,7 @@
         private long maximumValue;
         private long minimumValue;
         private long numericValue;
+        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private int xval;
         private int yval;
@@ -262,6 +264,36 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color NumericUpDownDisabled
+        {
+            get
+            {
+                return controlDisabled;
+            }
+
+            set
+            {
+                controlDisabled = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return textColor;
+            }
+
+            set
+            {
+                textColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TextDisabled
         {
@@ -427,14 +459,30 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+            Color tempTextColor;
+            Color controlTemp;
+
+            // Draw control state
+            if (Enabled)
+            {
+                tempTextColor = textColor;
+                controlTemp = buttonColor1;
+            }
+            else
+            {
+                tempTextColor = textDisabled;
+                controlTemp = controlDisabled;
+            }
 
             // Draw background
             graphics.FillPath(new SolidBrush(inputFieldColor), controlGraphicsPath);
 
             // Buttons background
-            graphics.FillPath(new SolidBrush(buttonColor1), buttonPath); // TODO: refactor button draw location
+            graphics.FillPath(new SolidBrush(controlTemp), buttonPath);
 
             // Setup buttons border
             if (borderVisible)
@@ -444,8 +492,8 @@
             }
 
             // Buttons text
-            TextRenderer.DrawText(graphics, "+", buttonFont, new Point(buttonRectangle.X + 5, buttonRectangle.Y - 2), Color.Black);
-            TextRenderer.DrawText(graphics, "-", buttonFont, new Point(buttonRectangle.X + 6, buttonRectangle.Y + 6), Color.Black);
+            TextRenderer.DrawText(graphics, "+", buttonFont, new Point(buttonRectangle.X + 5, buttonRectangle.Y - 2), textColor);
+            TextRenderer.DrawText(graphics, "-", buttonFont, new Point(buttonRectangle.X + 6, buttonRectangle.Y + 6), textColor);
 
             // Button separator
             graphics.DrawLine(
@@ -468,18 +516,6 @@
                 }
             }
 
-            Color textColor;
-
-            // Draw control state
-            if (Enabled)
-            {
-                textColor = ForeColor;
-            }
-            else
-            {
-                textColor = textDisabled;
-            }
-
             // Draw value string
             Rectangle textboxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
 
@@ -489,7 +525,7 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(textColor), textboxRectangle, stringFormat);
+            graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(tempTextColor), textboxRectangle, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

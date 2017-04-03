@@ -42,6 +42,7 @@
         private Color menuItemHover = StylesManager.DefaultValue.Style.ItemHover(0);
         private Color menuItemNormal = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private int startIndex;
+        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
@@ -208,6 +209,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ComboBoxDisabled
+        {
+            get
+            {
+                return controlDisabled;
+            }
+
+            set
+            {
+                controlDisabled = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.DropDownButton)]
         public DropDownButtons DropDownButton
         {
@@ -277,6 +293,36 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return textColor;
+            }
+
+            set
+            {
+                textColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabled
+        {
+            get
+            {
+                return textDisabled;
+            }
+
+            set
+            {
+                textDisabled = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region ${0} Events
@@ -322,23 +368,24 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
             UpdateLocationPoints();
 
-            Color textColor;
+            Color temptextColor;
             Color tempColor;
 
             // Draw control state
             if (Enabled)
             {
-                textColor = ForeColor;
+                temptextColor = textColor;
                 tempColor = backgroundColor1;
             }
             else
             {
-                textColor = textDisabled;
+                temptextColor = textDisabled;
                 tempColor = controlDisabled;
             }
 
@@ -415,7 +462,7 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            graphics.DrawString(Text, Font, new SolidBrush(textColor), textBoxRectangle, stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(temptextColor), textBoxRectangle, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

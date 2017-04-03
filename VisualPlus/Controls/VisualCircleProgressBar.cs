@@ -50,7 +50,7 @@
             MinimumSize = new Size(100, 100);
             Size = new Size(130, 130);
             BackColor = Color.Transparent;
-            ForeColor = Color.White;
+            ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
             textVisible = true;
 
             UpdateStyles();

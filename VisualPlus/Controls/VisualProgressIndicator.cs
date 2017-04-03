@@ -45,6 +45,7 @@
             MinimumSize = new Size(80, 80);
             SetPoints();
             animationSpeed.Interval = 100;
+            BackColor = Color.Transparent;
             UpdateStyles();
         }
 
@@ -168,7 +169,8 @@
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            graphics.Clear(BackColor);
+            graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 

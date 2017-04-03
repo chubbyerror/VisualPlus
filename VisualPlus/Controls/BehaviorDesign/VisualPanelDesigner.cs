@@ -30,7 +30,7 @@
             properties.Remove("UseVisualStyleBackColor");
 
             // properties.Remove("ComponentFont");
-            // properties.Remove("ForeColor");
+            properties.Remove("ForeColor");
             properties.Remove("RightToLeft");
 
             base.PreFilterProperties(properties);

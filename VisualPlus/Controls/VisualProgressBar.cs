@@ -38,7 +38,7 @@
         private static int backgroundRotation = 90;
         private static int bars = 5;
         private static int barSpacing = 10;
-        private static BorderShape borderShape = BorderShape.Rectangle;
+        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private static Color hatchBackColor = StylesManager.DefaultValue.Style.HatchColor;
         private static ProgressBarTypes progressBarStyle = ProgressBarTypes.Horizontal;
         private static Color progressColor1 = StylesManager.DefaultValue.Style.ProgressColor;
@@ -64,6 +64,7 @@
         private bool percentageVisible;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
+        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private StringAlignment valueAlignment = StringAlignment.Center;
 
         #endregion
@@ -82,7 +83,7 @@
             Height = 20;
             percentageVisible = true;
             BackColor = Color.Transparent;
-            ForeColor = Color.White;
+            ForeColor = textColor;
             DoubleBuffered = true;
             UpdateStyles();
         }
@@ -463,6 +464,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return textColor;
+            }
+
+            set
+            {
+                textColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Layout), Description(Localize.Description.Alignment)]
         public StringAlignment ValueAlignment
         {
@@ -500,6 +516,7 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
 
             if (progressBarStyle == ProgressBarTypes.Horizontal || progressBarStyle == ProgressBarTypes.Vertical)
@@ -702,7 +719,7 @@
                 graphics.DrawString(
                     percentValue,
                     Font,
-                    new SolidBrush(ForeColor),
+                    new SolidBrush(textColor),
                     new Rectangle(0, 0, Width, Height + 2),
                     stringFormat);
             }
