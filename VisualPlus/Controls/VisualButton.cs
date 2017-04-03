@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual Button.</summary>
@@ -19,24 +18,23 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle style = new Visual();
         private bool animation = true;
 
-        private Color borderColor = style.BorderColor(0);
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
 
-        private Color borderHoverColor = style.BorderColor(1);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
 
-        private bool borderHoverVisible = true;
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
 
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
 
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-        private Color buttonDisabled = style.ControlDisabled;
-        private Color buttonHover = ControlPaint.Light(style.ButtonNormalColor);
-        private Color buttonNormal = style.ButtonNormalColor;
-        private Color buttonPressed = ControlPaint.Light(style.ButtonDownColor);
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color buttonDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color buttonHover = ControlPaint.Light(StylesManager.DefaultValue.Style.ButtonNormalColor);
+        private Color buttonNormal = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private Color buttonPressed = ControlPaint.Light(StylesManager.DefaultValue.Style.ButtonDownColor);
 
         private GraphicsPath controlGraphicsPath;
 
@@ -50,9 +48,9 @@
         private Point iconPosition = new Point(4, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-        private Color textColor = StylesManager.DefaultValue.TextColor;
+        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
 
-        private Color textDisabled = style.TextDisabled;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private SizeF textSize;
 
         #endregion
@@ -107,21 +105,6 @@
                     Margin = new Padding(0);
                 }
 
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
-        public Color TextColor
-        {
-            get
-            {
-                return textColor;
-            }
-
-            set
-            {
-                textColor = value;
                 Invalidate();
             }
         }
@@ -346,17 +329,32 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
         {
             get
             {
-                return textDisabled;
+                return textColor;
             }
 
             set
             {
-                textDisabled = value;
+                textColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
+        {
+            get
+            {
+                return textDisabledColor;
+            }
+
+            set
+            {
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -479,7 +477,7 @@
             else
             {
                 tempColor = buttonDisabled;
-                textTemp = textDisabled;
+                textTemp = textDisabledColor;
             }
 
             // Draw button background
@@ -512,10 +510,13 @@
                 graphics.DrawImage(Icon, iconRectangle);
             }
 
+            StringFormat stringFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
             // Draw string
-            StringFormat stringFormat = new StringFormat();
-            stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
             graphics.DrawString(Text, Font, new SolidBrush(textTemp), ClientRectangle.Center(), stringFormat);
 
             // Ripple
