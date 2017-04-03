@@ -342,7 +342,7 @@
                 graphics.FillPath(new SolidBrush(buttonColor1), buttonPath);
 
                 // Button border
-                GDI.DrawBorder(graphics, buttonPath, 1, Style.BorderColor(0));
+                GDI.DrawBorder(graphics, buttonPath, 1, StylesManager.DefaultValue.Style.BorderColor(0));
             }
         }
 
