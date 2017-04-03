@@ -31,7 +31,7 @@
         private double rise;
         private double run;
         private PointF startingFloatPoint;
-
+        private float circles = 45F;
         #endregion
 
         #region ${0} Properties
@@ -103,6 +103,22 @@
             set
             {
                 circleSize = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(45F), Category(Localize.Category.Layout), Description(Localize.Description.ComponentDiameter)]
+        public float Circles
+        {
+            get
+            {
+                return circles;
+            }
+
+            set
+            {
+                circles = value;
+                SetPoints();
                 Invalidate();
             }
         }
@@ -209,7 +225,7 @@
         {
             var stack = new Stack<PointF>();
             startingFloatPoint = new PointF(Width / 2f, Height / 2f);
-            for (var i = 0f; i < 360f; i += 45f)
+            for (var i = 0f; i < 360f; i += circles)
             {
                 SetValue(startingFloatPoint, (int)Math.Round(Width / 2.0 - 15.0), i);
                 PointF endPoint = EndPoint;
