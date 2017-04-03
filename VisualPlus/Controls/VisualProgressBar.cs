@@ -31,7 +31,7 @@
 
     /// <summary>The visual ProgressBar.</summary>
     [ToolboxBitmap(typeof(ProgressBar)), Designer(VSDesignerBinding.VisualProgressBar)]
-    public class VisualProgressBar : ProgressBar
+    public sealed class VisualProgressBar : ProgressBar
     {
         #region  ${0} Variables
 
@@ -55,6 +55,7 @@
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private GraphicsPath graphicsDefaultBorderPath;
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private GraphicsPath hatchPath = new GraphicsPath();
@@ -64,7 +65,6 @@
         private bool percentageVisible;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private StringAlignment valueAlignment = StringAlignment.Center;
 
         #endregion
@@ -700,12 +700,6 @@
 
             // Draw value as a string
             string percentValue = Convert.ToString(Convert.ToInt32(Value)) + "%";
-
-            // Location
-            var textX = (int)(Width - graphics.MeasureString(percentValue, Font).
-                                               Width - 1);
-            int textY = Height / 2 - (Convert.ToInt32(graphics.MeasureString(percentValue, Font).
-                                                               Height / 2) - 2);
 
             // Toggle percentage
             if (percentageVisible)

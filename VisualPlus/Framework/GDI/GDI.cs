@@ -12,7 +12,6 @@
         #region  ${0} Variables
 
         public static GraphicsPath GraphicPath = null;
-        private static readonly IStyle Style = new Visual();
 
         #endregion
 

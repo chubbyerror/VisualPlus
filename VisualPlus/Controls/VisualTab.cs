@@ -24,7 +24,7 @@
         private Color tabNormal = StylesManager.DefaultValue.Style.TabNormal;
         private Color tabSelected = StylesManager.DefaultValue.Style.TabSelected;
         private Color tabSelector = StylesManager.DefaultValue.Style.MainColor;
-        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        // private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Color textNormal = StylesManager.DefaultValue.Style.TabTextNormal;
         private Color textSelected = StylesManager.DefaultValue.Style.TabTextSelected;
 

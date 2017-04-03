@@ -25,10 +25,10 @@
 
         private ToolStripItemClickedEventArgs _delayesArgs;
 
-        private Color buttonNormal = style.ButtonNormalColor;
-        private Color buttonPressed = ControlPaint.Light(style.ButtonDownColor);
-        private Color itemHover = ControlPaint.Light(style.ButtonNormalColor);
-        private Color textDisabled = style.TextDisabled;
+        // private Color buttonNormal = style.ButtonNormalColor;
+        // private Color buttonPressed = ControlPaint.Light(style.ButtonDownColor);
+        // private Color itemHover = ControlPaint.Light(style.ButtonNormalColor);
+        // private Color textDisabled = style.TextDisabled;
 
         #endregion
 
