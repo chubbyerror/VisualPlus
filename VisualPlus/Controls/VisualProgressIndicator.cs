@@ -23,6 +23,7 @@
         private Timer animationSpeed = new Timer();
         private SolidBrush baseColor = new SolidBrush(Color.DarkGray);
         private BufferedGraphics buffGraphics;
+        private float circles = 45F;
         private float diameter = 7.5F;
         private PointF[] floatPoint;
         private BufferedGraphicsContext graphicsContext = BufferedGraphicsManager.Current;
@@ -31,7 +32,7 @@
         private double rise;
         private double run;
         private PointF startingFloatPoint;
-        private float circles = 45F;
+
         #endregion
 
         #region ${0} Properties
@@ -92,21 +93,6 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
-        public Size CircleSize
-        {
-            get
-            {
-                return circleSize;
-            }
-
-            set
-            {
-                circleSize = value;
-                Invalidate();
-            }
-        }
-
         [DefaultValue(45F), Category(Localize.Category.Layout), Description(Localize.Description.ComponentDiameter)]
         public float Circles
         {
@@ -119,6 +105,21 @@
             {
                 circles = value;
                 SetPoints();
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public Size CircleSize
+        {
+            get
+            {
+                return circleSize;
+            }
+
+            set
+            {
+                circleSize = value;
                 Invalidate();
             }
         }
