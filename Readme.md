@@ -1,10 +1,8 @@
-# VisualPlus
+# VisualPlus [![Release](https://img.shields.io/github/release/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/releases/latest) [![Issues](https://img.shields.io/github/issues/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/issues)
 VisualPlus allows you the developer to quickly build professional looking .NET applications. With these clean and easily customizable controls to meet your development needs.
 
 [![Gitter](https://img.shields.io/badge/Gitter-Join%20Chat-green.svg?style=flat)](https://gitter.im/VisualPlusUI/Lobby)
-[![Issues](https://img.shields.io/github/issues/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/issues)
 
-[![Release](https://img.shields.io/github/release/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/releases/latest)
 [![NuGet](https://img.shields.io/nuget/v/VisualPlus.svg?style=flat)](https://www.nuget.org/packages/VisualPlus/)
 [![NuGetPre](https://img.shields.io/nuget/vpre/VisualPlus.svg?style=flat)](https://www.nuget.org/packages/VisualPlus/)
 
@@ -18,13 +16,17 @@ VisualPlus allows you the developer to quickly build professional looking .NET a
 [3]: https://img.shields.io/appveyor/ci/DarkByte7/VisualPlus/beta.svg?style=plastic
 [4]: https://ci.appveyor.com/project/DarkByte7/visualplus
 
+## Contents
+- [Compiling][5]
+- [Installing][6]
+- [Import Toolbox][7]
+
+[5]: https://github.com/DarkByte7/VisualPlus/wiki#compiling
+[6]: https://github.com/DarkByte7/VisualPlus/wiki#installing
+[7]: https://github.com/DarkByte7/VisualPlus/wiki#import-toolbox
+
 ## Build requirements
 - Visual Studio 2017
-
-## Compiling
-1. Open the project in Visual Studio and click build. To generate a ```VisualPlus.dll``` file in ```VisualPlus\VisualPlus\bin\Debug```.
-2. Add the ```VisualPlus.dll``` as a reference to your project. [How to: Add or Remove References in Visual Studio](https://msdn.microsoft.com/en-us/library/wkze6zky(v=vs.100).aspx).
-3. Rebuild your project and it will now be available in the toolbox.
 
 ## Screenshots
 ![Imgur](http://i.imgur.com/6MPGU6E.jpg)
