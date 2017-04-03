@@ -27,11 +27,11 @@
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color controlDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -189,32 +189,47 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        public Color TextDisabledColor
         {
             get
             {
-                return textDisabled;
+                return textDisabledColor;
             }
 
             set
             {
-                textDisabled = value;
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -265,23 +280,12 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
-            Color textTemp;
-            Color controlTemp;
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
 
-            // Draw control state
-            if (Enabled)
-            {
-                textTemp = textColor;
-                controlTemp = backgroundColor;
-            }
-            else
-            {
-                textTemp = textDisabled;
-                controlTemp = controlDisabled;
-            }
-
-            TextBoxObject.BackColor = controlTemp;
-            TextBoxObject.ForeColor = textTemp;
+            TextBoxObject.BackColor = controlTempColor;
+            TextBoxObject.ForeColor = foreColor;
 
             // Setup internal textbox object
             TextBoxObject.Width = Width - 10;

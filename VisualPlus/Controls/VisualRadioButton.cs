@@ -30,11 +30,12 @@
         private Size boxSize = new Size(10, 10);
         private Point checkLocation = new Point(0, 0);
         private Color checkMarkColor = StylesManager.DefaultValue.Style.MainColor;
-        private Color checkMarkDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Size checkSize = new Size(6, 6);
+        private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private ControlState controlState = ControlState.Normal;
-        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -165,16 +166,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
-        public Color RadioButtonDisabled
+        public Color ControlDisabledColorColor
         {
             get
             {
-                return checkMarkDisabled;
+                return controlDisabledColor;
             }
 
             set
             {
-                checkMarkDisabled = value;
+                controlDisabledColor = value;
                 Invalidate();
             }
         }
@@ -184,27 +185,27 @@
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        public Color TextDisabledColor
         {
             get
             {
-                return textDisabled;
+                return textDisabledColor;
             }
 
             set
             {
-                textDisabled = value;
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -268,25 +269,14 @@
                 }
             }
 
-            Color textTemp;
-            Color checkTemp;
-
-            // Draw control state
-            if (Enabled)
-            {
-                textTemp = textColor;
-                checkTemp = checkMarkColor;
-            }
-            else
-            {
-                textTemp = textDisabled;
-                checkTemp = checkMarkDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlCheckTemp = Enabled ? backgroundColor : controlDisabled;
 
             // Draw an ellipse inside the body
             if (Checked)
             {
-                graphics.FillEllipse(new SolidBrush(checkTemp), new Rectangle(checkLocation, checkSize));
+                graphics.FillEllipse(new SolidBrush(controlCheckTemp), new Rectangle(checkLocation, checkSize));
             }
 
             // Draw the string specified in 'Text' property
@@ -296,7 +286,7 @@
 
             // stringFormat.Alignment = StringAlignment.Center;
             // stringFormat.LineAlignment = StringAlignment.Center;
-            graphics.DrawString(Text, Font, new SolidBrush(textTemp), textPoint, stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

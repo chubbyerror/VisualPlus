@@ -29,9 +29,9 @@
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color groupBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
-        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private Color titleBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(1);
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
@@ -198,27 +198,27 @@
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        public Color TextDisabledColor
         {
             get
             {
-                return textDisabled;
+                return textDisabledColor;
             }
 
             set
             {
-                textDisabled = value;
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -283,16 +283,8 @@
 
             UpdateLocationPoints();
 
-            Color tempTextColor;
-
-            if (Enabled)
-            {
-                tempTextColor = textColor;
-            }
-            else
-            {
-                tempTextColor = textDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
 
             // Draw the body of the GroupBoxColor
             graphics.FillPath(new SolidBrush(groupBoxColor), controlGraphicsPath);
@@ -337,7 +329,7 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            graphics.DrawString(Text, Font, new SolidBrush(tempTextColor), titleBoxRectangle, stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

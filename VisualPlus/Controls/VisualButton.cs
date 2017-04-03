@@ -26,20 +26,20 @@
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color buttonDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private Color buttonHover = ControlPaint.Light(StylesManager.DefaultValue.Style.ButtonNormalColor);
         private Color buttonNormal = StylesManager.DefaultValue.Style.ButtonNormalColor;
         private Color buttonPressed = ControlPaint.Light(StylesManager.DefaultValue.Style.ButtonDownColor);
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private VFXManager hoverEffectsManager;
         private Image icon;
         private GraphicsPath iconGraphicsPath;
         private Point iconPosition = new Point(4, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private SizeF textSize;
 
@@ -221,16 +221,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
-        public Color ButtonDisabled
+        public Color ControlDisabledColor
         {
             get
             {
-                return buttonDisabled;
+                return controlDisabledColor;
             }
 
             set
             {
-                buttonDisabled = value;
+                controlDisabledColor = value;
                 Invalidate();
             }
         }
@@ -340,12 +340,12 @@
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
@@ -444,51 +444,44 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
-            Color tempColor = new Color();
-            Color textTemp;
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlTempColor = Enabled ? buttonNormal : controlDisabledColor;
 
             // Draw control state
             if (Enabled)
             {
-                // Text color
-                textTemp = textColor;
-
                 // Button back color
                 switch (controlState)
                 {
                     case ControlState.Normal:
                         {
-                            tempColor = buttonNormal;
+                            controlTempColor = buttonNormal;
                             break;
                         }
 
                     case ControlState.Hover:
                         {
-                            tempColor = buttonHover;
+                            controlTempColor = buttonHover;
                             break;
                         }
 
                     case ControlState.Down:
                         {
-                            tempColor = buttonPressed;
+                            controlTempColor = buttonPressed;
                             break;
                         }
 
                     default:
                         {
-                            tempColor = buttonNormal;
+                            controlTempColor = buttonNormal;
                             break;
                         }
                 }
             }
-            else
-            {
-                tempColor = buttonDisabled;
-                textTemp = textDisabledColor;
-            }
 
             // Draw button background
-            graphics.FillPath(new SolidBrush(tempColor), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(controlTempColor), controlGraphicsPath);
 
             // Setup button border
             if (borderVisible)
@@ -524,7 +517,7 @@
                 };
 
             // Draw string
-            graphics.DrawString(Text, Font, new SolidBrush(textTemp), ClientRectangle.Center(), stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), ClientRectangle.Center(), stringFormat);
 
             // Ripple
             if (effectsManager.IsAnimating())

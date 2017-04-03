@@ -26,22 +26,22 @@
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color buttonColor1 = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
         private Font buttonFont = new Font("Arial", 8);
         private Point buttonLocation = new Point(0, 4);
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private Size buttonSize = new Size(19, 19);
-        private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color inputFieldColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
         private long numericValue;
-        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private int xval;
         private int yval;
 
@@ -201,6 +201,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color InputField
         {
@@ -264,47 +279,32 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
-        public Color NumericUpDownDisabled
-        {
-            get
-            {
-                return controlDisabled;
-            }
-
-            set
-            {
-                controlDisabled = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        public Color TextDisabledColor
         {
             get
             {
-                return textDisabled;
+                return textDisabledColor;
             }
 
             set
             {
-                textDisabled = value;
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -463,26 +463,15 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
-            Color tempTextColor;
-            Color controlTemp;
-
-            // Draw control state
-            if (Enabled)
-            {
-                tempTextColor = textColor;
-                controlTemp = buttonColor1;
-            }
-            else
-            {
-                tempTextColor = textDisabled;
-                controlTemp = controlDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
 
             // Draw background
             graphics.FillPath(new SolidBrush(inputFieldColor), controlGraphicsPath);
 
             // Buttons background
-            graphics.FillPath(new SolidBrush(controlTemp), buttonPath);
+            graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
 
             // Setup buttons border
             if (borderVisible)
@@ -492,8 +481,8 @@
             }
 
             // Buttons text
-            TextRenderer.DrawText(graphics, "+", buttonFont, new Point(buttonRectangle.X + 5, buttonRectangle.Y - 2), textColor);
-            TextRenderer.DrawText(graphics, "-", buttonFont, new Point(buttonRectangle.X + 6, buttonRectangle.Y + 6), textColor);
+            TextRenderer.DrawText(graphics, "+", buttonFont, new Point(buttonRectangle.X + 5, buttonRectangle.Y - 2), foreColor);
+            TextRenderer.DrawText(graphics, "-", buttonFont, new Point(buttonRectangle.X + 6, buttonRectangle.Y + 6), foreColor);
 
             // Button separator
             graphics.DrawLine(
@@ -525,7 +514,7 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(tempTextColor), textboxRectangle, stringFormat);
+            graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(foreColor), textboxRectangle, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

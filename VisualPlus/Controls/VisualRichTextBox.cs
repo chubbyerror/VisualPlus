@@ -28,10 +28,10 @@
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private GraphicsPath controlGraphicsPath;
-        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
-        private Color controlDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -191,6 +191,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         public override string Text
         {
@@ -211,27 +226,27 @@
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        public Color TextDisabledColor
         {
             get
             {
-                return textDisabled;
+                return textDisabledColor;
             }
 
             set
             {
-                textDisabled = value;
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -276,23 +291,12 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
-            Color textTemp;
-            Color controlTemp;
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
 
-            // Draw control state
-            if (Enabled)
-            {
-                textTemp = textColor;
-                controlTemp = backgroundColor;
-            }
-            else
-            {
-                textTemp = textDisabled;
-                controlTemp = controlDisabled;
-            }
-
-            RichObject.BackColor = controlTemp;
-            RichObject.ForeColor = textTemp;
+            RichObject.BackColor = controlTempColor;
+            RichObject.ForeColor = foreColor;
 
             // Draw background color
             graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
@@ -310,7 +314,7 @@
                 }
             }
 
-            graphics.SetClip(controlGraphicsPath);        
+            graphics.SetClip(controlGraphicsPath);
         }
 
         protected override void OnResize(EventArgs e)

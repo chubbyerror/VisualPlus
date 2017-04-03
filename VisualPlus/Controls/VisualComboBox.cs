@@ -29,21 +29,21 @@
 
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private static ControlState controlState = ControlState.Normal;
-        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private GraphicsPath controlGraphicsPath;
         private DropDownButtons dropDownButton = DropDownButtons.Arrow;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color menuItemHover = StylesManager.DefaultValue.Style.ItemHover(0);
         private Color menuItemNormal = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private int startIndex;
-        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -75,16 +75,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
+        public Color BackgroundColor
         {
             get
             {
-                return backgroundColor1;
+                return backgroundColor;
             }
 
             set
             {
-                backgroundColor1 = value;
+                backgroundColor = value;
                 Invalidate();
             }
         }
@@ -210,16 +210,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
-        public Color ComboBoxDisabled
+        public Color ControlDisabledColor
         {
             get
             {
-                return controlDisabled;
+                return controlDisabledColor;
             }
 
             set
             {
-                controlDisabled = value;
+                controlDisabledColor = value;
                 Invalidate();
             }
         }
@@ -298,27 +298,27 @@
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        public Color TextDisabledColor
         {
             get
             {
-                return textDisabled;
+                return textDisabledColor;
             }
 
             set
             {
-                textDisabled = value;
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -374,23 +374,12 @@
 
             UpdateLocationPoints();
 
-            Color temptextColor;
-            Color tempColor;
-
-            // Draw control state
-            if (Enabled)
-            {
-                temptextColor = textColor;
-                tempColor = backgroundColor1;
-            }
-            else
-            {
-                temptextColor = textDisabled;
-                tempColor = controlDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
 
             // Draw the combobox background
-            graphics.FillPath(new SolidBrush(tempColor), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(controlCheckTemp), controlGraphicsPath);
 
             // Setup combobox border
             if (borderVisible)
@@ -462,7 +451,7 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            graphics.DrawString(Text, Font, new SolidBrush(temptextColor), textBoxRectangle, stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

@@ -64,7 +64,7 @@
         private bool percentageVisible;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
-        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private StringAlignment valueAlignment = StringAlignment.Center;
 
         #endregion
@@ -83,7 +83,7 @@
             Height = 20;
             percentageVisible = true;
             BackColor = Color.Transparent;
-            ForeColor = textColor;
+            ForeColor = foreColor;
             DoubleBuffered = true;
             UpdateStyles();
         }
@@ -469,12 +469,12 @@
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
@@ -719,7 +719,7 @@
                 graphics.DrawString(
                     percentValue,
                     Font,
-                    new SolidBrush(textColor),
+                    new SolidBrush(foreColor),
                     new Rectangle(0, 0, Width, Height + 2),
                     stringFormat);
             }

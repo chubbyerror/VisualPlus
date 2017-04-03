@@ -45,7 +45,7 @@
                 Interval = 1
             };
 
-        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
 
         private Rectangle barSlider;
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
@@ -54,11 +54,11 @@
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
-        private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Size sizeHandle = new Size(15, 20);
-        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private string textProcessor;
         private bool toggled;
         private int toggleLocation;
@@ -87,16 +87,16 @@
         public event ToggledChangedEventHandler ToggledChanged;
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
+        public Color BackgroundColor
         {
             get
             {
-                return backgroundColor1;
+                return backgroundColor;
             }
 
             set
             {
-                backgroundColor1 = value;
+                backgroundColor = value;
                 Invalidate();
             }
         }
@@ -198,32 +198,47 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        public Color TextDisabledColor
         {
             get
             {
-                return textDisabled;
+                return textDisabledColor;
             }
 
             set
             {
-                textDisabled = value;
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -322,20 +337,11 @@
                     sizeHandle.Width,
                     sizeHandle.Height - 5);
 
-                Color controlTemp;
-
-                // Draw control state
-                if (Enabled)
-                {
-                    controlTemp = backgroundColor1;
-                }
-                else
-                {
-                    controlTemp = controlDisabled;
-                }
+                // Set control state color
+                Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
 
                 // Background color
-                graphics.FillPath(new SolidBrush(controlTemp), pillPath);
+                graphics.FillPath(new SolidBrush(controlTempColor), pillPath);
 
                 // Draw pill border
                 if (borderVisible)
@@ -443,17 +449,8 @@
                     }
             }
 
-            Color textTemp;
-
-            // Draw text state
-            if (Enabled)
-            {
-                textTemp = textColor;
-            }
-            else
-            {
-                textTemp = textDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
 
             // Draw string
             StringFormat stringFormat = new StringFormat
@@ -465,7 +462,7 @@
             graphics.DrawString(
                 textProcessor,
                 new Font(Font.FontFamily, 7f, Font.Style),
-                new SolidBrush(textTemp),
+                new SolidBrush(foreColor),
                 xBar,
                 barSlider.Y,
                 stringFormat);
