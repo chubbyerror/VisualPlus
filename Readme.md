@@ -1,5 +1,5 @@
 # VisualPlus
-VisualPlus allows you the developer to quickly build professional looking applications. With these clean and easily customizable controls to meet your development needs.
+VisualPlus allows you the developer to quickly build professional looking .NET applications. With these clean and easily customizable controls to meet your development needs.
 
 [![Gitter](https://img.shields.io/badge/Gitter-Join%20Chat-green.svg?style=flat)](https://gitter.im/VisualPlusUI/Lobby)
 [![Issues](https://img.shields.io/github/issues/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/issues)
