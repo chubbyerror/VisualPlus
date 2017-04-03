@@ -1,27 +1,35 @@
-# VisualPlus [![Release](https://img.shields.io/github/release/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/releases/latest) [![Issues](https://img.shields.io/github/issues/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/issues)
-VisualPlus allows you the developer to quickly build professional looking .NET applications. With these clean and easily customizable controls to meet your development needs.
-
+# VisualPlus
+[![Release](https://img.shields.io/github/release/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/releases/latest)
 [![NuGet](https://img.shields.io/nuget/v/VisualPlus.svg?style=flat)](https://www.nuget.org/packages/VisualPlus/)
 [![NuGetPre](https://img.shields.io/nuget/vpre/VisualPlus.svg?style=flat)](https://www.nuget.org/packages/VisualPlus/)
+[![Issues](https://img.shields.io/github/issues/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/issues)
+[![Coveralls](https://img.shields.io/coveralls/jekyll/jekyll/master.svg)](https://github.com/DarkByte7/VisualPlus)
+
+VisualPlus allows you the developer to quickly build professional looking .NET applications. With these clean and easily customizable controls to meet your development needs.
 
 ## Build Status
-| Stable | Beta |
-| :---- | :------ |
-[ ![Stable build status][1]][2] | [![Beta build status][3]][4] |
+| Service | Stable | Beta |
+| :---- | :---- | :------ |
+AppVeyor | [ ![Stable build status][1]][2] | [![Beta build status][3]][4] |
+Travic Cl | [ ![Stable build status][5]][6] | [![Beta build status][7]][8] |
 
 [1]: https://img.shields.io/appveyor/ci/DarkByte7/VisualPlus/master.svg?style=plastic
 [2]: https://github.com/DarkByte7/VisualPlus/releases
 [3]: https://img.shields.io/appveyor/ci/DarkByte7/VisualPlus/beta.svg?style=plastic
 [4]: https://ci.appveyor.com/project/DarkByte7/visualplus
+[5]: https://img.shields.io/travis/rust-lang/rust/master.svg?style=plastic
+[6]: https://github.com/DarkByte7/VisualPlus/releases
+[7]: https://img.shields.io/travis/rust-lang/rust/beta.svg?style=plastic
+[8]: https://travis-ci.org/DarkByte7/VisualPlus
 
 ## Contents
-- [Compiling][5]
-- [Installing][6]
-- [Import Toolbox][7]
+- [Compiling][01]
+- [Installing][02]
+- [Import Toolbox][03]
 
-[5]: https://github.com/DarkByte7/VisualPlus/wiki#compiling
-[6]: https://github.com/DarkByte7/VisualPlus/wiki#installing
-[7]: https://github.com/DarkByte7/VisualPlus/wiki#import-toolbox
+[01]: https://github.com/DarkByte7/VisualPlus/wiki#compiling
+[02]: https://github.com/DarkByte7/VisualPlus/wiki#installing
+[03]: https://github.com/DarkByte7/VisualPlus/wiki#import-toolbox
 
 ## Build requirements
 - Visual Studio 2017
@@ -35,3 +43,6 @@ VisualPlus allows you the developer to quickly build professional looking .NET a
 
 ## Donate
 BitCoin: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
+
+## License
+This repository is licensed with the [MIT](LICENSE) license.
