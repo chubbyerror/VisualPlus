@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual radio button.</summary>
@@ -20,24 +19,22 @@
         #region  ${0} Variables
 
         private const int spacing = 2;
-
-        private static readonly IStyle Style = new Visual();
-        private Color backgroundColor1 = Style.BackgroundColor(3);
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
-        private bool borderHoverVisible = true;
+        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private GraphicsPath boxGraphicsPath;
         private Point boxLocation = new Point(2, 2);
         private Size boxSize = new Size(10, 10);
         private Point checkLocation = new Point(0, 0);
-        private Color checkMarkColor = Style.MainColor;
-        private Color checkMarkDisabled = Style.TextDisabled;
+        private Color checkMarkColor = StylesManager.DefaultValue.Style.MainColor;
+        private Color checkMarkDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Size checkSize = new Size(6, 6);
         private ControlState controlState = ControlState.Normal;
-        private Color textColor = StylesManager.DefaultValue.TextColor;
-        private Color textDisabled = Style.TextDisabled;
+        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 

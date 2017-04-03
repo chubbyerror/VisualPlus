@@ -12,7 +12,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual ListView.</summary>
@@ -49,25 +48,20 @@
 
         #region  ${0} Variables
 
-        private const int itemPadding = 12;
-
-        private static readonly IStyle Style = new Visual();
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color columnBorder = Style.BorderColor(0);
-        private Color columnHeaderBackground = Style.BackgroundColor(3);
-
+        private Color columnBorder = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color columnHeaderBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private ControlState controlState = ControlState.Normal;
         private bool drawFocusRectangle;
-
         private bool drawStandardHeader;
-
         private Font headerFont = new Font("Helvetica", 10, FontStyle.Regular);
+        private Color headerText = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color itemBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color itemHover = StylesManager.DefaultValue.Style.ItemHover(0);
 
-        private Color headerText = StylesManager.DefaultValue.TextColor;
-        private Color itemBackground = Style.BackgroundColor(3);
-        private Color itemHover = Style.ItemHover(0);
-        private Color itemSelected = Style.BorderColor(1);
+        private int itemPadding = 12;
+        private Color itemSelected = StylesManager.DefaultValue.Style.BorderColor(1);
 
         #endregion
 
@@ -266,6 +260,20 @@
             }
         }
 
+        public int ItemPadding
+        {
+            get
+            {
+                return itemPadding;
+            }
+
+            set
+            {
+                itemPadding = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color ItemSelected
         {
@@ -372,7 +380,7 @@
             }
 
             // Draw separator
-            graphics.DrawLine(new Pen(Style.BorderColor(0)), e.Bounds.Left, 0, e.Bounds.Right, 0);
+            graphics.DrawLine(new Pen(StylesManager.DefaultValue.Style.BorderColor(0)), e.Bounds.Left, 0, e.Bounds.Right, 0);
 
             foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
             {

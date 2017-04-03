@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual NumericUpDown.</summary>
@@ -20,33 +19,27 @@
         #region  ${0} Variables
 
         private const int Spacing = 4;
-
-        private static readonly IStyle Style = new Visual();
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-
-        private bool borderHoverVisible = true;
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-        private Color buttonColor1 = Style.ButtonNormalColor;
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color buttonColor1 = StylesManager.DefaultValue.Style.ButtonNormalColor;
         private Font buttonFont = new Font("Arial", 8);
         private Point buttonLocation = new Point(0, 4);
         private GraphicsPath buttonPath;
-
         private Rectangle buttonRectangle;
         private Size buttonSize = new Size(19, 19);
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-
-        private Color inputFieldColor = Style.BackgroundColor(0);
+        private Color inputFieldColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
         private long numericValue;
-
-        private Color textDisabled = Style.TextDisabled;
+        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private int xval;
         private int yval;
 
@@ -447,7 +440,7 @@
             if (borderVisible)
             {
                 // Draw buttons border
-                GDI.DrawBorder(graphics, buttonPath, 1, Style.BorderColor(0));
+                GDI.DrawBorder(graphics, buttonPath, 1, StylesManager.DefaultValue.Style.BorderColor(0));
             }
 
             // Buttons text
@@ -456,7 +449,7 @@
 
             // Button separator
             graphics.DrawLine(
-                new Pen(Style.BorderColor(0)),
+                new Pen(StylesManager.DefaultValue.Style.BorderColor(0)),
                 buttonRectangle.X,
                 buttonRectangle.Y + buttonRectangle.Height / 2,
                 buttonRectangle.X + buttonRectangle.Width,
@@ -490,10 +483,12 @@
             // Draw value string
             Rectangle textboxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
 
-            StringFormat stringFormat = new StringFormat();
+            StringFormat stringFormat = new StringFormat
+                {
+                    // Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
-            // stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
             graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(textColor), textboxRectangle, stringFormat);
         }
 

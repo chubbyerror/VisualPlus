@@ -17,9 +17,7 @@
         #region  ${0} Variables
 
         private static SolidBrush animationColor = new SolidBrush(Color.DimGray);
-
         private static Size circleSize = new Size(15, 15);
-
         private Timer animationSpeed = new Timer();
         private SolidBrush baseColor = new SolidBrush(Color.DarkGray);
         private BufferedGraphics buffGraphics;
@@ -28,7 +26,6 @@
         private PointF[] floatPoint;
         private BufferedGraphicsContext graphicsContext = BufferedGraphicsManager.Current;
         private int indicatorIndex;
-
         private double rise;
         private double run;
         private PointF startingFloatPoint;

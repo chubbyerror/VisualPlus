@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     public enum DropDownButtons
@@ -28,25 +27,22 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private static ControlState controlState = ControlState.Normal;
-
-        private Color backgroundColor1 = Style.BackgroundColor(0);
-
-        private bool borderHoverVisible = true;
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
+        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-        private Color controlDisabled = Style.ControlDisabled;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
         private GraphicsPath controlGraphicsPath;
         private DropDownButtons dropDownButton = DropDownButtons.Arrow;
-        private Color menuItemHover = Style.ItemHover(0);
-        private Color menuItemNormal = Style.BackgroundColor(0);
+        private Color menuItemHover = StylesManager.DefaultValue.Style.ItemHover(0);
+        private Color menuItemNormal = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private int startIndex;
-        private Color textDisabled = Style.TextDisabled;
+        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -77,6 +73,21 @@
             UpdateLocationPoints();
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color BackgroundColor1
+        {
+            get
+            {
+                return backgroundColor1;
+            }
+
+            set
+            {
+                backgroundColor1 = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
@@ -103,21 +114,6 @@
             set
             {
                 borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
-        {
-            get
-            {
-                return backgroundColor1;
-            }
-
-            set
-            {
-                backgroundColor1 = value;
                 Invalidate();
             }
         }
@@ -374,7 +370,7 @@
                         graphics.DrawString(
                             "6",
                             new Font("Marlett", 13, FontStyle.Regular),
-                            new SolidBrush(Style.DropDownButtonColor),
+                            new SolidBrush(StylesManager.DefaultValue.Style.DropDownButtonColor),
                             buttonRectangle,
                             new StringFormat
                                 {
@@ -389,17 +385,17 @@
                         var spacing = 5;
 
                         graphics.DrawLine(
-                            new Pen(Style.DropDownButtonColor, 2),
+                            new Pen(StylesManager.DefaultValue.Style.DropDownButtonColor, 2),
                             new Point(spacing + buttonRectangle.X, Height / 2 - 4),
                             new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 - 4));
 
                         graphics.DrawLine(
-                            new Pen(Style.DropDownButtonColor, 2),
+                            new Pen(StylesManager.DefaultValue.Style.DropDownButtonColor, 2),
                             new Point(spacing + buttonRectangle.X, Height / 2 + 0),
                             new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 + 0));
 
                         graphics.DrawLine(
-                            new Pen(Style.DropDownButtonColor, 2),
+                            new Pen(StylesManager.DefaultValue.Style.DropDownButtonColor, 2),
                             new Point(spacing + buttonRectangle.X, Height / 2 + 4),
                             new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 + 4));
                         break;
@@ -407,16 +403,18 @@
             }
 
             // Draw the separator
-            graphics.DrawLine(new Pen(Style.LineColor), buttonRectangle.X - 2, 4, buttonRectangle.X - 2, Height - 5);
-            graphics.DrawLine(new Pen(Style.ShadowColor), buttonRectangle.X - 1, 4, buttonRectangle.X - 1, Height - 5);
+            graphics.DrawLine(new Pen(StylesManager.DefaultValue.Style.LineColor), buttonRectangle.X - 2, 4, buttonRectangle.X - 2, Height - 5);
+            graphics.DrawLine(new Pen(StylesManager.DefaultValue.Style.ShadowColor), buttonRectangle.X - 1, 4, buttonRectangle.X - 1, Height - 5);
 
             // Draw string
             Rectangle textBoxRectangle = new Rectangle(3, 0, Width - 20, Height);
 
-            StringFormat stringFormat = new StringFormat();
+            StringFormat stringFormat = new StringFormat
+                {
+                    // Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
-            // stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
             graphics.DrawString(Text, Font, new SolidBrush(textColor), textBoxRectangle, stringFormat);
         }
 

@@ -11,7 +11,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual GroupBox.</summary>
@@ -21,23 +20,21 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
         private static BorderShape borderShape = BorderShape.Rectangle;
-        private bool borderHoverVisible = true;
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-
-        private Color groupBoxColor = Style.BackgroundColor(0);
-        private Color textDisabled = Style.TextDisabled;
-        private Color titleBoxColor = Style.BackgroundColor(1);
+        private Color groupBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color titleBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(1);
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
-        private bool titleBoxVisible = true;
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
+        private bool titleBoxVisible = StylesManager.DefaultValue.TitleBoxVisible;
 
         #endregion
 

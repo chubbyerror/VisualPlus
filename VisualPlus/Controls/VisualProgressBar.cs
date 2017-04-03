@@ -9,7 +9,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     public enum ProgressBarTypes
@@ -35,47 +34,36 @@
     public class VisualProgressBar : ProgressBar
     {
         #region  ${0} Variables
-        private Color borderColor = style.BorderColor(0);
-        private Color borderHoverColor = style.BorderColor(1);
+
         private static int backgroundRotation = 90;
         private static int bars = 5;
         private static int barSpacing = 10;
         private static BorderShape borderShape = BorderShape.Rectangle;
-        private static IStyle style = new Visual();
-        private static Color hatchBackColor = style.HatchColor;
+        private static Color hatchBackColor = StylesManager.DefaultValue.Style.HatchColor;
         private static ProgressBarTypes progressBarStyle = ProgressBarTypes.Horizontal;
-        private static Color progressColor1 = style.ProgressColor;
-
+        private static Color progressColor1 = StylesManager.DefaultValue.Style.ProgressColor;
         private static int progressRotation;
-
         private bool backColorGradient = true;
-
-        private Color backgroundColor1 = style.BackgroundColor(0);
-        private Color backgroundColor2 = style.BackgroundColor(1);
-
+        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor2 = StylesManager.DefaultValue.Style.BackgroundColor(1);
         private Point barLocation = new Point(0, 0);
         private Point barSize = new Point(15, 15);
-        private bool borderHoverVisible = true;
-
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
         private GraphicsPath graphicsDefaultBorderPath;
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private GraphicsPath hatchPath = new GraphicsPath();
         private float hatchSize = StylesManager.DefaultValue.HatchSize;
-
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
-
-        private bool hatchVisible = true;
-
+        private bool hatchVisible = StylesManager.DefaultValue.HatchVisible;
         private bool percentageVisible;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
-
         private BrushType progressColorStyle = BrushType.Gradient;
-
         private StringAlignment valueAlignment = StringAlignment.Center;
 
         #endregion
@@ -97,36 +85,6 @@
             ForeColor = Color.White;
             DoubleBuffered = true;
             UpdateStyles();
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
-        public Color BorderColor
-        {
-            get
-            {
-                return borderColor;
-            }
-
-            set
-            {
-                borderColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
-        {
-            get
-            {
-                return borderHoverColor;
-            }
-
-            set
-            {
-                borderHoverColor = value;
-                Invalidate();
-            }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
@@ -230,6 +188,36 @@
             set
             {
                 barSpacing = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        public Color BorderColor
+        {
+            get
+            {
+                return borderColor;
+            }
+
+            set
+            {
+                borderColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        public Color BorderHoverColor
+        {
+            get
+            {
+                return borderHoverColor;
+            }
+
+            set
+            {
+                borderHoverColor = value;
                 Invalidate();
             }
         }
@@ -813,7 +801,6 @@
                         backgroundRotation,
                         backColorGradient);
                 }
-
 
                 // Draw border
                 if (borderVisible)

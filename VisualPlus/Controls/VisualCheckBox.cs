@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual CheckBox.</summary>
@@ -21,34 +20,33 @@
 
         private const int spacing = 2;
 
-        private static readonly IStyle style = new Visual();
         private bool animation = true;
-        private Color borderColor = style.BorderColor(0);
-        private Color borderHoverColor = style.BorderColor(1);
-        private bool borderHoverVisible = true;
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
 
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
 
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
 
         private Point boxLocation = new Point(0, 0);
         private Size boxSize = new Size(13, 13);
 
-        private Color checkBoxColor = style.BackgroundColor(3);
+        private Color checkBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
 
         private GraphicsPath checkBoxPath;
         private Rectangle checkBoxRectangle;
         private Color checkMarkColor = StylesManager.MainColor;
-        private Color checkMarkDisabled = style.TextDisabled;
+        private Color checkMarkDisabled = StylesManager.DefaultValue.Style.TextDisabled;
 
         private ControlState controlState = ControlState.Normal;
 
         private VFXManager effectsManager;
         private VFXManager rippleEffectsManager;
-        private Color textColor = StylesManager.DefaultValue.TextColor;
-        private Color textDisabled = style.TextDisabled;
+        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 

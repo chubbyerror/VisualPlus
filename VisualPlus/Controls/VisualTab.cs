@@ -8,7 +8,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual tab control.</summary>
@@ -18,21 +17,16 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
         private bool selectorVisible = true;
-
-        private Color separator = Style.TabSelected;
-
-        private Color tabHover = Style.TabHover;
-
-        private Color tabMenu = Style.TabMenu;
-        private Color tabNormal = Style.TabNormal;
-        private Color tabSelected = Style.TabSelected;
-
-        private Color tabSelector = Style.MainColor;
-        private Color textDisabled = Style.TextDisabled;
-        private Color textNormal = Style.TabTextNormal;
-        private Color textSelected = Style.TabTextSelected;
+        private Color separator = StylesManager.DefaultValue.Style.TabSelected;
+        private Color tabHover = StylesManager.DefaultValue.Style.TabHover;
+        private Color tabMenu = StylesManager.DefaultValue.Style.TabMenu;
+        private Color tabNormal = StylesManager.DefaultValue.Style.TabNormal;
+        private Color tabSelected = StylesManager.DefaultValue.Style.TabSelected;
+        private Color tabSelector = StylesManager.DefaultValue.Style.MainColor;
+        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color textNormal = StylesManager.DefaultValue.Style.TabTextNormal;
+        private Color textSelected = StylesManager.DefaultValue.Style.TabTextSelected;
 
         #endregion
 
@@ -59,7 +53,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        public Color Background { get; set; } = Style.BackgroundColor(2);
+        public Color Background { get; set; } = StylesManager.DefaultValue.Style.BackgroundColor(2);
 
         [DefaultValue(true), Category(Localize.Category.Behavior)]
         public bool SelectorVisible
@@ -261,33 +255,40 @@
                     // Selected tab
                     Rectangle tabRect = new Rectangle(
                         new Point(
-                            GetTabRect(tabIndex).Location.X - 2,
-                            GetTabRect(tabIndex).Location.Y - 2),
+                            GetTabRect(tabIndex).
+                                Location.X - 2,
+                            GetTabRect(tabIndex).
+                                Location.Y - 2),
                         new Size(
-                            GetTabRect(tabIndex).Width + 3,
-                            GetTabRect(tabIndex).Height - 8));
+                            GetTabRect(tabIndex).
+                                Width + 3,
+                            GetTabRect(tabIndex).
+                                Height - 8));
 
                     // Draw selected tab
                     graphics.FillRectangle(new SolidBrush(tabSelected), tabRect);
 
                     // Draw background of the selected tab
-                    //graphics.FillRectangle(
-                    //    new SolidBrush(tabSelected),
-                    //    tabRect.X,
-                    //    tabRect.Y,
-                    //    tabRect.Width - 4,
-                    //    tabRect.Height + 3);
-
+                    // graphics.FillRectangle(
+                    // new SolidBrush(tabSelected),
+                    // tabRect.X,
+                    // tabRect.Y,
+                    // tabRect.Width - 4,
+                    // tabRect.Height + 3);
                     if (selectorVisible)
                     {
                         // Draw a tab highlighter on the background of the selected tab
                         Rectangle tabHighlighter = new Rectangle(
                             new Point(
-                                GetTabRect(tabIndex).X + GetTabRect(tabIndex).Width - 5,
-                                GetTabRect(tabIndex).Location.Y + 5),
+                                GetTabRect(tabIndex).
+                                    X + GetTabRect(tabIndex).
+                                    Width - 5,
+                                GetTabRect(tabIndex).
+                                    Location.Y + 5),
                             new Size(
                                 4,
-                                GetTabRect(tabIndex).Height / 2));
+                                GetTabRect(tabIndex).
+                                    Height / 2));
 
                         // Aligns the highlighter to the right.
                         tabHighlighter = tabHighlighter.AlignRight(tabRect, 7);

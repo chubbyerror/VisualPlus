@@ -9,7 +9,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     public enum ValueDivisor
@@ -33,42 +32,33 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
         private static ControlState controlState = ControlState.Normal;
-        private static Color hatchBackColor = Style.HatchColor;
-        private static Color progressColor1 = Style.ProgressColor;
+        private static Color hatchBackColor = StylesManager.DefaultValue.Style.HatchColor;
+        private static Color progressColor1 = StylesManager.DefaultValue.Style.ProgressColor;
         private static Orientation trackBarType = Orientation.Horizontal;
-        private Color backgroundColor1 = Style.BackgroundColor(0);
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
-        private bool borderHoverVisible = true;
+        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-
-        private Color buttonColor1 = Style.ButtonNormalColor;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color buttonColor1 = StylesManager.DefaultValue.Style.ButtonNormalColor;
         private bool cap;
-
         private ValueDivisor dividedValue = ValueDivisor.By1;
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private float hatchSize = StylesManager.DefaultValue.HatchSize;
-
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
-
         private bool hatchVisible;
-
         private Rectangle pipeRectangle;
-
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private int progressDrawer;
         private GraphicsPath progressPath = new GraphicsPath();
         private BrushType progressStyle = BrushType.Gradient;
         private Rectangle progressValueRectangle;
-
         private GraphicsPath trackBarHandle;
         private Rectangle trackBarHandleRectangle;
-
         private bool valueVisible;
 
         #endregion

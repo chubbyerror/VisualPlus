@@ -23,13 +23,9 @@ namespace VisualPlus.Framework
         public static readonly Color MainColor = Color.Green;
         public static readonly int MaximumBorderSize = 24;
         public static readonly int MaximumCheckBoxBorderRounding = 12;
-
         public static readonly int MaximumCheckBoxSize = 11;
-
         public static readonly int MaximumRounding = 30;
-
         public static readonly int MinimumBorderSize = 1;
-
         public static readonly int MinimumCheckBoxBorderRounding = 1;
         public static readonly int MinimumCheckBoxSize = 3;
         public static readonly int MinimumRounding = 1;
@@ -54,8 +50,6 @@ namespace VisualPlus.Framework
             public const float HatchSize = 2F;
 
             public static readonly IStyle Style = new Visual();
-
-            public static Color TextColor = Color.Black;
         }
 
         #endregion

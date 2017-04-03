@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     public enum ToggleTypes
@@ -41,28 +40,25 @@
 
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
-
         private readonly Timer animationTimer = new Timer
             {
                 Interval = 1
             };
 
-        private Color backgroundColor1 = Style.BackgroundColor(0);
+        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(0);
 
         private Rectangle barSlider;
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
-        private bool borderHoverVisible = true;
-
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-        private Color buttonColor1 = Style.ButtonNormalColor;
-        private Color controlDisabled = Style.ControlDisabled;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color buttonColor1 = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
         private Size sizeHandle = new Size(15, 20);
-        private Color textColor = StylesManager.DefaultValue.TextColor;
-        private Color textDisabled = Style.TextDisabled;
+        private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private string textProcessor;
         private bool toggled;
         private int toggleLocation;

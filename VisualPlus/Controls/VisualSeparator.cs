@@ -8,7 +8,6 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual separator.</summary>
@@ -17,11 +16,9 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
-        private Color lineColor = Style.LineColor;
-
+        private Color lineColor = StylesManager.DefaultValue.Style.LineColor;
         private SplitterStyle separatorStyle = SplitterStyle.Horizontal;
-        private Color shadowColor = Style.ShadowColor;
+        private Color shadowColor = StylesManager.DefaultValue.Style.ShadowColor;
 
         #endregion
 

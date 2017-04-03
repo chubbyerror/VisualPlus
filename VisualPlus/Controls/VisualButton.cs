@@ -19,37 +19,27 @@
         #region  ${0} Variables
 
         private bool animation = true;
-
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private Color buttonDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
         private Color buttonHover = ControlPaint.Light(StylesManager.DefaultValue.Style.ButtonNormalColor);
         private Color buttonNormal = StylesManager.DefaultValue.Style.ButtonNormalColor;
         private Color buttonPressed = ControlPaint.Light(StylesManager.DefaultValue.Style.ButtonDownColor);
-
         private GraphicsPath controlGraphicsPath;
-
         private ControlState controlState = ControlState.Normal;
-
         private VFXManager effectsManager;
         private VFXManager hoverEffectsManager;
         private Image icon;
         private GraphicsPath iconGraphicsPath;
-
         private Point iconPosition = new Point(4, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
         private Color textColor = StylesManager.DefaultValue.Style.ForeColor(0);
-
         private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private SizeF textSize;
 

@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual RichTextBox.</summary>
@@ -19,18 +18,16 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private static ControlState controlState = ControlState.Normal;
         public RichTextBox RichObject = new RichTextBox();
-        private Color backgroundColor1 = Style.BackgroundColor(3);
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
-        private bool borderHoverVisible = true;
+        private Color backgroundColor1 = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private GraphicsPath controlGraphicsPath;
 
         #endregion
