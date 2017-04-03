@@ -1,2 +1,2 @@
-language: C#
+language: csharp
 solution: VisualPlus.sln
