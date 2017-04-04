@@ -9,17 +9,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
-
-    public enum TrackBarTypes
-    {
-        /// <summary>The horizontal trackbar.</summary>
-        Horizontal,
-
-        /// <summary>The vertical trackbar.</summary>
-        Vertical
-    }
 
     public enum ValueDivisor
     {
@@ -36,49 +26,48 @@
         By1000 = 1000
     }
 
+    public enum TrackBarPiping
+    {
+        /// <summary>Draws a trackbar line.</summary>
+        Line,
+
+        /// <summary>Draws a trackbar pipe.</summary>
+        Pipe
+    }
+
     /// <summary>The visual Trackbar.</summary>
     [DefaultEvent("ValueChanged"), ToolboxBitmap(typeof(TrackBar)), Designer(VSDesignerBinding.VisualTrackBar)]
-    public class VisualTrackBar : TrackBar
+    public sealed class VisualTrackBar : TrackBar
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
-        private static ControlState controlState = ControlState.Normal;
-        private static Color hatchBackColor = Style.HatchColor;
-        private static Color progressColor1 = Style.ProgressColor;
-        private static TrackBarTypes trackBarType = TrackBarTypes.Horizontal;
-        private Color backgroundColor1 = Style.BackgroundColor(0);
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
-        private bool borderHoverVisible = true;
+        private static Color progressColor1 = StylesManager.DefaultValue.Style.ProgressColor;
+        private static Orientation trackBarType = Orientation.Horizontal;
+        private static RectangleF trackerRectangleF = RectangleF.Empty;
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-
-        private Color buttonColor1 = Style.ButtonNormalColor;
-        private bool cap;
-
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private GraphicsPath buttonPath = new GraphicsPath();
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
+        private ControlState controlState = ControlState.Normal;
         private ValueDivisor dividedValue = ValueDivisor.By1;
-        private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
-        private float hatchSize = StylesManager.DefaultValue.HatchSize;
-
-        private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
-
-        private bool hatchVisible;
-
-        private Rectangle pipeRectangle;
-
-        private Color progressColor2 = ControlPaint.Light(progressColor1);
-        private int progressDrawer;
-        private GraphicsPath progressPath = new GraphicsPath();
-        private BrushType progressStyle = BrushType.Gradient;
-        private Rectangle progressValueRectangle;
-
-        private GraphicsPath trackBarHandle;
-        private Rectangle trackBarHandleRectangle;
-
-        private bool valueVisible;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private int indentHeight = 6;
+        private int indentWidth = 6;
+        private bool leftButtonDown;
+        private float mouseStartPos = -1;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color tickColor = StylesManager.DefaultValue.Style.LineColor;
+        private int tickHeight = 2;
+        private Size trackerSize = new Size(10, 20);
+        private Color trackLineColor = StylesManager.DefaultValue.Style.LineColor;
+        private int trackLineHeight = 3;
+        private bool valueVisible = StylesManager.DefaultValue.TextVisible;
 
         #endregion
 
@@ -95,24 +84,9 @@
             DoubleBuffered = true;
             UpdateStyles();
             AutoSize = false;
-            hatchVisible = true;
-            Size = new Size(80, 22);
+
+            Size = new Size(180, 50);
             MinimumSize = new Size(37, 22);
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
-        {
-            get
-            {
-                return backgroundColor1;
-            }
-
-            set
-            {
-                backgroundColor1 = value;
-                Invalidate();
-            }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
@@ -234,98 +208,64 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color ButtonColor1
+        public Color ButtonColor
         {
             get
             {
-                return buttonColor1;
+                return buttonColor;
             }
 
             set
             {
-                buttonColor1 = value;
+                buttonColor = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color HatchBackColor
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColor
         {
             get
             {
-                return hatchBackColor;
+                return controlDisabledColor;
             }
 
             set
             {
-                hatchBackColor = value;
+                controlDisabledColor = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color HatchForeColor
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public int IndentHeight
         {
             get
             {
-                return hatchForeColor;
+                return indentHeight;
             }
 
             set
             {
-                hatchForeColor = value;
+                indentHeight = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Layout), DefaultValue(StylesManager.DefaultValue.HatchSize), Description(Localize.Description.HatchSize)]
-        public float HatchSize
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public int IndentWidth
         {
             get
             {
-                return hatchSize;
+                return indentWidth;
             }
 
             set
             {
-                hatchSize = value;
+                indentWidth = value;
                 Invalidate();
             }
         }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.HatchStyle)]
-        public HatchStyle HatchStyle
-        {
-            get
-            {
-                return hatchStyle;
-            }
-
-            set
-            {
-                hatchStyle = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(StylesManager.DefaultValue.HatchVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
-        public bool HatchVisible
-        {
-            get
-            {
-                return hatchVisible;
-            }
-
-            set
-            {
-                hatchVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(false), Category(Localize.Category.Behavior)]
-        public bool JumpToMouse { get; set; } = false;
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color ProgressColor1
@@ -342,38 +282,68 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color ProgressColor2
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
         {
             get
             {
-                return progressColor2;
+                return foreColor;
             }
 
             set
             {
-                progressColor2 = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ProgressStyle)]
-        public BrushType ProgressStyle
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
         {
             get
             {
-                return progressStyle;
+                return textDisabledColor;
             }
 
             set
             {
-                progressStyle = value;
+                textDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TickColor
+        {
+            get
+            {
+                return tickColor;
+            }
+
+            set
+            {
+                tickColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public int TickHeight
+        {
+            get
+            {
+                return tickHeight;
+            }
+
+            set
+            {
+                tickHeight = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.TrackBarType)]
-        public TrackBarTypes TrackBarType
+        public Orientation TrackBarType
         {
             get
             {
@@ -383,6 +353,72 @@
             set
             {
                 trackBarType = value;
+
+                if (trackBarType == Orientation.Horizontal)
+                {
+                    if (Width < Height)
+                    {
+                        int temp = Width;
+                        Width = Height;
+                        Height = temp;
+                    }
+                }
+                else
+                {
+                    // Vertical
+                    if (Width > Height)
+                    {
+                        int temp = Width;
+                        Width = Height;
+                        Height = temp;
+                    }
+                }
+
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public Size TrackerSize
+        {
+            get
+            {
+                return trackerSize;
+            }
+
+            set
+            {
+                trackerSize = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TrackLineColor
+        {
+            get
+            {
+                return trackLineColor;
+            }
+
+            set
+            {
+                trackLineColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public int TrackLineHeight
+        {
+            get
+            {
+                return trackLineHeight;
+            }
+
+            set
+            {
+                trackLineHeight = value;
                 Invalidate();
             }
         }
@@ -417,7 +453,7 @@
             }
         }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior)]
+        [DefaultValue(StylesManager.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
         public bool ValueVisible
         {
             get
@@ -428,15 +464,6 @@
             set
             {
                 valueVisible = value;
-                if (valueVisible)
-                {
-                    Height = 40;
-                }
-                else
-                {
-                    Height = 22;
-                }
-
                 Invalidate();
             }
         }
@@ -447,36 +474,84 @@
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            base.OnMouseDown(e);
+            var offsetValue = 0;
+            PointF currentPoint = new PointF(e.X, e.Y);
 
-            // Jump to mouse position
-            if (e.Button == MouseButtons.Left)
+            if (trackerRectangleF.Contains(currentPoint))
             {
-                if (trackBarType == TrackBarTypes.Vertical)
+                if (!leftButtonDown)
                 {
-                    progressDrawer = (int)Math.Round((Value - Minimum) / (double)(Maximum - Minimum) * (Height - 11));
-                    trackBarHandleRectangle = new Rectangle(0, progressDrawer, 20, 10);
-
-                    if (JumpToMouse)
+                    leftButtonDown = true;
+                    Capture = true;
+                    switch (trackBarType)
                     {
-                        Value = Minimum + (int)Math.Round((Maximum - Minimum) * (e.X / (double)Height));
-                    }
-                }
-                else
-                {
-                    progressDrawer = (int)Math.Round((Value - Minimum) / (double)(Maximum - Minimum) * (Width - 11));
+                        case Orientation.Horizontal:
+                            {
+                                mouseStartPos = currentPoint.X - trackerRectangleF.X;
+                                break;
+                            }
 
-                    trackBarHandleRectangle = new Rectangle(progressDrawer, 0, 10, 20);
-                    cap = trackBarHandleRectangle.Contains(e.Location);
-
-                    if (JumpToMouse)
-                    {
-                        Value = Minimum + (int)Math.Round((Maximum - Minimum) * (e.X / (double)Width));
+                        case Orientation.Vertical:
+                            {
+                                mouseStartPos = currentPoint.Y - trackerRectangleF.Y;
+                                break;
+                            }
                     }
                 }
             }
+            else
+            {
+                switch (trackBarType)
+                {
+                    case Orientation.Horizontal:
+                        if ((currentPoint.X + trackerSize.Width) / 2 >= Width - indentWidth)
+                        {
+                            offsetValue = Maximum - Minimum;
+                        }
+                        else if ((currentPoint.X - trackerSize.Width) / 2 <= indentWidth)
+                        {
+                            offsetValue = 0;
+                        }
+                        else
+                        {
+                            offsetValue =
+                                (int)
+                                ((currentPoint.X - indentWidth - trackerSize.Width) / 2 * (Maximum - Minimum) /
+                                 (Width - 2 * indentWidth - trackerSize.Width) + 0.5);
+                        }
 
-            Invalidate();
+                        break;
+
+                    case Orientation.Vertical:
+                        if ((currentPoint.Y + trackerSize.Width) / 2 >= Height - indentHeight)
+                        {
+                            offsetValue = 0;
+                        }
+                        else if ((currentPoint.Y - trackerSize.Width) / 2 <= indentHeight)
+                        {
+                            offsetValue = Maximum - Minimum;
+                        }
+                        else
+                        {
+                            offsetValue =
+                                (int)
+                                ((Height - currentPoint.Y - indentHeight - trackerSize.Width) / 2 * (Maximum - Minimum) /
+                                 (Height - 2 * indentHeight - trackerSize.Width) + 0.5);
+                        }
+
+                        break;
+                }
+
+                int oldValue = Value;
+                Value = Minimum + offsetValue;
+                Invalidate();
+
+                if (oldValue != Value)
+                {
+                    // OnScroll();
+                    // OnValueChanged(Value);
+                }
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -489,14 +564,7 @@
         protected override void OnMouseHover(EventArgs e)
         {
             base.OnMouseHover(e);
-            if (trackBarType == TrackBarTypes.Vertical)
-            {
-                Cursor = Cursors.SizeNS;
-            }
-            else
-            {
-                Cursor = Cursors.SizeWE;
-            }
+            Cursor = trackBarType == Orientation.Vertical ? Cursors.SizeNS : Cursors.SizeWE;
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -508,171 +576,407 @@
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            base.OnMouseMove(e);
-            if (trackBarType == TrackBarTypes.Vertical)
-            {
-                if (cap && e.Y > -1 && e.Y < Height + 1)
-                {
-                    Value = Minimum + (int)Math.Round((Maximum - Minimum) * (e.Y / (double)Height));
-                }
-            }
-            else
-            {
-                if (cap && e.X > -1 && e.X < Width + 1)
-                {
-                    Value = Minimum + (int)Math.Round((Maximum - Minimum) * (e.X / (double)Width));
-                }
-            }
+            var offsetValue = 0;
+            PointF currentPoint = new PointF(e.X, e.Y);
 
-            Invalidate();
+            if (leftButtonDown)
+            {
+                try
+                {
+                    switch (trackBarType)
+                    {
+                        case Orientation.Horizontal:
+                            if (currentPoint.X + trackerSize.Width - mouseStartPos >= Width - indentWidth)
+                            {
+                                offsetValue = Maximum - Minimum;
+                            }
+                            else if (currentPoint.X - mouseStartPos <= indentWidth)
+                            {
+                                offsetValue = 0;
+                            }
+                            else
+                            {
+                                offsetValue =
+                                    (int)
+                                    ((currentPoint.X - mouseStartPos - indentWidth) * (Maximum - Minimum) /
+                                     (Width - 2 * indentWidth - trackerSize.Width) + 0.5);
+                            }
+
+                            break;
+
+                        case Orientation.Vertical:
+                            if ((currentPoint.Y + trackerSize.Width) / 2 >= Height - indentHeight)
+                            {
+                                offsetValue = 0;
+                            }
+                            else if ((currentPoint.Y + trackerSize.Width) / 2 <= indentHeight)
+                            {
+                                offsetValue = Maximum - Minimum;
+                            }
+                            else
+                            {
+                                offsetValue =
+                                    (int)
+                                    (((Height - currentPoint.Y + trackerSize.Width) / 2 - mouseStartPos - indentHeight) * (Maximum - Minimum) /
+                                     (Height - 2 * indentHeight) + 0.5);
+                            }
+
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+                finally
+                {
+                    int oldValue = Value;
+                    Value = Minimum + offsetValue;
+                    Invalidate();
+
+                    if (oldValue != Value)
+                    {
+                        // OnScroll();
+                        // OnValueChanged(Value);
+                    }
+                }
+            }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            base.OnMouseUp(e);
-            cap = false;
+            leftButtonDown = false;
+            Capture = false;
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-            if (trackBarType == TrackBarTypes.Vertical)
+            RectangleF drawRect;
+            Rectangle workingRect = Rectangle.Inflate(ClientRectangle, -indentWidth, -indentHeight);
+            float textAreaSize;
+            float currentUsedPos;
+
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+
+            if (trackBarType == Orientation.Horizontal)
             {
-                pipeRectangle = new Rectangle(6, 0, 8, Height); // TODO
+                currentUsedPos = indentHeight;
 
-                // Determine border shape of total progress path
-                progressPath = GDI.GetBorderShape(pipeRectangle, borderShape, borderRounding);
+                // Get Height of Text Area
+                textAreaSize = e.Graphics.MeasureString(Maximum.ToString(), Font).
+                                 Height;
 
-                try
+                if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
                 {
-                    progressDrawer = (int)Math.Round(checked((Value - Minimum) / (double)(Maximum - Minimum)) * checked(Height - 11));
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                    // Draw text
+                    drawRect = new RectangleF(workingRect.Left, currentUsedPos, workingRect.Width, textAreaSize);
+                    drawRect.Inflate(-trackerSize.Width / 2, 0);
+                    currentUsedPos += textAreaSize;
 
-                // Trackbar rectangle
-                trackBarHandleRectangle = new Rectangle(0, pipeRectangle.Height - trackBarHandleRectangle.Height - 1, 20, 10);
-                progressValueRectangle = new Rectangle(6, pipeRectangle.Height - trackBarHandleRectangle.Height - 1, 8, pipeRectangle.Height - 1);
-            }
-            else
-            {
-                pipeRectangle = new Rectangle(1, 6, Width - 3, 8);
-
-                // Determine border shape of total progress path
-                progressPath = GDI.GetBorderShape(pipeRectangle, borderShape, borderRounding);
-
-                try
-                {
-                    progressDrawer = (int)Math.Round(checked((Value - Minimum) / (double)(Maximum - Minimum)) * checked(Width - 11));
-                }
-                catch (Exception)
-                {
-                    // ignored
+                    if (valueVisible)
+                    {
+                        GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, Font, trackBarType);
+                    }
                 }
 
-                // Trackbar rectangle
-                trackBarHandleRectangle = new Rectangle(progressDrawer, 0, 10, 20);
-                progressValueRectangle = new Rectangle(1, 6, trackBarHandleRectangle.X + trackBarHandleRectangle.Width - 2, 8);
-            }
-
-            // Current progress path
-            GraphicsPath progressValue = GDI.GetBorderShape(progressValueRectangle, borderShape, borderRounding);
-
-            graphics.SetClip(progressPath);
-
-            // Handle
-            trackBarHandle = GDI.DrawRoundedRectangle(trackBarHandleRectangle, 3);
-
-            // Draw background color
-            graphics.FillPath(new SolidBrush(backgroundColor1), progressPath);
-
-            // Draw progress slide
-            if (progressStyle == BrushType.Gradient)
-            {
-                GDI.FillBackground(graphics, progressValueRectangle, progressValue, progressColor1, progressColor2, 90, true);
-            }
-            else
-            {
-                // Solid color
-                graphics.FillRectangle(new SolidBrush(progressColor1), progressValueRectangle);
-            }
-
-            // Draw hatch overlay
-            if (hatchVisible)
-            {
-                HatchBrush hatchBrush = new HatchBrush(hatchStyle, hatchForeColor, hatchBackColor);
-                using (TextureBrush textureBrush = GDI.DrawTextureUsingHatch(hatchBrush))
+                if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
                 {
-                    textureBrush.ScaleTransform(hatchSize, hatchSize);
-                    graphics.FillRectangle(textureBrush, progressValueRectangle);
+                    // Draw tick line.
+                    drawRect = new RectangleF(workingRect.Left, currentUsedPos, workingRect.Width, tickHeight);
+                    drawRect.Inflate(-trackerSize.Width / 2, 0);
+                    currentUsedPos += tickHeight + 1;
+
+                    GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
                 }
-            }
 
-            graphics.ResetClip();
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-            // Draw border
-            if (borderVisible)
-            {
-                if (controlState == ControlState.Hover && borderHoverVisible)
+                // Calculate the tracker's rectangle
+                float currentTrackerPos;
+                if (Maximum == Minimum)
                 {
-                    GDI.DrawBorder(graphics, progressPath, borderSize, borderHoverColor);
+                    currentTrackerPos = workingRect.Left;
                 }
                 else
                 {
-                    GDI.DrawBorder(graphics, progressPath, borderSize, borderColor);
+                    currentTrackerPos = (workingRect.Width - trackerSize.Width) * (Value - Minimum) / (Maximum - Minimum) + workingRect.Left;
                 }
-            }
 
-            // Draw TrackBar handle
-            graphics.FillPath(new SolidBrush(buttonColor1), trackBarHandle);
+                // Remember this for drawing the Tracker later
+                trackerRectangleF = new RectangleF(currentTrackerPos, currentUsedPos, trackerSize.Width, trackerSize.Height);
 
-            // Draw handle border
-            if (controlState == ControlState.Hover && borderHoverVisible)
-            {
-                GDI.DrawBorder(graphics, trackBarHandle, 1, borderHoverColor);
+                // trackerRectangleF.Inflate(0,-1);
+                // Draw the Track Line
+                drawRect = new RectangleF(workingRect.Left, currentUsedPos + trackerSize.Height / 2 - trackLineHeight / 2, workingRect.Width,
+                    trackLineHeight);
+                DrawTrackLine(e.Graphics, drawRect);
+                currentUsedPos += trackerSize.Height;
+
+                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
+                {
+                    // Draw tick line.
+                    currentUsedPos += 1;
+                    drawRect = new RectangleF(workingRect.Left, currentUsedPos, workingRect.Width, tickHeight);
+                    drawRect.Inflate(-trackerSize.Width / 2, 0);
+                    currentUsedPos += tickHeight;
+
+                    GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                }
+
+                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
+                {
+                    // Draw the text
+                    // Get Height of Text Area
+                    drawRect = new RectangleF(workingRect.Left, currentUsedPos, workingRect.Width, textAreaSize);
+                    drawRect.Inflate(-trackerSize.Width / 2, 0);
+                    currentUsedPos += textAreaSize;
+
+                    if (valueVisible)
+                    {
+                        GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, Font, trackBarType);
+                    }
+                }
             }
             else
             {
-                GDI.DrawBorder(graphics, trackBarHandle, 1, borderColor);
+                // trackBarType == Orientation.Vertical
+                currentUsedPos = indentWidth;
+
+                // Get Width of Text Area
+                textAreaSize = e.Graphics.MeasureString(Maximum.ToString(), Font).
+                                 Width;
+
+                if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
+                {
+                    // Draw text
+                    // Get Height of Text Area
+                    drawRect = new RectangleF(currentUsedPos, workingRect.Top, textAreaSize, workingRect.Height);
+                    drawRect.Inflate(0, -trackerSize.Width / 2);
+                    currentUsedPos += textAreaSize;
+
+                    GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, Font, trackBarType);
+                }
+
+                if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
+                {
+                    // Draw the tick line.
+                    drawRect = new RectangleF(currentUsedPos, workingRect.Top, tickHeight, workingRect.Height);
+                    drawRect.Inflate(0, -trackerSize.Width / 2);
+                    currentUsedPos += tickHeight + 1;
+
+                    GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                }
+
+                // Calculate the tracker's rectangle
+                float currentTrackerPos;
+                if (Maximum == Minimum)
+                {
+                    currentTrackerPos = workingRect.Top;
+                }
+                else
+                {
+                    currentTrackerPos = (workingRect.Height - trackerSize.Width) * (Value - Minimum) / (Maximum - Minimum);
+                }
+
+                // Remember this for drawing the Tracker later
+                trackerRectangleF = new RectangleF(currentUsedPos, workingRect.Bottom - currentTrackerPos - trackerSize.Width, trackerSize.Height,
+                    trackerSize.Width);
+
+                // trackerRectangleF.Inflate(-1,0);
+                // Draw the track line
+                drawRect = new RectangleF(currentUsedPos + trackerSize.Height / 2 - trackLineHeight / 2, workingRect.Top, trackLineHeight,
+                    workingRect.Height);
+                DrawTrackLine(e.Graphics, drawRect);
+                currentUsedPos += trackerSize.Height;
+
+                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
+                {
+                    // Draw the 2st Tick Line.
+                    currentUsedPos += 1;
+                    drawRect = new RectangleF(currentUsedPos, workingRect.Top, tickHeight, workingRect.Height);
+                    drawRect.Inflate(0, -trackerSize.Width / 2);
+                    currentUsedPos += tickHeight;
+
+                    GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                }
+
+                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
+                {
+                    // Draw the 2st Text Line.
+                    // Get Height of Text Area
+                    drawRect = new RectangleF(currentUsedPos, workingRect.Top, textAreaSize, workingRect.Height);
+                    drawRect.Inflate(0, -trackerSize.Width / 2);
+                    currentUsedPos += textAreaSize;
+
+                    GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, Font, trackBarType);
+                }
             }
 
-            // Draw value string
-            if (valueVisible)
+            // Convert from RectangleF to Rectangle.
+            Rectangle buttonRectangle = Rectangle.Round(trackerRectangleF);
+            buttonPath = GDI.GetBorderShape(buttonRectangle, borderShape, borderRounding);
+
+            // Draw the Tracker
+            DrawTracker(e.Graphics, trackerRectangleF);
+
+            // Draws a focus rectangle
+            // if(this.Focused && this.BackColor != Color.Transparent)
+            // TODO: Add bool toggle
+            if (Focused)
             {
-                StringFormat stringFormat = new StringFormat();
-
-                // stringFormat.Alignment = StringAlignment.Center;
-                // stringFormat.LineAlignment = StringAlignment.Center;
-                graphics.DrawString(Convert.ToString(ValueToSet), Font, new SolidBrush(ForeColor), 0, 25, stringFormat);
+                // ControlPaint.DrawFocusRectangle(e.Graphics, Rectangle.Inflate(ClientRectangle, -2, -2));
             }
-
-            graphics.SmoothingMode = SmoothingMode.None;
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.ResetClip();
         }
 
-        protected override void OnResize(EventArgs e)
+        /// <summary>This member overrides <see cref="Control.ProcessCmdKey">Control.ProcessCmdKey</see>.</summary>
+        /// <param name="msg">The msg.</param>
+        /// <param name="keyData">The key Data.</param>
+        /// <returns>The <see cref="bool" />.</returns>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            base.OnResize(e);
+            var result = true;
 
-            // TODO: Refactor sizing
-            if (trackBarType == TrackBarTypes.Vertical)
+            // Specified WM_KEYDOWN enumeration value.
+            const int WM_KEYDOWN = 0x0100;
+
+            // Specified WM_SYSKEYDOWN enumeration value.
+            const int WM_SYSKEYDOWN = 0x0104;
+
+            if (msg.Msg == WM_KEYDOWN || msg.Msg == WM_SYSKEYDOWN)
             {
-                // Width = 20;
+                switch (keyData)
+                {
+                    case Keys.Left:
+                    case Keys.Down:
+                        Decrement(SmallChange);
+                        break;
+                    case Keys.Right:
+                    case Keys.Up:
+                        Increment(SmallChange);
+                        break;
+
+                    case Keys.PageUp:
+                        Increment(LargeChange);
+                        break;
+                    case Keys.PageDown:
+                        Decrement(LargeChange);
+                        break;
+
+                    case Keys.Home:
+                        Value = Maximum;
+                        break;
+                    case Keys.End:
+                        Value = Minimum;
+                        break;
+
+                    default:
+                        result = base.ProcessCmdKey(ref msg, keyData);
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>Draws the tracker button.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="trackerRect">Button rectangle.</param>
+        private void DrawTracker(Graphics graphics, RectangleF trackerRect)
+        {
+            Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
+
+            // Draw button background
+            graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
+
+            // Draw button border
+            GDI.DrawBorderType(graphics, controlState, buttonPath, borderSize, borderColor, borderHoverColor, borderVisible);
+        }
+
+        /// <summary>Draws the track line.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="trackLineRectangleF">Track line rectangle.</param>
+        private void DrawTrackLine(Graphics graphics, RectangleF trackLineRectangleF)
+        {
+            // Convert from RectangleF to Rectangle.
+            Rectangle trackLineRectangle = Rectangle.Round(trackerRectangleF);
+            GDI.GetBorderShape(trackLineRectangle, borderShape, borderRounding);
+
+            GDI.DrawAquaPillSingleLayer(graphics, trackLineRectangleF, trackLineColor, trackBarType);
+        }
+
+        #endregion
+
+        #region ${0} Methods
+
+        /// <summary>Call the Decrement() method to decrease the value displayed by an integer you specify.</summary>
+        /// <param name="value">The value to decrement.</param>
+        public void Decrement(int value)
+        {
+            if (Value > Minimum)
+            {
+                Value -= value;
+                if (Value < Minimum)
+                {
+                    Value = Minimum;
+                }
             }
             else
             {
-                if (valueVisible)
+                Value = Minimum;
+            }
+
+            Invalidate();
+        }
+
+        /// <summary>Call the Increment() method to increase the value displayed by an integer you specify.</summary>
+        /// <param name="value">The value to increment.</param>
+        public void Increment(int value)
+        {
+            if (Value < Maximum)
+            {
+                Value += value;
+                if (Value > Maximum)
                 {
-                    // Height = 40;
+                    Value = Maximum;
                 }
             }
+            else
+            {
+                Value = Maximum;
+            }
+
+            Invalidate();
+        }
+
+        /// <summary>Sets a new range value.</summary>
+        /// <param name="minimumValue">The minimum.</param>
+        /// <param name="maximumValue">The maximum.</param>
+        public new void SetRange(int minimumValue, int maximumValue)
+        {
+            Minimum = minimumValue;
+
+            if (Minimum > Value)
+            {
+                Value = Minimum;
+            }
+
+            Maximum = maximumValue;
+
+            if (Maximum < Value)
+            {
+                Value = Maximum;
+            }
+
+            if (Maximum < Minimum)
+            {
+                Minimum = Maximum;
+            }
+
+            Invalidate();
         }
 
         #endregion

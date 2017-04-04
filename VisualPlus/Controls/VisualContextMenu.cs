@@ -25,11 +25,6 @@
 
         private ToolStripItemClickedEventArgs _delayesArgs;
 
-        private Color buttonNormal = style.ButtonNormalColor;
-        private Color buttonPressed = ControlPaint.Light(style.ButtonDownColor);
-        private Color itemHover = ControlPaint.Light(style.ButtonNormalColor);
-        private Color textDisabled = style.TextDisabled;
-
         #endregion
 
         #region ${0} Properties
@@ -87,9 +82,15 @@
         }
 
         #endregion
+
+        // private Color buttonNormal = style.ButtonNormalColor;
+        // private Color buttonPressed = ControlPaint.Light(style.ButtonDownColor);
+        // private Color itemHover = ControlPaint.Light(style.ButtonNormalColor);
+
+        // private Color textDisabled = style.TextDisabled;
     }
 
-    public class VisualToolStripMenuItem : ToolStripMenuItem
+    public sealed class VisualToolStripMenuItem : ToolStripMenuItem
     {
         #region ${0} Properties
 
@@ -178,14 +179,14 @@
 
         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
         {
-            Graphics g = e.Graphics;
-
-            g.Clear(style.BackgroundColor(0));
+            Graphics graphics = e.Graphics;
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.Clear(style.BackgroundColor(0));
 
             // Draw background
             Rectangle itemRect = GetItemRect(e.Item);
 
-            g.FillRectangle(e.Item.Selected && e.Item.Enabled ? new SolidBrush(style.ItemHover(0)) : new SolidBrush(style.BackgroundColor(0)),
+            graphics.FillRectangle(e.Item.Selected && e.Item.Enabled ? new SolidBrush(style.ItemHover(0)) : new SolidBrush(style.BackgroundColor(0)),
                 itemRect);
 
             // Ripple animation
@@ -201,7 +202,7 @@
                         double animationValue = animationManager.GetProgress(i);
                         SolidBrush rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - animationValue * 50), Color.Black));
                         var rippleSize = (int)(animationValue * itemRect.Width * 2.5);
-                        g.FillEllipse(rippleBrush,
+                        graphics.FillEllipse(rippleBrush,
                             new Rectangle(animationSource.X - rippleSize / 2, itemRect.Y - itemRect.Height, rippleSize, itemRect.Height * 3));
                     }
                 }

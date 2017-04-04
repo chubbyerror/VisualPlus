@@ -10,6 +10,7 @@
 
         private readonly Color defaultBackgroundColorNoDepth = Color.White;
         private readonly Color defaultBorderColorNoDepth = Color.FromArgb(180, 180, 180);
+        private readonly Color defaultForeColorNoDepth = Color.Black;
         private readonly Color defaultItemHoverNoDepth = Color.White;
         private readonly Color defaultItemNormalNoDepth = Color.White;
 
@@ -229,6 +230,17 @@
             return list;
         }
 
+        private static List<Color> GetForeColor()
+        {
+            var list = new List<Color>
+                {
+                    Color.Black,
+                    ControlPaint.LightLight(Color.Silver)
+                };
+
+            return list;
+        }
+
         private static List<Color> GetItemHover()
         {
             var list = new List<Color>
@@ -275,6 +287,17 @@
             }
 
             return defaultBorderColorNoDepth;
+        }
+
+        public Color ForeColor(int depth)
+        {
+            if (depth < GetForeColor().
+                    Count)
+            {
+                return GetForeColor()[depth];
+            }
+
+            return defaultForeColorNoDepth;
         }
 
         public Color ItemHover(int depth)

@@ -14,6 +14,8 @@
 
         Color ButtonNormalColor { get; }
 
+        Color ControlDisabled { get; }
+
         Color DropDownButtonColor { get; }
 
         Color DropDownColor { get; }
@@ -33,7 +35,7 @@
         Color ShadowColor { get; }
 
         Style StyleManagement { get; }
-        
+
         Color TabHover { get; }
 
         Color TabMenu { get; }
@@ -48,19 +50,19 @@
 
         Color TextDisabled { get; }
 
-        Color ControlDisabled { get; }
-
         #endregion
 
         #region ${0} Methods
 
-        Color ItemNormal(int depth);
-
-        Color ItemHover(int depth);
-
         Color BackgroundColor(int depth);
 
         Color BorderColor(int depth);
+
+        Color ForeColor(int depth);
+
+        Color ItemHover(int depth);
+
+        Color ItemNormal(int depth);
 
         #endregion
     }

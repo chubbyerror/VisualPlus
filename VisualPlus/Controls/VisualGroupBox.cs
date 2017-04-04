@@ -11,7 +11,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual GroupBox.</summary>
@@ -21,23 +20,22 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
-        private static BorderShape borderShape = BorderShape.Rectangle;
-        private bool borderHoverVisible = true;
+        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-
-        private Color groupBoxColor = Style.BackgroundColor(0);
-        private Color textDisabled = Style.TextDisabled;
-        private Color titleBoxColor = Style.BackgroundColor(1);
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color groupBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color titleBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(1);
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
-        private bool titleBoxVisible = true;
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
+        private bool titleBoxVisible = StylesManager.DefaultValue.TitleBoxVisible;
 
         #endregion
 
@@ -51,6 +49,7 @@
                 true);
 
             BackColor = Color.Transparent;
+            ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
 
             Size = new Size(212, 104);
             MinimumSize = new Size(136, 50);
@@ -194,6 +193,36 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
+        {
+            get
+            {
+                return textDisabledColor;
+            }
+
+            set
+            {
+                textDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TitleBoxColor
         {
@@ -247,22 +276,15 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
             UpdateLocationPoints();
 
-            Color textColor;
-
-            if (Enabled)
-            {
-                textColor = ForeColor;
-            }
-            else
-            {
-                textColor = textDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
 
             // Draw the body of the GroupBoxColor
             graphics.FillPath(new SolidBrush(groupBoxColor), controlGraphicsPath);
@@ -301,11 +323,13 @@
             }
 
             // Draw the specified string from 'Text' property inside the title box
-            StringFormat stringFormat = new StringFormat();
+            StringFormat stringFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
-            stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
-            graphics.DrawString(Text, Font, new SolidBrush(textColor), titleBoxRectangle, stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

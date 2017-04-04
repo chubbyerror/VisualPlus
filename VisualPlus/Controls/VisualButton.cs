@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual Button.</summary>
@@ -19,41 +18,29 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle style = new Visual();
         private bool animation = true;
-
-        private Color borderColor = style.BorderColor(0);
-
-        private Color borderHoverColor = style.BorderColor(1);
-
-        private bool borderHoverVisible = true;
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-        private Color buttonDisabled = style.ControlDisabled;
-        private Color buttonHover = ControlPaint.Light(style.ButtonNormalColor);
-        private Color buttonNormal = style.ButtonNormalColor;
-        private Color buttonPressed = ControlPaint.Light(style.ButtonDownColor);
-
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color buttonHover = ControlPaint.Light(StylesManager.DefaultValue.Style.ButtonNormalColor);
+        private Color buttonNormal = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private Color buttonPressed = ControlPaint.Light(StylesManager.DefaultValue.Style.ButtonDownColor);
         private GraphicsPath controlGraphicsPath;
-
         private ControlState controlState = ControlState.Normal;
-
         private VFXManager effectsManager;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private VFXManager hoverEffectsManager;
         private Image icon;
         private GraphicsPath iconGraphicsPath;
-
         private Point iconPosition = new Point(4, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-        private Color textColor = StylesManager.DefaultValue.TextColor;
-
-        private Color textDisabled = style.TextDisabled;
-        private SizeF textSize;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -71,6 +58,7 @@
             Margin = new Padding(4, 6, 4, 6);
             Padding = new Padding(0);
             Size = new Size(100, 25);
+            BackColor = Color.Transparent;
 
             // Setup effects animation
             effectsManager = new VFXManager(false)
@@ -107,21 +95,6 @@
                     Margin = new Padding(0);
                 }
 
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
-        public Color TextColor
-        {
-            get
-            {
-                return textColor;
-            }
-
-            set
-            {
-                textColor = value;
                 Invalidate();
             }
         }
@@ -246,6 +219,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.HoverColor)]
         public Color HoverColor
         {
@@ -346,17 +334,32 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
         {
             get
             {
-                return textDisabled;
+                return foreColor;
             }
 
             set
             {
-                textDisabled = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
+        {
+            get
+            {
+                return textDisabledColor;
+            }
+
+            set
+            {
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -436,54 +439,48 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
-            Color tempColor = new Color();
-            Color textTemp;
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlTempColor = Enabled ? buttonNormal : controlDisabledColor;
 
             // Draw control state
             if (Enabled)
             {
-                // Text color
-                textTemp = textColor;
-
                 // Button back color
                 switch (controlState)
                 {
                     case ControlState.Normal:
                         {
-                            tempColor = buttonNormal;
+                            controlTempColor = buttonNormal;
                             break;
                         }
 
                     case ControlState.Hover:
                         {
-                            tempColor = buttonHover;
+                            controlTempColor = buttonHover;
                             break;
                         }
 
                     case ControlState.Down:
                         {
-                            tempColor = buttonPressed;
+                            controlTempColor = buttonPressed;
                             break;
                         }
 
                     default:
                         {
-                            tempColor = buttonNormal;
+                            controlTempColor = buttonNormal;
                             break;
                         }
                 }
             }
-            else
-            {
-                tempColor = buttonDisabled;
-                textTemp = textDisabled;
-            }
 
             // Draw button background
-            graphics.FillPath(new SolidBrush(tempColor), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(controlTempColor), controlGraphicsPath);
 
             // Setup button border
             if (borderVisible)
@@ -512,11 +509,14 @@
                 graphics.DrawImage(Icon, iconRectangle);
             }
 
+            StringFormat stringFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
             // Draw string
-            StringFormat stringFormat = new StringFormat();
-            stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
-            graphics.DrawString(Text, Font, new SolidBrush(textTemp), ClientRectangle.Center(), stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), ClientRectangle.Center(), stringFormat);
 
             // Ripple
             if (effectsManager.IsAnimating())
@@ -568,25 +568,6 @@
 
             GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        public override Size GetPreferredSize(Size proposedSize)
-        {
-            // Provides extra space for proper padding for content
-            var extra = 16;
-
-            if (Icon != null)
-            {
-                // 24 is for icon size
-                // 4 is for the space between icon & text
-                extra += 24 + 4;
-            }
-
-            return new Size((int)Math.Ceiling(textSize.Width) + extra, 36);
         }
 
         #endregion

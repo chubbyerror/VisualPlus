@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual CheckBox.</summary>
@@ -20,35 +19,26 @@
         #region  ${0} Variables
 
         private const int spacing = 2;
-
-        private static readonly IStyle style = new Visual();
         private bool animation = true;
-        private Color borderColor = style.BorderColor(0);
-        private Color borderHoverColor = style.BorderColor(1);
-        private bool borderHoverVisible = true;
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private Point boxLocation = new Point(0, 0);
         private Size boxSize = new Size(13, 13);
-
-        private Color checkBoxColor = style.BackgroundColor(3);
-
+        private Color checkBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private GraphicsPath checkBoxPath;
         private Rectangle checkBoxRectangle;
         private Color checkMarkColor = StylesManager.MainColor;
-        private Color checkMarkDisabled = style.TextDisabled;
-
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private ControlState controlState = ControlState.Normal;
-
         private VFXManager effectsManager;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private VFXManager rippleEffectsManager;
-        private Color textColor = StylesManager.DefaultValue.TextColor;
-        private Color textDisabled = style.TextDisabled;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -60,6 +50,8 @@
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
+
+            BackColor = Color.Transparent;
 
             // Setup effects animation
             effectsManager = new VFXManager
@@ -260,16 +252,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
-        public Color CheckMarkDisabled
+        public Color ControlDisabledColor
         {
             get
             {
-                return checkMarkDisabled;
+                return controlDisabledColor;
             }
 
             set
             {
-                checkMarkDisabled = value;
+                controlDisabledColor = value;
                 Invalidate();
             }
         }
@@ -282,27 +274,27 @@
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabled
+        public Color TextDisabledColor
         {
             get
             {
-                return textDisabled;
+                return textDisabledColor;
             }
 
             set
             {
-                textDisabled = value;
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -341,20 +333,9 @@
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
 
-            Color textTemp;
-            Color checkTemp;
-
-            // Draw control state
-            if (Enabled)
-            {
-                textTemp = textColor;
-                checkTemp = checkMarkColor;
-            }
-            else
-            {
-                textTemp = textDisabled;
-                checkTemp = checkMarkDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
 
             // Draw checkbox background
             graphics.FillPath(new SolidBrush(CheckBoxColor), checkBoxPath);
@@ -371,7 +352,7 @@
                         new PointF(checkBoxRectangle.X + 5, checkBoxRectangle.Y + 9), new PointF(checkBoxRectangle.X + 9, checkBoxRectangle.Y + 5)
                     };
 
-                graphics.DrawLines(new Pen(checkTemp), points);
+                graphics.DrawLines(new Pen(controlCheckTemp), points);
             }
 
             // Setup checkbox border
@@ -393,7 +374,7 @@
             // stringFormat.Alignment = StringAlignment.Center;
             // stringFormat.LineAlignment = StringAlignment.Center;
             Point textPoint = new Point(boxLocation.X + boxSize.Width + spacing, boxSize.Height / 2 - (int)Font.Size / 2);
-            graphics.DrawString(Text, Font, new SolidBrush(textTemp), textPoint, stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

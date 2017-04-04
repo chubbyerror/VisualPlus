@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual RichTextBox.</summary>
@@ -19,19 +18,20 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private static ControlState controlState = ControlState.Normal;
         public RichTextBox RichObject = new RichTextBox();
-        private Color backgroundColor1 = Style.BackgroundColor(3);
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
-        private bool borderHoverVisible = true;
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private GraphicsPath controlGraphicsPath;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -57,16 +57,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
+        public Color BackgroundColor
         {
             get
             {
-                return backgroundColor1;
+                return backgroundColor;
             }
 
             set
             {
-                backgroundColor1 = value;
+                backgroundColor = value;
                 Invalidate();
             }
         }
@@ -191,6 +191,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         public override string Text
         {
@@ -202,6 +217,36 @@
             set
             {
                 RichObject.Text = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
+        {
+            get
+            {
+                return textDisabledColor;
+            }
+
+            set
+            {
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -242,13 +287,19 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
-            RichObject.BackColor = backgroundColor1;
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
+
+            RichObject.BackColor = controlTempColor;
+            RichObject.ForeColor = foreColor;
 
             // Draw background color
-            graphics.FillPath(new SolidBrush(backgroundColor1), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
 
             // Draw border
             if (borderVisible)
@@ -287,7 +338,7 @@
         {
             // BackColor = Color.Transparent;
             RichTextBox rtb = RichObject;
-            rtb.BackColor = backgroundColor1;
+            rtb.BackColor = backgroundColor;
             rtb.ForeColor = ForeColor;
             rtb.Size = new Size(Width - 10, 100);
             rtb.Location = new Point(7, 5);

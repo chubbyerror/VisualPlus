@@ -3,15 +3,16 @@ namespace VisualPlus.Framework
     using System.Drawing;
 
     using VisualPlus.Enums;
+    using VisualPlus.Framework.Styles;
 
     public enum Style
     {
         // Note: If you implement more styles or your own styles, just add enumeration here.
 
-        /// <summary>Visual style.</summary>
+        /// <summary>Visual Style.</summary>
         Visual = 0,
 
-        /// <summary>Black and Yellow style.</summary>
+        /// <summary>Black and Yellow Style.</summary>
         BlackAndYellow = 1
     }
 
@@ -20,17 +21,13 @@ namespace VisualPlus.Framework
         #region  ${0} Variables
 
         public static readonly Color MainColor = Color.Green;
-
-        public static readonly int MaximumCheckBoxSize = 11;
         public static readonly int MaximumBorderSize = 24;
         public static readonly int MaximumCheckBoxBorderRounding = 12;
-
+        public static readonly int MaximumCheckBoxSize = 11;
         public static readonly int MaximumRounding = 30;
-        public static readonly int MinimumCheckBoxSize = 3;
-
         public static readonly int MinimumBorderSize = 1;
-
         public static readonly int MinimumCheckBoxBorderRounding = 1;
+        public static readonly int MinimumCheckBoxSize = 3;
         public static readonly int MinimumRounding = 1;
 
         #endregion
@@ -42,7 +39,7 @@ namespace VisualPlus.Framework
             public const bool Animation = true;
             public const int BorderSize = 1;
             public const bool BorderHoverVisible = true;
-            public const int BorderRounding = 5;
+            public const int BorderRounding = 6;
             public const BorderShape BorderShape = Enums.BorderShape.Rounded;
             public const bool BorderVisible = true;
             public const bool TextVisible = true;
@@ -51,7 +48,8 @@ namespace VisualPlus.Framework
             public const bool HatchVisible = true;
             public const int BarAmount = 5;
             public const float HatchSize = 2F;
-            public static Color TextColor = Color.Black;
+
+            public static readonly IStyle Style = new Visual();
         }
 
         #endregion

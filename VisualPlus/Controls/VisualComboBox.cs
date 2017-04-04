@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     public enum DropDownButtons
@@ -28,25 +27,27 @@
     {
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private static ControlState controlState = ControlState.Normal;
-
-        private Color backgroundColor1 = Style.BackgroundColor(0);
-
-        private bool borderHoverVisible = true;
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-        private Color controlDisabled = Style.ControlDisabled;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private GraphicsPath controlGraphicsPath;
         private DropDownButtons dropDownButton = DropDownButtons.Arrow;
-        private Color menuItemHover = Style.ItemHover(0);
-        private Color menuItemNormal = Style.BackgroundColor(0);
+        private bool dropDownButtonsVisible = StylesManager.DefaultValue.TextVisible;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color menuItemHover = StylesManager.DefaultValue.Style.ItemHover(0);
+        private Color menuItemNormal = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color separatorColor = StylesManager.DefaultValue.Style.LineColor;
+        private Color separatorShadowColor = StylesManager.DefaultValue.Style.ShadowColor;
+        private bool separatorVisible = StylesManager.DefaultValue.TextVisible;
         private int startIndex;
-        private Color textDisabled = Style.TextDisabled;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -77,6 +78,21 @@
             UpdateLocationPoints();
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color BackgroundColor
+        {
+            get
+            {
+                return backgroundColor;
+            }
+
+            set
+            {
+                backgroundColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
@@ -103,21 +119,6 @@
             set
             {
                 borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
-        {
-            get
-            {
-                return backgroundColor1;
-            }
-
-            set
-            {
-                backgroundColor1 = value;
                 Invalidate();
             }
         }
@@ -212,6 +213,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.DropDownButton)]
         public DropDownButtons DropDownButton
         {
@@ -223,6 +239,22 @@
             set
             {
                 dropDownButton = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(StylesManager.DefaultValue.TextVisible), Category(Localize.Category.Behavior),
+         Description(Localize.Description.ComponentVisible)]
+        public bool DropDownButtonVisible
+        {
+            get
+            {
+                return dropDownButtonsVisible;
+            }
+
+            set
+            {
+                dropDownButtonsVisible = value;
                 Invalidate();
             }
         }
@@ -257,6 +289,52 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color SeparatorColor
+        {
+            get
+            {
+                return separatorColor;
+            }
+
+            set
+            {
+                separatorColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color SeparatorShadowColor
+        {
+            get
+            {
+                return separatorShadowColor;
+            }
+
+            set
+            {
+                separatorShadowColor = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(StylesManager.DefaultValue.TextVisible), Category(Localize.Category.Behavior),
+         Description(Localize.Description.ComponentVisible)]
+        public bool SeparatorVisible
+        {
+            get
+            {
+                return separatorVisible;
+            }
+
+            set
+            {
+                separatorVisible = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Behavior), Description(Localize.Description.StartIndex)]
         public int StartIndex
         {
@@ -277,6 +355,36 @@
                     // ignored
                 }
 
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
+        {
+            get
+            {
+                return textDisabledColor;
+            }
+
+            set
+            {
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -326,28 +434,18 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
             UpdateLocationPoints();
 
-            Color textColor;
-            Color tempColor;
-
-            // Draw control state
-            if (Enabled)
-            {
-                textColor = ForeColor;
-                tempColor = backgroundColor1;
-            }
-            else
-            {
-                textColor = textDisabled;
-                tempColor = controlDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
 
             // Draw the combobox background
-            graphics.FillPath(new SolidBrush(tempColor), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(controlCheckTemp), controlGraphicsPath);
 
             // Setup combobox border
             if (borderVisible)
@@ -366,58 +464,66 @@
             buttonRectangle = buttonRectangle.AlignCenterY(ClientRectangle);
             buttonRectangle = buttonRectangle.AlignRight(ClientRectangle, 0);
 
-            // Draw drop down button
-            switch (dropDownButton)
+            if (dropDownButtonsVisible)
             {
-                case DropDownButtons.Arrow:
-                    {
-                        graphics.DrawString(
-                            "6",
-                            new Font("Marlett", 13, FontStyle.Regular),
-                            new SolidBrush(Style.DropDownButtonColor),
-                            buttonRectangle,
-                            new StringFormat
-                                {
-                                    LineAlignment = StringAlignment.Center,
-                                    Alignment = StringAlignment.Far
-                                });
-                        break;
-                    }
+                // Draw drop down button
+                switch (dropDownButton)
+                {
+                    case DropDownButtons.Arrow:
+                        {
+                            graphics.DrawString(
+                                "6",
+                                new Font("Marlett", 13, FontStyle.Regular),
+                                new SolidBrush(StylesManager.DefaultValue.Style.DropDownButtonColor),
+                                buttonRectangle,
+                                new StringFormat
+                                    {
+                                        LineAlignment = StringAlignment.Center,
+                                        Alignment = StringAlignment.Far
+                                    });
+                            break;
+                        }
 
-                case DropDownButtons.Bars:
-                    {
-                        var spacing = 5;
+                    case DropDownButtons.Bars:
+                        {
+                            var spacing = 5;
 
-                        graphics.DrawLine(
-                            new Pen(Style.DropDownButtonColor, 2),
-                            new Point(spacing + buttonRectangle.X, Height / 2 - 4),
-                            new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 - 4));
+                            graphics.DrawLine(
+                                new Pen(StylesManager.DefaultValue.Style.DropDownButtonColor, 2),
+                                new Point(spacing + buttonRectangle.X, Height / 2 - 4),
+                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 - 4));
 
-                        graphics.DrawLine(
-                            new Pen(Style.DropDownButtonColor, 2),
-                            new Point(spacing + buttonRectangle.X, Height / 2 + 0),
-                            new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 + 0));
+                            graphics.DrawLine(
+                                new Pen(StylesManager.DefaultValue.Style.DropDownButtonColor, 2),
+                                new Point(spacing + buttonRectangle.X, Height / 2 + 0),
+                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 + 0));
 
-                        graphics.DrawLine(
-                            new Pen(Style.DropDownButtonColor, 2),
-                            new Point(spacing + buttonRectangle.X, Height / 2 + 4),
-                            new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 + 4));
-                        break;
-                    }
+                            graphics.DrawLine(
+                                new Pen(StylesManager.DefaultValue.Style.DropDownButtonColor, 2),
+                                new Point(spacing + buttonRectangle.X, Height / 2 + 4),
+                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 + 4));
+                            break;
+                        }
+                }
             }
 
-            // Draw the separator
-            graphics.DrawLine(new Pen(Style.LineColor), buttonRectangle.X - 2, 4, buttonRectangle.X - 2, Height - 5);
-            graphics.DrawLine(new Pen(Style.ShadowColor), buttonRectangle.X - 1, 4, buttonRectangle.X - 1, Height - 5);
+            if (separatorVisible)
+            {
+                // Draw the separator
+                graphics.DrawLine(new Pen(separatorColor), buttonRectangle.X - 2, 4, buttonRectangle.X - 2, Height - 5);
+                graphics.DrawLine(new Pen(separatorShadowColor), buttonRectangle.X - 1, 4, buttonRectangle.X - 1, Height - 5);
+            }
 
             // Draw string
             Rectangle textBoxRectangle = new Rectangle(3, 0, Width - 20, Height);
 
-            StringFormat stringFormat = new StringFormat();
+            StringFormat stringFormat = new StringFormat
+                {
+                    // Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
-            // stringFormat.Alignment = StringAlignment.Center;
-            stringFormat.LineAlignment = StringAlignment.Center;
-            graphics.DrawString(Text, Font, new SolidBrush(textColor), textBoxRectangle, stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

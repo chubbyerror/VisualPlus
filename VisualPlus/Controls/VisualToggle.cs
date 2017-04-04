@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     public enum ToggleTypes
@@ -41,28 +40,25 @@
 
         #region  ${0} Variables
 
-        private static readonly IStyle Style = new Visual();
-
         private readonly Timer animationTimer = new Timer
             {
                 Interval = 1
             };
 
-        private Color backgroundColor1 = Style.BackgroundColor(0);
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
 
         private Rectangle barSlider;
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
-        private bool borderHoverVisible = true;
-
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
-        private Color buttonColor1 = Style.ButtonNormalColor;
-        private Color controlDisabled = Style.ControlDisabled;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Size sizeHandle = new Size(15, 20);
-        private Color textColor = StylesManager.DefaultValue.TextColor;
-        private Color textDisabled = Style.TextDisabled;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private string textProcessor;
         private bool toggled;
         private int toggleLocation;
@@ -91,16 +87,16 @@
         public event ToggledChangedEventHandler ToggledChanged;
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
+        public Color BackgroundColor
         {
             get
             {
-                return backgroundColor1;
+                return backgroundColor;
             }
 
             set
             {
-                backgroundColor1 = value;
+                backgroundColor = value;
                 Invalidate();
             }
         }
@@ -188,16 +184,31 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color ButtonColor1
+        public Color ButtonColor
         {
             get
             {
-                return buttonColor1;
+                return buttonColor;
             }
 
             set
             {
-                buttonColor1 = value;
+                buttonColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
                 Invalidate();
             }
         }
@@ -207,12 +218,27 @@
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
+        {
+            get
+            {
+                return textDisabledColor;
+            }
+
+            set
+            {
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -283,6 +309,7 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
@@ -310,20 +337,11 @@
                     sizeHandle.Width,
                     sizeHandle.Height - 5);
 
-                Color controlTemp;
-
-                // Draw control state
-                if (Enabled)
-                {
-                    controlTemp = backgroundColor1;
-                }
-                else
-                {
-                    controlTemp = controlDisabled;
-                }
+                // Set control state color
+                Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
 
                 // Background color
-                graphics.FillPath(new SolidBrush(controlTemp), pillPath);
+                graphics.FillPath(new SolidBrush(controlTempColor), pillPath);
 
                 // Draw pill border
                 if (borderVisible)
@@ -343,10 +361,10 @@
 
                 // Button
                 GraphicsPath buttonPath = GDI.DrawRoundedRectangle(buttonRectangle, 15);
-                graphics.FillPath(new SolidBrush(buttonColor1), buttonPath);
+                graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
 
                 // Button border
-                GDI.DrawBorder(graphics, buttonPath, 1, Style.BorderColor(0));
+                GDI.DrawBorder(graphics, buttonPath, 1, StylesManager.DefaultValue.Style.BorderColor(0));
             }
         }
 
@@ -431,17 +449,8 @@
                     }
             }
 
-            Color textTemp;
-
-            // Draw text state
-            if (Enabled)
-            {
-                textTemp = textColor;
-            }
-            else
-            {
-                textTemp = textDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
 
             // Draw string
             StringFormat stringFormat = new StringFormat
@@ -453,7 +462,7 @@
             graphics.DrawString(
                 textProcessor,
                 new Font(Font.FontFamily, 7f, Font.Style),
-                new SolidBrush(textTemp),
+                new SolidBrush(foreColor),
                 xBar,
                 barSlider.Y,
                 stringFormat);

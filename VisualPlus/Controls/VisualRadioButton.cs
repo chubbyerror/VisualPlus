@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     /// <summary>The visual radio button.</summary>
@@ -20,24 +19,23 @@
         #region  ${0} Variables
 
         private const int spacing = 2;
-
-        private static readonly IStyle Style = new Visual();
-        private Color backgroundColor1 = Style.BackgroundColor(3);
-        private Color borderColor = Style.BorderColor(0);
-        private Color borderHoverColor = Style.BorderColor(1);
-        private bool borderHoverVisible = true;
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = true;
+        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private GraphicsPath boxGraphicsPath;
         private Point boxLocation = new Point(2, 2);
         private Size boxSize = new Size(10, 10);
         private Point checkLocation = new Point(0, 0);
-        private Color checkMarkColor = Style.MainColor;
-        private Color checkMarkDisabled = Style.TextDisabled;
+        private Color checkMarkColor = StylesManager.DefaultValue.Style.MainColor;
         private Size checkSize = new Size(6, 6);
+        private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private ControlState controlState = ControlState.Normal;
-        private Color textColor = StylesManager.DefaultValue.TextColor;
-        private Color textDisabled = Style.TextDisabled;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -56,16 +54,16 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
+        public Color BackgroundColor
         {
             get
             {
-                return backgroundColor1;
+                return backgroundColor;
             }
 
             set
             {
-                backgroundColor1 = value;
+                backgroundColor = value;
                 Invalidate();
             }
         }
@@ -167,17 +165,47 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        public Color ControlDisabledColorColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
             {
-                return textColor;
+                return foreColor;
             }
 
             set
             {
-                textColor = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
+        {
+            get
+            {
+                return textDisabledColor;
+            }
+
+            set
+            {
+                textDisabledColor = value;
                 Invalidate();
             }
         }
@@ -220,12 +248,13 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
             // CheckMark background color
-            graphics.FillPath(new SolidBrush(backgroundColor1), boxGraphicsPath);
+            graphics.FillPath(new SolidBrush(backgroundColor), boxGraphicsPath);
 
             // Draw border
             if (borderVisible)
@@ -240,25 +269,14 @@
                 }
             }
 
-            Color textTemp;
-            Color checkTemp;
-
-            // Draw control state
-            if (Enabled)
-            {
-                textTemp = textColor;
-                checkTemp = checkMarkColor;
-            }
-            else
-            {
-                textTemp = textDisabled;
-                checkTemp = checkMarkDisabled;
-            }
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlCheckTemp = Enabled ? backgroundColor : controlDisabled;
 
             // Draw an ellipse inside the body
             if (Checked)
             {
-                graphics.FillEllipse(new SolidBrush(checkTemp), new Rectangle(checkLocation, checkSize));
+                graphics.FillEllipse(new SolidBrush(controlCheckTemp), new Rectangle(checkLocation, checkSize));
             }
 
             // Draw the string specified in 'Text' property
@@ -268,7 +286,7 @@
 
             // stringFormat.Alignment = StringAlignment.Center;
             // stringFormat.LineAlignment = StringAlignment.Center;
-            graphics.DrawString(Text, Font, new SolidBrush(textTemp), textPoint, stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 
         protected override void OnResize(EventArgs e)

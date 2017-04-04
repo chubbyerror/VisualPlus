@@ -8,7 +8,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.Styles;
     using VisualPlus.Localization;
 
     public enum ProgressShape
@@ -26,18 +25,15 @@
     {
         #region  ${0} Variables
 
-        private static new readonly IStyle Style = new Visual();
-        private Color backgroundCircleColor = Style.BackgroundProgressCircle;
-        private Color foregroundCircleColor = Style.ForegroundProgressCircle;
+        private Color backgroundCircleColor = StylesManager.DefaultValue.Style.BackgroundProgressCircle;
+        private bool backgroundCircleVisible = true;
+        private Color foregroundCircleColor = StylesManager.DefaultValue.Style.ForegroundProgressCircle;
+        private bool foregroundCircleVisible = true;
         private float gradientRotation;
-
-        // private long maximumValue = 100;
-        private Color progressGradient1 = Style.ProgressColor;
-        private Color progressGradient2 = ControlPaint.LightLight(Style.ProgressColor);
+        private Color progressGradient1 = StylesManager.DefaultValue.Style.ProgressColor;
+        private Color progressGradient2 = ControlPaint.LightLight(StylesManager.DefaultValue.Style.ProgressColor);
         private ProgressShape progressShapeVal = ProgressShape.Round;
         private float progressSize = 5F;
-
-        // private long progressValue;
         private bool textVisible;
 
         #endregion
@@ -54,10 +50,25 @@
             MinimumSize = new Size(100, 100);
             Size = new Size(130, 130);
             BackColor = Color.Transparent;
-            ForeColor = Color.White;
+            ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
             textVisible = true;
 
             UpdateStyles();
+        }
+
+        [DefaultValue(true), Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        public bool BackCircleVisible
+        {
+            get
+            {
+                return backgroundCircleVisible;
+            }
+
+            set
+            {
+                backgroundCircleVisible = value;
+                Invalidate();
+            }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
@@ -71,6 +82,21 @@
             set
             {
                 backgroundCircleColor = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(true), Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        public bool ForeCircleVisible
+        {
+            get
+            {
+                return foregroundCircleVisible;
+            }
+
+            set
+            {
+                foregroundCircleVisible = value;
                 Invalidate();
             }
         }
@@ -192,8 +218,11 @@
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
 
-            // Background circle
-            graphics.FillEllipse(new SolidBrush(backgroundCircleColor), 0x18 - 4, 0x18 - 4, Width - 0x30 + 8, Height - 0x30 + 8);
+            if (backgroundCircleVisible)
+            {
+                // Draw background circle
+                graphics.FillEllipse(new SolidBrush(backgroundCircleColor), 0x18 - 4, 0x18 - 4, Width - 0x30 + 8, Height - 0x30 + 8);
+            }
 
             // Progress
             using (LinearGradientBrush progressBrush = new LinearGradientBrush(
@@ -228,8 +257,11 @@
                 }
             }
 
-            // Foreground circle
-            graphics.FillEllipse(new SolidBrush(foregroundCircleColor), 0x18, 0x18, Width - 0x30, Height - 0x30);
+            if (foregroundCircleVisible)
+            {
+                // Draw foreground circle
+                graphics.FillEllipse(new SolidBrush(foregroundCircleColor), 0x18, 0x18, Width - 0x30, Height - 0x30);
+            }
 
             // String percentage
             if (textVisible)

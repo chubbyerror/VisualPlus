@@ -17,16 +17,15 @@
         #region  ${0} Variables
 
         private static SolidBrush animationColor = new SolidBrush(Color.DimGray);
-
         private static Size circleSize = new Size(15, 15);
-
         private Timer animationSpeed = new Timer();
         private SolidBrush baseColor = new SolidBrush(Color.DarkGray);
         private BufferedGraphics buffGraphics;
+        private float circles = 45F;
+        private float diameter = 7.5F;
         private PointF[] floatPoint;
         private BufferedGraphicsContext graphicsContext = BufferedGraphicsManager.Current;
         private int indicatorIndex;
-
         private double rise;
         private double run;
         private PointF startingFloatPoint;
@@ -46,6 +45,7 @@
             MinimumSize = new Size(80, 80);
             SetPoints();
             animationSpeed.Interval = 100;
+            BackColor = Color.Transparent;
             UpdateStyles();
         }
 
@@ -91,6 +91,22 @@
             }
         }
 
+        [DefaultValue(45F), Category(Localize.Category.Layout), Description(Localize.Description.ComponentDiameter)]
+        public float Circles
+        {
+            get
+            {
+                return circles;
+            }
+
+            set
+            {
+                circles = value;
+                SetPoints();
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
         public Size CircleSize
         {
@@ -102,6 +118,22 @@
             set
             {
                 circleSize = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(7.5F), Category(Localize.Category.Layout), Description(Localize.Description.ComponentDiameter)]
+        public float Diameter
+        {
+            get
+            {
+                return diameter;
+            }
+
+            set
+            {
+                diameter = value;
+                SetPoints();
                 Invalidate();
             }
         }
@@ -137,7 +169,8 @@
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            graphics.Clear(BackColor);
+            graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
@@ -192,11 +225,11 @@
         {
             var stack = new Stack<PointF>();
             startingFloatPoint = new PointF(Width / 2f, Height / 2f);
-            for (var i = 0f; i < 360f; i += 45f)
+            for (var i = 0f; i < 360f; i += circles)
             {
                 SetValue(startingFloatPoint, (int)Math.Round(Width / 2.0 - 15.0), i);
                 PointF endPoint = EndPoint;
-                endPoint = new PointF(endPoint.X - 7.5f, endPoint.Y - 7.5f);
+                endPoint = new PointF(endPoint.X - diameter, endPoint.Y - diameter);
                 stack.Push(endPoint);
             }
 

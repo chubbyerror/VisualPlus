@@ -7,7 +7,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.Styles;
 
     /// <summary>The visual ProgressSpinner.</summary>
     [ToolboxBitmap(typeof(ProgressBar)), Designer(VSDesignerBinding.VisualProgressIndicator)]
@@ -15,20 +14,13 @@
     {
         #region  ${0} Variables
 
-        private static IStyle style = new Visual();
-
         private readonly Timer timer;
         private float angle = 270;
-
         private int maximum = 100;
-
         private int minimum;
         private int progress;
-
         private bool progressVisible = true;
-
         private bool reverse;
-
         private float speed = 1f;
 
         #endregion
@@ -198,7 +190,7 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            using (Pen forePen = new Pen(style.ProgressColor, (float)Width / 5))
+            using (Pen forePen = new Pen(StylesManager.DefaultValue.Style.ProgressColor, (float)Width / 5))
             {
                 var padding = (int)Math.Ceiling((float)Width / 10);
 
