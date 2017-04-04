@@ -41,7 +41,6 @@
                 ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
-            BackColor = Color.Transparent;
             Size = new Size(187, 117);
             Padding = new Padding(5, 5, 5, 5);
             DoubleBuffered = true;
@@ -205,8 +204,8 @@
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
+            BackColor = Parent.BackColor;
             graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(Parent.BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             UpdateLocationPoints();
 

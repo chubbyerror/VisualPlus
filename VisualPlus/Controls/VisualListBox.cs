@@ -24,7 +24,6 @@
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private GraphicsPath controlGraphicsPath;
