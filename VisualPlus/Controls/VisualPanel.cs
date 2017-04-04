@@ -13,7 +13,8 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual panel.</summary>
-    [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
+    // [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
+    [ToolboxBitmap(typeof(Panel)), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     public class VisualPanel : Panel
     {
         #region  ${0} Variables

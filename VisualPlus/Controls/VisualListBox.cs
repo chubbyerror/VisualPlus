@@ -27,6 +27,7 @@
 
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color itemBackground = StylesManager.DefaultValue.Style.BackgroundColor(0);
@@ -52,14 +53,8 @@
             BorderStyle = BorderStyle.None;
             Size = new Size(250, 150);
             AutoSize = true;
-
             DrawMode = DrawMode.OwnerDrawFixed;
-
             BackColor = Color.Transparent;
-
-            Items.Add("Item  1");
-            Items.Add("Item  2");
-            Items.Add("Item  3");
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
@@ -139,6 +134,7 @@
                     borderRounding = value;
                 }
 
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -155,6 +151,7 @@
             set
             {
                 borderShape = value;
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -294,19 +291,15 @@
             // base.OnDrawItem(e);
             BackColor = Parent.BackColor;
             Graphics graphics = e.Graphics;
-            GraphicsPath test = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
 
-            // graphics.FillPath(new SolidBrush(backColor), test);
-            GDI.DrawBorderType(graphics, controlState, test, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+            GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
 
-            e.Graphics.SetClip(test);
+            e.Graphics.SetClip(controlGraphicsPath);
 
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
 
             if (e.Index > -1)
             {
-                /* If the item is selected set the background color to SystemColors.Highlight 
-                 or else set the color to either WhiteSmoke or White depending if the item index is even or odd */
                 Color color;
 
                 if (rotateItemColor)
@@ -342,9 +335,6 @@
                 // Clean up
                 backgroundBrush.Dispose();
             }
-
-            // TODO: Add toggle
-            // e.DrawFocusRectangle();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -373,6 +363,24 @@
             base.OnMouseUp(e);
             controlState = ControlState.Hover;
             Invalidate();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            UpdateLocationPoints();
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            UpdateLocationPoints();
+        }
+
+        private void UpdateLocationPoints()
+        {
+            // Update paths
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
         #endregion
