@@ -31,7 +31,8 @@ Travic Cl | [ ![Stable build status][5]][6] | [![Beta build status][7]][8] |
 [03]: https://github.com/DarkByte7/VisualPlus/wiki#import-toolbox
 
 ## Build requirements
-- Visual Studio 2017
+- [.NET Framework 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
+- [Visual Studio 2017](https://www.visualstudio.com/downloads/)
 
 ## Screenshots
 ![Imgur](http://i.imgur.com/6MPGU6E.jpg)
@@ -40,8 +41,11 @@ Travic Cl | [ ![Stable build status][5]][6] | [![Beta build status][7]][8] |
 
 ![Imgur](http://i.imgur.com/F5mjJHD.jpg)
 
-## Donate
-BitCoin: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
+## Contribute
+Enjoy using this product or just want to say thanks?
+Hit the ⭐️ Star ⭐️ button.
+
+BitCoin donations are welcome: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
 
 ## License
 This repository is licensed with the [MIT](LICENSE) license.
