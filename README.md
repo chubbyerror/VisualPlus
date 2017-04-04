@@ -1,4 +1,4 @@
-﻿# VisualPlus
+# VisualPlus
 [![Release](https://img.shields.io/github/release/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/releases/latest)
 [![NuGet](https://img.shields.io/nuget/v/VisualPlus.svg?style=flat)](https://www.nuget.org/packages/VisualPlus/)
 [![NuGetPre](https://img.shields.io/nuget/vpre/VisualPlus.svg?style=flat)](https://www.nuget.org/packages/VisualPlus/)
@@ -31,8 +31,7 @@ Travic Cl | [ ![Stable build status][5]][6] | [![Beta build status][7]][8] |
 [03]: https://github.com/DarkByte7/VisualPlus/wiki#import-toolbox
 
 ## Build requirements
-- [.NET Framework 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
-- [Visual Studio 2017](https://www.visualstudio.com/downloads/)
+- Visual Studio 2017
 
 ## Screenshots
 ![Imgur](http://i.imgur.com/6MPGU6E.jpg)
@@ -41,11 +40,8 @@ Travic Cl | [ ![Stable build status][5]][6] | [![Beta build status][7]][8] |
 
 ![Imgur](http://i.imgur.com/F5mjJHD.jpg)
 
-## Contribute
-Enjoy using this product or just want to say thanks?
-Hit the ⭐️ Star ⭐️ button.
-
-BitCoin donations are welcome: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
+## Donate
+BitCoin: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
 
 ## License
 This repository is licensed with the [MIT](LICENSE) license.
