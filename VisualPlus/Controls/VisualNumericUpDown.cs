@@ -14,12 +14,12 @@
 
     /// <summary>The visual NumericUpDown.</summary>
     [ToolboxBitmap(typeof(NumericUpDown)), Designer(VSDesignerBinding.VisualNumericUpDown)]
-    public class VisualNumericUpDown : Control
+    public sealed class VisualNumericUpDown : Control
     {
         #region  ${0} Variables
 
-        private const int Spacing = 4;
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
@@ -27,23 +27,20 @@
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
-        private Font buttonFont = new Font("Arial", 8);
-        private Point buttonLocation = new Point(0, 4);
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
-        private Size buttonSize = new Size(19, 19);
+        private int buttonWidth = 19;
         private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color inputFieldColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
         private long numericValue;
         private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
-        private int xval;
-        private int yval;
+        private int xValue;
+        private int yValue;
 
         #endregion
 
@@ -57,14 +54,27 @@
                 true);
 
             BackColor = Color.Transparent;
-
             minimumValue = 0;
             maximumValue = 100;
-
-            Size = new Size(70, 28);
-            MinimumSize = new Size(62, 28);
+            Size = new Size(70, 29);
+            MinimumSize = new Size(62, 29);
 
             UpdateStyles();
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color BackgroundColor
+        {
+            get
+            {
+                return backgroundColor;
+            }
+
+            set
+            {
+                backgroundColor = value;
+                Invalidate();
+            }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
@@ -187,17 +197,19 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentFont)]
-        public Font ButtonFont
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public int ButtonWidth
         {
             get
             {
-                return buttonFont;
+                return buttonWidth;
             }
 
             set
             {
-                buttonFont = value;
+                buttonWidth = value;
+                UpdateLocationPoints();
+                Invalidate();
             }
         }
 
@@ -212,21 +224,6 @@
             set
             {
                 controlDisabledColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color InputField
-        {
-            get
-            {
-                return inputFieldColor;
-            }
-
-            set
-            {
-                inputFieldColor = value;
                 Invalidate();
             }
         }
@@ -374,16 +371,19 @@
         protected override void OnMouseDown(MouseEventArgs e)
         {
             OnMouseClick(e);
-            if (xval > Width - Spacing - buttonRectangle.Width && xval < Width - Spacing)
+
+            // Check if mouse in X position.
+            if (xValue > Width - buttonRectangle.Width && xValue < Width)
             {
-                if (yval < 15)
+                // Determine the button middle separator by checking for the Y position.
+                if (yValue > buttonRectangle.Y && yValue < Height / 2)
                 {
                     if (Value + 1 <= maximumValue)
                     {
                         numericValue++;
                     }
                 }
-                else
+                else if (yValue > Height / 2 && yValue < Height)
                 {
                     if (Value - 1 >= minimumValue)
                     {
@@ -417,8 +417,8 @@
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            xval = e.Location.X;
-            yval = e.Location.Y;
+            xValue = e.Location.X;
+            yValue = e.Location.Y;
             Invalidate();
 
             // IBeam cursor toggle
@@ -459,7 +459,7 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
@@ -467,8 +467,10 @@
             foreColor = Enabled ? foreColor : textDisabledColor;
             Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
 
+            graphics.SetClip(controlGraphicsPath);
+
             // Draw background
-            graphics.FillPath(new SolidBrush(inputFieldColor), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
 
             // Buttons background
             graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
@@ -480,9 +482,13 @@
                 GDI.DrawBorder(graphics, buttonPath, 1, StylesManager.DefaultValue.Style.BorderColor(0));
             }
 
-            // Buttons text
-            TextRenderer.DrawText(graphics, "+", buttonFont, new Point(buttonRectangle.X + 5, buttonRectangle.Y - 2), foreColor);
-            TextRenderer.DrawText(graphics, "-", buttonFont, new Point(buttonRectangle.X + 6, buttonRectangle.Y + 6), foreColor);
+            graphics.ResetClip();
+
+            // Draw string
+            graphics.DrawString("+", Font, new SolidBrush(foreColor),
+                new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2, Height / 4 - buttonRectangle.Height / 4));
+            graphics.DrawString("-", Font, new SolidBrush(foreColor),
+                new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2 + 1, Height / 2));
 
             // Button separator
             graphics.DrawLine(
@@ -495,14 +501,7 @@
             // Draw control border
             if (borderVisible)
             {
-                if (controlState == ControlState.Hover && borderHoverVisible)
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
-                }
-                else
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
-                }
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
             }
 
             // Draw value string
@@ -520,7 +519,6 @@
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            Height = 28;
             UpdateLocationPoints();
         }
 
@@ -532,9 +530,8 @@
 
         private void UpdateLocationPoints()
         {
-            buttonRectangle = new Rectangle(Width - buttonSize.Width - Spacing, buttonLocation.Y, buttonSize.Width, buttonSize.Height);
-
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+            buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
             buttonPath = new GraphicsPath();
             buttonPath.AddRectangle(buttonRectangle);
