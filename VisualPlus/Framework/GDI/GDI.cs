@@ -3,9 +3,10 @@
     using System;
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
+    using System.Windows.Forms;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework.Styles;
 
     internal class GDI
     {
@@ -93,6 +94,101 @@
             return gp;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="drawRectF"></param>
+        /// <param name="drawColor"></param>
+        /// <param name="orientation"></param>
+        public static void DrawAquaPill(Graphics g, RectangleF drawRectF, Color drawColor, Orientation orientation)
+        {
+            Color color1;
+            Color color2;
+            Color color3;
+            Color color4;
+            Color color5;
+            LinearGradientBrush gradientBrush;
+            ColorBlend colorBlend = new ColorBlend();
+
+            color1 = ColorHelper.OpacityMix(Color.White, ColorHelper.SoftLightMix(drawColor, Color.Black, 100), 40);
+            color2 = ColorHelper.OpacityMix(Color.White, ColorHelper.SoftLightMix(drawColor, ColorHelper.CreateColorFromRGB(64, 64, 64), 100), 20);
+            color3 = ColorHelper.SoftLightMix(drawColor, ColorHelper.CreateColorFromRGB(128, 128, 128), 100);
+            color4 = ColorHelper.SoftLightMix(drawColor, ColorHelper.CreateColorFromRGB(192, 192, 192), 100);
+            color5 = ColorHelper.OverlayMix(ColorHelper.SoftLightMix(drawColor, Color.White, 100), Color.White, 75);
+
+            colorBlend.Colors = new[] { color1, color2, color3, color4, color5 };
+            colorBlend.Positions = new[] { 0, 0.25f, 0.5f, 0.75f, 1 };
+            if (orientation == Orientation.Horizontal)
+            {
+                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top - 1),
+                    new Point((int)drawRectF.Left, (int)drawRectF.Top + (int)drawRectF.Height + 1), color1, color5);
+            }
+            else
+            {
+                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left - 1, (int)drawRectF.Top),
+                    new Point((int)drawRectF.Left + (int)drawRectF.Width + 1, (int)drawRectF.Top), color1, color5);
+            }
+
+            gradientBrush.InterpolationColors = colorBlend;
+            FillPill(gradientBrush, drawRectF, g);
+
+            color2 = Color.White;
+            colorBlend.Colors = new[] { color2, color3, color4, color5 };
+            colorBlend.Positions = new[] { 0, 0.5f, 0.75f, 1 };
+            if (orientation == Orientation.Horizontal)
+            {
+                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left + 1, (int)drawRectF.Top),
+                    new Point((int)drawRectF.Left + 1, (int)drawRectF.Top + (int)drawRectF.Height - 1), color2, color5);
+            }
+            else
+            {
+                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top + 1),
+                    new Point((int)drawRectF.Left + (int)drawRectF.Width - 1, (int)drawRectF.Top + 1), color2, color5);
+            }
+
+            gradientBrush.InterpolationColors = colorBlend;
+            FillPill(gradientBrush, RectangleF.Inflate(drawRectF, -3, -3), g);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="drawRectF"></param>
+        /// <param name="drawColor"></param>
+        /// <param name="orientation"></param>
+        public static void DrawAquaPillSingleLayer(Graphics g, RectangleF drawRectF, Color drawColor, Orientation orientation)
+        {
+            Color color1;
+            Color color2;
+            Color color3;
+            Color color4;
+            LinearGradientBrush gradientBrush;
+            ColorBlend colorBlend = new ColorBlend();
+
+            color1 = drawColor;
+            color2 = ControlPaint.Light(color1);
+            color3 = ControlPaint.Light(color2);
+            color4 = ControlPaint.Light(color3);
+
+            colorBlend.Colors = new[] { color1, color2, color3, color4 };
+            colorBlend.Positions = new[] { 0, 0.25f, 0.65f, 1 };
+
+            if (orientation == Orientation.Horizontal)
+            {
+                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
+                    new Point((int)drawRectF.Left, (int)drawRectF.Top + (int)drawRectF.Height), color1, color4);
+            }
+            else
+            {
+                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
+                    new Point((int)drawRectF.Left + (int)drawRectF.Width, (int)drawRectF.Top), color1, color4);
+            }
+
+            gradientBrush.InterpolationColors = colorBlend;
+
+            FillPill(gradientBrush, drawRectF, g);
+        }
+
         /// <summary>Draws a border around the path.</summary>
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="borderPath">The border path.</param>
@@ -102,6 +198,27 @@
         {
             Pen borderPen = new Pen(color, borderSize);
             graphics.DrawPath(borderPen, borderPath);
+        }
+
+        /// <summary>Handles and draws a border on the control depending on it's current focus.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="borderState">The control state.</param>
+        /// <param name="controlPath">The border path.</param>
+        /// <param name="borderSize">The border size.</param>
+        /// <param name="normalColor">Normal border color.</param>
+        /// <param name="hoverColor">Hover border color.</param>
+        /// <param name="hoverVisible">Hover visible.</param>
+        public static void DrawBorderType(Graphics graphics, ControlState borderState, GraphicsPath controlPath, float borderSize, Color normalColor,
+                                          Color hoverColor, bool borderHoverVisible)
+        {
+            if (borderState == ControlState.Hover && borderHoverVisible)
+            {
+                DrawBorder(graphics, controlPath, borderSize, hoverColor);
+            }
+            else
+            {
+                DrawBorder(graphics, controlPath, borderSize, normalColor);
+            }
         }
 
         /// <summary>Draws the rounded rectangle from specific values.</summary>
@@ -146,6 +263,150 @@
             }
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="drawRect"></param>
+        /// <param name="tickFrequency"></param>
+        /// <param name="minimum"></param>
+        /// <param name="maximum"></param>
+        /// <param name="tickColor"></param>
+        /// <param name="orientation"></param>
+        public static void DrawTickLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color tickColor,
+                                        Orientation orientation)
+        {
+            // Check input value
+            if (maximum == minimum)
+            {
+                return;
+            }
+
+            // Create the Pen for drawing Ticks
+            Pen pen = new Pen(tickColor, 1);
+            float tickFrequencySize;
+
+            // Caculate tick number
+            int tickCount = (maximum - minimum) / tickFrequency;
+            if ((maximum - minimum) % tickFrequency == 0)
+            {
+                tickCount -= 1;
+            }
+
+            if (orientation == Orientation.Horizontal)
+            {
+                // Calculate tick's setting
+                tickFrequencySize = drawRect.Width * tickFrequency / (maximum - minimum);
+
+                // ===============================================================
+
+                // Draw each tick
+                for (var i = 0; i <= tickCount; i++)
+                {
+                    graphics.DrawLine(pen, drawRect.Left + tickFrequencySize * i, drawRect.Top, drawRect.Left + tickFrequencySize * i, drawRect.Bottom);
+                }
+
+                // Draw last tick at Maximum
+                graphics.DrawLine(pen, drawRect.Right, drawRect.Top, drawRect.Right, drawRect.Bottom);
+
+                // ===============================================================
+            }
+            else
+            {
+                // Orientation.Vertical
+                // Calculate tick's setting
+                tickFrequencySize = drawRect.Height * tickFrequency / (maximum - minimum);
+
+                // ===============================================================
+
+                // Draw each tick
+                for (var i = 0; i <= tickCount; i++)
+                {
+                    graphics.DrawLine(pen, drawRect.Left, drawRect.Bottom - tickFrequencySize * i, drawRect.Right,
+                        drawRect.Bottom - tickFrequencySize * i);
+                }
+
+                // Draw last tick at Maximum
+                graphics.DrawLine(pen, drawRect.Left, drawRect.Top, drawRect.Right, drawRect.Top);
+
+                // ===============================================================
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="drawRect"></param>
+        /// <param name="tickFrequency"></param>
+        /// <param name="minimum"></param>
+        /// <param name="maximum"></param>
+        /// <param name="foreColor"></param>
+        /// <param name="font"></param>
+        /// <param name="orientation"></param>
+        public static void DrawTickTextLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color foreColor,
+                                            Font font, Orientation orientation)
+        {
+            // Check input value
+            if (maximum == minimum)
+            {
+                return;
+            }
+
+            // Calculate tick number
+            int tickCount = (maximum - minimum) / tickFrequency;
+            if ((maximum - minimum) % tickFrequency == 0)
+            {
+                tickCount -= 1;
+            }
+
+            // Prepare for drawing Text
+            StringFormat stringFormat = new StringFormat
+                {
+                    FormatFlags = StringFormatFlags.NoWrap,
+                    LineAlignment = StringAlignment.Center,
+                    Alignment = StringAlignment.Center,
+                    Trimming = StringTrimming.EllipsisCharacter,
+                    HotkeyPrefix = HotkeyPrefix.Show
+                };
+
+            Brush brush = new SolidBrush(foreColor);
+            string text;
+            float tickFrequencySize;
+
+            if (orientation == Orientation.Horizontal)
+            {
+                // Calculate tick's setting
+                tickFrequencySize = drawRect.Width * tickFrequency / (maximum - minimum);
+
+                // Draw each tick text
+                for (var i = 0; i <= tickCount; i++)
+                {
+                    text = Convert.ToString(minimum + tickFrequency * i, 10);
+                    graphics.DrawString(text, font, brush, drawRect.Left + tickFrequencySize * i, drawRect.Top + drawRect.Height / 2, stringFormat);
+                }
+
+                // Draw last tick text at Maximum
+                text = Convert.ToString(maximum, 10);
+                graphics.DrawString(text, font, brush, drawRect.Right, drawRect.Top + drawRect.Height / 2, stringFormat);
+            }
+            else
+            {
+                // Orientation.Vertical
+                // Calculate tick's setting
+                tickFrequencySize = drawRect.Height * tickFrequency / (maximum - minimum);
+
+                // Draw each tick text
+                for (var i = 0; i <= tickCount; i++)
+                {
+                    text = Convert.ToString(minimum + tickFrequency * i, 10);
+                    graphics.DrawString(text, font, brush, drawRect.Left + drawRect.Width / 2, drawRect.Bottom - tickFrequencySize * i, stringFormat);
+                }
+
+                // Draw last tick text at Maximum
+                text = Convert.ToString(maximum, 10);
+                graphics.DrawString(text, font, brush, drawRect.Left + drawRect.Width / 2, drawRect.Top, stringFormat);
+            }
+        }
+
         /// <summary>Fills the background with color.</summary>
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="rectangle">The rectangle.</param>
@@ -171,6 +432,43 @@
             else
             {
                 graphics.FillPath(new SolidBrush(color1), graphicsShape);
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="rect"></param>
+        /// <param name="g"></param>
+        public static void FillPill(Brush b, RectangleF rect, Graphics g)
+        {
+            if (rect.Width > rect.Height)
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;
+                g.FillEllipse(b, new RectangleF(rect.Left, rect.Top, rect.Height, rect.Height));
+                g.FillEllipse(b, new RectangleF(rect.Left + rect.Width - rect.Height, rect.Top, rect.Height, rect.Height));
+
+                float w = rect.Width - rect.Height;
+                float l = rect.Left + rect.Height / 2;
+                g.FillRectangle(b, new RectangleF(l, rect.Top, w, rect.Height));
+                g.SmoothingMode = SmoothingMode.Default;
+            }
+            else if (rect.Width < rect.Height)
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;
+                g.FillEllipse(b, new RectangleF(rect.Left, rect.Top, rect.Width, rect.Width));
+                g.FillEllipse(b, new RectangleF(rect.Left, rect.Top + rect.Height - rect.Width, rect.Width, rect.Width));
+
+                float t = rect.Top + rect.Width / 2;
+                float h = rect.Height - rect.Width;
+                g.FillRectangle(b, new RectangleF(rect.Left, t, rect.Width, h));
+                g.SmoothingMode = SmoothingMode.Default;
+            }
+            else if (rect.Width == rect.Height)
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;
+                g.FillEllipse(b, rect);
+                g.SmoothingMode = SmoothingMode.Default;
             }
         }
 

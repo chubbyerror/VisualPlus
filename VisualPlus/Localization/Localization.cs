@@ -54,6 +54,7 @@
             public const string BorderHoverColor = "The controls border hover color.";
             public const string TextColor = "The text color.";
             public const string ComponentDiameter = "The diameter of the component.";
+            public const string ComponentNoName = "Description not available for component style.";
         }
 
 #if DEBUG
