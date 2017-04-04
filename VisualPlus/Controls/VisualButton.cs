@@ -41,7 +41,6 @@
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
         private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
-        private SizeF textSize;
 
         #endregion
 
@@ -569,25 +568,6 @@
 
             GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        public override Size GetPreferredSize(Size proposedSize)
-        {
-            // Provides extra space for proper padding for content
-            var extra = 16;
-
-            if (Icon != null)
-            {
-                // 24 is for icon size
-                // 4 is for the space between icon & text
-                extra += 24 + 4;
-            }
-
-            return new Size((int)Math.Ceiling(textSize.Width) + extra, 36);
         }
 
         #endregion
