@@ -13,13 +13,12 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual panel.</summary>
-    [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel),
-     Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
+    [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     public class VisualPanel : Panel
     {
         #region  ${0} Variables
 
-        private static BorderShape borderShape = BorderShape.Rectangle;
+        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
@@ -206,6 +205,7 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(Parent.BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             UpdateLocationPoints();
 
