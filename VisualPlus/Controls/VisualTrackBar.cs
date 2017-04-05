@@ -53,10 +53,7 @@
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
         private GraphicsPath buttonPath = new GraphicsPath();
-<<<<<<< HEAD
         private Color buttonTextColor = StylesManager.DefaultValue.Style.ForeColor(0);
-=======
->>>>>>> master
         private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
         private ValueDivisor dividedValue = ValueDivisor.By1;
@@ -66,7 +63,6 @@
         private bool leftButtonDown;
         private float mouseStartPos = -1;
         private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
-<<<<<<< HEAD
         private Font textFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
         private Color tickColor = StylesManager.DefaultValue.Style.LineColor;
         private int tickHeight = 2;
@@ -76,14 +72,6 @@
         private int trackLineHeight = 5;
         private bool valueButtonVisible;
         private bool valueTickVisible = StylesManager.DefaultValue.TextVisible;
-=======
-        private Color tickColor = StylesManager.DefaultValue.Style.LineColor;
-        private int tickHeight = 2;
-        private Size trackerSize = new Size(10, 20);
-        private Color trackLineColor = StylesManager.DefaultValue.Style.LineColor;
-        private int trackLineHeight = 3;
-        private bool valueVisible = StylesManager.DefaultValue.TextVisible;
->>>>>>> master
 
         #endregion
 
@@ -102,14 +90,8 @@
             DoubleBuffered = true;
             UpdateStyles();
             AutoSize = false;
-<<<<<<< HEAD
             Size = new Size(180, 50);
             MinimumSize = new Size(180, 50);
-=======
-
-            Size = new Size(180, 50);
-            MinimumSize = new Size(37, 22);
->>>>>>> master
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
@@ -245,136 +227,60 @@
             }
         }
 
-<<<<<<< HEAD
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color ButtonTextColor
         {
             get
             {
                 return buttonTextColor;
-=======
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
-        public Color ControlDisabledColor
-        {
-            get
-            {
-                return controlDisabledColor;
->>>>>>> master
             }
 
             set
             {
-<<<<<<< HEAD
                 buttonTextColor = value;
-=======
-                controlDisabledColor = value;
->>>>>>> master
                 Invalidate();
             }
         }
 
-<<<<<<< HEAD
         [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
             {
                 return controlDisabledColor;
-=======
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
-        public int IndentHeight
-        {
-            get
-            {
-                return indentHeight;
->>>>>>> master
             }
 
             set
             {
-<<<<<<< HEAD
                 controlDisabledColor = value;
-=======
-                indentHeight = value;
->>>>>>> master
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
-<<<<<<< HEAD
         public int IndentHeight
         {
             get
             {
                 return indentHeight;
-=======
-        public int IndentWidth
-        {
-            get
-            {
-                return indentWidth;
->>>>>>> master
             }
 
             set
             {
-<<<<<<< HEAD
                 indentHeight = value;
-=======
-                indentWidth = value;
->>>>>>> master
                 Invalidate();
             }
         }
 
-<<<<<<< HEAD
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
-        public int IndentWidth
-        {
-            get
-            {
-                return indentWidth;
-=======
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color ProgressColor1
-        {
-            get
-            {
-                return progressColor1;
->>>>>>> master
-            }
-
-            set
-            {
-<<<<<<< HEAD
-                indentWidth = value;
-=======
-                progressColor1 = value;
->>>>>>> master
-                Invalidate();
-            }
-        }
-
-<<<<<<< HEAD
         public new Orientation Orientation
         {
             get
             {
                 return trackBarType;
-=======
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
-        public Color TextColor
-        {
-            get
-            {
-                return foreColor;
->>>>>>> master
             }
 
             set
             {
-<<<<<<< HEAD
                 trackBarType = value;
 
                 // Flip separator size on orientation change.
@@ -398,25 +304,20 @@
                         Height = temp;
                     }
                 }
-
-=======
-                foreColor = value;
->>>>>>> master
-                Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TextDisabledColor
+        public Color ProgressColor1
         {
             get
             {
-                return textDisabledColor;
+                return progressColor1;
             }
 
             set
             {
-                textDisabledColor = value;
+                progressColor1 = value;
                 Invalidate();
             }
         }
@@ -437,77 +338,31 @@
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-<<<<<<< HEAD
         public Color TextDisabledColor
         {
             get
             {
                 return textDisabledColor;
-=======
-        public Color TickColor
-        {
-            get
-            {
-                return tickColor;
->>>>>>> master
             }
 
             set
             {
-<<<<<<< HEAD
                 textDisabledColor = value;
-=======
-                tickColor = value;
->>>>>>> master
                 Invalidate();
             }
         }
 
-<<<<<<< HEAD
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentFont)]
         public Font TextFont
         {
             get
             {
                 return textFont;
-=======
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
-        public int TickHeight
-        {
-            get
-            {
-                return tickHeight;
->>>>>>> master
             }
 
             set
             {
-<<<<<<< HEAD
                 textFont = value;
-=======
-                tickHeight = value;
->>>>>>> master
-                Invalidate();
-            }
-        }
-
-<<<<<<< HEAD
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TickColor
-=======
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TrackBarType)]
-        public Orientation TrackBarType
->>>>>>> master
-        {
-            get
-            {
-                return tickColor;
-            }
-
-            set
-            {
-<<<<<<< HEAD
-                tickColor = value;
                 Invalidate();
             }
         }
@@ -539,30 +394,6 @@
             set
             {
                 tickVisible = value;
-=======
-                trackBarType = value;
-
-                if (trackBarType == Orientation.Horizontal)
-                {
-                    if (Width < Height)
-                    {
-                        int temp = Width;
-                        Width = Height;
-                        Height = temp;
-                    }
-                }
-                else
-                {
-                    // Vertical
-                    if (Width > Height)
-                    {
-                        int temp = Width;
-                        Width = Height;
-                        Height = temp;
-                    }
-                }
-
->>>>>>> master
                 Invalidate();
             }
         }
@@ -608,7 +439,6 @@
             set
             {
                 trackLineHeight = value;
-<<<<<<< HEAD
                 Invalidate();
             }
         }
@@ -624,8 +454,6 @@
             set
             {
                 valueButtonVisible = value;
-=======
->>>>>>> master
                 Invalidate();
             }
         }
@@ -657,31 +485,6 @@
             {
                 valueTickVisible = value;
                 Invalidate();
-            }
-        }
-
-<<<<<<< HEAD
-        /// <summary>Gets or sets the value to set.</summary>
-        [Browsable(false)]
-        public float ValueToSet
-=======
-        [DefaultValue(StylesManager.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
-        public bool ValueVisible
->>>>>>> master
-        {
-            get
-            {
-                return (float)(Value / (double)dividedValue);
-            }
-
-            set
-            {
-<<<<<<< HEAD
-                Value = (int)Math.Round(value * (float)dividedValue);
-=======
-                valueVisible = value;
-                Invalidate();
->>>>>>> master
             }
         }
 
@@ -782,10 +585,7 @@
         {
             base.OnMouseHover(e);
             Cursor = trackBarType == Orientation.Vertical ? Cursors.SizeNS : Cursors.SizeWE;
-<<<<<<< HEAD
             Invalidate();
-=======
->>>>>>> master
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -890,11 +690,7 @@
                 currentUsedPos = indentHeight;
 
                 // Get Height of Text Area
-<<<<<<< HEAD
                 textAreaSize = e.Graphics.MeasureString(Maximum.ToString(), textFont).
-=======
-                textAreaSize = e.Graphics.MeasureString(Maximum.ToString(), Font).
->>>>>>> master
                                  Height;
 
                 if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
@@ -904,15 +700,9 @@
                     drawRect.Inflate(-trackerSize.Width / 2, 0);
                     currentUsedPos += textAreaSize;
 
-<<<<<<< HEAD
                     if (valueTickVisible)
                     {
                         GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, textFont, trackBarType);
-=======
-                    if (valueVisible)
-                    {
-                        GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, Font, trackBarType);
->>>>>>> master
                     }
                 }
 
@@ -923,14 +713,10 @@
                     drawRect.Inflate(-trackerSize.Width / 2, 0);
                     currentUsedPos += tickHeight + 1;
 
-<<<<<<< HEAD
                     if (tickVisible)
                     {
                         GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
                     }
-=======
-                    GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
->>>>>>> master
                 }
 
                 // Calculate the tracker's rectangle
@@ -951,7 +737,6 @@
                 // Draw the Track Line
                 drawRect = new RectangleF(workingRect.Left, currentUsedPos + trackerSize.Height / 2 - trackLineHeight / 2, workingRect.Width,
                     trackLineHeight);
-<<<<<<< HEAD
 
                 // Draws the track line
                 DrawTrackLine(e.Graphics, drawRect);
@@ -978,20 +763,6 @@
                     {
                         GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
                     }
-=======
-                DrawTrackLine(e.Graphics, drawRect);
-                currentUsedPos += trackerSize.Height;
-
-                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
-                {
-                    // Draw tick line.
-                    currentUsedPos += 1;
-                    drawRect = new RectangleF(workingRect.Left, currentUsedPos, workingRect.Width, tickHeight);
-                    drawRect.Inflate(-trackerSize.Width / 2, 0);
-                    currentUsedPos += tickHeight;
-
-                    GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
->>>>>>> master
                 }
 
                 if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
@@ -1002,15 +773,9 @@
                     drawRect.Inflate(-trackerSize.Width / 2, 0);
                     currentUsedPos += textAreaSize;
 
-<<<<<<< HEAD
                     if (valueTickVisible)
                     {
                         GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, textFont, trackBarType);
-=======
-                    if (valueVisible)
-                    {
-                        GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, Font, trackBarType);
->>>>>>> master
                     }
                 }
             }
@@ -1020,11 +785,7 @@
                 currentUsedPos = indentWidth;
 
                 // Get Width of Text Area
-<<<<<<< HEAD
                 textAreaSize = e.Graphics.MeasureString(Maximum.ToString(), textFont).
-=======
-                textAreaSize = e.Graphics.MeasureString(Maximum.ToString(), Font).
->>>>>>> master
                                  Width;
 
                 if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
@@ -1035,11 +796,7 @@
                     drawRect.Inflate(0, -trackerSize.Width / 2);
                     currentUsedPos += textAreaSize;
 
-<<<<<<< HEAD
                     GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, textFont, trackBarType);
-=======
-                    GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, Font, trackBarType);
->>>>>>> master
                 }
 
                 if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
@@ -1062,7 +819,6 @@
                 {
                     currentTrackerPos = (workingRect.Height - trackerSize.Width) * (Value - Minimum) / (Maximum - Minimum);
                 }
-<<<<<<< HEAD
 
                 // Remember this for drawing the Tracker later
                 trackerRectangleF = new RectangleF(currentUsedPos, workingRect.Bottom - currentTrackerPos - trackerSize.Width, trackerSize.Height,
@@ -1157,102 +913,6 @@
                     default:
                         result = base.ProcessCmdKey(ref msg, keyData);
                         break;
-=======
-
-                // Remember this for drawing the Tracker later
-                trackerRectangleF = new RectangleF(currentUsedPos, workingRect.Bottom - currentTrackerPos - trackerSize.Width, trackerSize.Height,
-                    trackerSize.Width);
-
-                // trackerRectangleF.Inflate(-1,0);
-                // Draw the track line
-                drawRect = new RectangleF(currentUsedPos + trackerSize.Height / 2 - trackLineHeight / 2, workingRect.Top, trackLineHeight,
-                    workingRect.Height);
-                DrawTrackLine(e.Graphics, drawRect);
-                currentUsedPos += trackerSize.Height;
-
-                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
-                {
-                    // Draw the 2st Tick Line.
-                    currentUsedPos += 1;
-                    drawRect = new RectangleF(currentUsedPos, workingRect.Top, tickHeight, workingRect.Height);
-                    drawRect.Inflate(0, -trackerSize.Width / 2);
-                    currentUsedPos += tickHeight;
-
-                    GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
-                }
-
-                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
-                {
-                    // Draw the 2st Text Line.
-                    // Get Height of Text Area
-                    drawRect = new RectangleF(currentUsedPos, workingRect.Top, textAreaSize, workingRect.Height);
-                    drawRect.Inflate(0, -trackerSize.Width / 2);
-                    currentUsedPos += textAreaSize;
-
-                    GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, Font, trackBarType);
-                }
-            }
-
-            // Convert from RectangleF to Rectangle.
-            Rectangle buttonRectangle = Rectangle.Round(trackerRectangleF);
-            buttonPath = GDI.GetBorderShape(buttonRectangle, borderShape, borderRounding);
-
-            // Draw the Tracker
-            DrawTracker(e.Graphics, trackerRectangleF);
-
-            // Draws a focus rectangle
-            // if(this.Focused && this.BackColor != Color.Transparent)
-            // TODO: Add bool toggle
-            if (Focused)
-            {
-                // ControlPaint.DrawFocusRectangle(e.Graphics, Rectangle.Inflate(ClientRectangle, -2, -2));
-            }
-        }
-
-        /// <summary>This member overrides <see cref="Control.ProcessCmdKey">Control.ProcessCmdKey</see>.</summary>
-        /// <param name="msg">The msg.</param>
-        /// <param name="keyData">The key Data.</param>
-        /// <returns>The <see cref="bool" />.</returns>
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            var result = true;
-
-            // Specified WM_KEYDOWN enumeration value.
-            const int WM_KEYDOWN = 0x0100;
-
-            // Specified WM_SYSKEYDOWN enumeration value.
-            const int WM_SYSKEYDOWN = 0x0104;
-
-            if (msg.Msg == WM_KEYDOWN || msg.Msg == WM_SYSKEYDOWN)
-            {
-                switch (keyData)
-                {
-                    case Keys.Left:
-                    case Keys.Down:
-                        Decrement(SmallChange);
-                        break;
-                    case Keys.Right:
-                    case Keys.Up:
-                        Increment(SmallChange);
-                        break;
-
-                    case Keys.PageUp:
-                        Increment(LargeChange);
-                        break;
-                    case Keys.PageDown:
-                        Decrement(LargeChange);
-                        break;
-
-                    case Keys.Home:
-                        Value = Maximum;
-                        break;
-                    case Keys.End:
-                        Value = Minimum;
-                        break;
-
-                    default:
-                        result = base.ProcessCmdKey(ref msg, keyData);
-                        break;
                 }
             }
 
@@ -1271,44 +931,6 @@
 
             // Draw button border
             GDI.DrawBorderType(graphics, controlState, buttonPath, borderSize, borderColor, borderHoverColor, borderVisible);
-        }
-
-        /// <summary>Draws the track line.</summary>
-        /// <param name="graphics">Graphics controller.</param>
-        /// <param name="trackLineRectangleF">Track line rectangle.</param>
-        private void DrawTrackLine(Graphics graphics, RectangleF trackLineRectangleF)
-        {
-            // Convert from RectangleF to Rectangle.
-            Rectangle trackLineRectangle = Rectangle.Round(trackerRectangleF);
-            GDI.GetBorderShape(trackLineRectangle, borderShape, borderRounding);
-
-            GDI.DrawAquaPillSingleLayer(graphics, trackLineRectangleF, trackLineColor, trackBarType);
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        /// <summary>Call the Decrement() method to decrease the value displayed by an integer you specify.</summary>
-        /// <param name="value">The value to decrement.</param>
-        public void Decrement(int value)
-        {
-            if (Value > Minimum)
-            {
-                Value -= value;
-                if (Value < Minimum)
-                {
-                    Value = Minimum;
->>>>>>> master
-                }
-            }
-            else
-            {
-                Value = Minimum;
-            }
-
-<<<<<<< HEAD
-            return result;
         }
 
         /// <summary>Draws the tracker button.</summary>
@@ -1367,26 +989,10 @@
                 if (Value < Minimum)
                 {
                     Value = Minimum;
-=======
-            Invalidate();
-        }
-
-        /// <summary>Call the Increment() method to increase the value displayed by an integer you specify.</summary>
-        /// <param name="value">The value to increment.</param>
-        public void Increment(int value)
-        {
-            if (Value < Maximum)
-            {
-                Value += value;
-                if (Value > Maximum)
-                {
-                    Value = Maximum;
->>>>>>> master
                 }
             }
             else
             {
-<<<<<<< HEAD
                 Value = Minimum;
             }
 
@@ -1411,12 +1017,6 @@
             }
 
             Invalidate();
-=======
-                Value = Maximum;
-            }
-
-            Invalidate();
->>>>>>> master
         }
 
         /// <summary>Sets a new range value.</summary>

@@ -49,10 +49,6 @@
 
             MinimumSize = new Size(100, 100);
             Size = new Size(130, 130);
-<<<<<<< HEAD
-=======
-            BackColor = Color.Transparent;
->>>>>>> master
             ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
             textVisible = true;
             BackColor = Color.Transparent;

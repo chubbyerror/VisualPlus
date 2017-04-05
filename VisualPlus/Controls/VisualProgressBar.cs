@@ -63,10 +63,7 @@
         private bool percentageVisible;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
-<<<<<<< HEAD
         private Font progressFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
-=======
->>>>>>> master
         private StringAlignment valueAlignment = StringAlignment.Center;
 
         #endregion
@@ -84,11 +81,6 @@
             Width = 100;
             Height = 20;
             percentageVisible = true;
-<<<<<<< HEAD
-=======
-            BackColor = Color.Transparent;
-            ForeColor = foreColor;
->>>>>>> master
             DoubleBuffered = true;
             UpdateStyles();
         }
@@ -469,7 +461,6 @@
             }
         }
 
-<<<<<<< HEAD
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentFont)]
         public Font ProgressFont
         {
@@ -485,8 +476,6 @@
             }
         }
 
-=======
->>>>>>> master
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -729,11 +718,7 @@
 
                 graphics.DrawString(
                     percentValue,
-<<<<<<< HEAD
                     progressFont,
-=======
-                    Font,
->>>>>>> master
                     new SolidBrush(foreColor),
                     new Rectangle(0, 0, Width, Height + 2),
                     stringFormat);

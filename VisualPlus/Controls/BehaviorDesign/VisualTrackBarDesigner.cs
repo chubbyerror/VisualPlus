@@ -17,11 +17,6 @@
             properties.Remove("AutoEllipsis");
             properties.Remove("UseCompatibleTextRendering");
 
-<<<<<<< HEAD
-            // properties.Remove("Orientation");
-=======
-            properties.Remove("Orientation");
->>>>>>> master
             properties.Remove("Image");
             properties.Remove("ImageAlign");
             properties.Remove("ImageIndex");

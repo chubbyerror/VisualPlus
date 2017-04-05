@@ -49,11 +49,7 @@
         #region  ${0} Variables
 
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-<<<<<<< HEAD
-        private bool borderVisible = false;
-=======
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
->>>>>>> master
+        private bool borderVisible;
         private Color columnBorder = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color columnHeaderBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private ControlState controlState = ControlState.Normal;
@@ -63,10 +59,6 @@
         private Color headerText = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color itemBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private Color itemHover = StylesManager.DefaultValue.Style.ItemHover(0);
-<<<<<<< HEAD
-=======
-
->>>>>>> master
         private int itemPadding = 12;
         private Color itemSelected = StylesManager.DefaultValue.Style.BorderColor(1);
 

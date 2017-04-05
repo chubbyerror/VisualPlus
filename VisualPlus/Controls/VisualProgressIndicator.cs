@@ -45,7 +45,6 @@
             MinimumSize = new Size(80, 80);
             SetPoints();
             animationSpeed.Interval = 100;
-            BackColor = Color.Transparent;
             UpdateStyles();
         }
 
