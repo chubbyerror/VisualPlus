@@ -1,5 +1,6 @@
 ﻿namespace VisualPlus.Controls
 {
+    using System;
     using System.Collections;
     using System.ComponentModel;
     using System.Drawing;
@@ -7,6 +8,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
@@ -17,6 +19,9 @@
     {
         #region  ${0} Variables
 
+        private ControlState controlState = ControlState.Normal;
+
+        private Point mouseLocation;
         private bool selectorVisible = true;
         private Color separator = StylesManager.DefaultValue.Style.TabSelected;
         private Color tabHover = StylesManager.DefaultValue.Style.TabHover;
@@ -44,9 +49,9 @@
 
             DoubleBuffered = true;
             SizeMode = TabSizeMode.Fixed;
-            ItemSize = new Size(44, 135);
-            DrawMode = TabDrawMode.OwnerDrawFixed;
+            ItemSize = new Size(40, 140);
 
+            // DrawMode = TabDrawMode.OwnerDrawFixed;
             foreach (TabPage page in TabPages)
             {
                 page.BackColor = Background;
@@ -230,6 +235,43 @@
             }
         }
 
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            controlState = ControlState.Hover;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            controlState = ControlState.Normal;
+            foreach (TabPage Tab in TabPages)
+            {
+                if (Tab.DisplayRectangle.Contains(mouseLocation))
+                {
+                    Invalidate();
+                    break;
+                }
+            }
+
+            base.OnMouseLeave(e);
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            mouseLocation = e.Location;
+            foreach (TabPage Tab in TabPages)
+            {
+                if (Tab.DisplayRectangle.Contains(e.Location))
+                {
+                    Invalidate();
+                    break;
+                }
+            }
+
+            base.OnMouseMove(e);
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
@@ -251,42 +293,38 @@
             // ------------------------------- >
             for (var tabIndex = 0; tabIndex <= TabCount - 1; tabIndex++)
             {
+                Rectangle tabRect = new Rectangle(
+                    new Point(
+                        GetTabRect(tabIndex).
+                            Location.X - 2,
+                        GetTabRect(tabIndex).
+                            Location.Y - 2),
+                    new Size(
+                        GetTabRect(tabIndex).
+                            Width,
+                        GetTabRect(tabIndex).
+                            Height));
+
+                Rectangle tabHighlighter = new Rectangle(
+                    new Point(
+                        GetTabRect(tabIndex).
+                            X,
+                        GetTabRect(tabIndex).
+                            Location.Y + 5),
+                    new Size(
+                        4,
+                        GetTabRect(tabIndex).
+                            Height / 2));
+
+                Rectangle textRect = new Rectangle(tabRect.Left + 40, tabRect.Top + 12, tabRect.Width - 40, tabRect.Height);
+
                 if (tabIndex == SelectedIndex)
                 {
-                    // Selected tab
-                    Rectangle tabRect = new Rectangle(
-                        new Point(
-                            GetTabRect(tabIndex).
-                                Location.X - 2,
-                            GetTabRect(tabIndex).
-                                Location.Y - 2),
-                        new Size(
-                            GetTabRect(tabIndex).
-                                Width + 3,
-                            GetTabRect(tabIndex).
-                                Height - 8));
-
                     // Draw selected tab
                     graphics.FillRectangle(new SolidBrush(tabSelected), tabRect);
 
                     if (selectorVisible)
                     {
-                        // Draw a tab highlighter on the background of the selected tab
-                        Rectangle tabHighlighter = new Rectangle(
-                            new Point(
-                                GetTabRect(tabIndex).
-                                    X + GetTabRect(tabIndex).
-                                    Width - 5,
-                                GetTabRect(tabIndex).
-                                    Location.Y + 5),
-                            new Size(
-                                4,
-                                GetTabRect(tabIndex).
-                                    Height / 2));
-
-                        // Aligns the highlighter to the right.
-                        tabHighlighter = tabHighlighter.AlignRight(tabRect, 7);
-
                         // Tab Selector
                         graphics.FillRectangle(new SolidBrush(tabSelector), tabHighlighter);
                     }
@@ -296,7 +334,7 @@
                         TabPages[tabIndex].Text,
                         Font,
                         new SolidBrush(textSelected),
-                        new Rectangle(tabRect.Left + 40, tabRect.Top + 12, tabRect.Width - 40, tabRect.Height),
+                        textRect,
                         new StringFormat { Alignment = StringAlignment.Near });
 
                     // Draw image list
@@ -308,25 +346,29 @@
                 }
                 else
                 {
-                    // Regular tabs
-                    Rectangle tabRect = new Rectangle(
-                        new Point(
-                            GetTabRect(tabIndex).
-                                Location.X - 2,
-                            GetTabRect(tabIndex).
-                                Location.Y - 2),
-                        new Size(
-                            GetTabRect(tabIndex).
-                                Width + 3,
-                            GetTabRect(tabIndex).
-                                Height - 8));
+                    // Draw other TabPages
+                    if (controlState == ControlState.Hover && GetTabRect(tabIndex).
+                            Contains(mouseLocation))
+                    {
+                        Cursor = Cursors.Hand;
 
+                        // Draw hover background
+                        graphics.FillRectangle(new SolidBrush(tabHover), tabRect);
+
+                        if (selectorVisible)
+                        {
+                            // Draw hover separator
+                            graphics.FillRectangle(new SolidBrush(tabSelector), tabHighlighter);
+                        }
+                    }
+
+                    // Unselected TabPages
                     // graphics.FillRectangle(new SolidBrush(tabNormal), tabRect);
                     graphics.DrawString(
                         TabPages[tabIndex].Text,
                         Font,
                         new SolidBrush(textNormal),
-                        new Rectangle(tabRect.Left + 40, tabRect.Top + 12, tabRect.Width - 40, tabRect.Height),
+                        textRect,
                         new StringFormat { Alignment = StringAlignment.Near });
 
                     // Draw image list
@@ -338,9 +380,8 @@
                 }
             }
 
-            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
+            // Draw divider that separates the panels.
+            // e.Graphics.DrawLine(new Pen(separator, 2), ItemSize.Height + 2, 0, ItemSize.Height + 2, Height);
         }
 
         private TabPage GetPageByPoint(TabControl tabControl, Point point)
