@@ -22,7 +22,7 @@ Travic Cl | [ ![Stable build status][5]][6] | [![Beta build status][7]][8] |
 
 To get the latest release, you can download a [`Fresh Build`](https://ci.appveyor.com/project/DarkByte7/VisualPlus/build/artifacts) here.
 
-The [`VisualPlus`](DarkByte7/VisualPlus) repository is where we do development and there are many ways you can participate in the project, for example:
+The [`VisualPlus`](https://github.com/DarkByte7/VisualPlus) repository is where we do development and there are many ways you can participate in the project, for example:
 - [Submit bugs and feature requests](https://github.com/DarkByte7/VisualPlus/issues) and help us verify as they are checked in
 - Review [source code changes](https://github.com/DarkByte7/VisualPlus/pulls)
 - Review the [documentation](https://github.com/DarkByte7/VisualPlus/wiki) and make pull requests for anything from typos to new content
