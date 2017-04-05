@@ -16,7 +16,7 @@
     /// <summary>The visual GroupBox.</summary>
     [ToolboxBitmap(typeof(GroupBox)), Designer(VSDesignerBinding.VisualGroupBox),
      Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public partial class VisualGroupBox : GroupBox
+    public sealed class VisualGroupBox : GroupBox
     {
         #region  ${0} Variables
 
@@ -48,9 +48,7 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            BackColor = Color.Transparent;
             ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
-
             Size = new Size(212, 104);
             MinimumSize = new Size(136, 50);
             Padding = new Padding(5, 28, 5, 5);
@@ -189,6 +187,7 @@
             set
             {
                 groupBoxColor = value;
+                BackColorFix();
                 Invalidate();
             }
         }
@@ -258,7 +257,7 @@
 
         #region ${0} Events
 
-        protected virtual void BackColorFix()
+        private void BackColorFix()
         {
             foreach (object control in Controls)
             {

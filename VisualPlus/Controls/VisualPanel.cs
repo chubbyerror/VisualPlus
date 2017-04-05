@@ -59,6 +59,7 @@
             set
             {
                 backgroundColor = value;
+                BackColorFix();
                 Invalidate();
             }
         }
