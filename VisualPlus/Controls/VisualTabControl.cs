@@ -10,10 +10,10 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
-    /// <summary>The visual tab control.</summary>
+    /// <summary>The visual TabControl.</summary>
     // [ToolboxBitmap(typeof(TabControl)), Designer(StylesManager.BindedDesignerControls.VisualTab)]
     [ToolboxBitmap(typeof(TabControl))]
-    public class VisualTab : TabControl
+    public class VisualTabControl : TabControl
     {
         #region  ${0} Variables
 
@@ -24,6 +24,7 @@
         private Color tabNormal = StylesManager.DefaultValue.Style.TabNormal;
         private Color tabSelected = StylesManager.DefaultValue.Style.TabSelected;
         private Color tabSelector = StylesManager.DefaultValue.Style.MainColor;
+
         // private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Color textNormal = StylesManager.DefaultValue.Style.TabTextNormal;
         private Color textSelected = StylesManager.DefaultValue.Style.TabTextSelected;
@@ -32,7 +33,7 @@
 
         #region ${0} Properties
 
-        public VisualTab()
+        public VisualTabControl()
         {
             SetStyle(
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
@@ -268,13 +269,6 @@
                     // Draw selected tab
                     graphics.FillRectangle(new SolidBrush(tabSelected), tabRect);
 
-                    // Draw background of the selected tab
-                    // graphics.FillRectangle(
-                    // new SolidBrush(tabSelected),
-                    // tabRect.X,
-                    // tabRect.Y,
-                    // tabRect.Width - 4,
-                    // tabRect.Height + 3);
                     if (selectorVisible)
                     {
                         // Draw a tab highlighter on the background of the selected tab
@@ -305,15 +299,11 @@
                         new Rectangle(tabRect.Left + 40, tabRect.Top + 12, tabRect.Width - 40, tabRect.Height),
                         new StringFormat { Alignment = StringAlignment.Near });
 
-                    if (ImageList == null)
+                    // Draw image list
+                    if (ImageList != null)
                     {
-                        continue;
-                    }
-
-                    int index = TabPages[tabIndex].ImageIndex;
-                    if (index != -1)
-                    {
-                        graphics.DrawImage(ImageList.Images[TabPages[tabIndex].ImageIndex], tabRect.X + 9, tabRect.Y + 6, 24, 24);
+                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].Size.Height,
+                            ImageList.Images[tabIndex].Size.Width);
                     }
                 }
                 else
@@ -339,15 +329,11 @@
                         new Rectangle(tabRect.Left + 40, tabRect.Top + 12, tabRect.Width - 40, tabRect.Height),
                         new StringFormat { Alignment = StringAlignment.Near });
 
-                    if (ImageList == null)
+                    // Draw image list
+                    if (ImageList != null)
                     {
-                        continue;
-                    }
-
-                    int index = TabPages[tabIndex].ImageIndex;
-                    if (index != -1)
-                    {
-                        graphics.DrawImage(ImageList.Images[TabPages[tabIndex].ImageIndex], tabRect.X + 9, tabRect.Y + 6, 24, 24);
+                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].Size.Height,
+                            ImageList.Images[tabIndex].Size.Width);
                     }
                 }
             }

@@ -127,7 +127,7 @@
     <Compile Include="Controls\VisualSeparator.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualTab.cs">
+    <Compile Include="Controls\VisualTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\VisualTextBox.cs">
