@@ -75,9 +75,6 @@
     <Compile Include="Controls\VisualCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualContextMenu.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Controls\VisualListBox.cs">
       <SubType>Component</SubType>
     </Compile>
