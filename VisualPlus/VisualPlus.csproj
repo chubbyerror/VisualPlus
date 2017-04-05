@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Controls\BehaviorDesign\VisualCircleProgressBarDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualContextMenuDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualListBoxDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualListViewDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualTrackBarDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualToggleDesigner.cs" />
@@ -74,7 +75,7 @@
     <Compile Include="Controls\VisualCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualContextMenu.cs">
+    <Compile Include="Controls\VisualListBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\VisualListView.cs">
@@ -123,7 +124,7 @@
     <Compile Include="Controls\VisualSeparator.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualTab.cs">
+    <Compile Include="Controls\VisualTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\VisualTextBox.cs">
@@ -137,7 +138,6 @@
     </Compile>
     <Compile Include="Framework\GDI\GDI.cs" />
     <Compile Include="Enums\BrushType.cs" />
-    <Compile Include="Enums\SplitterStyle.cs" />
     <Compile Include="Enums\ControlState.cs" />
     <Compile Include="Localization\Localization.cs" />
     <Compile Include="Framework\VSDesigner.cs" />

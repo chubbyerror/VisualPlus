@@ -36,6 +36,7 @@
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color buttonColor = StylesManager.DefaultValue.Style.DropDownButtonColor;
         private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private GraphicsPath controlGraphicsPath;
         private DropDownButtons dropDownButton = DropDownButtons.Arrow;
@@ -43,6 +44,7 @@
         private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color menuItemHover = StylesManager.DefaultValue.Style.ItemHover(0);
         private Color menuItemNormal = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color menuTextColor = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color separatorColor = StylesManager.DefaultValue.Style.LineColor;
         private Color separatorShadowColor = StylesManager.DefaultValue.Style.ShadowColor;
         private bool separatorVisible = StylesManager.DefaultValue.TextVisible;
@@ -65,16 +67,10 @@
 
             DrawMode = DrawMode.OwnerDrawFixed;
             DropDownStyle = ComboBoxStyle.DropDownList;
-
-            BackColor = Color.Transparent;
-
             Size = new Size(135, 26);
             ItemHeight = 20;
-
             UpdateStyles();
-
             DropDownHeight = 100;
-
             UpdateLocationPoints();
         }
 
@@ -213,6 +209,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color ButtonColor
+        {
+            get
+            {
+                return buttonColor;
+            }
+
+            set
+            {
+                buttonColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
@@ -285,6 +296,21 @@
             set
             {
                 menuItemNormal = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color MenuTextColor
+        {
+            get
+            {
+                return menuTextColor;
+            }
+
+            set
+            {
+                menuTextColor = value;
                 Invalidate();
             }
         }
@@ -404,7 +430,7 @@
 
             if (e.Index != -1)
             {
-                e.Graphics.DrawString(GetItemText(Items[e.Index]), e.Font, new SolidBrush(ForeColor), e.Bounds);
+                e.Graphics.DrawString(GetItemText(Items[e.Index]), e.Font, new SolidBrush(menuTextColor), e.Bounds);
             }
         }
 
@@ -474,7 +500,7 @@
                             graphics.DrawString(
                                 "6",
                                 new Font("Marlett", 13, FontStyle.Regular),
-                                new SolidBrush(StylesManager.DefaultValue.Style.DropDownButtonColor),
+                                new SolidBrush(buttonColor),
                                 buttonRectangle,
                                 new StringFormat
                                     {
@@ -489,19 +515,19 @@
                             var spacing = 5;
 
                             graphics.DrawLine(
-                                new Pen(StylesManager.DefaultValue.Style.DropDownButtonColor, 2),
+                                new Pen(buttonColor, 2),
                                 new Point(spacing + buttonRectangle.X, Height / 2 - 4),
-                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 - 4));
+                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing - 2, Height / 2 - 4));
 
                             graphics.DrawLine(
-                                new Pen(StylesManager.DefaultValue.Style.DropDownButtonColor, 2),
+                                new Pen(buttonColor, 2),
                                 new Point(spacing + buttonRectangle.X, Height / 2 + 0),
-                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 + 0));
+                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing - 2, Height / 2 + 0));
 
                             graphics.DrawLine(
-                                new Pen(StylesManager.DefaultValue.Style.DropDownButtonColor, 2),
+                                new Pen(buttonColor, 2),
                                 new Point(spacing + buttonRectangle.X, Height / 2 + 4),
-                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing, Height / 2 + 4));
+                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing - 2, Height / 2 + 4));
                             break;
                         }
                 }

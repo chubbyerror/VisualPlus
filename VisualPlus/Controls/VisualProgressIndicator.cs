@@ -12,7 +12,7 @@
 
     /// <summary>The visual ProgressIndicator.</summary>
     [ToolboxBitmap(typeof(ProgressBar)), Designer(VSDesignerBinding.VisualProgressIndicator)]
-    public class VisualProgressIndicator : Control
+    public sealed class VisualProgressIndicator : Control
     {
         #region  ${0} Variables
 
@@ -37,15 +37,14 @@
         public VisualProgressIndicator()
         {
             SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw |
-                ControlStyles.UserPaint,
+                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.SupportsTransparentBackColor,
                 true);
 
             Size = new Size(80, 80);
             MinimumSize = new Size(80, 80);
             SetPoints();
             animationSpeed.Interval = 100;
-            BackColor = Color.Transparent;
             UpdateStyles();
         }
 

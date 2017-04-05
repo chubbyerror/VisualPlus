@@ -48,9 +48,7 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            BackColor = Color.Transparent;
             ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
-
             Size = new Size(212, 104);
             MinimumSize = new Size(136, 50);
             Padding = new Padding(5, 28, 5, 5);
@@ -189,6 +187,7 @@
             set
             {
                 groupBoxColor = value;
+                BackColorFix();
                 Invalidate();
             }
         }
@@ -257,6 +256,12 @@
         #endregion
 
         #region ${0} Events
+
+        protected override void OnControlAdded(ControlEventArgs e)
+        {
+            base.OnControlAdded(e);
+            BackColorFix();
+        }
 
         protected override void OnMouseEnter(EventArgs e)
         {
@@ -342,6 +347,97 @@
         {
             base.OnSizeChanged(e);
             UpdateLocationPoints();
+        }
+
+        private void BackColorFix()
+        {
+            foreach (object control in Controls)
+            {
+                if (control is VisualButton)
+                {
+                    (control as VisualButton).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualCheckBox)
+                {
+                    (control as VisualCheckBox).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualCircleProgressBar)
+                {
+                    (control as VisualCircleProgressBar).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualComboBox)
+                {
+                    (control as VisualComboBox).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualGroupBox)
+                {
+                    (control as VisualGroupBox).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualListBox)
+                {
+                    (control as VisualListBox).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualNumericUpDown)
+                {
+                    (control as VisualNumericUpDown).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualProgressBar)
+                {
+                    (control as VisualProgressBar).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualProgressIndicator)
+                {
+                    (control as VisualProgressIndicator).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualProgressSpinner)
+                {
+                    (control as VisualProgressSpinner).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualRadioButton)
+                {
+                    (control as VisualRadioButton).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualRichTextBox)
+                {
+                    (control as VisualRichTextBox).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualSeparator)
+                {
+                    (control as VisualSeparator).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualTabControl)
+                {
+                    (control as VisualTabControl).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualTextBox)
+                {
+                    (control as VisualTextBox).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualToggle)
+                {
+                    (control as VisualToggle).BackColor = groupBoxColor;
+                }
+
+                if (control is VisualTrackBar)
+                {
+                    (control as VisualTrackBar).BackColor = groupBoxColor;
+                }
+            }
         }
 
         private void UpdateLocationPoints()

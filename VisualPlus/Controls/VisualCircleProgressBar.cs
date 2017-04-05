@@ -21,7 +21,7 @@
 
     /// <summary>The visual CircleProgressBar.</summary>
     [ToolboxBitmap(typeof(ProgressBar)), Designer(VSDesignerBinding.VisualCircleProgressBar)]
-    public class VisualCircleProgressBar : ProgressBar
+    public sealed class VisualCircleProgressBar : ProgressBar
     {
         #region  ${0} Variables
 
@@ -49,9 +49,9 @@
 
             MinimumSize = new Size(100, 100);
             Size = new Size(130, 130);
-            BackColor = Color.Transparent;
             ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
             textVisible = true;
+            BackColor = Color.Transparent;
 
             UpdateStyles();
         }
@@ -215,6 +215,9 @@
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
 

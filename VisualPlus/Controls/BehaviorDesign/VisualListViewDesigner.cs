@@ -32,6 +32,7 @@
             // properties.Remove("Font");
             // properties.Remove("ForeColor");
             properties.Remove("RightToLeft");
+            properties.Remove("View");
 
             base.PreFilterProperties(properties);
         }

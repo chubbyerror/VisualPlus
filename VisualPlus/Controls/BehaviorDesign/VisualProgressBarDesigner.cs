@@ -29,7 +29,6 @@
             properties.Remove("BackgroundImageLayout");
             properties.Remove("UseVisualStyleBackColor");
 
-            // properties.Remove("Font");
             properties.Remove("ForeColor");
             properties.Remove("RightToLeft");
 

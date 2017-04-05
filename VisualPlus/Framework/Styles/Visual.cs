@@ -166,7 +166,7 @@
         {
             get
             {
-                return Color.FromArgb(102, 105, 110);
+                return Color.FromArgb(77, 75, 76);
             }
         }
 

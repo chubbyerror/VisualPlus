@@ -48,7 +48,6 @@
                 | ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
-            BackColor = Color.Transparent;
             Width = 132;
             UpdateStyles();
         }
@@ -246,6 +245,7 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
@@ -259,24 +259,16 @@
             // Draw border
             if (borderVisible)
             {
-                if (controlState == ControlState.Hover && borderHoverVisible)
-                {
-                    GDI.DrawBorder(graphics, boxGraphicsPath, borderSize, borderHoverColor);
-                }
-                else
-                {
-                    GDI.DrawBorder(graphics, boxGraphicsPath, borderSize, borderColor);
-                }
+                GDI.DrawBorderType(graphics, controlState, boxGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
             }
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            Color controlCheckTemp = Enabled ? backgroundColor : controlDisabled;
 
             // Draw an ellipse inside the body
             if (Checked)
             {
-                graphics.FillEllipse(new SolidBrush(controlCheckTemp), new Rectangle(checkLocation, checkSize));
+                graphics.FillEllipse(new SolidBrush(foreColor), new Rectangle(checkLocation, checkSize));
             }
 
             // Draw the string specified in 'Text' property

@@ -2,9 +2,9 @@
 {
     using System;
     using System.ComponentModel;
-    using System.ComponentModel.Design;
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
@@ -12,40 +12,49 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    /// <summary>The visual panel.</summary>
-    // [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    [ToolboxBitmap(typeof(Panel)), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public class VisualPanel : Panel
+    /// <summary>The visual ListBox.</summary>
+    [ToolboxBitmap(typeof(ListBox)), Designer(VSDesignerBinding.VisualListBox)]
+    public sealed class VisualListBox : ListBox
     {
         #region  ${0} Variables
 
-        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color backColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
         private int borderRounding = StylesManager.DefaultValue.BorderRounding;
+        private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
+        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color itemBackground = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color itemBackground2 = StylesManager.DefaultValue.Style.BorderColor(0);
+        private Color itemSelected = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool rotateItemColor = true;
+        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
         #region ${0} Properties
 
-        public VisualPanel()
+        public VisualListBox()
         {
             SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw |
-                ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
-                true);
-
-            Size = new Size(187, 117);
-            Padding = new Padding(5, 5, 5, 5);
-            DoubleBuffered = true;
+                ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.SupportsTransparentBackColor, true);
 
             UpdateStyles();
+
+            IntegralHeight = false;
+            ItemHeight = 18;
+            Font = new Font(Font.FontFamily, 10, FontStyle.Regular);
+            ResizeRedraw = true;
+            BorderStyle = BorderStyle.None;
+            Size = new Size(250, 150);
+            AutoSize = true;
+            DrawMode = DrawMode.OwnerDrawFixed;
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
@@ -53,13 +62,12 @@
         {
             get
             {
-                return backgroundColor;
+                return backColor;
             }
 
             set
             {
-                backgroundColor = value;
-                BackColorFix();
+                backColor = value;
                 Invalidate();
             }
         }
@@ -143,7 +151,7 @@
             set
             {
                 borderShape = value;
-                controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -184,105 +192,152 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color ItemBackground
+        {
+            get
+            {
+                return itemBackground;
+            }
+
+            set
+            {
+                itemBackground = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color ItemBackground2
+        {
+            get
+            {
+                return itemBackground2;
+            }
+
+            set
+            {
+                itemBackground2 = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color ItemSelected
+        {
+            get
+            {
+                return itemSelected;
+            }
+
+            set
+            {
+                itemSelected = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(true), Category(Localize.Category.Behavior)]
+        public bool RotateItemColor
+        {
+            get
+            {
+                return rotateItemColor;
+            }
+
+            set
+            {
+                rotateItemColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
+        {
+            get
+            {
+                return textDisabledColor;
+            }
+
+            set
+            {
+                textDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region ${0} Events
 
-        protected virtual void BackColorFix()
+        protected override void OnDrawItem(DrawItemEventArgs e)
         {
-            foreach (object control in Controls)
+            Graphics graphics = e.Graphics;
+            graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+            UpdateLocationPoints();
+            GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+
+            e.Graphics.SetClip(controlGraphicsPath);
+
+            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            if (e.Index > -1)
             {
-                if (control is VisualButton)
+                Color color;
+
+                if (rotateItemColor)
                 {
-                    (control as VisualButton).BackColor = backgroundColor;
+                    color = isSelected
+                                ? itemSelected
+                                : e.Index % 2 == 0 ? itemBackground : itemBackground2;
+                }
+                else
+                {
+                    if (isSelected)
+                    {
+                        color = itemSelected;
+                    }
+                    else
+                    {
+                        color = itemBackground;
+                    }
                 }
 
-                if (control is VisualCheckBox)
-                {
-                    (control as VisualCheckBox).BackColor = backgroundColor;
-                }
+                // Set control state color
+                foreColor = Enabled ? foreColor : textDisabledColor;
 
-                if (control is VisualCircleProgressBar)
-                {
-                    (control as VisualCircleProgressBar).BackColor = backgroundColor;
-                }
+                // Background item brush
+                SolidBrush backgroundBrush = new SolidBrush(color);
 
-                if (control is VisualComboBox)
-                {
-                    (control as VisualComboBox).BackColor = backgroundColor;
-                }
+                // Draw the background
+                e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
 
-                if (control is VisualGroupBox)
-                {
-                    (control as VisualGroupBox).BackColor = backgroundColor;
-                }
+                // Draw the text
+                e.Graphics.DrawString(Items[e.Index].ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, StringFormat.GenericDefault);
 
-                if (control is VisualListBox)
-                {
-                    (control as VisualListBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualNumericUpDown)
-                {
-                    (control as VisualNumericUpDown).BackColor = backgroundColor;
-                }
-
-                if (control is VisualProgressBar)
-                {
-                    (control as VisualProgressBar).BackColor = backgroundColor;
-                }
-
-                if (control is VisualProgressIndicator)
-                {
-                    (control as VisualProgressIndicator).BackColor = backgroundColor;
-                }
-
-                if (control is VisualProgressSpinner)
-                {
-                    (control as VisualProgressSpinner).BackColor = backgroundColor;
-                }
-
-                if (control is VisualRadioButton)
-                {
-                    (control as VisualRadioButton).BackColor = backgroundColor;
-                }
-
-                if (control is VisualRichTextBox)
-                {
-                    (control as VisualRichTextBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualSeparator)
-                {
-                    (control as VisualSeparator).BackColor = backgroundColor;
-                }
-
-                if (control is VisualTabControl)
-                {
-                    (control as VisualTabControl).BackColor = backgroundColor;
-                }
-
-                if (control is VisualTextBox)
-                {
-                    (control as VisualTextBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualToggle)
-                {
-                    (control as VisualToggle).BackColor = backgroundColor;
-                }
-
-                if (control is VisualTrackBar)
-                {
-                    (control as VisualTrackBar).BackColor = backgroundColor;
-                }
+                // Clean up
+                backgroundBrush.Dispose();
             }
-        }
-
-        protected override void OnControlAdded(ControlEventArgs e)
-        {
-            base.OnControlAdded(e);
-            BackColorFix();
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -297,31 +352,6 @@
             base.OnMouseLeave(e);
             controlState = ControlState.Normal;
             Invalidate();
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            UpdateLocationPoints();
-
-            // Draw background
-            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
-
-            // Setup control border
-            if (borderVisible)
-            {
-                if (controlState == ControlState.Hover && borderHoverVisible)
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
-                }
-                else
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
-                }
-            }
         }
 
         protected override void OnResize(EventArgs e)

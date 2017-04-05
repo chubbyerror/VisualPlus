@@ -4,6 +4,7 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
@@ -62,6 +63,7 @@
         private bool percentageVisible;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
+        private Font progressFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
         private StringAlignment valueAlignment = StringAlignment.Center;
 
         #endregion
@@ -79,8 +81,6 @@
             Width = 100;
             Height = 20;
             percentageVisible = true;
-            BackColor = Color.Transparent;
-            ForeColor = foreColor;
             DoubleBuffered = true;
             UpdateStyles();
         }
@@ -461,6 +461,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentFont)]
+        public Font ProgressFont
+        {
+            get
+            {
+                return progressFont;
+            }
+
+            set
+            {
+                progressFont = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -515,6 +530,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
             if (progressBarStyle == ProgressBarTypes.Horizontal || progressBarStyle == ProgressBarTypes.Vertical)
             {
@@ -702,7 +718,7 @@
 
                 graphics.DrawString(
                     percentValue,
-                    Font,
+                    progressFont,
                     new SolidBrush(foreColor),
                     new Rectangle(0, 0, Width, Height + 2),
                     stringFormat);

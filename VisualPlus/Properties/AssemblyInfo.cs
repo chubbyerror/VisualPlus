@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("VisualPlus")]
-[assembly: AssemblyDescription("UI framework & development tools.")]
+[assembly: AssemblyDescription("Windows Forms .NET UI Development Library.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("VisualPlus")]
 [assembly: AssemblyProduct("VisualPlus")]
 [assembly: AssemblyCopyright("Copyright ©  2016 - 2017")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("https://github.com/DarkByte7/VisualPlus")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.4.0.1")]
-[assembly: AssemblyFileVersion("0.4.0.1")]
+[assembly: AssemblyVersion("0.4.0.2")]
+[assembly: AssemblyFileVersion("0.4.0.2")]
