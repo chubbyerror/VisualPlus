@@ -13,12 +13,11 @@
 
     /// <summary>The visual ListBox.</summary>
     [ToolboxBitmap(typeof(ListBox)), Designer(VSDesignerBinding.VisualListBox)]
-    public partial class VisualListBox : ListBox
+    public sealed class VisualListBox : ListBox
     {
         #region  ${0} Variables
 
         private Color backColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
-
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
@@ -45,6 +44,8 @@
                 ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer |
                 ControlStyles.SupportsTransparentBackColor, true);
 
+            UpdateStyles();
+
             IntegralHeight = false;
             ItemHeight = 18;
             Font = new Font(Font.FontFamily, 10, FontStyle.Regular);
@@ -53,8 +54,6 @@
             Size = new Size(250, 150);
             AutoSize = true;
             DrawMode = DrawMode.OwnerDrawFixed;
-            BackColor = Color.Transparent;
-            DoubleBuffered = true;
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
@@ -289,8 +288,11 @@
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
             // base.OnDrawItem(e);
+            UpdateLocationPoints();
             BackColor = Parent.BackColor;
             Graphics graphics = e.Graphics;
+
+            GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
 
             e.Graphics.SetClip(controlGraphicsPath);
 
@@ -332,11 +334,6 @@
 
                 // Clean up
                 backgroundBrush.Dispose();
-
-                e.Graphics.ResetClip();
-
-                // Draw the border
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
             }
         }
 
