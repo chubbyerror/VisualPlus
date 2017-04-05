@@ -1,84 +1,86 @@
 ﻿namespace VisualPlus.Controls
 {
+    using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
-    using System.Drawing.Drawing2D;
-    using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Styles;
 
     /// <summary>The visual ContextMenuStrip.</summary>
     [ToolboxBitmap(typeof(ContextMenuStrip)), Designer(VSDesignerBinding.VisualContextMenu)]
-    public class VisualContextMenu : ContextMenuStrip
+    public partial class VisualContextMenu : Form
     {
         #region  ${0} Variables
 
-        public static bool animation = true;
-
-        private static readonly IStyle style = new Visual();
-        internal VFXManager effectsManager;
-        internal Point effectsSource;
-
-        private ToolStripItemClickedEventArgs _delayesArgs;
+        public bool mouseIsHovering;
 
         #endregion
 
         #region ${0} Properties
 
-        public VisualContextMenu()
+        public VisualContextMenu(Bitmap defaultFile, Bitmap hoverFile)
         {
-            Renderer = new VisualToolStripRender();
+            Children = new List<MenuItem>(0);
+            DefaultImage = defaultFile;
+            HoverImage = hoverFile;
+            mouseIsHovering = false;
 
-            effectsManager = new VFXManager(false)
-                {
-                    Increment = 0.07,
-                    EffectType = EffectType.Linear
-                };
-            effectsManager.OnAnimationProgress += sender => Invalidate();
-            effectsManager.OnAnimationFinished += sender => OnItemClicked(_delayesArgs);
-
-            BackColor = style.BackgroundColor(0);
+            MouseEnter += VisualContextMenu_MouseEnter;
+            MouseLeave += VisualContextMenu_MouseLeave;
+            MouseClick += VisualContextMenu_MouseClick;
         }
 
-        public delegate void ItemClickStart(object sender, ToolStripItemClickedEventArgs e);
+        public List<MenuItem> Children { get; private set; }
 
-        public event ItemClickStart OnItemClickStart;
+        public Bitmap DefaultImage { get; private set; }
+
+        public Bitmap HoverImage { get; private set; }
 
         #endregion
 
         #region ${0} Events
 
-        protected override void OnItemClicked(ToolStripItemClickedEventArgs e)
+        private void VisualContextMenu_MouseClick(object sender, EventArgs e)
         {
-            if (e.ClickedItem != null && !(e.ClickedItem is ToolStripSeparator))
+            // draw all the children
+        }
+
+        private void VisualContextMenu_MouseEnter(object sender, EventArgs e)
+        {
+            mouseIsHovering = true;
+
+            // switch to hovering image
+        }
+
+        private void VisualContextMenu_MouseLeave(object sender, EventArgs e)
+        {
+            mouseIsHovering = false;
+            var childIsBeingViewed = false;
+
+            foreach (MenuItem mi in Children)
             {
-                if (e == _delayesArgs)
-                {
-                    // The event has been fired manually because the args are the ones we saved for delay
-                    base.OnItemClicked(e);
-                }
-                else
-                {
-                    // Interrupt the default on click, saving the args for the delay which is needed to display the animation
-                    _delayesArgs = e;
+                //if (mi.mouseIsHovering == true)
+                //{
+                //    childIsBeingViewed = true;
+                //    break;
+                //}
+            }
 
-                    // Fire custom event to trigger actions directly but keep cms open
-                    OnItemClickStart?.Invoke(this, e);
-
-                    // Start animation
-                    effectsManager.StartNewAnimation(AnimationDirection.In);
-                }
+            if (!childIsBeingViewed)
+            {
+                // stop displaying all children and this object reverts to defalut image
             }
         }
 
-        protected override void OnMouseUp(MouseEventArgs e)
+        #endregion
+
+        #region ${0} Methods
+
+        public void addChild(MenuItem m)
         {
-            base.OnMouseUp(e);
-            effectsSource = e.Location;
+            Children.Add(m);
         }
 
         #endregion
@@ -88,152 +90,5 @@
         // private Color itemHover = ControlPaint.Light(style.ButtonNormalColor);
 
         // private Color textDisabled = style.TextDisabled;
-    }
-
-    public sealed class VisualToolStripMenuItem : ToolStripMenuItem
-    {
-        #region ${0} Properties
-
-        public VisualToolStripMenuItem()
-        {
-            AutoSize = false;
-            Size = new Size(120, 30);
-        }
-
-        #endregion
-
-        #region ${0} Events
-
-        protected override ToolStripDropDown CreateDefaultDropDown()
-        {
-            ToolStripDropDown baseDropDown = base.CreateDefaultDropDown();
-            if (DesignMode)
-            {
-                return baseDropDown;
-            }
-
-            VisualContextMenu defaultDropDown = new VisualContextMenu();
-            defaultDropDown.Items.AddRange(baseDropDown.Items);
-
-            return defaultDropDown;
-        }
-
-        #endregion
-    }
-
-    internal class VisualToolStripRender : ToolStripProfessionalRenderer
-    {
-        #region  ${0} Variables
-
-        private static readonly IStyle style = new Visual();
-
-        #endregion
-
-        #region ${0} Events
-
-        protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            const int ARROW_SIZE = 4;
-
-            Point arrowMiddle = new Point(e.ArrowRectangle.X + e.ArrowRectangle.Width / 2, e.ArrowRectangle.Y + e.ArrowRectangle.Height / 2);
-
-            SolidBrush arrowBrush = e.Item.Enabled ? new SolidBrush(Color.Black) : new SolidBrush(Color.Gray);
-            using (GraphicsPath arrowPath = new GraphicsPath())
-            {
-                arrowPath.AddLines(
-                    new[]
-                        {
-                            new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y - ARROW_SIZE),
-                            new Point(arrowMiddle.X, arrowMiddle.Y),
-                            new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y + ARROW_SIZE)
-                        });
-                arrowPath.CloseFigure();
-
-                g.FillPath(arrowBrush, arrowPath);
-            }
-        }
-
-        protected override void OnRenderImageMargin(ToolStripRenderEventArgs e)
-        {
-            base.OnRenderImageMargin(e);
-        }
-
-        // public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-        // public MouseState MouseState { get; set; }
-        protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            g.TextRenderingHint = TextRenderingHint.AntiAlias;
-
-            Rectangle itemRect = GetItemRect(e.Item);
-            Rectangle textRect = new Rectangle(24, itemRect.Y, itemRect.Width - (24 + 16), itemRect.Height);
-
-            g.DrawString(
-                e.Text,
-                Control.DefaultFont,
-                e.Item.Enabled ? new SolidBrush(Color.Black) : new SolidBrush(Color.Gray),
-                textRect,
-                new StringFormat { LineAlignment = StringAlignment.Center });
-        }
-
-        protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
-        {
-            Graphics graphics = e.Graphics;
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.Clear(style.BackgroundColor(0));
-
-            // Draw background
-            Rectangle itemRect = GetItemRect(e.Item);
-
-            graphics.FillRectangle(e.Item.Selected && e.Item.Enabled ? new SolidBrush(style.ItemHover(0)) : new SolidBrush(style.BackgroundColor(0)),
-                itemRect);
-
-            // Ripple animation
-            VisualContextMenu toolStrip = e.ToolStrip as VisualContextMenu;
-            if (toolStrip != null)
-            {
-                VFXManager animationManager = toolStrip.effectsManager;
-                Point animationSource = toolStrip.effectsSource;
-                if (toolStrip.effectsManager.IsAnimating() && e.Item.Bounds.Contains(animationSource))
-                {
-                    for (var i = 0; i < animationManager.GetAnimationCount(); i++)
-                    {
-                        double animationValue = animationManager.GetProgress(i);
-                        SolidBrush rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - animationValue * 50), Color.Black));
-                        var rippleSize = (int)(animationValue * itemRect.Width * 2.5);
-                        graphics.FillEllipse(rippleBrush,
-                            new Rectangle(animationSource.X - rippleSize / 2, itemRect.Y - itemRect.Height, rippleSize, itemRect.Height * 3));
-                    }
-                }
-            }
-        }
-
-        protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
-        {
-            Graphics g = e.Graphics;
-
-            g.FillRectangle(new SolidBrush(style.BackgroundColor(0)), e.Item.Bounds);
-            g.DrawLine(
-                new Pen(style.LineColor),
-                new Point(e.Item.Bounds.Left, e.Item.Bounds.Height / 2),
-                new Point(e.Item.Bounds.Right, e.Item.Bounds.Height / 2));
-        }
-
-        protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
-        {
-            Graphics g = e.Graphics;
-
-            g.DrawRectangle(
-                new Pen(style.BorderColor(0)),
-                new Rectangle(e.AffectedBounds.X, e.AffectedBounds.Y, e.AffectedBounds.Width - 1, e.AffectedBounds.Height - 1));
-        }
-
-        private Rectangle GetItemRect(ToolStripItem item)
-        {
-            return new Rectangle(0, item.ContentRectangle.Y, item.ContentRectangle.Width + 4, item.ContentRectangle.Height);
-        }
-
-        #endregion
     }
 }

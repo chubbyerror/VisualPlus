@@ -15,14 +15,16 @@
     /// <summary>The visual TabControl.</summary>
     // [ToolboxBitmap(typeof(TabControl)), Designer(StylesManager.BindedDesignerControls.VisualTab)]
     [ToolboxBitmap(typeof(TabControl))]
-    public class VisualTabControl : TabControl
+    public sealed class VisualTabControl : TabControl
     {
         #region  ${0} Variables
+
+        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
 
         private ControlState controlState = ControlState.Normal;
 
         private Point mouseLocation;
-        private bool selectorVisible = true;
+        private bool selectorVisible;
         private Color separator = StylesManager.DefaultValue.Style.TabSelected;
         private Color tabHover = StylesManager.DefaultValue.Style.TabHover;
         private Color tabMenu = StylesManager.DefaultValue.Style.TabMenu;
@@ -33,6 +35,9 @@
         // private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Color textNormal = StylesManager.DefaultValue.Style.TabTextNormal;
         private Color textSelected = StylesManager.DefaultValue.Style.TabTextSelected;
+
+        private StringAlignment textAlignment = StringAlignment.Center;
+        private StringAlignment lineAlignment = StringAlignment.Near;
 
         #endregion
 
@@ -47,19 +52,64 @@
 
             UpdateStyles();
 
-            DoubleBuffered = true;
-            SizeMode = TabSizeMode.Fixed;
             ItemSize = new Size(40, 140);
+            MinimumSize = new Size(144, 85);
 
-            // DrawMode = TabDrawMode.OwnerDrawFixed;
             foreach (TabPage page in TabPages)
             {
-                page.BackColor = Background;
+                page.BackColor = backgroundColor;
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color BackgroundColor
+        {
+            get
+            {
+                return backgroundColor;
+            }
+
+            set
+            {
+                backgroundColor = value;
+                foreach (TabPage page in TabPages)
+                {
+                    page.BackColor = backgroundColor;
+                }
+
+                Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance)]
-        public Color Background { get; set; } = StylesManager.DefaultValue.Style.BackgroundColor(2);
+        public StringAlignment LineAlignment
+        {
+            get
+            {
+                return lineAlignment;
+            }
+
+            set
+            {
+                lineAlignment = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        public StringAlignment TextAlignment
+        {
+            get
+            {
+                return textAlignment;
+            }
+
+            set
+            {
+                textAlignment = value;
+                Invalidate();
+            }
+        }
 
         [DefaultValue(true), Category(Localize.Category.Behavior)]
         public bool SelectorVisible
@@ -225,13 +275,13 @@
                 {
                     using (new TabPage())
                     {
-                        BackColor = Background;
+                        BackColor = backgroundColor;
                     }
                 }
             }
             finally
             {
-                e.Control.BackColor = Background;
+                e.Control.BackColor = backgroundColor;
             }
         }
 
@@ -276,19 +326,13 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-
-            graphics.Clear(Background);
-            graphics.SmoothingMode = SmoothingMode.HighSpeed;
-            graphics.CompositingQuality = CompositingQuality.HighSpeed;
             graphics.CompositingMode = CompositingMode.SourceOver;
 
             // Draw tab selector background body
-            graphics.FillRectangle(new SolidBrush(tabMenu), new Rectangle(-5, 0, ItemSize.Height + 4, Height));
-
-            // Draw vertical line at the end of the tab selector rectangle
-            graphics.DrawLine(new Pen(separator), ItemSize.Height - 1, 0, ItemSize.Height - 1, Height);
+            graphics.FillRectangle(new SolidBrush(tabMenu), new Rectangle(0, 0, Width, Height));
 
             // ------------------------------- >
             for (var tabIndex = 0; tabIndex <= TabCount - 1; tabIndex++)
@@ -296,9 +340,9 @@
                 Rectangle tabRect = new Rectangle(
                     new Point(
                         GetTabRect(tabIndex).
-                            Location.X - 2,
+                            Location.X,
                         GetTabRect(tabIndex).
-                            Location.Y - 2),
+                            Location.Y),
                     new Size(
                         GetTabRect(tabIndex).
                             Width,
@@ -310,13 +354,12 @@
                         GetTabRect(tabIndex).
                             X,
                         GetTabRect(tabIndex).
-                            Location.Y + 5),
+                            Y),
                     new Size(
                         4,
-                        GetTabRect(tabIndex).
-                            Height / 2));
+                        tabRect.Height));
 
-                Rectangle textRect = new Rectangle(tabRect.Left + 40, tabRect.Top + 12, tabRect.Width - 40, tabRect.Height);
+                Rectangle textRect = new Rectangle(tabRect.Left + 20, tabRect.Top + 12, tabRect.Width - 40, tabRect.Height);
 
                 if (tabIndex == SelectedIndex)
                 {
@@ -329,13 +372,19 @@
                         graphics.FillRectangle(new SolidBrush(tabSelector), tabHighlighter);
                     }
 
-                    // Draw tab text
+                    StringFormat stringFormat = new StringFormat
+                        {
+                            Alignment = textAlignment,
+                            LineAlignment = lineAlignment
+                        };
+
+                    // Draw selected tab text
                     graphics.DrawString(
                         TabPages[tabIndex].Text,
                         Font,
                         new SolidBrush(textSelected),
                         textRect,
-                        new StringFormat { Alignment = StringAlignment.Near });
+                        stringFormat);
 
                     // Draw image list
                     if (ImageList != null)
@@ -347,8 +396,9 @@
                 else
                 {
                     // Draw other TabPages
-                    if (controlState == ControlState.Hover && GetTabRect(tabIndex).
-                            Contains(mouseLocation))
+                    graphics.FillRectangle(new SolidBrush(tabNormal), tabRect);
+
+                    if (controlState == ControlState.Hover && tabRect.Contains(mouseLocation))
                     {
                         Cursor = Cursors.Hand;
 
@@ -362,14 +412,18 @@
                         }
                     }
 
-                    // Unselected TabPages
-                    // graphics.FillRectangle(new SolidBrush(tabNormal), tabRect);
+                    StringFormat stringFormat = new StringFormat
+                        {
+                        Alignment = textAlignment,
+                        LineAlignment = lineAlignment
+                    };
+
                     graphics.DrawString(
                         TabPages[tabIndex].Text,
                         Font,
                         new SolidBrush(textNormal),
                         textRect,
-                        new StringFormat { Alignment = StringAlignment.Near });
+                        stringFormat);
 
                     // Draw image list
                     if (ImageList != null)
@@ -381,7 +435,7 @@
             }
 
             // Draw divider that separates the panels.
-            // e.Graphics.DrawLine(new Pen(separator, 2), ItemSize.Height + 2, 0, ItemSize.Height + 2, Height);
+            e.Graphics.DrawLine(new Pen(separator, 2), ItemSize.Height + 2, 0, ItemSize.Height + 2, Height);
         }
 
         private TabPage GetPageByPoint(TabControl tabControl, Point point)
