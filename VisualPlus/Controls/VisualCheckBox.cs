@@ -12,9 +12,18 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    public enum CheckBoxType
+    {
+        /// <summary>The check mark.</summary>
+        CheckMark,
+
+        /// <summary>The filled.</summary>
+        Filled
+    }
+
     /// <summary>The visual CheckBox.</summary>
     [ToolboxBitmap(typeof(CheckBox)), Designer(VSDesignerBinding.VisualCheckBox)]
-    public class VisualCheckBox : CheckBox
+    public sealed class VisualCheckBox : CheckBox
     {
         #region  ${0} Variables
 
@@ -27,12 +36,17 @@
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Point boxLocation = new Point(0, 0);
-        private Size boxSize = new Size(13, 13);
+        private Size boxSize = new Size(14, 14);
         private Color checkBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Point checkBoxLocation = new Point(0, 0);
         private GraphicsPath checkBoxPath;
         private Rectangle checkBoxRectangle;
+        private CheckBoxType checkBoxType = CheckBoxType.Filled;
         private Color checkMarkColor = StylesManager.MainColor;
+        private Size checkMarkFillSize = new Size(8, 8);
+        private Point checkMarkLocation = new Point(0, 0);
+        private GraphicsPath checkMarkPath;
+        private Rectangle checkMarkRectangle;
         private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
@@ -51,7 +65,7 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            BackColor = Color.Transparent;
+            UpdateStyles();
 
             // Setup effects animation
             effectsManager = new VFXManager
@@ -236,6 +250,38 @@
             }
         }
 
+        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentSize)]
+        public Size CheckBoxSize
+        {
+            get
+            {
+                return boxSize;
+            }
+
+            set
+            {
+                boxSize = value;
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentNoName)]
+        public CheckBoxType CheckBoxType
+        {
+            get
+            {
+                return checkBoxType;
+            }
+
+            set
+            {
+                checkBoxType = value;
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color CheckMarkColor
         {
@@ -247,6 +293,22 @@
             set
             {
                 checkMarkColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentSize)]
+        public Size CheckMarkFillSize
+        {
+            get
+            {
+                return checkMarkFillSize;
+            }
+
+            set
+            {
+                checkMarkFillSize = value;
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -328,8 +390,7 @@
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.Clear(BackColor);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
 
@@ -342,38 +403,41 @@
 
             if (Checked)
             {
-                // Checkmark points
-                var points = new[]
-                    {
-                        new PointF(checkBoxRectangle.X + 3, checkBoxRectangle.Y + 5), new PointF(checkBoxRectangle.X + 5, checkBoxRectangle.Y + 7),
-                        new PointF(checkBoxRectangle.X + 9, checkBoxRectangle.Y + 3), new PointF(checkBoxRectangle.X + 9, checkBoxRectangle.Y + 4),
-                        new PointF(checkBoxRectangle.X + 5, checkBoxRectangle.Y + 8), new PointF(checkBoxRectangle.X + 3, checkBoxRectangle.Y + 6),
-                        new PointF(checkBoxRectangle.X + 3, checkBoxRectangle.Y + 7),
-                        new PointF(checkBoxRectangle.X + 5, checkBoxRectangle.Y + 9), new PointF(checkBoxRectangle.X + 9, checkBoxRectangle.Y + 5)
-                    };
+                if (checkBoxType == CheckBoxType.CheckMark)
+                {
+                    // Draw check mark
+                    Point pt = new Point(-2, -1);
+                    Rectangle layoutRectangle = new Rectangle(pt, new Size(checkBoxRectangle.Width, checkBoxRectangle.Height));
 
-                graphics.DrawLines(new Pen(controlCheckTemp), points);
+                    using (Font wing = new Font("Wingdings", 14f, FontStyle.Regular))
+                    {
+                        e.Graphics.DrawString("ü", wing, new SolidBrush(checkMarkColor), layoutRectangle);
+                    }
+                }
+                else
+                {
+                    // Draw filled check mark
+                    graphics.FillPath(new SolidBrush(controlCheckTemp), checkMarkPath);
+                }
             }
 
             // Setup checkbox border
             if (BorderVisible)
             {
-                if (controlState == ControlState.Hover && borderHoverVisible)
-                {
-                    GDI.DrawBorder(graphics, checkBoxPath, borderSize, borderHoverColor);
-                }
-                else
-                {
-                    GDI.DrawBorder(graphics, checkBoxPath, borderSize, borderColor);
-                }
+                GDI.DrawBorderType(graphics, controlState, checkBoxPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
             }
 
             // Draw string
-            StringFormat stringFormat = new StringFormat();
+            StringFormat stringFormat = new StringFormat
+                {
+                    // Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
-            // stringFormat.Alignment = StringAlignment.Center;
-            // stringFormat.LineAlignment = StringAlignment.Center;
-            Point textPoint = new Point(boxLocation.X + boxSize.Width + spacing, boxSize.Height / 2 - (int)Font.Size / 2);
+            // Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, boxSize.Height / 2 - (int)Font.Size / 2);
+            // Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, ClientRectangle.Height / 2 - (int)Font.Size / 2);
+            Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, ClientRectangle.Height / 2);
+
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 
@@ -392,11 +456,17 @@
         private void UpdateLocationPoints()
         {
             // Update
-            boxLocation = new Point(boxLocation.X, Height / 2 - boxSize.Height / 2);
-            checkBoxRectangle = new Rectangle(boxLocation, boxSize);
+            checkBoxLocation = new Point(checkBoxLocation.X, ClientRectangle.Height / 2 - boxSize.Height / 2);
+            checkBoxRectangle = new Rectangle(checkBoxLocation, boxSize);
+
+            checkMarkLocation = new Point(checkBoxLocation.X + boxSize.Width / 2 - checkMarkFillSize.Width / 2,
+                checkBoxLocation.Y + boxSize.Height / 2 - checkMarkFillSize.Height / 2);
+
+            checkMarkRectangle = new Rectangle(checkMarkLocation, checkMarkFillSize);
 
             // Update paths
             checkBoxPath = GDI.GetBorderShape(checkBoxRectangle, borderShape, borderRounding);
+            checkMarkPath = GDI.GetBorderShape(checkMarkRectangle, borderShape, 1);
         }
 
         #endregion
