@@ -18,7 +18,7 @@
     [ToolboxBitmap(typeof(ListView))]
 
     // [ToolboxBitmap(typeof(ListView)), Designer(VSDesignerBinding.VisualListView)]
-    public class VisualListView : ListView
+    public sealed class VisualListView : ListView
     {
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class LogFont
@@ -49,7 +49,7 @@
         #region  ${0} Variables
 
         private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private bool borderVisible = false;
         private Color columnBorder = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color columnHeaderBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private ControlState controlState = ControlState.Normal;
@@ -59,7 +59,6 @@
         private Color headerText = StylesManager.DefaultValue.Style.ForeColor(0);
         private Color itemBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private Color itemHover = StylesManager.DefaultValue.Style.ItemHover(0);
-
         private int itemPadding = 12;
         private Color itemSelected = StylesManager.DefaultValue.Style.BorderColor(1);
 
@@ -74,28 +73,23 @@
                 ControlStyles.SupportsTransparentBackColor, true);
 
             View = View.Details;
-
+            MultiSelect = false;
             LabelEdit = false;
-
             AllowColumnReorder = false;
-
             CheckBoxes = false;
-
             FullRowSelect = true;
-
             GridLines = true;
-
             HeaderStyle = ColumnHeaderStyle.Nonclickable;
-
             OwnerDraw = true;
             ResizeRedraw = true;
             BorderStyle = BorderStyle.None;
             GridLines = true;
             Size = new Size(250, 150);
-
             AutoSize = true;
             AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+            UpdateStyles();
 
             // Fix for hovers, by default it doesn't redraw
             // TODO: should only redraw when the hovered line changed, this to reduce unnecessary redraws
@@ -344,7 +338,7 @@
 
             StringFormat stringFormat = new StringFormat
                 {
-                    Alignment = StringAlignment.Center,
+                    // Alignment = StringAlignment.Center,
                     LineAlignment = StringAlignment.Center
                 };
 
