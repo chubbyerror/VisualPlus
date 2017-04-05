@@ -13,7 +13,7 @@
 
     /// <summary>The visual ListBox.</summary>
     [ToolboxBitmap(typeof(ListBox)), Designer(VSDesignerBinding.VisualListBox)]
-    public class VisualListBox : ListBox
+    public partial class VisualListBox : ListBox
     {
         #region  ${0} Variables
 
@@ -54,6 +54,7 @@
             AutoSize = true;
             DrawMode = DrawMode.OwnerDrawFixed;
             BackColor = Color.Transparent;
+            DoubleBuffered = true;
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
@@ -291,8 +292,6 @@
             BackColor = Parent.BackColor;
             Graphics graphics = e.Graphics;
 
-            GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
-
             e.Graphics.SetClip(controlGraphicsPath);
 
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
@@ -333,14 +332,12 @@
 
                 // Clean up
                 backgroundBrush.Dispose();
-            }
-        }
 
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-            controlState = ControlState.Down;
-            Invalidate();
+                e.Graphics.ResetClip();
+
+                // Draw the border
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -354,13 +351,6 @@
         {
             base.OnMouseLeave(e);
             controlState = ControlState.Normal;
-            Invalidate();
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-            controlState = ControlState.Hover;
             Invalidate();
         }
 
