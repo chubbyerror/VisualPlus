@@ -57,6 +57,7 @@
         private Font textFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
         private Color tickColor = StylesManager.DefaultValue.Style.LineColor;
         private int tickHeight = 2;
+        private bool tickVisible = StylesManager.DefaultValue.TextVisible;
         private Size trackerSize = new Size(27, 20);
         private Color trackLineColor = StylesManager.DefaultValue.Style.LineColor;
         private int trackLineHeight = 5;
@@ -404,6 +405,22 @@
             }
         }
 
+        [DefaultValue(StylesManager.DefaultValue.TextVisible), Category(Localize.Category.Appearance),
+         Description(Localize.Description.ComponentVisible)]
+        public bool TickVisible
+        {
+            get
+            {
+                return tickVisible;
+            }
+
+            set
+            {
+                tickVisible = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
         public Size TrackerSize
         {
@@ -738,7 +755,10 @@
                     drawRect.Inflate(-trackerSize.Width / 2, 0);
                     currentUsedPos += tickHeight + 1;
 
-                    GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                    if (tickVisible)
+                    {
+                        GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                    }
                 }
 
                 // Calculate the tracker's rectangle
@@ -781,7 +801,10 @@
                     drawRect.Inflate(-trackerSize.Width / 2, 0);
                     currentUsedPos += tickHeight;
 
-                    GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                    if (tickVisible)
+                    {
+                        GDI.DrawTickLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                    }
                 }
 
                 if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
