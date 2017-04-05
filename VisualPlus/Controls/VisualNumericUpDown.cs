@@ -13,7 +13,7 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual NumericUpDown.</summary>
-    [ToolboxBitmap(typeof(NumericUpDown)), Designer(VSDesignerBinding.VisualNumericUpDown)]
+    [ToolboxBitmap(typeof(NumericUpDown)), Designer(VSDesignerBinding.VisualNumericUpDown), Description("Displays a single numeric value that the user can increment and decrement by clicking up and down button on the control.")]
     public sealed class VisualNumericUpDown : Control
     {
         #region  ${0} Variables
