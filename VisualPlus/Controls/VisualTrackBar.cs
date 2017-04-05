@@ -60,7 +60,7 @@
         private Size trackerSize = new Size(27, 20);
         private Color trackLineColor = StylesManager.DefaultValue.Style.LineColor;
         private int trackLineHeight = 5;
-        private bool valueButtonVisible = StylesManager.DefaultValue.TextVisible;
+        private bool valueButtonVisible;
         private bool valueTickVisible = StylesManager.DefaultValue.TextVisible;
 
         #endregion
