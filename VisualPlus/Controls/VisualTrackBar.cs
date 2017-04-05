@@ -354,8 +354,10 @@
             {
                 trackBarType = value;
 
+                // Flip separator size on orientation change.
                 if (trackBarType == Orientation.Horizontal)
                 {
+                    // Horizontal
                     if (Width < Height)
                     {
                         int temp = Width;

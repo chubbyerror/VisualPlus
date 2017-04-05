@@ -141,7 +141,6 @@
     </Compile>
     <Compile Include="Framework\GDI\GDI.cs" />
     <Compile Include="Enums\BrushType.cs" />
-    <Compile Include="Enums\SplitterStyle.cs" />
     <Compile Include="Enums\ControlState.cs" />
     <Compile Include="Localization\Localization.cs" />
     <Compile Include="Framework\VSDesigner.cs" />

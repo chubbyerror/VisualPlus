@@ -6,7 +6,6 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
@@ -17,7 +16,7 @@
         #region  ${0} Variables
 
         private Color lineColor = StylesManager.DefaultValue.Style.LineColor;
-        private SplitterStyle separatorStyle = SplitterStyle.Horizontal;
+        private Orientation separatorOrientation = Orientation.Horizontal;
         private Color shadowColor = StylesManager.DefaultValue.Style.ShadowColor;
 
         #endregion
@@ -52,23 +51,35 @@
         }
 
         [Category(Localize.Category.Behavior), Description(Localize.Description.SeparatorStyle)]
-        public SplitterStyle SeparatorStyle
+        public Orientation Orientation
         {
             get
             {
-                return separatorStyle;
+                return separatorOrientation;
             }
 
             set
             {
-                separatorStyle = value;
-                if (value == SplitterStyle.Horizontal)
+                separatorOrientation = value;
+
+                if (separatorOrientation == Orientation.Horizontal)
                 {
-                    Height = 4;
+                    if (Width < Height)
+                    {
+                        int temp = Width;
+                        Width = Height;
+                        Height = temp;
+                    }
                 }
                 else
                 {
-                    Width = 4;
+                    // Vertical
+                    if (Width > Height)
+                    {
+                        int temp = Width;
+                        Width = Height;
+                        Height = temp;
+                    }
                 }
 
                 Invalidate();
@@ -106,9 +117,9 @@
             Point shadowSize = new Point();
 
             // Get the line position and size
-            switch (SeparatorStyle)
+            switch (separatorOrientation)
             {
-                case SplitterStyle.Horizontal:
+                case Orientation.Horizontal:
                     {
                         linePosition = new Point(0, 1);
                         lineSize = new Point(Width, 1);
@@ -118,7 +129,7 @@
                         break;
                     }
 
-                case SplitterStyle.Vertical:
+                case Orientation.Vertical:
                     {
                         linePosition = new Point(1, 0);
                         lineSize = new Point(1, Height);
@@ -140,7 +151,7 @@
         {
             base.OnResize(e);
 
-            if (SeparatorStyle == SplitterStyle.Horizontal)
+            if (separatorOrientation == Orientation.Horizontal)
             {
                 Height = 4;
             }
