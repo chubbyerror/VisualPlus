@@ -16,7 +16,11 @@
         #region  ${0} Variables
 
         private Color lineColor = StylesManager.DefaultValue.Style.LineColor;
+<<<<<<< HEAD
         private Orientation separatorOrientation = Orientation.Horizontal;
+=======
+        private SplitterStyle separatorStyle = SplitterStyle.Horizontal;
+>>>>>>> master
         private Color shadowColor = StylesManager.DefaultValue.Style.ShadowColor;
 
         #endregion

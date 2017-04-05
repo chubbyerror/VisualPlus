@@ -17,7 +17,11 @@
             properties.Remove("AutoEllipsis");
             properties.Remove("UseCompatibleTextRendering");
 
+<<<<<<< HEAD
             // properties.Remove("Orientation");
+=======
+            properties.Remove("Orientation");
+>>>>>>> master
             properties.Remove("Image");
             properties.Remove("ImageAlign");
             properties.Remove("ImageIndex");
@@ -31,7 +35,7 @@
             properties.Remove("UseVisualStyleBackColor");
 
             // properties.Remove("Font");
-            // properties.Remove("ForeColor");
+            properties.Remove("ForeColor");
             properties.Remove("RightToLeft");
 
             base.PreFilterProperties(properties);

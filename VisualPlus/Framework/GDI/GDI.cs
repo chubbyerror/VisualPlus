@@ -202,6 +202,7 @@
 
         /// <summary>Handles and draws a border on the control depending on it's current focus.</summary>
         /// <param name="graphics">Graphics controller.</param>
+<<<<<<< HEAD
         /// <param name="controlState">The control state.</param>
         /// <param name="controlPath">The border path.</param>
         /// <param name="borderSize">The border size.</param>
@@ -218,6 +219,24 @@
             else
             {
                 DrawBorder(graphics, controlPath, borderSize, borderColor);
+=======
+        /// <param name="borderState">The control state.</param>
+        /// <param name="controlPath">The border path.</param>
+        /// <param name="borderSize">The border size.</param>
+        /// <param name="normalColor">Normal border color.</param>
+        /// <param name="hoverColor">Hover border color.</param>
+        /// <param name="hoverVisible">Hover visible.</param>
+        public static void DrawBorderType(Graphics graphics, ControlState borderState, GraphicsPath controlPath, float borderSize, Color normalColor,
+                                          Color hoverColor, bool borderHoverVisible)
+        {
+            if (borderState == ControlState.Hover && borderHoverVisible)
+            {
+                DrawBorder(graphics, controlPath, borderSize, hoverColor);
+            }
+            else
+            {
+                DrawBorder(graphics, controlPath, borderSize, normalColor);
+>>>>>>> master
             }
         }
 

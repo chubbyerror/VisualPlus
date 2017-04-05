@@ -264,7 +264,11 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
+<<<<<<< HEAD
             Color controlCheckTemp = Enabled ? checkMarkColor : controlDisabled;
+=======
+            Color controlCheckTemp = Enabled ? backgroundColor : controlDisabled;
+>>>>>>> master
 
             // Draw an ellipse inside the body
             if (Checked)

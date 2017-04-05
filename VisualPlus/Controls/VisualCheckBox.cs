@@ -36,17 +36,26 @@
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+<<<<<<< HEAD
         private Size boxSize = new Size(14, 14);
         private Color checkBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private Point checkBoxLocation = new Point(0, 0);
+=======
+        private Point boxLocation = new Point(0, 0);
+        private Size boxSize = new Size(13, 13);
+        private Color checkBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
+>>>>>>> master
         private GraphicsPath checkBoxPath;
         private Rectangle checkBoxRectangle;
         private CheckBoxType checkBoxType = CheckBoxType.Filled;
         private Color checkMarkColor = StylesManager.MainColor;
+<<<<<<< HEAD
         private Size checkMarkFillSize = new Size(8, 8);
         private Point checkMarkLocation = new Point(0, 0);
         private GraphicsPath checkMarkPath;
         private Rectangle checkMarkRectangle;
+=======
+>>>>>>> master
         private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
@@ -65,7 +74,11 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
+<<<<<<< HEAD
             UpdateStyles();
+=======
+            BackColor = Color.Transparent;
+>>>>>>> master
 
             // Setup effects animation
             effectsManager = new VFXManager
@@ -409,6 +422,7 @@
                     Point pt = new Point(-2, -1);
                     Rectangle layoutRectangle = new Rectangle(pt, new Size(checkBoxRectangle.Width, checkBoxRectangle.Height));
 
+<<<<<<< HEAD
                     using (Font wing = new Font("Wingdings", 14f, FontStyle.Regular))
                     {
                         e.Graphics.DrawString("ü", wing, new SolidBrush(checkMarkColor), layoutRectangle);
@@ -419,6 +433,9 @@
                     // Draw filled check mark
                     graphics.FillPath(new SolidBrush(controlCheckTemp), checkMarkPath);
                 }
+=======
+                graphics.DrawLines(new Pen(controlCheckTemp), points);
+>>>>>>> master
             }
 
             // Setup checkbox border
@@ -438,6 +455,12 @@
             // Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, ClientRectangle.Height / 2 - (int)Font.Size / 2);
             Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, ClientRectangle.Height / 2);
 
+<<<<<<< HEAD
+=======
+            // stringFormat.Alignment = StringAlignment.Center;
+            // stringFormat.LineAlignment = StringAlignment.Center;
+            Point textPoint = new Point(boxLocation.X + boxSize.Width + spacing, boxSize.Height / 2 - (int)Font.Size / 2);
+>>>>>>> master
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 

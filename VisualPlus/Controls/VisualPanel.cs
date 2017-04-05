@@ -19,7 +19,11 @@
     {
         #region  ${0} Variables
 
+<<<<<<< HEAD
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
+=======
+        private static BorderShape borderShape = BorderShape.Rectangle;
+>>>>>>> master
         private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
@@ -59,7 +63,10 @@
             set
             {
                 backgroundColor = value;
+<<<<<<< HEAD
                 BackColorFix();
+=======
+>>>>>>> master
                 Invalidate();
             }
         }

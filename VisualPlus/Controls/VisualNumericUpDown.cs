@@ -18,8 +18,13 @@
     {
         #region  ${0} Variables
 
+<<<<<<< HEAD
         private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+=======
+        private const int Spacing = 4;
+        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
+>>>>>>> master
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
@@ -27,20 +32,37 @@
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
+<<<<<<< HEAD
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 19;
+=======
+        private Font buttonFont = new Font("Arial", 8);
+        private Point buttonLocation = new Point(0, 4);
+        private GraphicsPath buttonPath;
+        private Rectangle buttonRectangle;
+        private Size buttonSize = new Size(19, 19);
+>>>>>>> master
         private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+<<<<<<< HEAD
+=======
+        private Color inputFieldColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+>>>>>>> master
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
         private long numericValue;
         private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+<<<<<<< HEAD
         private int xValue;
         private int yValue;
+=======
+        private int xval;
+        private int yval;
+>>>>>>> master
 
         #endregion
 
@@ -215,6 +237,24 @@
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
+<<<<<<< HEAD
+=======
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color InputField
+>>>>>>> master
         {
             get
             {
@@ -467,8 +507,11 @@
             foreColor = Enabled ? foreColor : textDisabledColor;
             Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
 
+<<<<<<< HEAD
             graphics.SetClip(controlGraphicsPath);
 
+=======
+>>>>>>> master
             // Draw background
             graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
 
@@ -482,6 +525,7 @@
                 GDI.DrawBorder(graphics, buttonPath, 1, StylesManager.DefaultValue.Style.BorderColor(0));
             }
 
+<<<<<<< HEAD
             graphics.ResetClip();
 
             // Draw string
@@ -489,6 +533,11 @@
                 new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2, Height / 4 - buttonRectangle.Height / 4));
             graphics.DrawString("-", Font, new SolidBrush(foreColor),
                 new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2 + 1, Height / 2));
+=======
+            // Buttons text
+            TextRenderer.DrawText(graphics, "+", buttonFont, new Point(buttonRectangle.X + 5, buttonRectangle.Y - 2), foreColor);
+            TextRenderer.DrawText(graphics, "-", buttonFont, new Point(buttonRectangle.X + 6, buttonRectangle.Y + 6), foreColor);
+>>>>>>> master
 
             // Button separator
             graphics.DrawLine(
@@ -501,7 +550,18 @@
             // Draw control border
             if (borderVisible)
             {
+<<<<<<< HEAD
                 GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+=======
+                if (controlState == ControlState.Hover && borderHoverVisible)
+                {
+                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
+                }
+                else
+                {
+                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
+                }
+>>>>>>> master
             }
 
             // Draw value string

@@ -48,7 +48,13 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
+<<<<<<< HEAD
             ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
+=======
+            BackColor = Color.Transparent;
+            ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
+
+>>>>>>> master
             Size = new Size(212, 104);
             MinimumSize = new Size(136, 50);
             Padding = new Padding(5, 28, 5, 5);
@@ -188,6 +194,36 @@
             {
                 groupBoxColor = value;
                 BackColorFix();
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TextDisabledColor
+        {
+            get
+            {
+                return textDisabledColor;
+            }
+
+            set
+            {
+                textDisabledColor = value;
                 Invalidate();
             }
         }
