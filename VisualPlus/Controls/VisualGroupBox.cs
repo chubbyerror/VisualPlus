@@ -16,7 +16,7 @@
     /// <summary>The visual GroupBox.</summary>
     [ToolboxBitmap(typeof(GroupBox)), Designer(VSDesignerBinding.VisualGroupBox),
      Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public sealed class VisualGroupBox : GroupBox
+    public partial class VisualGroupBox : GroupBox
     {
         #region  ${0} Variables
 
