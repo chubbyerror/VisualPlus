@@ -22,13 +22,13 @@ Travic Cl | [ ![Stable build status][5]][6] | [![Beta build status][7]][8] |
 [8]: https://travis-ci.org/DarkByte7/VisualPlus
 
 ## Contents
-- [Compiling][01]
+- [Contribute][01]
 - [Installing][02]
-- [Import Toolbox][03]
+- [WinForms UI Controls][03]
 
-[01]: https://github.com/DarkByte7/VisualPlus/wiki#compiling
+[01]: https://github.com/DarkByte7/VisualPlus/blob/beta/CONTRIBUTE.md
 [02]: https://github.com/DarkByte7/VisualPlus/wiki#installing
-[03]: https://github.com/DarkByte7/VisualPlus/wiki#import-toolbox
+[03]: https://github.com/DarkByte7/VisualPlus/wiki/WinForms-UI-Controls
 
 ## Build requirements
 - [.NET Framework 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
