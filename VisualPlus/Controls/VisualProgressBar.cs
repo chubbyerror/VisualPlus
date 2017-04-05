@@ -4,6 +4,7 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
@@ -80,8 +81,6 @@
             Width = 100;
             Height = 20;
             percentageVisible = true;
-            BackColor = Color.Transparent;
-            ForeColor = foreColor;
             DoubleBuffered = true;
             UpdateStyles();
         }
@@ -531,6 +530,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
             if (progressBarStyle == ProgressBarTypes.Horizontal || progressBarStyle == ProgressBarTypes.Vertical)
             {

@@ -187,6 +187,103 @@
 
         #region ${0} Events
 
+        protected virtual void BackColorFix()
+        {
+            foreach (object control in Controls)
+            {
+                if (control is VisualButton)
+                {
+                    (control as VisualButton).BackColor = backgroundColor;
+                }
+
+                if (control is VisualCheckBox)
+                {
+                    (control as VisualCheckBox).BackColor = backgroundColor;
+                }
+
+                if (control is VisualCircleProgressBar)
+                {
+                    (control as VisualCircleProgressBar).BackColor = backgroundColor;
+                }
+
+                if (control is VisualComboBox)
+                {
+                    (control as VisualComboBox).BackColor = backgroundColor;
+                }
+
+                if (control is VisualGroupBox)
+                {
+                    (control as VisualGroupBox).BackColor = backgroundColor;
+                }
+
+                if (control is VisualListBox)
+                {
+                    (control as VisualListBox).BackColor = backgroundColor;
+                }
+
+                if (control is VisualNumericUpDown)
+                {
+                    (control as VisualNumericUpDown).BackColor = backgroundColor;
+                }
+
+                if (control is VisualProgressBar)
+                {
+                    (control as VisualProgressBar).BackColor = backgroundColor;
+                }
+
+                if (control is VisualProgressIndicator)
+                {
+                    (control as VisualProgressIndicator).BackColor = backgroundColor;
+                }
+
+                if (control is VisualProgressSpinner)
+                {
+                    (control as VisualProgressSpinner).BackColor = backgroundColor;
+                }
+
+                if (control is VisualRadioButton)
+                {
+                    (control as VisualRadioButton).BackColor = backgroundColor;
+                }
+
+                if (control is VisualRichTextBox)
+                {
+                    (control as VisualRichTextBox).BackColor = backgroundColor;
+                }
+
+                if (control is VisualSeparator)
+                {
+                    (control as VisualSeparator).BackColor = backgroundColor;
+                }
+
+                if (control is VisualTabControl)
+                {
+                    (control as VisualTabControl).BackColor = backgroundColor;
+                }
+
+                if (control is VisualTextBox)
+                {
+                    (control as VisualTextBox).BackColor = backgroundColor;
+                }
+
+                if (control is VisualToggle)
+                {
+                    (control as VisualToggle).BackColor = backgroundColor;
+                }
+
+                if (control is VisualTrackBar)
+                {
+                    (control as VisualTrackBar).BackColor = backgroundColor;
+                }
+            }
+        }
+
+        protected override void OnControlAdded(ControlEventArgs e)
+        {
+            base.OnControlAdded(e);
+            BackColorFix();
+        }
+
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
@@ -204,8 +301,8 @@
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            BackColor = Parent.BackColor;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             UpdateLocationPoints();
 

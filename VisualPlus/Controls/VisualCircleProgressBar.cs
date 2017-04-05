@@ -51,6 +51,7 @@
             Size = new Size(130, 130);
             ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
             textVisible = true;
+            BackColor = Color.Transparent;
 
             UpdateStyles();
         }
@@ -213,6 +214,9 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = TextRenderingHint.SystemDefault;

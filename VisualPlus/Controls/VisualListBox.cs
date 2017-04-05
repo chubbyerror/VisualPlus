@@ -4,6 +4,7 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
@@ -287,11 +288,13 @@
 
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
-            // base.OnDrawItem(e);
-            UpdateLocationPoints();
-            BackColor = Parent.BackColor;
             Graphics graphics = e.Graphics;
+            graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
+            UpdateLocationPoints();
             GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
 
             e.Graphics.SetClip(controlGraphicsPath);
