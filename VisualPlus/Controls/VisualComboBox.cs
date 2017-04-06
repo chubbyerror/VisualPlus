@@ -72,6 +72,7 @@
             UpdateStyles();
             DropDownHeight = 100;
             UpdateLocationPoints();
+            BackColor = Color.Transparent;
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
