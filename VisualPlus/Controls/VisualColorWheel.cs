@@ -514,12 +514,6 @@ namespace VisualPlus.Controls
                     e.Graphics.DrawEllipse(pen, new RectangleF(centerPoint.X - radius, centerPoint.Y - radius, radius * 2, radius * 2));
                 }
 
-                // Draws the button
-                if (!Color.IsEmpty)
-                {
-                    DrawColorPicker(e, HslColorManager, drawFocusRectangle);
-                }
-
                 Point pointLocation = new Point(Convert.ToInt32(centerPoint.X - radius), Convert.ToInt32(centerPoint.Y - radius));
                 Size newSize = new Size(Convert.ToInt32(radius * 2), Convert.ToInt32(radius * 2));
 
@@ -530,6 +524,12 @@ namespace VisualPlus.Controls
                 if (borderVisible)
                 {
                     GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                }
+
+                // Draws the button
+                if (!Color.IsEmpty)
+                {
+                    DrawColorPicker(e, HslColorManager, drawFocusRectangle);
                 }
             }
         }
@@ -636,8 +636,8 @@ namespace VisualPlus.Controls
 
             if (!float.IsNaN(location.X) && !float.IsNaN(location.Y))
             {
-                int x = (int) location.X - SelectionSize / 2;
-                int y = (int) location.Y - SelectionSize / 2;
+                int x = (int)location.X - SelectionSize / 2;
+                int y = (int)location.Y - SelectionSize / 2;
 
                 // Create the button path
                 GraphicsPath buttonGraphicsPath = GDI.DrawRoundedRectangle(new Rectangle(x, y, SelectionSize, SelectionSize), 10);
@@ -648,7 +648,7 @@ namespace VisualPlus.Controls
                 // Draw border
                 if (borderVisible)
                 {
-                    GDI.DrawBorderType(e.Graphics, controlState, buttonGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                    GDI.DrawBorderType(e.Graphics, controlState, buttonGraphicsPath, borderSize, borderColor, borderHoverColor, false);
                 }
 
                 if (Focused && includeFocus)
@@ -674,7 +674,7 @@ namespace VisualPlus.Controls
             double x = Padding.Left + centerPoint.X + Math.Cos(angleR) * locationRadius;
             double y = Padding.Top + centerPoint.Y - Math.Sin(angleR) * locationRadius;
 
-            return new PointF((float) x, (float) y);
+            return new PointF((float)x, (float)y);
         }
 
         private float GetRadius(PointF centerRadiusPoint)
@@ -700,7 +700,7 @@ namespace VisualPlus.Controls
                 HslColorManager = new HslColorManager(Color);
             }
             Refresh();
-            EventHandler handler = (EventHandler) Events[eventColorChanged];
+            EventHandler handler = (EventHandler)Events[eventColorChanged];
             handler?.Invoke(this, e);
         }
 
@@ -709,7 +709,7 @@ namespace VisualPlus.Controls
         private void OnColorStepChanged(EventArgs e)
         {
             RefreshWheel();
-            EventHandler handler = (EventHandler) Events[eventColorStepChanged];
+            EventHandler handler = (EventHandler)Events[eventColorStepChanged];
             handler?.Invoke(this, e);
         }
 
@@ -722,7 +722,7 @@ namespace VisualPlus.Controls
                 Color = HslColorManager.ToRgbColor();
             }
             Invalidate();
-            EventHandler handler = (EventHandler) Events[eventHslColorChanged];
+            EventHandler handler = (EventHandler)Events[eventHslColorChanged];
             handler?.Invoke(this, e);
         }
 
@@ -730,7 +730,7 @@ namespace VisualPlus.Controls
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void OnLargeChangeChanged(EventArgs e)
         {
-            EventHandler handler = (EventHandler) Events[eventLargeChangeChanged];
+            EventHandler handler = (EventHandler)Events[eventLargeChangeChanged];
             handler?.Invoke(this, e);
         }
 
@@ -741,7 +741,7 @@ namespace VisualPlus.Controls
             SelectionGlyph?.Dispose();
             SelectionGlyph = CreateSelectionGlyph();
             RefreshWheel();
-            EventHandler handler = (EventHandler) Events[eventSelectionSizeChanged];
+            EventHandler handler = (EventHandler)Events[eventSelectionSizeChanged];
             handler?.Invoke(this, e);
         }
 
@@ -749,7 +749,7 @@ namespace VisualPlus.Controls
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void OnSmallChangeChanged(EventArgs e)
         {
-            EventHandler handler = (EventHandler) Events[eventSmallChangeChanged];
+            EventHandler handler = (EventHandler)Events[eventSmallChangeChanged];
             handler?.Invoke(this, e);
         }
 
@@ -930,7 +930,7 @@ namespace VisualPlus.Controls
 
             if (obj is HslColorManager)
             {
-                HslColorManager colorManager = (HslColorManager) obj;
+                HslColorManager colorManager = (HslColorManager)obj;
                 result = this == colorManager;
             }
             else
@@ -1010,7 +1010,7 @@ namespace VisualPlus.Controls
                 colors[color] *= 255;
             }
 
-            return Color.FromArgb(alphaRGB, (int) colors[0], (int) colors[1], (int) colors[2]);
+            return Color.FromArgb(alphaRGB, (int)colors[0], (int)colors[1], (int)colors[2]);
         }
 
         public override string ToString()
