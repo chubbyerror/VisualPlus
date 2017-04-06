@@ -410,7 +410,7 @@
 
                     using (Font wing = new Font("Wingdings", 14f, FontStyle.Regular))
                     {
-                        e.Graphics.DrawString("ü", wing, new SolidBrush(checkMarkColor), layoutRectangle);
+                        e.Graphics.DrawString("ü", wing, new SolidBrush(controlCheckTemp), layoutRectangle);
                     }
                 }
                 else
