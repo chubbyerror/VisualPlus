@@ -1,21 +1,20 @@
-﻿namespace VisualPlus.Controls
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Text;
+using System.Windows.Forms;
+using VisualPlus.Enums;
+using VisualPlus.Framework;
+using VisualPlus.Framework.GDI;
+using VisualPlus.Localization;
+
+namespace VisualPlus.Controls
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Drawing;
-    using System.Drawing.Drawing2D;
-    using System.Drawing.Imaging;
-    using System.Text;
-    using System.Windows.Forms;
-
-    using VisualPlus.Enums;
-    using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
-    using VisualPlus.Localization;
-
     [DefaultProperty("Color"), DefaultEvent("ColorChanged"), Description("A color wheel component used can be used to pick a color.")]
-    public sealed class VisualColorWheel : Control, IColor
+    public class VisualColorWheel : Control, IColor
     {
         #region  ${0} Variables
 
@@ -61,8 +60,7 @@
             SelectionSize = 10;
             SmallChange = 1;
             LargeChange = 5;
-            SelectionGlyph = CreateSelectionGlyph();
-
+            // SelectionGlyph = CreateSelectionGlyph();
             MinimumSize = new Size(130, 130);
             Size = new Size(130, 130);
         }
@@ -70,49 +68,49 @@
         [Category("Property Changed")]
         public event EventHandler ColorChanged
         {
-            add => Events.AddHandler(eventColorChanged, value);
-            remove => Events.RemoveHandler(eventColorChanged, value);
+            add { Events.AddHandler(eventColorChanged, value); }
+            remove { Events.RemoveHandler(eventColorChanged, value); }
         }
 
         [Category("Property Changed")]
         public event EventHandler ColorStepChanged
         {
-            add => Events.AddHandler(eventColorStepChanged, value);
-            remove => Events.RemoveHandler(eventColorStepChanged, value);
+            add { Events.AddHandler(eventColorStepChanged, value); }
+            remove { Events.RemoveHandler(eventColorStepChanged, value); }
         }
 
         [Category("Property Changed")]
         public event EventHandler HslColorChanged
         {
-            add => Events.AddHandler(eventHslColorChanged, value);
-            remove => Events.RemoveHandler(eventHslColorChanged, value);
+            add { Events.AddHandler(eventHslColorChanged, value); }
+            remove { Events.RemoveHandler(eventHslColorChanged, value); }
         }
 
         [Category("Property Changed")]
         public event EventHandler LargeChangeChanged
         {
-            add => Events.AddHandler(eventLargeChangeChanged, value);
-            remove => Events.RemoveHandler(eventLargeChangeChanged, value);
+            add { Events.AddHandler(eventLargeChangeChanged, value); }
+            remove { Events.RemoveHandler(eventLargeChangeChanged, value); }
         }
 
         [Category("Property Changed")]
         public event EventHandler SelectionSizeChanged
         {
-            add => Events.AddHandler(eventSelectionSizeChanged, value);
-            remove => Events.RemoveHandler(eventSelectionSizeChanged, value);
+            add { Events.AddHandler(eventSelectionSizeChanged, value); }
+            remove { Events.RemoveHandler(eventSelectionSizeChanged, value); }
         }
 
         [Category("Property Changed")]
         public event EventHandler SmallChangeChanged
         {
-            add => Events.AddHandler(eventSmallChangeChanged, value);
-            remove => Events.RemoveHandler(eventSmallChangeChanged, value);
+            add { Events.AddHandler(eventSmallChangeChanged, value); }
+            remove { Events.RemoveHandler(eventSmallChangeChanged, value); }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
-            get => borderColor;
+            get { return borderColor; }
 
             set
             {
@@ -124,7 +122,7 @@
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
-            get => borderHoverColor;
+            get { return borderHoverColor; }
 
             set
             {
@@ -137,7 +135,7 @@
          Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
-            get => borderHoverVisible;
+            get { return borderHoverVisible; }
 
             set
             {
@@ -150,7 +148,7 @@
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
-            get => borderSize;
+            get { return borderSize; }
 
             set
             {
@@ -167,7 +165,7 @@
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
-            get => borderVisible;
+            get { return borderVisible; }
 
             set
             {
@@ -195,7 +193,10 @@
         [Category(Localize.Category.Appearance), DefaultValue(4), Description("Gets or sets the increment for rendering the color wheel.")]
         public int ColorStep
         {
-            get => colorStep;
+            get
+            {
+                return colorStep;
+            }
             set
             {
                 if (value < 1 || value > 359)
@@ -228,15 +229,15 @@
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override Font Font
         {
-            get => base.Font;
-            set => base.Font = value;
+            get { return base.Font; }
+            set { base.Font = value; }
         }
 
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override Color ForeColor
         {
-            get => base.ForeColor;
-            set => base.ForeColor = value;
+            get { return base.ForeColor; }
+            set { base.ForeColor = value; }
         }
 
         [Category(Localize.Category.Appearance), DefaultValue(typeof(HslColorManager), "0, 0, 0"), Browsable(false),
@@ -313,11 +314,15 @@
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override string Text
         {
-            get => base.Text;
-            set => base.Text = value;
+            get { return base.Text; }
+            set { base.Text = value; }
         }
 
-        private bool AllowPainting => updates == 0;
+        private bool AllowPainting
+        {
+            get { return updates == 0; }
+        }
+
         private Color[] Colors { get; set; }
         private bool LockUpdates { get; set; }
         private PointF[] Points { get; set; }
@@ -879,13 +884,13 @@
 
         public int A
         {
-            get => alpha;
-            set => alpha = Math.Min(0, Math.Max(255, value));
+            get { return alpha; }
+            set { alpha = Math.Min(0, Math.Max(255, value)); }
         }
 
         public double H
         {
-            get => hue;
+            get { return hue; }
             set
             {
                 hue = value;
@@ -903,20 +908,20 @@
 
         public bool IsEmpty
         {
-            get => isEmpty;
-            internal set => isEmpty = value;
+            get { return isEmpty; }
+            internal set { isEmpty = value; }
         }
 
         public double L
         {
-            get => lightness;
-            set => lightness = Math.Min(1, Math.Max(0, value));
+            get { return lightness; }
+            set { lightness = Math.Min(1, Math.Max(0, value)); }
         }
 
         public double S
         {
-            get => saturation;
-            set => saturation = Math.Min(1, Math.Max(0, value));
+            get { return saturation; }
+            set { saturation = Math.Min(1, Math.Max(0, value)); }
         }
 
         public override bool Equals(object obj)
@@ -1026,7 +1031,7 @@
         }
     }
 
-    public interface IColor
+    internal interface IColor
     {
         #region ${0} Properties
 
