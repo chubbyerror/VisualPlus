@@ -678,7 +678,7 @@
                                 ((currentPoint.X - indentWidth - trackerSize.Width) / 2 * (Maximum - Minimum) /
                                  (Width - 2 * indentWidth - trackerSize.Width) + 0.5);
                         }
-
+                   
                         break;
 
                     case Orientation.Vertical:
@@ -697,12 +697,12 @@
                                 ((Height - currentPoint.Y - indentHeight - trackerSize.Width) / 2 * (Maximum - Minimum) /
                                  (Height - 2 * indentHeight - trackerSize.Width) + 0.5);
                         }
-
                         break;
                 }
 
                 int oldValue = Value;
                 Value = Minimum + offsetValue;
+
                 Invalidate();
 
                 if (oldValue != Value)
@@ -803,6 +803,7 @@
                     }
                 }
             }
+            Invalidate();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
