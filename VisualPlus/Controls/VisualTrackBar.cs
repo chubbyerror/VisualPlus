@@ -69,10 +69,19 @@
         private bool tickVisible = StylesManager.DefaultValue.TextVisible;
         private Size trackerSize = new Size(27, 20);
         private Color trackLineColor = StylesManager.DefaultValue.Style.LineColor;
-        private int trackLineHeight = 5;
+        private int trackLineThickness = 5;
         private bool valueButtonVisible;
         private bool valueTickVisible = StylesManager.DefaultValue.TextVisible;
 
+        private static int progressRotation;
+        private static Color hatchBackColor = StylesManager.DefaultValue.Style.HatchColor;
+        private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
+        private float hatchSize = StylesManager.DefaultValue.HatchSize;
+        private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
+        private bool hatchVisible = StylesManager.DefaultValue.HatchVisible;
+        private BrushType progressColorStyle = BrushType.Gradient;
+        private Color progressColor2 = ControlPaint.Light(progressColor1);
+        private bool progressVisible = StylesManager.DefaultValue.TextVisible;
         #endregion
 
         #region ${0} Properties
@@ -91,7 +100,114 @@
             UpdateStyles();
             AutoSize = false;
             Size = new Size(180, 50);
-            MinimumSize = new Size(180, 50);
+            MinimumSize = new Size(25, 25);
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color HatchBackColor
+        {
+            get
+            {
+                return hatchBackColor;
+            }
+
+            set
+            {
+                hatchBackColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color HatchForeColor
+        {
+            get
+            {
+                return hatchForeColor;
+            }
+
+            set
+            {
+                hatchForeColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), DefaultValue(StylesManager.DefaultValue.HatchSize), Description(Localize.Description.HatchSize)]
+        public float HatchSize
+        {
+            get
+            {
+                return hatchSize;
+            }
+
+            set
+            {
+                hatchSize = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.HatchStyle)]
+        public HatchStyle HatchStyle
+        {
+            get
+            {
+                return hatchStyle;
+            }
+
+            set
+            {
+                hatchStyle = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(true), Category(Localize.Category.Behavior),
+         Description(Localize.Description.ComponentVisible)]
+        public bool ProgressVisible
+        {
+            get
+            {
+                return progressVisible;
+            }
+
+            set
+            {
+                progressVisible = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(StylesManager.DefaultValue.HatchVisible), Category(Localize.Category.Behavior),
+         Description(Localize.Description.ComponentVisible)]
+        public bool HatchVisible
+        {
+            get
+            {
+                return hatchVisible;
+            }
+
+            set
+            {
+                hatchVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentColor)]
+        public BrushType ProgressColorStyle
+        {
+            get
+            {
+                return progressColorStyle;
+            }
+
+            set
+            {
+                progressColorStyle = value;
+                Invalidate();
+            }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
@@ -322,6 +438,36 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color ProgressColor2
+        {
+            get
+            {
+                return progressColor2;
+            }
+
+            set
+            {
+                progressColor2 = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TickColor
+        {
+            get
+            {
+                return tickColor;
+            }
+
+            set
+            {
+                tickColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -429,16 +575,16 @@
         }
 
         [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
-        public int TrackLineHeight
+        public int TrackLineThickness
         {
             get
             {
-                return trackLineHeight;
+                return trackLineThickness;
             }
 
             set
             {
-                trackLineHeight = value;
+                trackLineThickness = value;
                 Invalidate();
             }
         }
@@ -517,6 +663,7 @@
                                 break;
                             }
                     }
+                    //  Invalidate();
                 }
             }
             else
@@ -626,11 +773,11 @@
                             break;
 
                         case Orientation.Vertical:
-                            if ((currentPoint.Y + trackerSize.Width) / 2 >= Height - indentHeight)
+                            if ((currentPoint.Y + trackerSize.Height) / 2 >= Height - indentHeight)
                             {
                                 offsetValue = 0;
                             }
-                            else if ((currentPoint.Y + trackerSize.Width) / 2 <= indentHeight)
+                            else if ((currentPoint.Y + trackerSize.Height) / 2 <= indentHeight)
                             {
                                 offsetValue = Maximum - Minimum;
                             }
@@ -638,7 +785,7 @@
                             {
                                 offsetValue =
                                     (int)
-                                    (((Height - currentPoint.Y + trackerSize.Width) / 2 - mouseStartPos - indentHeight) * (Maximum - Minimum) /
+                                    (((Height - currentPoint.Y + trackerSize.Height) / 2 - mouseStartPos - indentHeight) * (Maximum - Minimum) /
                                      (Height - 2 * indentHeight) + 0.5);
                             }
 
@@ -652,6 +799,8 @@
                 finally
                 {
                     int oldValue = Value;
+
+                    // TODO: Vertical exception is caused when trying to scroll passed the bottom
                     Value = Minimum + offsetValue;
                     Invalidate();
 
@@ -668,6 +817,7 @@
         {
             leftButtonDown = false;
             Capture = false;
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -735,8 +885,8 @@
 
                 // trackerRectangleF.Inflate(0,-1);
                 // Draw the Track Line
-                drawRect = new RectangleF(workingRect.Left, currentUsedPos + trackerSize.Height / 2 - trackLineHeight / 2, workingRect.Width,
-                    trackLineHeight);
+                drawRect = new RectangleF(workingRect.Left, currentUsedPos + trackerSize.Height / 2 - trackLineThickness / 2, workingRect.Width,
+                    trackLineThickness);
 
                 // Draws the track line
                 DrawTrackLine(e.Graphics, drawRect);
@@ -826,7 +976,7 @@
 
                 // trackerRectangleF.Inflate(-1,0);
                 // Draw the track line
-                drawRect = new RectangleF(currentUsedPos + trackerSize.Height / 2 - trackLineHeight / 2, workingRect.Top, trackLineHeight,
+                drawRect = new RectangleF(currentUsedPos + trackerSize.Height / 2 - trackLineThickness / 2, workingRect.Top, trackLineThickness,
                     workingRect.Height);
 
                 // Draw the track line
@@ -863,6 +1013,12 @@
 
                     GDI.DrawTickTextLine(e.Graphics, drawRect, TickFrequency, Minimum, Maximum, foreColor, textFont, trackBarType);
                 }
+            }
+
+            if (progressVisible)
+            {
+                // Draw the progress
+                DrawProgress(e.Graphics);
             }
 
             // Draw the Tracker
@@ -921,20 +1077,6 @@
 
         /// <summary>Draws the tracker button.</summary>
         /// <param name="graphics">Graphics controller.</param>
-        /// <param name="trackerRect">Button rectangle.</param>
-        private void DrawTracker(Graphics graphics, RectangleF trackerRect)
-        {
-            Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
-
-            // Draw button background
-            graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
-
-            // Draw button border
-            GDI.DrawBorderType(graphics, controlState, buttonPath, borderSize, borderColor, borderHoverColor, borderVisible);
-        }
-
-        /// <summary>Draws the tracker button.</summary>
-        /// <param name="graphics">Graphics controller.</param>
         private void DrawTracker(Graphics graphics)
         {
             // Convert from RectangleF to Rectangle.
@@ -963,16 +1105,123 @@
             }
         }
 
+        private void DrawProgress(Graphics graphics)
+        {
+            // graphics.ResetClip();
+
+            GraphicsPath progressPath = null;
+            Rectangle backgroundRect = new Rectangle();
+
+            // Convert from RectangleF to Rectangle.
+            Rectangle buttonRectangle = Rectangle.Round(trackerRectangleF);
+
+            // Setup pipe clip
+            Rectangle workingRect = Rectangle.Inflate(ClientRectangle, -indentWidth, -indentHeight);
+            RectangleF progressRect = new RectangleF();
+
+            Rectangle trackLineRectangle = Rectangle.Round(progressRect);
+            GraphicsPath progressGraphicsPath = GDI.GetBorderShape(trackLineRectangle, borderShape, 1);
+
+            var i1 = 0;
+            switch (Orientation)
+            {
+                case Orientation.Horizontal:
+                    {
+                        progressRect = new RectangleF(workingRect.Left, indentHeight + trackerSize.Height / 2 - trackLineThickness / 2, workingRect.Width, trackLineThickness);
+
+                        // Draws the progress to the middle of the button
+                        i1 = buttonRectangle.X + buttonRectangle.Width / 2;
+                        progressRotation = 0;
+
+                        // Progress path
+                        if (borderShape == BorderShape.Rectangle)
+                        {
+                            progressPath = new GraphicsPath();
+                            progressPath.AddRectangle(new Rectangle(0, 0, i1 + 1, Height));
+                            progressPath.CloseAllFigures();
+                        }
+                        else
+                        {
+                            progressPath = GDI.DrawRoundedRectangle(new Rectangle(1, 1, i1, Height - 2), borderRounding);
+                        }
+
+                        backgroundRect = new Rectangle(1, 1, i1, Height - 3);
+                    }
+
+                    break;
+                case Orientation.Vertical:
+                    {
+                        progressRect = new RectangleF(indentWidth + workingRect.Y + trackLineThickness / 2, indentHeight, trackLineThickness, workingRect.Height);
+                        
+                        // Draws the progress to the middle of the button
+                        i1 = buttonRectangle.Y + buttonRectangle.Height / 2;
+                        progressRotation = -90;
+
+                        // Progress path
+                        if (borderShape == BorderShape.Rectangle)
+                        {
+                            progressPath = new GraphicsPath();
+                            progressPath.AddRectangle(new Rectangle(1, i1, Width - 3, Height));
+                            progressPath.CloseAllFigures();
+                        }
+                        else
+                        {
+                            progressPath = GDI.DrawRoundedRectangle(new Rectangle(1, i1, Width - 3, Height), borderRounding);
+                        }
+
+                        backgroundRect = new Rectangle(1, i1, Width - 3, Height);
+                    }
+
+                    break;
+            }
+
+            // TODO: Draw trackLine
+            // graphics.FillRectangle(new SolidBrush(Color.Red), progressRect);
+
+            // TODO: TO test
+            // graphics.DrawPath(new Pen(Color.Red), progressPath);
+
+            // Clip to the TrackLine
+            graphics.SetClip(progressRect);
+
+            // Draw progress
+            if (i1 > 1)
+            {
+                // Draw progress
+                if (progressColorStyle == BrushType.Gradient)
+                {
+                    // Draw gradient progress
+                    graphics.FillPath(new LinearGradientBrush(backgroundRect, progressColor1, progressColor2, progressRotation), progressPath);
+                }
+                else
+                {
+                    // Solid color progress
+                    graphics.FillPath(new SolidBrush(progressColor1), progressPath);
+                }
+
+
+                // Toggle hatch
+                if (hatchVisible)
+                {
+                    HatchBrush hatchBrush = new HatchBrush(hatchStyle, hatchForeColor, hatchBackColor);
+                    using (TextureBrush textureBrush = GDI.DrawTextureUsingHatch(hatchBrush))
+                    {
+                        textureBrush.ScaleTransform(hatchSize, hatchSize);
+                        graphics.FillPath(textureBrush, progressPath);
+                        graphics.ResetClip();
+                    }
+                }
+
+                graphics.ResetClip();
+            }
+        }
+
         /// <summary>Draws the track line.</summary>
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="trackLineRectangleF">Track line rectangle.</param>
         private void DrawTrackLine(Graphics graphics, RectangleF trackLineRectangleF)
         {
-            // Convert from RectangleF to Rectangle.
-            Rectangle trackLineRectangle = Rectangle.Round(trackerRectangleF);
-            GDI.GetBorderShape(trackLineRectangle, borderShape, borderRounding);
-
-            GDI.DrawAquaPillSingleLayer(graphics, trackLineRectangleF, trackLineColor, trackBarType);
+            GDI.DrawTrackBarLine(graphics, trackLineRectangleF, trackLineColor, trackBarType);
         }
 
         #endregion
