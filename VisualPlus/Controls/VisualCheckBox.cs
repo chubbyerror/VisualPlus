@@ -36,7 +36,6 @@
         private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         private int borderSize = StylesManager.DefaultValue.BorderSize;
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Point boxLocation = new Point(0, 0);
         private Size boxSize = new Size(14, 14);
         private Color checkBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
         private Point checkBoxLocation = new Point(0, 0);
