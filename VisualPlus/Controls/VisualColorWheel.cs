@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Text;
-using System.Windows.Forms;
-using VisualPlus.Enums;
-using VisualPlus.Framework;
-using VisualPlus.Framework.GDI;
-using VisualPlus.Localization;
-
-namespace VisualPlus.Controls
+﻿namespace VisualPlus.Controls
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Drawing.Imaging;
+    using System.Text;
+    using System.Windows.Forms;
+
+    using VisualPlus.Enums;
+    using VisualPlus.Framework;
+    using VisualPlus.Framework.GDI;
+    using VisualPlus.Localization;
+
     [DefaultProperty("Color"), DefaultEvent("ColorChanged"), Description("A color wheel component used can be used to pick a color.")]
     public sealed class VisualColorWheel : Control, IColor
     {
