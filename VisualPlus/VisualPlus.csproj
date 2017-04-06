@@ -50,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\VisualColorWheel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\BehaviorDesign\VisualCircleProgressBarDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualContextMenuDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualListBoxDesigner.cs" />

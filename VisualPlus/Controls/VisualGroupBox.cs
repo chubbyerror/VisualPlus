@@ -353,6 +353,11 @@
         {
             foreach (object control in Controls)
             {
+                if (control is VisualColorWheel)
+                {
+                    (control as VisualColorWheel).BackColor = groupBoxColor;
+                }
+
                 if (control is VisualButton)
                 {
                     (control as VisualButton).BackColor = groupBoxColor;

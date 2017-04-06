@@ -192,6 +192,11 @@
         {
             foreach (object control in Controls)
             {
+                if (control is VisualColorWheel)
+                {
+                    (control as VisualColorWheel).BackColor = backgroundColor;
+                }
+
                 if (control is VisualButton)
                 {
                     (control as VisualButton).BackColor = backgroundColor;
