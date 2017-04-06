@@ -26,16 +26,7 @@
         By1000 = 1000
     }
 
-    public enum TrackBarPiping
-    {
-        /// <summary>Draws a trackbar line.</summary>
-        Line,
-
-        /// <summary>Draws a trackbar pipe.</summary>
-        Pipe
-    }
-
-    /// <summary>The visual Trackbar.</summary>
+    /// <summary>The visual TrackBar.</summary>
     [DefaultEvent("ValueChanged"), ToolboxBitmap(typeof(TrackBar)), Designer(VSDesignerBinding.VisualTrackBar)]
     public sealed class VisualTrackBar : TrackBar
     {
