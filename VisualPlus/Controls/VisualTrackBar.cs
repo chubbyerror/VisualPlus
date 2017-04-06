@@ -645,16 +645,17 @@
                         case Orientation.Horizontal:
                             {
                                 mouseStartPos = currentPoint.X - trackerRectangleF.X;
+                                Invalidate();
                                 break;
                             }
 
                         case Orientation.Vertical:
                             {
                                 mouseStartPos = currentPoint.Y - trackerRectangleF.Y;
+                                Invalidate();
                                 break;
                             }
                     }
-                    //  Invalidate();
                 }
             }
             else
@@ -706,8 +707,8 @@
 
                 if (oldValue != Value)
                 {
-                    // OnScroll();
-                    // OnValueChanged(Value);
+                    OnScroll(e);
+                    OnValueChanged(e);
                 }
             }
         }
@@ -797,8 +798,8 @@
 
                     if (oldValue != Value)
                     {
-                        // OnScroll();
-                        // OnValueChanged(Value);
+                        OnScroll(e);
+                        OnValueChanged(e);
                     }
                 }
             }
