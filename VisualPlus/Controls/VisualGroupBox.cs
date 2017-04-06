@@ -49,7 +49,7 @@
                 true);
 
             ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
-            Size = new Size(212, 104);
+            Size = new Size(220, 180);
             MinimumSize = new Size(136, 50);
             Padding = new Padding(5, 28, 5, 5);
 
