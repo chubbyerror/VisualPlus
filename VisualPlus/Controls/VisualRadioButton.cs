@@ -264,11 +264,12 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
 
             // Draw an ellipse inside the body
             if (Checked)
             {
-                graphics.FillEllipse(new SolidBrush(foreColor), new Rectangle(checkLocation, checkSize));
+                graphics.FillEllipse(new SolidBrush(controlCheckTemp), new Rectangle(checkLocation, checkSize));
             }
 
             // Draw the string specified in 'Text' property

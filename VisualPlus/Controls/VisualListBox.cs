@@ -289,8 +289,6 @@
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
@@ -332,8 +330,14 @@
                 // Draw the background
                 e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
 
+                StringFormat stringFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center
+                };
+
                 // Draw the text
-                e.Graphics.DrawString(Items[e.Index].ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, StringFormat.GenericDefault);
+                e.Graphics.DrawString(Items[e.Index].ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, stringFormat);
 
                 // Clean up
                 backgroundBrush.Dispose();
