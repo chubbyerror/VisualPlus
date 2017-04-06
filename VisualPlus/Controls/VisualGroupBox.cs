@@ -14,8 +14,7 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual GroupBox.</summary>
-    [ToolboxBitmap(typeof(GroupBox)), Designer(VSDesignerBinding.VisualGroupBox),
-     Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
+    [ToolboxBitmap(typeof(GroupBox)), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     public partial class VisualGroupBox : GroupBox
     {
         #region  ${0} Variables
