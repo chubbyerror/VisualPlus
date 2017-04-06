@@ -18,7 +18,6 @@
     {
         #region  ${0} Variables
 
-        private Color backColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
@@ -55,21 +54,6 @@
             Size = new Size(250, 150);
             AutoSize = true;
             DrawMode = DrawMode.OwnerDrawFixed;
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor
-        {
-            get
-            {
-                return backColor;
-            }
-
-            set
-            {
-                backColor = value;
-                Invalidate();
-            }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
