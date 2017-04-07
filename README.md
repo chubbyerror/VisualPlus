@@ -56,4 +56,4 @@ BitCoin donations are also welcome: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
 ![Imgur](http://i.imgur.com/F5mjJHD.jpg)
 
 ## License
-This repository is licensed with the [MIT](LICENSE) license.
+This repository is licensed with the [GPLv3](LICENSE) license.
