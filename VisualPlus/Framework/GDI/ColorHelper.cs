@@ -78,7 +78,7 @@ namespace VisualPlus.Framework.GDI
             return Color.FromArgb(r, g, b);
         }
 
-        public static Color FromHtml(string withouthHash)
+        public static Color ColorFromHtml(string withouthHash)
         {
             return ColorTranslator.FromHtml("#" + withouthHash);
         }
