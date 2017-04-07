@@ -344,9 +344,8 @@
 
             // Draw the header text.
             e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText),
-                    new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2,
-                        e.Bounds.Height - itemPadding * 2), stringFormat);
-            
+                new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2,
+                    e.Bounds.Height - itemPadding * 2), stringFormat);
 
             graphics.Dispose();
         }

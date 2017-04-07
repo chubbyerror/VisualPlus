@@ -22,6 +22,7 @@
         private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
 
         private ControlState controlState = ControlState.Normal;
+        private StringAlignment lineAlignment = StringAlignment.Near;
 
         private Point mouseLocation;
         private bool selectorVisible;
@@ -32,12 +33,12 @@
         private Color tabSelected = StylesManager.DefaultValue.Style.TabSelected;
         private Color tabSelector = StylesManager.DefaultValue.Style.MainColor;
 
+        private StringAlignment textAlignment = StringAlignment.Center;
+
         // private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Color textNormal = StylesManager.DefaultValue.Style.TabTextNormal;
-        private Color textSelected = StylesManager.DefaultValue.Style.TabTextSelected;
 
-        private StringAlignment textAlignment = StringAlignment.Center;
-        private StringAlignment lineAlignment = StringAlignment.Near;
+        private Color textSelected = StylesManager.DefaultValue.Style.TabTextSelected;
 
         #endregion
 
@@ -92,21 +93,6 @@
             set
             {
                 lineAlignment = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        public StringAlignment TextAlignment
-        {
-            get
-            {
-                return textAlignment;
-            }
-
-            set
-            {
-                textAlignment = value;
                 Invalidate();
             }
         }
@@ -212,6 +198,21 @@
             set
             {
                 tabSelector = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        public StringAlignment TextAlignment
+        {
+            get
+            {
+                return textAlignment;
+            }
+
+            set
+            {
+                textAlignment = value;
                 Invalidate();
             }
         }
@@ -379,7 +380,8 @@
 
                     // Draw selected tab text
                     graphics.DrawString(
-                        TabPages[tabIndex].Text,
+                        TabPages[tabIndex].
+                            Text,
                         Font,
                         new SolidBrush(textSelected),
                         textRect,
@@ -388,8 +390,10 @@
                     // Draw image list
                     if (ImageList != null)
                     {
-                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].Size.Height,
-                            ImageList.Images[tabIndex].Size.Width);
+                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].
+                                                                                                                 Size.Height,
+                            ImageList.Images[tabIndex].
+                                      Size.Width);
                     }
                 }
                 else
@@ -413,12 +417,13 @@
 
                     StringFormat stringFormat = new StringFormat
                         {
-                        Alignment = textAlignment,
-                        LineAlignment = lineAlignment
-                    };
+                            Alignment = textAlignment,
+                            LineAlignment = lineAlignment
+                        };
 
                     graphics.DrawString(
-                        TabPages[tabIndex].Text,
+                        TabPages[tabIndex].
+                            Text,
                         Font,
                         new SolidBrush(textNormal),
                         textRect,
@@ -427,8 +432,10 @@
                     // Draw image list
                     if (ImageList != null)
                     {
-                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].Size.Height,
-                            ImageList.Images[tabIndex].Size.Width);
+                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].
+                                                                                                                 Size.Height,
+                            ImageList.Images[tabIndex].
+                                      Size.Width);
                     }
                 }
             }

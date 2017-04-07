@@ -2,7 +2,6 @@
 {
     using System;
     using System.ComponentModel;
-    using System.ComponentModel.Design;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
@@ -13,9 +12,8 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual panel.</summary>
-    // [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    [ToolboxBitmap(typeof(Panel)), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public class VisualPanel : Panel
+    [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel)]
+    public partial class VisualPanel : Panel
     {
         #region  ${0} Variables
 

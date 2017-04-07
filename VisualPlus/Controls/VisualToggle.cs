@@ -25,7 +25,8 @@
     }
 
     /// <summary>The visual Toggle.</summary>
-    [ToolboxBitmap(typeof(Control)), Designer(VSDesignerBinding.VisualToggle), DefaultEvent("ToggledChanged"), Description("A toggle button allows the user to change a setting between two states.")]
+    [ToolboxBitmap(typeof(Control)), Designer(VSDesignerBinding.VisualToggle), DefaultEvent("ToggledChanged"),
+     Description("A toggle button allows the user to change a setting between two states.")]
     public class VisualToggle : Control
     {
         public class PillStyle

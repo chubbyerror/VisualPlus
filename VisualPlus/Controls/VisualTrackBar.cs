@@ -32,7 +32,9 @@
     {
         #region  ${0} Variables
 
+        private static Color hatchBackColor = StylesManager.DefaultValue.Style.HatchColor;
         private static Color progressColor1 = StylesManager.DefaultValue.Style.ProgressColor;
+        private static int progressRotation;
         private static Orientation trackBarType = Orientation.Horizontal;
         private static RectangleF trackerRectangleF = RectangleF.Empty;
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
@@ -44,35 +46,33 @@
         private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
         private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
         private GraphicsPath buttonPath = new GraphicsPath();
+        private Size buttonSize = new Size(27, 20);
         private Color buttonTextColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private bool buttonValueVisible;
+        private char charExtension;
         private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
         private ValueDivisor dividedValue = ValueDivisor.By1;
         private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
+        private float hatchSize = StylesManager.DefaultValue.HatchSize;
+        private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
+        private bool hatchVisible = StylesManager.DefaultValue.HatchVisible;
         private int indentHeight = 6;
         private int indentWidth = 6;
         private bool leftButtonDown;
         private float mouseStartPos = -1;
+        private Color progressColor2 = ControlPaint.Light(progressColor1);
+        private BrushType progressColorStyle = BrushType.Gradient;
+        private bool progressVisible = StylesManager.DefaultValue.TextVisible;
         private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private Font textFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
         private Color tickColor = StylesManager.DefaultValue.Style.LineColor;
         private int tickHeight = 2;
         private bool tickVisible = StylesManager.DefaultValue.TextVisible;
-        private Size buttonSize = new Size(27, 20);
         private Color trackLineColor = StylesManager.DefaultValue.Style.LineColor;
         private int trackLineThickness = 5;
-        private bool buttonValueVisible;
         private bool valueTickVisible = StylesManager.DefaultValue.TextVisible;
-        private static int progressRotation;
-        private static Color hatchBackColor = StylesManager.DefaultValue.Style.HatchColor;
-        private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
-        private float hatchSize = StylesManager.DefaultValue.HatchSize;
-        private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
-        private bool hatchVisible = StylesManager.DefaultValue.HatchVisible;
-        private BrushType progressColorStyle = BrushType.Gradient;
-        private Color progressColor2 = ControlPaint.Light(progressColor1);
-        private bool progressVisible = StylesManager.DefaultValue.TextVisible;
-        private char charExtension;
 
         #endregion
 
@@ -93,129 +93,6 @@
             AutoSize = false;
             Size = new Size(180, 50);
             MinimumSize = new Size(25, 25);
-        }
-
-        [Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
-        public char CharExtension
-        {
-            get
-            {
-                return charExtension;
-            }
-
-            set
-            {
-                charExtension = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color HatchBackColor
-        {
-            get
-            {
-                return hatchBackColor;
-            }
-
-            set
-            {
-                hatchBackColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color HatchForeColor
-        {
-            get
-            {
-                return hatchForeColor;
-            }
-
-            set
-            {
-                hatchForeColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Layout), DefaultValue(StylesManager.DefaultValue.HatchSize), Description(Localize.Description.HatchSize)]
-        public float HatchSize
-        {
-            get
-            {
-                return hatchSize;
-            }
-
-            set
-            {
-                hatchSize = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.HatchStyle)]
-        public HatchStyle HatchStyle
-        {
-            get
-            {
-                return hatchStyle;
-            }
-
-            set
-            {
-                hatchStyle = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(true), Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
-        public bool ProgressVisible
-        {
-            get
-            {
-                return progressVisible;
-            }
-
-            set
-            {
-                progressVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(StylesManager.DefaultValue.HatchVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
-        public bool HatchVisible
-        {
-            get
-            {
-                return hatchVisible;
-            }
-
-            set
-            {
-                hatchVisible = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentColor)]
-        public BrushType ProgressColorStyle
-        {
-            get
-            {
-                return progressColorStyle;
-            }
-
-            set
-            {
-                progressColorStyle = value;
-                Invalidate();
-            }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
@@ -351,6 +228,21 @@
             }
         }
 
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public Size ButtonSize
+        {
+            get
+            {
+                return buttonSize;
+            }
+
+            set
+            {
+                buttonSize = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color ButtonTextColor
         {
@@ -366,6 +258,37 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        public bool ButtonValueVisible
+        {
+            get
+            {
+                return buttonValueVisible;
+            }
+
+            set
+            {
+                buttonValueVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior),
+         Description(Localize.Description.ComponentVisible)]
+        public char CharExtension
+        {
+            get
+            {
+                return charExtension;
+            }
+
+            set
+            {
+                charExtension = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
@@ -377,6 +300,82 @@
             set
             {
                 controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color HatchBackColor
+        {
+            get
+            {
+                return hatchBackColor;
+            }
+
+            set
+            {
+                hatchBackColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color HatchForeColor
+        {
+            get
+            {
+                return hatchForeColor;
+            }
+
+            set
+            {
+                hatchForeColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), DefaultValue(StylesManager.DefaultValue.HatchSize), Description(Localize.Description.HatchSize)]
+        public float HatchSize
+        {
+            get
+            {
+                return hatchSize;
+            }
+
+            set
+            {
+                hatchSize = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.HatchStyle)]
+        public HatchStyle HatchStyle
+        {
+            get
+            {
+                return hatchStyle;
+            }
+
+            set
+            {
+                hatchStyle = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(StylesManager.DefaultValue.HatchVisible), Category(Localize.Category.Behavior),
+         Description(Localize.Description.ComponentVisible)]
+        public bool HatchVisible
+        {
+            get
+            {
+                return hatchVisible;
+            }
+
+            set
+            {
+                hatchVisible = value;
                 Invalidate();
             }
         }
@@ -461,17 +460,33 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color TickColor
+        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentColor)]
+        public BrushType ProgressColorStyle
         {
             get
             {
-                return tickColor;
+                return progressColorStyle;
             }
 
             set
             {
-                tickColor = value;
+                progressColorStyle = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(true), Category(Localize.Category.Behavior),
+         Description(Localize.Description.ComponentVisible)]
+        public bool ProgressVisible
+        {
+            get
+            {
+                return progressVisible;
+            }
+
+            set
+            {
+                progressVisible = value;
                 Invalidate();
             }
         }
@@ -521,6 +536,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color TickColor
+        {
+            get
+            {
+                return tickColor;
+            }
+
+            set
+            {
+                tickColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
         public int TickHeight
         {
@@ -552,21 +582,6 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
-        public Size ButtonSize
-        {
-            get
-            {
-                return buttonSize;
-            }
-
-            set
-            {
-                buttonSize = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TrackLineColor
         {
@@ -593,21 +608,6 @@
             set
             {
                 trackLineThickness = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
-        public bool ButtonValueVisible
-        {
-            get
-            {
-                return buttonValueVisible;
-            }
-
-            set
-            {
-                buttonValueVisible = value;
                 Invalidate();
             }
         }
@@ -646,18 +646,8 @@
 
         #region ${0} Events
 
-        protected override void OnScroll(EventArgs e)
-        {
-            base.OnScroll(e);
-            Invalidate();
-        }
-
         protected override void OnMouseDown(MouseEventArgs e)
         {
-
-
-
-
             var offsetValue = 0;
             PointF currentPoint = new PointF(e.X, e.Y);
 
@@ -705,7 +695,7 @@
                                 ((currentPoint.X - indentWidth - buttonSize.Width) / 2 * (Maximum - Minimum) /
                                  (Width - 2 * indentWidth - buttonSize.Width) + 0.5);
                         }
-                   
+
                         break;
 
                     case Orientation.Vertical:
@@ -724,6 +714,7 @@
                                 ((Height - currentPoint.Y - indentHeight - buttonSize.Width) / 2 * (Maximum - Minimum) /
                                  (Height - 2 * indentHeight - buttonSize.Width) + 0.5);
                         }
+
                         break;
                 }
 
@@ -830,6 +821,7 @@
                     }
                 }
             }
+
             Invalidate();
         }
 
@@ -1045,6 +1037,12 @@
             DrawTracker(e.Graphics);
         }
 
+        protected override void OnScroll(EventArgs e)
+        {
+            base.OnScroll(e);
+            Invalidate();
+        }
+
         /// <summary>This member overrides <see cref="Control.ProcessCmdKey">Control.ProcessCmdKey</see>.</summary>
         /// <param name="msg">The msg.</param>
         /// <param name="keyData">The key Data.</param>
@@ -1095,36 +1093,6 @@
             return result;
         }
 
-        /// <summary>Draws the tracker button.</summary>
-        /// <param name="graphics">Graphics controller.</param>
-        private void DrawTracker(Graphics graphics)
-        {
-            // Convert from RectangleF to Rectangle.
-            Rectangle buttonRectangle = Rectangle.Round(trackerRectangleF);
-            Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
-
-            buttonPath = GDI.GetBorderShape(buttonRectangle, borderShape, borderRounding);
-
-            // Draw button background
-            graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
-
-            // Draw button border
-            GDI.DrawBorderType(graphics, controlState, buttonPath, borderSize, borderColor, borderHoverColor, borderVisible);
-
-            // Draw the value on the tracker button
-            if (buttonValueVisible)
-            {
-                // Get Height of Text Area
-                float textAreaSizeWidth = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).Width;
-                float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).Height;
-                var stringValue = (float)(Value / (double)dividedValue);
-
-                graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor),
-                    new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2,
-                        buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
-            }
-        }
-
         private void DrawProgress(Graphics graphics)
         {
             GraphicsPath progressPath = null;
@@ -1145,7 +1113,8 @@
             {
                 case Orientation.Horizontal:
                     {
-                        progressRect = new RectangleF(workingRect.Left, indentHeight + buttonSize.Height / 2 - trackLineThickness / 2, workingRect.Width, trackLineThickness);
+                        progressRect = new RectangleF(workingRect.Left, indentHeight + buttonSize.Height / 2 - trackLineThickness / 2,
+                            workingRect.Width, trackLineThickness);
 
                         // Draws the progress to the middle of the button
                         i1 = buttonRectangle.X + buttonRectangle.Width / 2;
@@ -1169,8 +1138,9 @@
                     break;
                 case Orientation.Vertical:
                     {
-                        progressRect = new RectangleF(indentWidth + workingRect.Y + trackLineThickness / 2, indentHeight, trackLineThickness, workingRect.Height);
-                        
+                        progressRect = new RectangleF(indentWidth + workingRect.Y + trackLineThickness / 2, indentHeight, trackLineThickness,
+                            workingRect.Height);
+
                         // Draws the progress to the middle of the button
                         i1 = buttonRectangle.Y + buttonRectangle.Height / 2;
                         progressRotation = -90;
@@ -1193,12 +1163,6 @@
                     break;
             }
 
-            // TODO: Draw trackLine
-            // graphics.FillRectangle(new SolidBrush(Color.Red), progressRect);
-
-            // TODO: TO test
-            // graphics.DrawPath(new Pen(Color.Red), progressPath);
-
             // Clip to the TrackLine
             graphics.SetClip(progressRect);
 
@@ -1217,7 +1181,6 @@
                     graphics.FillPath(new SolidBrush(progressColor1), progressPath);
                 }
 
-
                 // Toggle hatch
                 if (hatchVisible)
                 {
@@ -1231,6 +1194,38 @@
                 }
 
                 graphics.ResetClip();
+            }
+        }
+
+        /// <summary>Draws the tracker button.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        private void DrawTracker(Graphics graphics)
+        {
+            // Convert from RectangleF to Rectangle.
+            Rectangle buttonRectangle = Rectangle.Round(trackerRectangleF);
+            Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
+
+            buttonPath = GDI.GetBorderShape(buttonRectangle, borderShape, borderRounding);
+
+            // Draw button background
+            graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
+
+            // Draw button border
+            GDI.DrawBorderType(graphics, controlState, buttonPath, borderSize, borderColor, borderHoverColor, borderVisible);
+
+            // Draw the value on the tracker button
+            if (buttonValueVisible)
+            {
+                // Get Height of Text Area
+                float textAreaSizeWidth = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
+                                                   Width;
+                float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
+                                                    Height;
+                var stringValue = (float)(Value / (double)dividedValue);
+
+                graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor),
+                    new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2,
+                        buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
             }
         }
 

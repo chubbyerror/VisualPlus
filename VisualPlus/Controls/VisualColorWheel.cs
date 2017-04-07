@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Text;
-using System.Windows.Forms;
-using VisualPlus.Enums;
-using VisualPlus.Framework;
-using VisualPlus.Framework.GDI;
-using VisualPlus.Localization;
-
-namespace VisualPlus.Controls
+﻿namespace VisualPlus.Controls
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Drawing.Imaging;
+    using System.Text;
+    using System.Windows.Forms;
+
+    using VisualPlus.Enums;
+    using VisualPlus.Framework;
+    using VisualPlus.Framework.GDI;
+    using VisualPlus.Localization;
+
     [DefaultProperty("Color"), DefaultEvent("ColorChanged"), Description("A color wheel component used can be used to pick a color.")]
     public class VisualColorWheel : Control, IColor
     {
@@ -60,6 +61,7 @@ namespace VisualPlus.Controls
             SelectionSize = 10;
             SmallChange = 1;
             LargeChange = 5;
+
             // SelectionGlyph = CreateSelectionGlyph();
             MinimumSize = new Size(130, 130);
             Size = new Size(130, 130);
@@ -68,49 +70,94 @@ namespace VisualPlus.Controls
         [Category("Property Changed")]
         public event EventHandler ColorChanged
         {
-            add { Events.AddHandler(eventColorChanged, value); }
-            remove { Events.RemoveHandler(eventColorChanged, value); }
+            add
+            {
+                Events.AddHandler(eventColorChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(eventColorChanged, value);
+            }
         }
 
         [Category("Property Changed")]
         public event EventHandler ColorStepChanged
         {
-            add { Events.AddHandler(eventColorStepChanged, value); }
-            remove { Events.RemoveHandler(eventColorStepChanged, value); }
+            add
+            {
+                Events.AddHandler(eventColorStepChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(eventColorStepChanged, value);
+            }
         }
 
         [Category("Property Changed")]
         public event EventHandler HslColorChanged
         {
-            add { Events.AddHandler(eventHslColorChanged, value); }
-            remove { Events.RemoveHandler(eventHslColorChanged, value); }
+            add
+            {
+                Events.AddHandler(eventHslColorChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(eventHslColorChanged, value);
+            }
         }
 
         [Category("Property Changed")]
         public event EventHandler LargeChangeChanged
         {
-            add { Events.AddHandler(eventLargeChangeChanged, value); }
-            remove { Events.RemoveHandler(eventLargeChangeChanged, value); }
+            add
+            {
+                Events.AddHandler(eventLargeChangeChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(eventLargeChangeChanged, value);
+            }
         }
 
         [Category("Property Changed")]
         public event EventHandler SelectionSizeChanged
         {
-            add { Events.AddHandler(eventSelectionSizeChanged, value); }
-            remove { Events.RemoveHandler(eventSelectionSizeChanged, value); }
+            add
+            {
+                Events.AddHandler(eventSelectionSizeChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(eventSelectionSizeChanged, value);
+            }
         }
 
         [Category("Property Changed")]
         public event EventHandler SmallChangeChanged
         {
-            add { Events.AddHandler(eventSmallChangeChanged, value); }
-            remove { Events.RemoveHandler(eventSmallChangeChanged, value); }
+            add
+            {
+                Events.AddHandler(eventSmallChangeChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(eventSmallChangeChanged, value);
+            }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
-            get { return borderColor; }
+            get
+            {
+                return borderColor;
+            }
 
             set
             {
@@ -122,7 +169,10 @@ namespace VisualPlus.Controls
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
-            get { return borderHoverColor; }
+            get
+            {
+                return borderHoverColor;
+            }
 
             set
             {
@@ -135,7 +185,10 @@ namespace VisualPlus.Controls
          Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
-            get { return borderHoverVisible; }
+            get
+            {
+                return borderHoverVisible;
+            }
 
             set
             {
@@ -148,7 +201,10 @@ namespace VisualPlus.Controls
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
-            get { return borderSize; }
+            get
+            {
+                return borderSize;
+            }
 
             set
             {
@@ -165,7 +221,10 @@ namespace VisualPlus.Controls
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
-            get { return borderVisible; }
+            get
+            {
+                return borderVisible;
+            }
 
             set
             {
@@ -177,7 +236,11 @@ namespace VisualPlus.Controls
         [Category(Localize.Category.Appearance), DefaultValue(typeof(Color), "Black"), Description("Gets or sets the component color.")]
         public Color Color
         {
-            get { return color; }
+            get
+            {
+                return color;
+            }
+
             set
             {
                 if (Color != value)
@@ -197,6 +260,7 @@ namespace VisualPlus.Controls
             {
                 return colorStep;
             }
+
             set
             {
                 if (value < 1 || value > 359)
@@ -217,7 +281,10 @@ namespace VisualPlus.Controls
          Description(Localize.Description.ComponentVisible)]
         public bool DrawFocusRectangle
         {
-            get { return drawFocusRectangle; }
+            get
+            {
+                return drawFocusRectangle;
+            }
 
             set
             {
@@ -229,22 +296,40 @@ namespace VisualPlus.Controls
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override Font Font
         {
-            get { return base.Font; }
-            set { base.Font = value; }
+            get
+            {
+                return base.Font;
+            }
+
+            set
+            {
+                base.Font = value;
+            }
         }
 
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override Color ForeColor
         {
-            get { return base.ForeColor; }
-            set { base.ForeColor = value; }
+            get
+            {
+                return base.ForeColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+            }
         }
 
         [Category(Localize.Category.Appearance), DefaultValue(typeof(HslColorManager), "0, 0, 0"), Browsable(false),
          DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public HslColorManager HslColorManager
         {
-            get { return colorManagement; }
+            get
+            {
+                return colorManagement;
+            }
+
             set
             {
                 if (HslColorManager != value)
@@ -264,7 +349,11 @@ namespace VisualPlus.Controls
         [Category(Localize.Category.Behavior), DefaultValue(5)]
         public int LargeChange
         {
-            get { return largeChange; }
+            get
+            {
+                return largeChange;
+            }
+
             set
             {
                 if (LargeChange != value)
@@ -279,7 +368,11 @@ namespace VisualPlus.Controls
         [Category(Localize.Category.Appearance), DefaultValue(10), Description("Gets or sets the size of the selection handle.")]
         public int SelectionSize
         {
-            get { return selectionSize; }
+            get
+            {
+                return selectionSize;
+            }
+
             set
             {
                 if (SelectionSize != value)
@@ -299,7 +392,11 @@ namespace VisualPlus.Controls
         [Category(Localize.Category.Behavior), DefaultValue(1)]
         public int SmallChange
         {
-            get { return smallChange; }
+            get
+            {
+                return smallChange;
+            }
+
             set
             {
                 if (SmallChange != value)
@@ -314,18 +411,31 @@ namespace VisualPlus.Controls
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override string Text
         {
-            get { return base.Text; }
-            set { base.Text = value; }
+            get
+            {
+                return base.Text;
+            }
+
+            set
+            {
+                base.Text = value;
+            }
         }
 
         private bool AllowPainting
         {
-            get { return updates == 0; }
+            get
+            {
+                return updates == 0;
+            }
         }
 
         private Color[] Colors { get; set; }
+
         private bool LockUpdates { get; set; }
+
         private PointF[] Points { get; set; }
+
         private Image SelectionGlyph { get; set; }
 
         #endregion
@@ -403,6 +513,7 @@ namespace VisualPlus.Controls
             {
                 hue = 0;
             }
+
             if (hue < 0)
             {
                 hue = 359;
@@ -578,11 +689,11 @@ namespace VisualPlus.Controls
             if (Points.Length != 0 && Points.Length == Colors.Length)
             {
                 result = new PathGradientBrush(Points, WrapMode.Clamp)
-                {
-                    CenterPoint = centerPoint,
-                    CenterColor = Color.White,
-                    SurroundColors = Colors
-                };
+                    {
+                        CenterPoint = centerPoint,
+                        CenterColor = Color.White,
+                        SurroundColors = Colors
+                    };
             }
             else
             {
@@ -601,12 +712,12 @@ namespace VisualPlus.Controls
             using (Graphics g = Graphics.FromImage(image))
             {
                 var diamondOuter = new[]
-                {
-                    new Point(halfSize, 0),
-                    new Point(SelectionSize, halfSize),
-                    new Point(halfSize, SelectionSize),
-                    new Point(0, halfSize)
-                };
+                    {
+                        new Point(halfSize, 0),
+                        new Point(SelectionSize, halfSize),
+                        new Point(halfSize, SelectionSize),
+                        new Point(0, halfSize)
+                    };
 
                 g.FillPolygon(SystemBrushes.Control, diamondOuter);
                 g.DrawPolygon(SystemPens.ControlDark, diamondOuter);
@@ -658,7 +769,6 @@ namespace VisualPlus.Controls
             }
         }
 
-
         /// <summary>Gets the point within the wheel representing the source colorManager.</summary>
         /// <param name="colorManager">The colorManager.</param>
         private PointF GetColorLocation(HslColorManager colorManager)
@@ -699,6 +809,7 @@ namespace VisualPlus.Controls
             {
                 HslColorManager = new HslColorManager(Color);
             }
+
             Refresh();
             EventHandler handler = (EventHandler)Events[eventColorChanged];
             handler?.Invoke(this, e);
@@ -721,6 +832,7 @@ namespace VisualPlus.Controls
             {
                 Color = HslColorManager.ToRgbColor();
             }
+
             Invalidate();
             EventHandler handler = (EventHandler)Events[eventHslColorChanged];
             handler?.Invoke(this, e);
@@ -783,6 +895,7 @@ namespace VisualPlus.Controls
             {
                 angle = 180 - angle;
             }
+
             if (point.Y > centerPoint.Y)
             {
                 angle = 360 - angle;
@@ -835,12 +948,13 @@ namespace VisualPlus.Controls
         static HslColorManager()
         {
             Empty = new HslColorManager
-            {
-                IsEmpty = true
-            };
+                {
+                    IsEmpty = true
+                };
         }
 
-        public HslColorManager(double hue, double saturation, double lightness) : this(255, hue, saturation, lightness)
+        public HslColorManager(double hue, double saturation, double lightness)
+            : this(255, hue, saturation, lightness)
         {
         }
 
@@ -884,13 +998,24 @@ namespace VisualPlus.Controls
 
         public int A
         {
-            get { return alpha; }
-            set { alpha = Math.Min(0, Math.Max(255, value)); }
+            get
+            {
+                return alpha;
+            }
+
+            set
+            {
+                alpha = Math.Min(0, Math.Max(255, value));
+            }
         }
 
         public double H
         {
-            get { return hue; }
+            get
+            {
+                return hue;
+            }
+
             set
             {
                 hue = value;
@@ -899,6 +1024,7 @@ namespace VisualPlus.Controls
                 {
                     hue = 0;
                 }
+
                 if (hue < 0)
                 {
                     hue = 359;
@@ -908,20 +1034,41 @@ namespace VisualPlus.Controls
 
         public bool IsEmpty
         {
-            get { return isEmpty; }
-            internal set { isEmpty = value; }
+            get
+            {
+                return isEmpty;
+            }
+
+            internal set
+            {
+                isEmpty = value;
+            }
         }
 
         public double L
         {
-            get { return lightness; }
-            set { lightness = Math.Min(1, Math.Max(0, value)); }
+            get
+            {
+                return lightness;
+            }
+
+            set
+            {
+                lightness = Math.Min(1, Math.Max(0, value));
+            }
         }
 
         public double S
         {
-            get { return saturation; }
-            set { saturation = Math.Min(1, Math.Max(0, value)); }
+            get
+            {
+                return saturation;
+            }
+
+            set
+            {
+                saturation = Math.Min(1, Math.Max(0, value));
+            }
         }
 
         public override bool Equals(object obj)
@@ -962,22 +1109,23 @@ namespace VisualPlus.Controls
             {
                 q = L + S - L * S;
             }
+
             double p = 2 * L - q;
             double hk = H / 360;
 
             // R, G, B colors
             double[] tc =
-            {
-                hk + 1d / 3d,
-                hk,
-                hk - 1d / 3d
-            };
+                {
+                    hk + 1d / 3d,
+                    hk,
+                    hk - 1d / 3d
+                };
             double[] colors =
-            {
-                0.0,
-                0.0,
-                0.0
-            };
+                {
+                    0.0,
+                    0.0,
+                    0.0
+                };
 
             for (var color = 0; color < colors.Length; color++)
             {
@@ -985,6 +1133,7 @@ namespace VisualPlus.Controls
                 {
                     tc[color] += 1;
                 }
+
                 if (tc[color] > 1)
                 {
                     tc[color] -= 1;

@@ -331,13 +331,14 @@
                 e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
 
                 StringFormat stringFormat = new StringFormat
-                {
-                    Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Center
-                };
+                    {
+                        Alignment = StringAlignment.Near,
+                        LineAlignment = StringAlignment.Center
+                    };
 
                 // Draw the text
-                e.Graphics.DrawString(Items[e.Index].ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, stringFormat);
+                e.Graphics.DrawString(Items[e.Index].
+                    ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, stringFormat);
 
                 // Clean up
                 backgroundBrush.Dispose();
