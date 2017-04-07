@@ -78,6 +78,9 @@
     <Compile Include="Controls\VisualColorWheel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\VisualListBox.cs">
       <SubType>Component</SubType>
     </Compile>
