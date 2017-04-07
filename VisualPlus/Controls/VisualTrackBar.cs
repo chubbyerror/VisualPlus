@@ -629,8 +629,18 @@
 
         #region ${0} Events
 
+        protected override void OnScroll(EventArgs e)
+        {
+            base.OnScroll(e);
+            Invalidate();
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
+
+
+
+
             var offsetValue = 0;
             PointF currentPoint = new PointF(e.X, e.Y);
 
