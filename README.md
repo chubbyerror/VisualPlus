@@ -33,6 +33,11 @@ If you are interested in fixing issues and contributing directly to the code bas
 - [Coding Guidelines](https://github.com/DarkByte7/VisualPlus/wiki/Coding-Guidelines)
 - [Submitting pull requests](https://github.com/DarkByte7/VisualPlus/compare)
 
+Enjoy using this VisualPlus or just want to say thanks?
+Hit the ⭐️ Star ⭐️ button.
+
+BitCoin donations are also welcome: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
+
 ## Feedback
 - Ask a question on [Gitter](https://gitter.im/VisualPlusUI/Lobby).
 - Request a new feature on [GitHub](https://github.com/DarkByte7/VisualPlus/blob/beta/CONTRIBUTE.md).
@@ -49,12 +54,6 @@ If you are interested in fixing issues and contributing directly to the code bas
 ![Imgur](http://i.imgur.com/w6skfXF.jpg)
 
 ![Imgur](http://i.imgur.com/F5mjJHD.jpg)
-
-## Contribute
-Enjoy using this product or just want to say thanks?
-Hit the ⭐️ Star ⭐️ button.
-
-BitCoin donations are welcome: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
 
 ## License
 This repository is licensed with the [MIT](LICENSE) license.
