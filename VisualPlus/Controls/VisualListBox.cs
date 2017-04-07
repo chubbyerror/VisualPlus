@@ -46,6 +46,7 @@
 
             UpdateStyles();
 
+            DoubleBuffered = true;
             IntegralHeight = false;
             ItemHeight = 18;
             Font = new Font(Font.FontFamily, 10, FontStyle.Regular);
@@ -53,7 +54,7 @@
             BorderStyle = BorderStyle.None;
             Size = new Size(250, 150);
             AutoSize = true;
-            DrawMode = DrawMode.OwnerDrawFixed;
+            DrawMode = DrawMode.OwnerDrawVariable;
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
@@ -276,7 +277,10 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
+            BackColor = Parent.BackColor;
+
             UpdateLocationPoints();
+
             GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
 
             e.Graphics.SetClip(controlGraphicsPath);
@@ -289,9 +293,21 @@
 
                 if (rotateItemColor)
                 {
-                    color = isSelected
-                                ? itemSelected
-                                : e.Index % 2 == 0 ? itemBackground : itemBackground2;
+                    if (isSelected)
+                    {
+                        color = itemSelected;
+                    }
+                    else
+                    {
+                        if (e.Index % 2 == 0)
+                        {
+                            color = itemBackground;
+                        }
+                        else
+                        {
+                            color = itemBackground2;
+                        }
+                    }
                 }
                 else
                 {
