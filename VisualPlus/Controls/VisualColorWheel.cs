@@ -233,7 +233,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), DefaultValue(typeof(Color), "Black"), Description("Gets or sets the component color.")]
+        [Category(Localize.Category.Appearance), DefaultValue(typeof(Color), "Black"), Description(Localize.Description.ComponentColor)]
         public Color Color
         {
             get
