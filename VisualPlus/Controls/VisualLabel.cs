@@ -12,7 +12,8 @@
     {
         #region  ${0} Variables
 
-        private Color hoverColor = ControlPaint.Light(StylesManager.DefaultValue.Style.ButtonNormalColor);
+        private Color hoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private bool hoverVisible = false;
 
         #endregion
 
@@ -28,6 +29,22 @@
             UpdateStyles();
 
             BackColor = Color.Transparent;
+        }
+
+        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
+         Description(Localize.Description.BorderHoverVisible)]
+        public bool BorderHoverVisible
+        {
+            get
+            {
+                return hoverVisible;
+            }
+
+            set
+            {
+                hoverVisible = value;
+                Invalidate();
+            }
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.HoverColor)]
@@ -52,7 +69,11 @@
         protected override void OnMouseHover(EventArgs e)
         {
             base.OnMouseHover(e);
-            ForeColor = hoverColor;
+
+            if (hoverVisible)
+            {
+                ForeColor = hoverColor;
+            }
         }
 
         protected override void OnMouseLeave(EventArgs e)
