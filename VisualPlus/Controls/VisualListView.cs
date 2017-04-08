@@ -254,6 +254,7 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
         public int ItemPadding
         {
             get
@@ -343,12 +344,9 @@
                 };
 
             // Draw the header text.
-            using (headerFont)
-            {
-                e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText),
-                    new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2,
-                        e.Bounds.Height - itemPadding * 2), stringFormat);
-            }
+            e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText),
+                new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2,
+                    e.Bounds.Height - itemPadding * 2), stringFormat);
 
             graphics.Dispose();
         }

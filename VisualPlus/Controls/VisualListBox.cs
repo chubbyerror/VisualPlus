@@ -18,7 +18,6 @@
     {
         #region  ${0} Variables
 
-        private Color backColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
@@ -47,6 +46,7 @@
 
             UpdateStyles();
 
+            DoubleBuffered = true;
             IntegralHeight = false;
             ItemHeight = 18;
             Font = new Font(Font.FontFamily, 10, FontStyle.Regular);
@@ -54,22 +54,7 @@
             BorderStyle = BorderStyle.None;
             Size = new Size(250, 150);
             AutoSize = true;
-            DrawMode = DrawMode.OwnerDrawFixed;
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor
-        {
-            get
-            {
-                return backColor;
-            }
-
-            set
-            {
-                backColor = value;
-                Invalidate();
-            }
+            DrawMode = DrawMode.OwnerDrawVariable;
         }
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
@@ -289,12 +274,13 @@
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
+            BackColor = Parent.BackColor;
+
             UpdateLocationPoints();
+
             GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
 
             e.Graphics.SetClip(controlGraphicsPath);
@@ -307,9 +293,21 @@
 
                 if (rotateItemColor)
                 {
-                    color = isSelected
-                                ? itemSelected
-                                : e.Index % 2 == 0 ? itemBackground : itemBackground2;
+                    if (isSelected)
+                    {
+                        color = itemSelected;
+                    }
+                    else
+                    {
+                        if (e.Index % 2 == 0)
+                        {
+                            color = itemBackground;
+                        }
+                        else
+                        {
+                            color = itemBackground2;
+                        }
+                    }
                 }
                 else
                 {
@@ -326,17 +324,18 @@
                 // Set control state color
                 foreColor = Enabled ? foreColor : textDisabledColor;
 
-                // Background item brush
-                SolidBrush backgroundBrush = new SolidBrush(color);
-
                 // Draw the background
-                e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+                e.Graphics.FillRectangle(new SolidBrush(color), e.Bounds);
+
+                StringFormat stringFormat = new StringFormat
+                    {
+                        Alignment = StringAlignment.Near,
+                        LineAlignment = StringAlignment.Center
+                    };
 
                 // Draw the text
-                e.Graphics.DrawString(Items[e.Index].ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, StringFormat.GenericDefault);
-
-                // Clean up
-                backgroundBrush.Dispose();
+                e.Graphics.DrawString(Items[e.Index].
+                    ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, stringFormat);
             }
         }
 
@@ -358,12 +357,14 @@
         {
             base.OnResize(e);
             UpdateLocationPoints();
+            Invalidate();
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
             UpdateLocationPoints();
+            Invalidate();
         }
 
         private void UpdateLocationPoints()

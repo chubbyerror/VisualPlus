@@ -14,8 +14,7 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual GroupBox.</summary>
-    [ToolboxBitmap(typeof(GroupBox)), Designer(VSDesignerBinding.VisualGroupBox),
-     Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
+    [ToolboxBitmap(typeof(GroupBox)), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     public partial class VisualGroupBox : GroupBox
     {
         #region  ${0} Variables
@@ -49,7 +48,7 @@
                 true);
 
             ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
-            Size = new Size(212, 104);
+            Size = new Size(220, 180);
             MinimumSize = new Size(136, 50);
             Padding = new Padding(5, 28, 5, 5);
 
@@ -349,10 +348,37 @@
             UpdateLocationPoints();
         }
 
-        private void BackColorFix()
+        private void UpdateLocationPoints()
+        {
+            titleBoxRectangle = new Rectangle(0, 0, Width - 1, 25);
+
+            // Determine type of border rounding to draw
+            if (borderShape == BorderShape.Rounded)
+            {
+                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, borderRounding);
+            }
+            else
+            {
+                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, 1);
+            }
+
+            // Update paths
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+        }
+
+        #endregion
+
+        #region ${0} Methods
+
+        public virtual void BackColorFix()
         {
             foreach (object control in Controls)
             {
+                if (control is VisualColorWheel)
+                {
+                    (control as VisualColorWheel).BackColor = groupBoxColor;
+                }
+
                 if (control is VisualButton)
                 {
                     (control as VisualButton).BackColor = groupBoxColor;
@@ -437,25 +463,17 @@
                 {
                     (control as VisualTrackBar).BackColor = groupBoxColor;
                 }
-            }
-        }
 
-        private void UpdateLocationPoints()
-        {
-            titleBoxRectangle = new Rectangle(0, 0, Width - 1, 25);
+                if (control is VisualListView)
+                {
+                    (control as VisualListView).BackColor = groupBoxColor;
+                }
 
-            // Determine type of border rounding to draw
-            if (borderShape == BorderShape.Rounded)
-            {
-                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, borderRounding);
+                if (control is VisualLabel)
+                {
+                    (control as VisualLabel).BackColor = groupBoxColor;
+                }
             }
-            else
-            {
-                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, 1);
-            }
-
-            // Update paths
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
         #endregion

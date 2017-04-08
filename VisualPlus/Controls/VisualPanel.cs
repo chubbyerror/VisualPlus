@@ -15,7 +15,7 @@
     /// <summary>The visual panel.</summary>
     // [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     [ToolboxBitmap(typeof(Panel)), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public class VisualPanel : Panel
+    public partial class VisualPanel : Panel
     {
         #region  ${0} Variables
 
@@ -188,10 +188,82 @@
 
         #region ${0} Events
 
-        protected virtual void BackColorFix()
+        protected override void OnControlAdded(ControlEventArgs e)
+        {
+            base.OnControlAdded(e);
+            BackColorFix();
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            controlState = ControlState.Hover;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            controlState = ControlState.Normal;
+            Invalidate();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Graphics graphics = e.Graphics;
+            graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            UpdateLocationPoints();
+
+            // Draw background
+            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
+
+            // Setup control border
+            if (borderVisible)
+            {
+                if (controlState == ControlState.Hover && borderHoverVisible)
+                {
+                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
+                }
+                else
+                {
+                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
+                }
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            UpdateLocationPoints();
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            UpdateLocationPoints();
+        }
+
+        private void UpdateLocationPoints()
+        {
+            // Update paths
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+        }
+
+        #endregion
+
+        #region ${0} Methods
+
+        public virtual void BackColorFix()
         {
             foreach (object control in Controls)
             {
+                if (control is VisualColorWheel)
+                {
+                    (control as VisualColorWheel).BackColor = backgroundColor;
+                }
+
                 if (control is VisualButton)
                 {
                     (control as VisualButton).BackColor = backgroundColor;
@@ -276,70 +348,17 @@
                 {
                     (control as VisualTrackBar).BackColor = backgroundColor;
                 }
-            }
-        }
 
-        protected override void OnControlAdded(ControlEventArgs e)
-        {
-            base.OnControlAdded(e);
-            BackColorFix();
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
-            Invalidate();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
-            Invalidate();
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            UpdateLocationPoints();
-
-            // Draw background
-            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
-
-            // Setup control border
-            if (borderVisible)
-            {
-                if (controlState == ControlState.Hover && borderHoverVisible)
+                if (control is VisualListView)
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
+                    (control as VisualListView).BackColor = backgroundColor;
                 }
-                else
+
+                if (control is VisualLabel)
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
+                    (control as VisualLabel).BackColor = backgroundColor;
                 }
             }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            UpdateLocationPoints();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
-        }
-
-        private void UpdateLocationPoints()
-        {
-            // Update paths
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
         #endregion

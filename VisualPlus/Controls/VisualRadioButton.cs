@@ -31,7 +31,6 @@
         private Point checkLocation = new Point(0, 0);
         private Color checkMarkColor = StylesManager.DefaultValue.Style.MainColor;
         private Size checkSize = new Size(6, 6);
-        private Color controlDisabled = StylesManager.DefaultValue.Style.ControlDisabled;
         private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
@@ -264,11 +263,12 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
+            Color controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
 
             // Draw an ellipse inside the body
             if (Checked)
             {
-                graphics.FillEllipse(new SolidBrush(foreColor), new Rectangle(checkLocation, checkSize));
+                graphics.FillEllipse(new SolidBrush(controlCheckTemp), new Rectangle(checkLocation, checkSize));
             }
 
             // Draw the string specified in 'Text' property

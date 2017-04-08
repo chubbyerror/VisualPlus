@@ -180,12 +180,16 @@
                 if (indicatorIndex == i)
                 {
                     // Current circle
-                    buffGraphics.Graphics.FillEllipse(animationColor, floatPoint[i].X, floatPoint[i].Y, circleSize.Width, circleSize.Height);
+                    buffGraphics.Graphics.FillEllipse(animationColor, floatPoint[i].
+                        X, floatPoint[i].
+                        Y, circleSize.Width, circleSize.Height);
                 }
                 else
                 {
                     // Other circles
-                    buffGraphics.Graphics.FillEllipse(baseColor, floatPoint[i].X, floatPoint[i].Y, circleSize.Width, circleSize.Height);
+                    buffGraphics.Graphics.FillEllipse(baseColor, floatPoint[i].
+                        X, floatPoint[i].
+                        Y, circleSize.Width, circleSize.Height);
                 }
             }
 

@@ -94,61 +94,6 @@
             return gp;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="drawRectF"></param>
-        /// <param name="drawColor"></param>
-        /// <param name="orientation"></param>
-        public static void DrawAquaPill(Graphics g, RectangleF drawRectF, Color drawColor, Orientation orientation)
-        {
-            Color color1;
-            Color color2;
-            Color color3;
-            Color color4;
-            Color color5;
-            LinearGradientBrush gradientBrush;
-            ColorBlend colorBlend = new ColorBlend();
-
-            color1 = ColorHelper.OpacityMix(Color.White, ColorHelper.SoftLightMix(drawColor, Color.Black, 100), 40);
-            color2 = ColorHelper.OpacityMix(Color.White, ColorHelper.SoftLightMix(drawColor, ColorHelper.CreateColorFromRGB(64, 64, 64), 100), 20);
-            color3 = ColorHelper.SoftLightMix(drawColor, ColorHelper.CreateColorFromRGB(128, 128, 128), 100);
-            color4 = ColorHelper.SoftLightMix(drawColor, ColorHelper.CreateColorFromRGB(192, 192, 192), 100);
-            color5 = ColorHelper.OverlayMix(ColorHelper.SoftLightMix(drawColor, Color.White, 100), Color.White, 75);
-
-            colorBlend.Colors = new[] { color1, color2, color3, color4, color5 };
-            colorBlend.Positions = new[] { 0, 0.25f, 0.5f, 0.75f, 1 };
-            if (orientation == Orientation.Horizontal)
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top - 1),
-                    new Point((int)drawRectF.Left, (int)drawRectF.Top + (int)drawRectF.Height + 1), color1, color5);
-            }
-            else
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left - 1, (int)drawRectF.Top),
-                    new Point((int)drawRectF.Left + (int)drawRectF.Width + 1, (int)drawRectF.Top), color1, color5);
-            }
-
-            gradientBrush.InterpolationColors = colorBlend;
-            FillPill(gradientBrush, drawRectF, g);
-
-            color2 = Color.White;
-            colorBlend.Colors = new[] { color2, color3, color4, color5 };
-            colorBlend.Positions = new[] { 0, 0.5f, 0.75f, 1 };
-            if (orientation == Orientation.Horizontal)
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left + 1, (int)drawRectF.Top),
-                    new Point((int)drawRectF.Left + 1, (int)drawRectF.Top + (int)drawRectF.Height - 1), color2, color5);
-            }
-            else
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top + 1),
-                    new Point((int)drawRectF.Left + (int)drawRectF.Width - 1, (int)drawRectF.Top + 1), color2, color5);
-            }
-
-            gradientBrush.InterpolationColors = colorBlend;
-            FillPill(gradientBrush, RectangleF.Inflate(drawRectF, -3, -3), g);
-        }
 
         /// <summary>
         /// </summary>
@@ -156,7 +101,7 @@
         /// <param name="drawRectF"></param>
         /// <param name="drawColor"></param>
         /// <param name="orientation"></param>
-        public static void DrawAquaPillSingleLayer(Graphics g, RectangleF drawRectF, Color drawColor, Orientation orientation)
+        public static void DrawTrackBarLine(Graphics g, RectangleF drawRectF, Color drawColor, Orientation orientation)
         {
             Color color1;
             Color color2;

@@ -22,6 +22,7 @@
         private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
 
         private ControlState controlState = ControlState.Normal;
+        private StringAlignment lineAlignment = StringAlignment.Near;
 
         private Point mouseLocation;
         private bool selectorVisible;
@@ -32,12 +33,12 @@
         private Color tabSelected = StylesManager.DefaultValue.Style.TabSelected;
         private Color tabSelector = StylesManager.DefaultValue.Style.MainColor;
 
+        private StringAlignment textAlignment = StringAlignment.Center;
+
         // private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Color textNormal = StylesManager.DefaultValue.Style.TabTextNormal;
-        private Color textSelected = StylesManager.DefaultValue.Style.TabTextSelected;
 
-        private StringAlignment textAlignment = StringAlignment.Center;
-        private StringAlignment lineAlignment = StringAlignment.Near;
+        private Color textSelected = StylesManager.DefaultValue.Style.TabTextSelected;
 
         #endregion
 
@@ -96,21 +97,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        public StringAlignment TextAlignment
-        {
-            get
-            {
-                return textAlignment;
-            }
-
-            set
-            {
-                textAlignment = value;
-                Invalidate();
-            }
-        }
-
         [DefaultValue(true), Category(Localize.Category.Behavior)]
         public bool SelectorVisible
         {
@@ -126,7 +112,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color Separator
         {
             get
@@ -141,7 +127,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabHover
         {
             get
@@ -156,7 +142,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabMenu
         {
             get
@@ -171,7 +157,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabNormal
         {
             get
@@ -186,7 +172,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabSelected
         {
             get
@@ -201,7 +187,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabSelector
         {
             get
@@ -217,6 +203,21 @@
         }
 
         [Category(Localize.Category.Appearance)]
+        public StringAlignment TextAlignment
+        {
+            get
+            {
+                return textAlignment;
+            }
+
+            set
+            {
+                textAlignment = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TextNormal
         {
             get
@@ -231,7 +232,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TextSelected
         {
             get
@@ -326,7 +327,6 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
             graphics.CompositingMode = CompositingMode.SourceOver;
@@ -380,7 +380,8 @@
 
                     // Draw selected tab text
                     graphics.DrawString(
-                        TabPages[tabIndex].Text,
+                        TabPages[tabIndex].
+                            Text,
                         Font,
                         new SolidBrush(textSelected),
                         textRect,
@@ -389,8 +390,10 @@
                     // Draw image list
                     if (ImageList != null)
                     {
-                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].Size.Height,
-                            ImageList.Images[tabIndex].Size.Width);
+                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].
+                                                                                                                 Size.Height,
+                            ImageList.Images[tabIndex].
+                                      Size.Width);
                     }
                 }
                 else
@@ -414,12 +417,13 @@
 
                     StringFormat stringFormat = new StringFormat
                         {
-                        Alignment = textAlignment,
-                        LineAlignment = lineAlignment
-                    };
+                            Alignment = textAlignment,
+                            LineAlignment = lineAlignment
+                        };
 
                     graphics.DrawString(
-                        TabPages[tabIndex].Text,
+                        TabPages[tabIndex].
+                            Text,
                         Font,
                         new SolidBrush(textNormal),
                         textRect,
@@ -428,8 +432,10 @@
                     // Draw image list
                     if (ImageList != null)
                     {
-                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].Size.Height,
-                            ImageList.Images[tabIndex].Size.Width);
+                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].
+                                                                                                                 Size.Height,
+                            ImageList.Images[tabIndex].
+                                      Size.Width);
                     }
                 }
             }

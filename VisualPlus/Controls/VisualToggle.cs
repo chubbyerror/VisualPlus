@@ -25,7 +25,8 @@
     }
 
     /// <summary>The visual Toggle.</summary>
-    [ToolboxBitmap(typeof(Control)), Designer(VSDesignerBinding.VisualToggle), DefaultEvent("ToggledChanged"), Description("A toggle button allows the user to change a setting between two states.")]
+    [ToolboxBitmap(typeof(Control)), Designer(VSDesignerBinding.VisualToggle), DefaultEvent("ToggledChanged"),
+     Description("A toggle button allows the user to change a setting between two states.")]
     public class VisualToggle : Control
     {
         public class PillStyle
@@ -80,6 +81,7 @@
 
             UpdateStyles();
             animationTimer.Tick += AnimationTimerTick;
+
         }
 
         public delegate void ToggledChangedEventHandler();
@@ -346,14 +348,7 @@
                 // Draw pill border
                 if (borderVisible)
                 {
-                    if (controlState == ControlState.Hover && borderHoverVisible)
-                    {
-                        GDI.DrawBorder(graphics, pillPath, borderSize, borderHoverColor);
-                    }
-                    else
-                    {
-                        GDI.DrawBorder(graphics, pillPath, borderSize, borderColor);
-                    }
+                    GDI.DrawBorderType(graphics, controlState, pillPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
                 }
 
                 // Draw toggle
