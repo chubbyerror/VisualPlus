@@ -1105,9 +1105,6 @@
             Rectangle workingRect = Rectangle.Inflate(ClientRectangle, -indentWidth, -indentHeight);
             RectangleF progressRect = new RectangleF();
 
-            Rectangle trackLineRectangle = Rectangle.Round(progressRect);
-            GraphicsPath progressGraphicsPath = GDI.GetBorderShape(trackLineRectangle, borderShape, 1);
-
             var i1 = 0;
             switch (Orientation)
             {
