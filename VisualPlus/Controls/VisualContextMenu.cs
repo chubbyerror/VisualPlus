@@ -10,6 +10,7 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
+    [ToolboxBitmap(typeof(ContextMenuStrip))]
     public class VisualContextMenuStrip : ContextMenuStrip
     {
         public sealed class VisualToolStripMenuItem : ToolStripMenuItem

@@ -8,12 +8,13 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
+    [ToolboxBitmap(typeof(Label))]
     public class VisualLabel : Label
     {
         #region  ${0} Variables
 
         private Color hoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool hoverVisible = false;
+        private bool hoverVisible;
 
         #endregion
 
