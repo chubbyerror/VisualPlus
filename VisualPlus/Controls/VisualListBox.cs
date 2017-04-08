@@ -324,11 +324,8 @@
                 // Set control state color
                 foreColor = Enabled ? foreColor : textDisabledColor;
 
-                // Background item brush
-                SolidBrush backgroundBrush = new SolidBrush(color);
-
                 // Draw the background
-                e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+                e.Graphics.FillRectangle(new SolidBrush(color), e.Bounds);
 
                 StringFormat stringFormat = new StringFormat
                     {
@@ -339,9 +336,6 @@
                 // Draw the text
                 e.Graphics.DrawString(Items[e.Index].
                     ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, stringFormat);
-
-                // Clean up
-                backgroundBrush.Dispose();
             }
         }
 
@@ -363,12 +357,14 @@
         {
             base.OnResize(e);
             UpdateLocationPoints();
+            Invalidate();
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
             UpdateLocationPoints();
+            Invalidate();
         }
 
         private void UpdateLocationPoints()
