@@ -112,7 +112,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color Separator
         {
             get
@@ -127,7 +127,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabHover
         {
             get
@@ -142,7 +142,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabMenu
         {
             get
@@ -157,7 +157,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabNormal
         {
             get
@@ -172,7 +172,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabSelected
         {
             get
@@ -187,7 +187,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TabSelector
         {
             get
@@ -217,7 +217,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TextNormal
         {
             get
@@ -232,7 +232,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TextSelected
         {
             get

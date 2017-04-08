@@ -348,7 +348,29 @@
             UpdateLocationPoints();
         }
 
-        private void BackColorFix()
+        private void UpdateLocationPoints()
+        {
+            titleBoxRectangle = new Rectangle(0, 0, Width - 1, 25);
+
+            // Determine type of border rounding to draw
+            if (borderShape == BorderShape.Rounded)
+            {
+                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, borderRounding);
+            }
+            else
+            {
+                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, 1);
+            }
+
+            // Update paths
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+        }
+
+        #endregion
+
+        #region ${0} Methods
+
+        public virtual void BackColorFix()
         {
             foreach (object control in Controls)
             {
@@ -441,25 +463,17 @@
                 {
                     (control as VisualTrackBar).BackColor = groupBoxColor;
                 }
-            }
-        }
 
-        private void UpdateLocationPoints()
-        {
-            titleBoxRectangle = new Rectangle(0, 0, Width - 1, 25);
+                if (control is VisualListView)
+                {
+                    (control as VisualListView).BackColor = groupBoxColor;
+                }
 
-            // Determine type of border rounding to draw
-            if (borderShape == BorderShape.Rounded)
-            {
-                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, borderRounding);
+                if (control is VisualLabel)
+                {
+                    (control as VisualLabel).BackColor = groupBoxColor;
+                }
             }
-            else
-            {
-                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, 1);
-            }
-
-            // Update paths
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
         #endregion

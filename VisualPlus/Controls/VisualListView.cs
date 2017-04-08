@@ -254,6 +254,7 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
         public int ItemPadding
         {
             get
