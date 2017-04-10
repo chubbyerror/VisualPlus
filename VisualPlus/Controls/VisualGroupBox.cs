@@ -296,14 +296,7 @@
             // Setup group box border
             if (borderVisible)
             {
-                if (controlState == ControlState.Hover && borderHoverVisible)
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
-                }
-                else
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
-                }
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
             }
 
             // Draw the title box
@@ -328,10 +321,10 @@
 
             // Draw the specified string from 'Text' property inside the title box
             StringFormat stringFormat = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
 
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
         }
