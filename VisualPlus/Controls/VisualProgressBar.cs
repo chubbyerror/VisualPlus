@@ -774,7 +774,7 @@
                     case ProgressBarTypes.Rating:
                         {
                             // Create rating bar
-                            barStyle.AddPolygon(GDI.Calculate5PointStar(barLocation, 10, 5));
+                            barStyle.AddPolygon(Components.Symbols.Star.Calculate5PointStar(barLocation, 10, 5));
                             barStyle.CloseAllFigures();
 
                             break;
