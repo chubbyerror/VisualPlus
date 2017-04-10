@@ -41,7 +41,7 @@
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
 
         #endregion
 

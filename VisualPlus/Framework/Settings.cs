@@ -1,6 +1,7 @@
 namespace VisualPlus.Framework
 {
     using System.Drawing;
+    using System.Drawing.Text;
 
     using VisualPlus.Enums;
     using VisualPlus.Framework.Styles;
@@ -37,7 +38,7 @@ namespace VisualPlus.Framework
             public const bool HatchVisible = true;
             public const int BarAmount = 5;
             public const float HatchSize = 2F;
-
+            public static TextRenderingHint textRenderingHint = TextRenderingHint.AntiAlias;
             public static readonly IStyle Style = new Visual();
         }
 

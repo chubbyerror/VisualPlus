@@ -43,7 +43,7 @@
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private int xValue;
         private int yValue;
-        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
 
         #endregion
 

@@ -35,7 +35,7 @@
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
         private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
-        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
 
         #endregion
 

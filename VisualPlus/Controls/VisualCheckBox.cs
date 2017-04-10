@@ -53,7 +53,7 @@
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private VFXManager rippleEffectsManager;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
 
         #endregion
 

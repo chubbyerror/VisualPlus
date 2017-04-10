@@ -23,7 +23,7 @@
 
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
-        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
 
         private Point mouseLocation;
         private bool selectorVisible;

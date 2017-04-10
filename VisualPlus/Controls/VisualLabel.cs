@@ -20,7 +20,7 @@
         private bool mirrored;
         private int mirrorSpacing = 3;
         private Rectangle textBoxRectangle;
-        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
 
         #endregion
 

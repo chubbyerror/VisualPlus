@@ -51,7 +51,7 @@
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
         private int startIndex;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
 
         #endregion
 
