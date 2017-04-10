@@ -46,9 +46,11 @@
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private GraphicsPath buttonPath = new GraphicsPath();
+        private Rectangle buttonRectangle;
         private Size buttonSize = new Size(27, 20);
         private Color buttonTextColor = Settings.DefaultValue.Style.ForeColor(0);
         private bool buttonValueVisible;
+        private bool buttonVisible = true;
         private char charExtension;
         private Color controlDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
@@ -64,6 +66,7 @@
         private float mouseStartPos = -1;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
+        private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private Font textFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
@@ -273,6 +276,21 @@
             }
         }
 
+        [DefaultValue(true), Category(Localize.Category.Behavior), Description(Localize.Description.ComponentVisible)]
+        public bool ButtonVisible
+        {
+            get
+            {
+                return buttonVisible;
+            }
+
+            set
+            {
+                buttonVisible = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Behavior),
          Description(Localize.Description.ComponentVisible)]
         public char CharExtension
@@ -471,6 +489,21 @@
             set
             {
                 progressColorStyle = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(false), Category(Localize.Category.Behavior), Description(Localize.Description.ComponentVisible)]
+        public bool ProgressValueVisible
+        {
+            get
+            {
+                return progressValueVisible;
+            }
+
+            set
+            {
+                progressValueVisible = value;
                 Invalidate();
             }
         }
@@ -1033,6 +1066,19 @@
                 DrawProgress(e.Graphics);
             }
 
+            if (progressValueVisible)
+            {
+                // Get Height of Text Area
+                float textAreaSizeWidth = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
+                                                   Width;
+                float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
+                                                    Height;
+                var stringValue = (float)(Value / (double)dividedValue);
+
+                graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor),
+                    new PointF(Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2 + 2));
+            }
+
             // Draw the Tracker
             DrawTracker(e.Graphics);
         }
@@ -1198,31 +1244,34 @@
         /// <param name="graphics">Graphics controller.</param>
         private void DrawTracker(Graphics graphics)
         {
-            // Convert from RectangleF to Rectangle.
-            Rectangle buttonRectangle = Rectangle.Round(trackerRectangleF);
-            Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
-
-            buttonPath = GDI.GetBorderShape(buttonRectangle, borderShape, borderRounding);
-
-            // Draw button background
-            graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
-
-            // Draw button border
-            GDI.DrawBorderType(graphics, controlState, buttonPath, borderSize, borderColor, borderHoverColor, borderVisible);
-
-            // Draw the value on the tracker button
-            if (buttonValueVisible)
+            if (buttonVisible)
             {
-                // Get Height of Text Area
-                float textAreaSizeWidth = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
-                                                   Width;
-                float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
-                                                    Height;
-                var stringValue = (float)(Value / (double)dividedValue);
+                // Convert from RectangleF to Rectangle.
+                buttonRectangle = Rectangle.Round(trackerRectangleF);
+                Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
 
-                graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor),
-                    new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2,
-                        buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
+                buttonPath = GDI.GetBorderShape(buttonRectangle, borderShape, borderRounding);
+
+                // Draw button background
+                graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
+
+                // Draw button border
+                GDI.DrawBorderType(graphics, controlState, buttonPath, borderSize, borderColor, borderHoverColor, borderVisible);
+
+                // Draw the value on the tracker button
+                if (buttonValueVisible)
+                {
+                    // Get Height of Text Area
+                    float textAreaSizeWidth = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
+                                                       Width;
+                    float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
+                                                        Height;
+                    var stringValue = (float)(Value / (double)dividedValue);
+
+                    graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor),
+                        new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2,
+                            buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
+                }
             }
         }
 
