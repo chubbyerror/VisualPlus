@@ -403,14 +403,11 @@
             {
                 if (checkBoxType == CheckBoxType.CheckMark)
                 {
-                    // Draw check mark
-                    Point pt = new Point(-2, -1);
-                    Rectangle layoutRectangle = new Rectangle(pt, new Size(checkBoxRectangle.Width, checkBoxRectangle.Height));
+                    Point checkLocation = new Point(-2, -1);
+                    Size checkSize = new Size(checkBoxRectangle.Width, checkBoxRectangle.Height);
 
-                    using (Font wing = new Font("Wingdings", 14f, FontStyle.Regular))
-                    {
-                        e.Graphics.DrawString("ü", wing, new SolidBrush(controlCheckTemp), layoutRectangle);
-                    }
+                    // Draw check mark
+                    Components.Symbols.Checkmark.DrawCheckmark(graphics, checkLocation, checkSize, controlCheckTemp, 14F);
                 }
                 else
                 {

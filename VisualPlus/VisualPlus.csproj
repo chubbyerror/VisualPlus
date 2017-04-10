@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Symbols\Checkmark.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualCircleProgressBarDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualContextMenuDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualListBoxDesigner.cs" />
@@ -171,7 +172,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Components\Controls\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Icon.ico" />
     <None Include="Resources\search.png" />
