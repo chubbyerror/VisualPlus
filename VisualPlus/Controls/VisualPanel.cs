@@ -222,14 +222,7 @@
             // Setup control border
             if (borderVisible)
             {
-                if (controlState == ControlState.Hover && borderHoverVisible)
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
-                }
-                else
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
-                }
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
             }
         }
 
