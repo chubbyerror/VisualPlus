@@ -47,24 +47,29 @@
             };
 
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
-
-        private Rectangle barSlider;
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private int borderSize = Settings.DefaultValue.BorderSize;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+        private Rectangle buttonRectangle;
+        private int buttonRounding = Settings.DefaultValue.BorderRounding;
+        private BorderShape buttonShape = Settings.DefaultValue.BorderShape;
+        private Size buttonSize = new Size(20, 16);
         private Color controlDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
+        private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
+        private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private Size sizeHandle = new Size(15, 20);
+        private Point startPoint;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private string textProcessor;
         private bool toggled;
         private int toggleLocation;
         private ToggleTypes toggleType = ToggleTypes.YesNo;
-        private int xBar;
 
         #endregion
 
@@ -77,11 +82,13 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            BackColor = Color.Transparent;
-
             UpdateStyles();
-            animationTimer.Tick += AnimationTimerTick;
 
+            BackColor = Color.Transparent;
+            Size = new Size(50, 20);
+
+            // barSize = new Size(ClientRectangle.Width, ClientRectangle.Height);
+            animationTimer.Tick += AnimationTimerTick;
         }
 
         public delegate void ToggledChangedEventHandler();
@@ -149,6 +156,44 @@
             }
         }
 
+        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
+         Description(Localize.Description.BorderRounding)]
+        public int BorderRounding
+        {
+            get
+            {
+                return borderRounding;
+            }
+
+            set
+            {
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
+                {
+                    borderRounding = value;
+                }
+
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
+         Description(Localize.Description.ComponentShape)]
+        public BorderShape BorderShape
+        {
+            get
+            {
+                return borderShape;
+            }
+
+            set
+            {
+                borderShape = value;
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
         [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderSize)]
         public int BorderSize
@@ -196,6 +241,60 @@
             set
             {
                 buttonColor = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
+         Description(Localize.Description.BorderRounding)]
+        public int ButtonRounding
+        {
+            get
+            {
+                return buttonRounding;
+            }
+
+            set
+            {
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
+                {
+                    buttonRounding = value;
+                }
+
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
+         Description(Localize.Description.ComponentShape)]
+        public BorderShape ButtonShape
+        {
+            get
+            {
+                return buttonShape;
+            }
+
+            set
+            {
+                buttonShape = value;
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), Description("The size of the toggle switch.")]
+        public Size ButtonSize
+        {
+            get
+            {
+                return buttonSize;
+            }
+
+            set
+            {
+                buttonSize = value;
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -315,59 +414,43 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-            checked
+            // Set control state color
+            Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
+
+            // Background color
+            graphics.FillPath(new SolidBrush(controlTempColor), controlGraphicsPath);
+
+            // Draw pill border
+            if (borderVisible)
             {
-                // Bar slider
-                barSlider = new Rectangle(8, 10, Width - 21, Height - 21);
-
-                // Pill graphic path
-                GraphicsPath pillPath = (GraphicsPath)Pill(
-                    0,
-                    (int)Math.Round(Height / 2.0 - sizeHandle.Height / 2.0),
-                    Width - 1,
-                    sizeHandle.Height - 5,
-                    new PillStyle
-                        {
-                            Left = true,
-                            Right = true
-                        });
-
-                // Button
-                Rectangle buttonRectangle = new Rectangle(
-                    barSlider.X + (int)Math.Round(barSlider.Width * (toggleLocation / 80.0)) - (int)Math.Round(sizeHandle.Width / 2.0),
-                    barSlider.Y + (int)Math.Round(barSlider.Height / 2.0) - (int)Math.Round(sizeHandle.Height / 2.0 - 1.0),
-                    sizeHandle.Width,
-                    sizeHandle.Height - 5);
-
-                // Set control state color
-                Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
-
-                // Background color
-                graphics.FillPath(new SolidBrush(controlTempColor), pillPath);
-
-                // Draw pill border
-                if (borderVisible)
-                {
-                    GDI.DrawBorderType(graphics, controlState, pillPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
-                }
-
-                // Draw toggle
-                DrawToggleType(graphics);
-
-                // Button
-                GraphicsPath buttonPath = GDI.DrawRoundedRectangle(buttonRectangle, 15);
-                graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
-
-                // Button border
-                GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
             }
+
+            // Determines button state to draw
+            Point buttonPoint = toggled ? endPoint : startPoint;
+            buttonRectangle = new Rectangle(buttonPoint, buttonSize);
+
+            // Draw toggle
+            DrawToggleType(graphics);
+
+            // Draw button
+            GraphicsPath buttonPath = GDI.GetBorderShape(buttonRectangle, buttonShape, buttonRounding);
+            graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
+
+            // Button border
+            GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            Width = 41;
-            Height = 23;
+            UpdateLocationPoints();
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            UpdateLocationPoints();
         }
 
         private void AnimationTimerTick(object sender, EventArgs e)
@@ -397,48 +480,21 @@
             {
                 case ToggleTypes.YesNo:
                     {
-                        if (Toggled)
-                        {
-                            textProcessor = "Yes";
-                            xBar = barSlider.X + 7;
-                        }
-                        else
-                        {
-                            textProcessor = "No";
-                            xBar = barSlider.X + 18;
-                        }
+                        textProcessor = Toggled ? "Yes" : "No";
 
                         break;
                     }
 
                 case ToggleTypes.OnOff:
                     {
-                        if (Toggled)
-                        {
-                            textProcessor = "On";
-                            xBar = barSlider.X + 7;
-                        }
-                        else
-                        {
-                            textProcessor = "Off";
-                            xBar = barSlider.X + 18;
-                        }
+                        textProcessor = Toggled ? "On" : "Off";
 
                         break;
                     }
 
                 case ToggleTypes.IO:
                     {
-                        if (Toggled)
-                        {
-                            textProcessor = "I";
-                            xBar = barSlider.X + 7;
-                        }
-                        else
-                        {
-                            textProcessor = "O";
-                            xBar = barSlider.X + 18;
-                        }
+                        textProcessor = Toggled ? "I" : "O";
 
                         break;
                     }
@@ -448,57 +504,39 @@
             foreColor = Enabled ? foreColor : textDisabledColor;
 
             // Draw string
+            Rectangle textboxRectangle;
+
+            if (toggled)
+            {
+                textboxRectangle = new Rectangle(5, 0, Width - 1, Height - 1);
+            }
+            else
+            {
+                textboxRectangle = new Rectangle(Width - (int)Font.SizeInPoints - 5 * 2, 0, Width - 1, Height - 1);
+            }
+
             StringFormat stringFormat = new StringFormat
                 {
-                    Alignment = StringAlignment.Center,
+                    // Alignment = StringAlignment.Center,
                     LineAlignment = StringAlignment.Center
                 };
 
+            // Draw the string
             graphics.DrawString(
                 textProcessor,
                 new Font(Font.FontFamily, 7f, Font.Style),
                 new SolidBrush(foreColor),
-                xBar,
-                barSlider.Y,
+                textboxRectangle,
                 stringFormat);
         }
 
-        #endregion
-
-        #region ${0} Methods
-
-        public GraphicsPath Pill(Rectangle rectangle, PillStyle pillStyle)
+        private void UpdateLocationPoints()
         {
-            GraphicsPath extractValue = new GraphicsPath();
+            // Update button location points
+            startPoint = new Point(0 + 2, ClientRectangle.Height / 2 - buttonSize.Height / 2);
+            endPoint = new Point(ClientRectangle.Width - buttonSize.Width - 2, ClientRectangle.Height / 2 - buttonSize.Height / 2);
 
-            if (pillStyle.Left)
-            {
-                extractValue.AddArc(new Rectangle(rectangle.X, rectangle.Y, rectangle.Height, rectangle.Height), -270, 180);
-            }
-            else
-            {
-                extractValue.AddLine(rectangle.X, rectangle.Y + rectangle.Height, rectangle.X, rectangle.Y);
-            }
-
-            if (pillStyle.Right)
-            {
-                extractValue.AddArc(
-                    new Rectangle(rectangle.X + rectangle.Width - rectangle.Height, rectangle.Y, rectangle.Height, rectangle.Height),
-                    -90,
-                    180);
-            }
-            else
-            {
-                extractValue.AddLine(rectangle.X + rectangle.Width, rectangle.Y, rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height);
-            }
-
-            extractValue.CloseAllFigures();
-            return extractValue;
-        }
-
-        public object Pill(int x, int y, int width, int height, PillStyle pillStyle)
-        {
-            return Pill(new Rectangle(x, y, width, height), pillStyle);
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
         #endregion
