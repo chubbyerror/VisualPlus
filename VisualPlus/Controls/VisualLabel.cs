@@ -3,8 +3,9 @@
     using System;
     using System.ComponentModel;
     using System.Drawing;
-    using System.Windows.Forms;
     using System.Drawing.Text;
+    using System.Windows.Forms;
+
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
@@ -16,6 +17,7 @@
         private Color hoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool hoverVisible;
         private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+
         #endregion
 
         #region ${0} Properties
@@ -48,9 +50,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
-        public TextRenderingHint TextRendering { get { return textRendererHint; } set { textRendererHint = value; Invalidate(); } }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.HoverColor)]
         public Color HoverColor
         {
@@ -66,14 +65,24 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region ${0} Events
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            e.Graphics.TextRenderingHint = textRendererHint;
-            base.OnPaint(e);
-        }
 
         protected override void OnMouseHover(EventArgs e)
         {
@@ -89,6 +98,12 @@
         {
             base.OnMouseLeave(e);
             ForeColor = Settings.DefaultValue.Style.ForeColor(0);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            e.Graphics.TextRenderingHint = textRendererHint;
+            base.OnPaint(e);
         }
 
         #endregion
