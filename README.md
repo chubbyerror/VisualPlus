@@ -1,4 +1,4 @@
-# VisualPlus [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/VisualPlusUI/Lobby)
+# VisualPlus [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/VisualPlusUI/General)
 [![Release](https://img.shields.io/github/release/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/releases/latest)
 [![NuGet](https://img.shields.io/nuget/v/VisualPlus.svg?style=flat)](https://www.nuget.org/packages/VisualPlus/)
 [![NuGetPre](https://img.shields.io/nuget/vpre/VisualPlus.svg?style=flat)](https://www.nuget.org/packages/VisualPlus/)
@@ -49,7 +49,7 @@ BitCoin donations are also welcome: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
 - [Visual Studio 2017](https://www.visualstudio.com/downloads/)
 
 ## Screenshots
-![Imgur](http://i.imgur.com/6MPGU6E.jpg)
+![Imgur](http://i.imgur.com/e4w6xER.jpg)
 
 ![Imgur](http://i.imgur.com/w6skfXF.jpg)
 
