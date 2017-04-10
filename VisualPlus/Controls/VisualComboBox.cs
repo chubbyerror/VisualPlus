@@ -7,6 +7,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Components.Symbols;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
@@ -493,42 +494,26 @@
 
             if (dropDownButtonsVisible)
             {
+                Point buttonImagePoint;
+                Size buttonImageSize;
+
                 // Draw drop down button
                 switch (dropDownButton)
                 {
                     case DropDownButtons.Arrow:
                         {
-                            graphics.DrawString(
-                                "6",
-                                new Font("Marlett", 13, FontStyle.Regular),
-                                new SolidBrush(buttonColor),
-                                buttonRectangle,
-                                new StringFormat
-                                    {
-                                        LineAlignment = StringAlignment.Center,
-                                        Alignment = StringAlignment.Far
-                                    });
+                            buttonImageSize = new Size(25, 25);
+                            buttonImagePoint = new Point(buttonRectangle.X, buttonRectangle.Y);
+
+                            Arrow.DrawArrow(graphics, buttonImagePoint, buttonImageSize, buttonColor, 13);
                             break;
                         }
 
                     case DropDownButtons.Bars:
                         {
-                            var spacing = 5;
-
-                            graphics.DrawLine(
-                                new Pen(buttonColor, 2),
-                                new Point(spacing + buttonRectangle.X, Height / 2 - 4),
-                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing - 2, Height / 2 - 4));
-
-                            graphics.DrawLine(
-                                new Pen(buttonColor, 2),
-                                new Point(spacing + buttonRectangle.X, Height / 2 + 0),
-                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing - 2, Height / 2 + 0));
-
-                            graphics.DrawLine(
-                                new Pen(buttonColor, 2),
-                                new Point(spacing + buttonRectangle.X, Height / 2 + 4),
-                                new Point(buttonRectangle.X + buttonRectangle.Width - spacing - 2, Height / 2 + 4));
+                            buttonImageSize = new Size(18, 10);
+                            buttonImagePoint = new Point(buttonRectangle.X + 2, buttonRectangle.Y + buttonRectangle.Width / 2 - buttonImageSize.Height);
+                            Bars.DrawBars(graphics, buttonImagePoint, buttonImageSize, buttonColor, 3, 5);
                             break;
                         }
                 }

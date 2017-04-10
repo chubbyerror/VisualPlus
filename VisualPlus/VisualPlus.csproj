@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Symbols\Arrow.cs" />
+    <Compile Include="Components\Symbols\Bars.cs" />
     <Compile Include="Components\Symbols\Checkmark.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualCircleProgressBarDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualContextMenuDesigner.cs" />
