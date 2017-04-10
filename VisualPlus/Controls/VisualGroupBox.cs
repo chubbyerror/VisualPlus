@@ -35,6 +35,7 @@
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
         private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
+        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
 
         #endregion
 
@@ -191,6 +192,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -282,7 +298,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.TextRenderingHint = textRendererHint;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
             UpdateLocationPoints();

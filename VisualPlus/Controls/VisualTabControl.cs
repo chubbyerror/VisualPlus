@@ -23,6 +23,7 @@
 
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
+        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
 
         private Point mouseLocation;
         private bool selectorVisible;
@@ -217,6 +218,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TextNormal
         {
@@ -328,7 +344,7 @@
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.TextRenderingHint = textRendererHint;
             graphics.CompositingMode = CompositingMode.SourceOver;
 
             // Draw tab selector background body

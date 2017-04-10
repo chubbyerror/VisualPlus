@@ -51,6 +51,7 @@
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
         private int startIndex;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
 
         #endregion
 
@@ -387,6 +388,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -464,7 +480,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.TextRenderingHint = textRendererHint;
 
             UpdateLocationPoints();
 
