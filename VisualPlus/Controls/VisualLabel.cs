@@ -3,6 +3,7 @@
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Drawing.Text;
     using System.Windows.Forms;
 
@@ -16,6 +17,9 @@
 
         private Color hoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool hoverVisible;
+        private bool mirrored;
+        private int mirrorSpacing = 3;
+        private Rectangle textBoxRectangle;
         private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
 
         #endregion
@@ -65,6 +69,37 @@
             }
         }
 
+        [DefaultValue(false), Category(Localize.Category.Behavior),
+         Description("Draws a reflection of the text.")]
+        public bool Mirrored
+        {
+            get
+            {
+                return mirrored;
+            }
+
+            set
+            {
+                mirrored = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), Description("The spacing between the mirror.")]
+        public int MirrorSpacing
+        {
+            get
+            {
+                return mirrorSpacing;
+            }
+
+            set
+            {
+                mirrorSpacing = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
         public TextRenderingHint TextRendering
         {
@@ -102,8 +137,35 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.TextRenderingHint = textRendererHint;
-            base.OnPaint(e);
+            Graphics graphics = e.Graphics;
+            graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.TextRenderingHint = textRendererHint;
+
+            // String format
+            StringFormat stringFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center
+                };
+
+            textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
+
+            // Draw the text
+            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textBoxRectangle, stringFormat);
+
+            // Draw the mirrored text.
+            if (mirrored)
+            {
+                // Mirror location
+                Point mirrorLocation = new Point(0, -textBoxRectangle.Y - textBoxRectangle.Height / 2 - (int)Font.SizeInPoints + mirrorSpacing);
+
+                graphics.TranslateTransform(0, Font.Size);
+                graphics.ScaleTransform(1, -1);
+                graphics.DrawString(Text, Font, new SolidBrush(ForeColor), mirrorLocation);
+                graphics.ResetTransform();
+            }
         }
 
         #endregion
