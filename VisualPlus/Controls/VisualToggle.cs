@@ -46,20 +46,20 @@
                 Interval = 1
             };
 
-        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
 
         private Rectangle barSlider;
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
-        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderSize = Settings.DefaultValue.BorderSize;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+        private Color controlDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Size sizeHandle = new Size(15, 20);
-        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private string textProcessor;
         private bool toggled;
         private int toggleLocation;
@@ -133,7 +133,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
@@ -149,7 +149,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
@@ -160,7 +160,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     borderSize = value;
                 }
@@ -169,7 +169,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
@@ -359,7 +359,7 @@
                 graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
 
                 // Button border
-                GDI.DrawBorder(graphics, buttonPath, 1, StylesManager.DefaultValue.Style.BorderColor(0));
+                GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
             }
         }
 

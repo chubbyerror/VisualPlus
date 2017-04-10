@@ -25,13 +25,13 @@
         private static readonly object eventLargeChangeChanged = new object();
         private static readonly object eventSelectionSizeChanged = new object();
         private static readonly object eventSmallChangeChanged = new object();
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderSize = Settings.DefaultValue.BorderSize;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Brush brush;
-        private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private PointF centerPoint;
         private Color color;
         private HslColorManager colorManagement;
@@ -181,7 +181,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
@@ -197,7 +197,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
@@ -208,7 +208,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     borderSize = value;
                 }
@@ -217,7 +217,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {

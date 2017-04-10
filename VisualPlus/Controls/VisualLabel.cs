@@ -13,7 +13,7 @@
     {
         #region  ${0} Variables
 
-        private Color hoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
+        private Color hoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool hoverVisible;
 
         #endregion
@@ -32,7 +32,7 @@
             BackColor = Color.Transparent;
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
@@ -80,7 +80,7 @@
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
+            ForeColor = Settings.DefaultValue.Style.ForeColor(0);
         }
 
         #endregion

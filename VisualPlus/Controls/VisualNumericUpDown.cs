@@ -19,27 +19,27 @@
     {
         #region  ${0} Variables
 
-        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private int borderSize = Settings.DefaultValue.BorderSize;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 19;
-        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color controlDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
         private long numericValue;
-        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private int xValue;
         private int yValue;
 
@@ -108,7 +108,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
@@ -124,7 +124,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
@@ -135,7 +135,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumRounding, StylesManager.MaximumRounding))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     borderRounding = value;
                 }
@@ -145,7 +145,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
+        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
          Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
@@ -162,7 +162,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
@@ -173,7 +173,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     borderSize = value;
                 }
@@ -182,7 +182,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
@@ -495,7 +495,7 @@
             if (borderVisible)
             {
                 // Draw buttons border
-                GDI.DrawBorder(graphics, buttonPath, 1, StylesManager.DefaultValue.Style.BorderColor(0));
+                GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
             }
 
             graphics.ResetClip();
@@ -508,7 +508,7 @@
 
             // Button separator
             graphics.DrawLine(
-                new Pen(StylesManager.DefaultValue.Style.BorderColor(0)),
+                new Pen(Settings.DefaultValue.Style.BorderColor(0)),
                 buttonRectangle.X,
                 buttonRectangle.Y + buttonRectangle.Height / 2,
                 buttonRectangle.X + buttonRectangle.Width,

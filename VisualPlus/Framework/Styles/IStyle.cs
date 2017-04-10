@@ -2,6 +2,8 @@
 {
     using System.Drawing;
 
+    using VisualPlus.Enums;
+
     public interface IStyle
     {
         #region ${0} Properties
@@ -34,7 +36,7 @@
 
         Color ShadowColor { get; }
 
-        Style StyleManagement { get; }
+        Styles StyleManagement { get; }
 
         Color TabHover { get; }
 

@@ -90,15 +90,19 @@
     <Compile Include="Controls\VisualListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualStylesManager.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Framework\ExceptionHandler.cs" />
     <Compile Include="Framework\GDI\ColorHelper.cs" />
     <Compile Include="Framework\Extensions.cs" />
     <Compile Include="Framework\GDI\VFX.cs" />
     <Compile Include="Framework\GDI\VFXManager.cs" />
     <Compile Include="Framework\MathHelper.cs" />
+    <Compile Include="Enums\Styles.cs" />
     <Compile Include="Framework\Styles\BlackAndYellow.cs" />
     <Compile Include="Framework\Styles\IStyle.cs" />
-    <Compile Include="Framework\StylesManager.cs" />
+    <Compile Include="Framework\Settings.cs" />
     <Compile Include="Framework\Styles\Visual.cs" />
     <Compile Include="Enums\Animation.cs" />
     <Compile Include="Enums\BorderShape.cs" />
@@ -170,6 +174,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\Icon.ico" />
+    <None Include="Resources\search.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

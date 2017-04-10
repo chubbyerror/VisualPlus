@@ -5,18 +5,7 @@ namespace VisualPlus.Framework
     using VisualPlus.Enums;
     using VisualPlus.Framework.Styles;
 
-    public enum Style
-    {
-        // Note: If you implement more styles or your own styles, just add enumeration here.
-
-        /// <summary>Visual Style.</summary>
-        Visual = 0,
-
-        /// <summary>Black and Yellow Style.</summary>
-        BlackAndYellow = 1
-    }
-
-    internal class StylesManager
+    internal class Settings
     {
         #region  ${0} Variables
 

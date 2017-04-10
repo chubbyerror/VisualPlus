@@ -4,6 +4,8 @@
     using System.Drawing;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
+
     public class Visual : IStyle
     {
         #region  ${0} Variables
@@ -138,11 +140,11 @@
             }
         }
 
-        public Style StyleManagement
+        public Styles StyleManagement
         {
             get
             {
-                return Style.Visual;
+                return Styles.Visual;
             }
         }
 

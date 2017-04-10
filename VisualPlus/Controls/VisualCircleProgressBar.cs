@@ -25,13 +25,13 @@
     {
         #region  ${0} Variables
 
-        private Color backgroundCircleColor = StylesManager.DefaultValue.Style.BackgroundProgressCircle;
+        private Color backgroundCircleColor = Settings.DefaultValue.Style.BackgroundProgressCircle;
         private bool backgroundCircleVisible = true;
-        private Color foregroundCircleColor = StylesManager.DefaultValue.Style.ForegroundProgressCircle;
+        private Color foregroundCircleColor = Settings.DefaultValue.Style.ForegroundProgressCircle;
         private bool foregroundCircleVisible = true;
         private float gradientRotation;
-        private Color progressGradient1 = StylesManager.DefaultValue.Style.ProgressColor;
-        private Color progressGradient2 = ControlPaint.LightLight(StylesManager.DefaultValue.Style.ProgressColor);
+        private Color progressGradient1 = Settings.DefaultValue.Style.ProgressColor;
+        private Color progressGradient2 = ControlPaint.LightLight(Settings.DefaultValue.Style.ProgressColor);
         private ProgressShape progressShapeVal = ProgressShape.Round;
         private float progressSize = 5F;
         private bool textVisible;
@@ -49,7 +49,7 @@
 
             MinimumSize = new Size(100, 100);
             Size = new Size(130, 130);
-            ForeColor = StylesManager.DefaultValue.Style.ForeColor(0);
+            ForeColor = Settings.DefaultValue.Style.ForeColor(0);
             textVisible = true;
             BackColor = Color.Transparent;
 
@@ -176,7 +176,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.ProgressSize), Category(Localize.Category.Layout), Description(Localize.Description.ProgressSize)]
+        [DefaultValue(Settings.DefaultValue.ProgressSize), Category(Localize.Category.Layout), Description(Localize.Description.ProgressSize)]
         public float ProgressSize
         {
             get
@@ -191,7 +191,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
+        [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
         public bool TextVisible
         {
             get

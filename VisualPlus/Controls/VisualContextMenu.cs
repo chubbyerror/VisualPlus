@@ -97,7 +97,7 @@
             protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
             {
                 e.Graphics.InterpolationMode = InterpolationMode.High;
-                e.Graphics.Clear(StylesManager.DefaultValue.Style.BackgroundColor(0));
+                e.Graphics.Clear(Settings.DefaultValue.Style.BackgroundColor(0));
                 Rectangle R = new Rectangle(0, e.Item.ContentRectangle.Y - 2, e.Item.ContentRectangle.Width + 4, e.Item.ContentRectangle.Height + 3);
 
                 e.Graphics.FillRectangle(
@@ -145,16 +145,16 @@
 
         #region  ${0} Variables
 
-        private static Color arrowColor = StylesManager.DefaultValue.Style.DropDownButtonColor;
-        private static Color arrowDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
-        private static bool arrowVisible = StylesManager.DefaultValue.TextVisible;
-        private static Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
-        private static Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private static int borderSize = StylesManager.DefaultValue.BorderSize;
-        private static bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private static Color arrowColor = Settings.DefaultValue.Style.DropDownButtonColor;
+        private static Color arrowDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
+        private static bool arrowVisible = Settings.DefaultValue.TextVisible;
+        private static Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private static Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private static int borderSize = Settings.DefaultValue.BorderSize;
+        private static bool borderVisible = Settings.DefaultValue.BorderVisible;
         private static Font contextMenuFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
-        private static Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private static Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private static Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private static Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
 
         private ToolStripItemClickedEventArgs clickedEventArgs;
 
@@ -202,7 +202,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.ComponentVisible)]
         public bool ArrowVisible
         {
@@ -248,7 +248,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
@@ -259,7 +259,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     borderSize = value;
                 }
@@ -268,7 +268,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {

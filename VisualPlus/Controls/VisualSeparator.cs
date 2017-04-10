@@ -15,9 +15,9 @@
     {
         #region  ${0} Variables
 
-        private Color lineColor = StylesManager.DefaultValue.Style.LineColor;
+        private Color lineColor = Settings.DefaultValue.Style.LineColor;
         private Orientation separatorOrientation = Orientation.Horizontal;
-        private Color shadowColor = StylesManager.DefaultValue.Style.ShadowColor;
+        private Color shadowColor = Settings.DefaultValue.Style.ShadowColor;
 
         #endregion
 

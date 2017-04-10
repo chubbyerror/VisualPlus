@@ -48,19 +48,19 @@
 
         #region  ${0} Variables
 
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
+        private int borderSize = Settings.DefaultValue.BorderSize;
         private bool borderVisible;
-        private Color columnBorder = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color columnHeaderBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color columnBorder = Settings.DefaultValue.Style.BorderColor(0);
+        private Color columnHeaderBackground = Settings.DefaultValue.Style.BackgroundColor(3);
         private ControlState controlState = ControlState.Normal;
         private bool drawFocusRectangle;
         private bool drawStandardHeader;
         private Font headerFont = new Font("Helvetica", 10, FontStyle.Regular);
-        private Color headerText = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color itemBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
-        private Color itemHover = StylesManager.DefaultValue.Style.ItemHover(0);
+        private Color headerText = Settings.DefaultValue.Style.ForeColor(0);
+        private Color itemBackground = Settings.DefaultValue.Style.BackgroundColor(3);
+        private Color itemHover = Settings.DefaultValue.Style.ItemHover(0);
         private int itemPadding = 12;
-        private Color itemSelected = StylesManager.DefaultValue.Style.BorderColor(1);
+        private Color itemSelected = Settings.DefaultValue.Style.BorderColor(1);
 
         #endregion
 
@@ -128,7 +128,7 @@
                 };
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
@@ -139,7 +139,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     borderSize = value;
                 }
@@ -148,7 +148,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
@@ -372,7 +372,7 @@
             }
 
             // Draw separator
-            graphics.DrawLine(new Pen(StylesManager.DefaultValue.Style.BorderColor(0)), e.Bounds.Left, 0, e.Bounds.Right, 0);
+            graphics.DrawLine(new Pen(Settings.DefaultValue.Style.BorderColor(0)), e.Bounds.Left, 0, e.Bounds.Right, 0);
 
             foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
             {

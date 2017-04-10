@@ -11,6 +11,7 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
+    using VisualPlus.Properties;
 
     /// <summary>The visual TextBox.</summary>
     [ToolboxBitmap(typeof(TextBox)), Designer(VSDesignerBinding.VisualTextBox)]
@@ -18,20 +19,30 @@
     {
         #region  ${0} Variables
 
-        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
+        private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         public TextBox TextBoxObject = new TextBox();
-        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private int borderSize = Settings.DefaultValue.BorderSize;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+        private Image buttonImage = Resources.search;
+        private GraphicsPath buttonPath;
+        private Rectangle buttonRectangle;
+        private bool buttonVisible;
+        private int buttonWidth = 19;
+        private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Size iconSize = new Size(13, 13);
+        private int textboxHeight = 20;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private int xValue;
+        private int yValue;
 
         #endregion
 
@@ -43,16 +54,21 @@
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
+
             BorderStyle = BorderStyle.None;
             AutoSize = false;
 
+            Size = new Size(135, 25);
             CreateTextBox();
             Controls.Add(TextBoxObject);
-            Size = new Size(135, 19);
             BackColor = Color.Transparent;
             TextChanged += TextBoxTextChanged;
             UpdateStyles();
         }
+
+        public delegate void ButtonClickedEventHandler();
+
+        public event ButtonClickedEventHandler ButtonClicked;
 
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
@@ -99,7 +115,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
@@ -115,7 +131,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
@@ -126,17 +142,17 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumRounding, StylesManager.MaximumRounding))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     borderRounding = value;
                 }
 
-                controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
+        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
          Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
@@ -148,12 +164,12 @@
             set
             {
                 borderShape = value;
-                controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
@@ -164,7 +180,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     borderSize = value;
                 }
@@ -173,7 +189,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
@@ -189,6 +205,68 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public Color ButtonColor
+        {
+            get
+            {
+                return buttonColor;
+            }
+
+            set
+            {
+                buttonColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description("ButtonVisible Image.")]
+        public Image ButtonImage
+        {
+            get
+            {
+                return buttonImage;
+            }
+
+            set
+            {
+                buttonImage = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        public bool ButtonVisible
+        {
+            get
+            {
+                return buttonVisible;
+            }
+
+            set
+            {
+                buttonVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public int ButtonWidth
+        {
+            get
+            {
+                return buttonWidth;
+            }
+
+            set
+            {
+                buttonWidth = value;
+
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
@@ -200,6 +278,21 @@
             set
             {
                 controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        public Size IconSize
+        {
+            get
+            {
+                return iconSize;
+            }
+
+            set
+            {
+                iconSize = value;
                 Invalidate();
             }
         }
@@ -238,6 +331,11 @@
 
         #region ${0} Events
 
+        protected virtual void OnButtonClicked()
+        {
+            ButtonClicked?.Invoke();
+        }
+
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
@@ -272,6 +370,44 @@
             Invalidate();
         }
 
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            OnMouseClick(e);
+
+            if (buttonVisible)
+            {
+                // Check if mouse in X position.
+                if (xValue > buttonRectangle.X && xValue < Width)
+                {
+                    // Determine the button middle separator by checking for the Y position.
+                    if (yValue > buttonRectangle.Y && yValue < Height)
+                    {
+                        ButtonClicked.Invoke();
+                    }
+                }
+            }
+
+            Invalidate();
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            xValue = e.Location.X;
+            yValue = e.Location.Y;
+            Invalidate();
+
+            // IBeam cursor toggle
+            if (e.X < buttonRectangle.X)
+            {
+                Cursor = Cursors.IBeam;
+            }
+            else
+            {
+                Cursor = Cursors.Default;
+            }
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
@@ -280,6 +416,9 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
+            UpdateLocationPoints();
+            graphics.SetClip(controlGraphicsPath);
+
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
             Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
@@ -287,13 +426,47 @@
             TextBoxObject.BackColor = controlTempColor;
             TextBoxObject.ForeColor = foreColor;
 
-            // Setup internal textbox object
-            TextBoxObject.Width = Width - 10;
+            // Setup internal text box object
             TextBoxObject.TextAlign = TextAlign;
             TextBoxObject.UseSystemPasswordChar = UseSystemPasswordChar;
 
-            // Draw background backcolor
+            // Draw background back color
             graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
+
+            // Setup button
+            if (!Multiline && buttonVisible)
+            {
+                // Buttons background
+                graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
+
+                Size imageSize = new Size(iconSize.Width, iconSize.Height);
+                Point imagePoint = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - imageSize.Width / 2,
+                    buttonRectangle.Y + buttonRectangle.Height / 2 - imageSize.Height / 2);
+
+                Rectangle imageRectangle = new Rectangle(imagePoint, imageSize);
+
+                graphics.SetClip(buttonPath);
+
+                // Draw the image
+                graphics.DrawImage(buttonImage, imageRectangle);
+
+                graphics.SetClip(controlGraphicsPath);
+
+                // button border?
+                if (borderVisible)
+                {
+                    // Draw buttons border
+                    GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
+                }
+
+                TextBoxObject.Width = buttonRectangle.X - 10;
+            }
+            else
+            {
+                TextBoxObject.Width = Width - 10;
+            }
+
+            graphics.ResetClip();
 
             // Draw border
             if (borderVisible)
@@ -308,12 +481,7 @@
                 }
             }
 
-            graphics.SetClip(controlGraphicsPath);
-        }
-
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            base.OnPaintBackground(e);
+            // graphics.SetClip(controlGraphicsPath);
         }
 
         protected override void OnResize(EventArgs e)
@@ -327,11 +495,17 @@
             }
             else
             {
-                // Auto adjust the textbox height depending on the font size.
-                Height = Convert.ToInt32(Font.Size) * 2 + 1;
+                // Auto adjust the text box height depending on the font size.
+                textboxHeight = Convert.ToInt32(Font.Size) * 2 + 1;
             }
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+            UpdateLocationPoints();
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            UpdateLocationPoints();
         }
 
         protected override void OnTextChanged(EventArgs e)
@@ -363,13 +537,27 @@
             }
         }
 
+        private void UpdateLocationPoints()
+        {
+            if (!Multiline)
+            {
+                Height = textboxHeight;
+            }
+
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+            buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
+
+            buttonPath = new GraphicsPath();
+            buttonPath.AddRectangle(buttonRectangle);
+            buttonPath.CloseAllFigures();
+        }
+
         #endregion
 
         #region ${0} Methods
 
         public void CreateTextBox()
         {
-            // BackColor = backgroundColor;
             TextBox tb = TextBoxObject;
             tb.Size = new Size(Width, Height);
             tb.Location = new Point(5, 2);

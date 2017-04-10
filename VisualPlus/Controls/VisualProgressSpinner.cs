@@ -190,7 +190,7 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            using (Pen forePen = new Pen(StylesManager.DefaultValue.Style.ProgressColor, (float)Width / 5))
+            using (Pen forePen = new Pen(Settings.DefaultValue.Style.ProgressColor, (float)Width / 5))
             {
                 var padding = (int)Math.Ceiling((float)Width / 10);
 

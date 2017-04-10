@@ -29,30 +29,30 @@
 
         private const int spacing = 2;
         private bool animation = true;
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        private int borderSize = Settings.DefaultValue.BorderSize;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Size boxSize = new Size(14, 14);
-        private Color checkBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color checkBoxColor = Settings.DefaultValue.Style.BackgroundColor(3);
         private Point checkBoxLocation = new Point(0, 0);
         private GraphicsPath checkBoxPath;
         private Rectangle checkBoxRectangle;
         private CheckBoxType checkBoxType = CheckBoxType.Filled;
-        private Color checkMarkColor = StylesManager.MainColor;
+        private Color checkMarkColor = Settings.MainColor;
         private Size checkMarkFillSize = new Size(8, 8);
         private Point checkMarkLocation = new Point(0, 0);
         private GraphicsPath checkMarkPath;
         private Rectangle checkMarkRectangle;
-        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private VFXManager rippleEffectsManager;
-        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
 
         #endregion
 
@@ -89,7 +89,7 @@
             Animation = true;
         }
 
-        [DefaultValue(StylesManager.DefaultValue.Animation), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.Animation), Category(Localize.Category.Behavior),
          Description(Localize.Description.Animation)]
         public bool Animation
         {
@@ -142,7 +142,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
@@ -158,7 +158,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
@@ -169,8 +169,8 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumCheckBoxBorderRounding,
-                    StylesManager.MaximumCheckBoxBorderRounding))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumCheckBoxBorderRounding,
+                    Settings.MaximumCheckBoxBorderRounding))
                 {
                     borderRounding = value;
                 }
@@ -180,7 +180,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
+        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
          Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
@@ -197,7 +197,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
@@ -208,7 +208,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     borderSize = value;
                 }
@@ -217,7 +217,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {

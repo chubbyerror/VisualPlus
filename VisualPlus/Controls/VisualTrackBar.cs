@@ -32,47 +32,47 @@
     {
         #region  ${0} Variables
 
-        private static Color hatchBackColor = StylesManager.DefaultValue.Style.HatchColor;
-        private static Color progressColor1 = StylesManager.DefaultValue.Style.ProgressColor;
+        private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
+        private static Color progressColor1 = Settings.DefaultValue.Style.ProgressColor;
         private static int progressRotation;
         private static Orientation trackBarType = Orientation.Horizontal;
         private static RectangleF trackerRectangleF = RectangleF.Empty;
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        private int borderSize = Settings.DefaultValue.BorderSize;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private GraphicsPath buttonPath = new GraphicsPath();
         private Size buttonSize = new Size(27, 20);
-        private Color buttonTextColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color buttonTextColor = Settings.DefaultValue.Style.ForeColor(0);
         private bool buttonValueVisible;
         private char charExtension;
-        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color controlDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
         private ControlState controlState = ControlState.Normal;
         private ValueDivisor dividedValue = ValueDivisor.By1;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
-        private float hatchSize = StylesManager.DefaultValue.HatchSize;
+        private float hatchSize = Settings.DefaultValue.HatchSize;
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
-        private bool hatchVisible = StylesManager.DefaultValue.HatchVisible;
+        private bool hatchVisible = Settings.DefaultValue.HatchVisible;
         private int indentHeight = 6;
         private int indentWidth = 6;
         private bool leftButtonDown;
         private float mouseStartPos = -1;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
-        private bool progressVisible = StylesManager.DefaultValue.TextVisible;
-        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private bool progressVisible = Settings.DefaultValue.TextVisible;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private Font textFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
-        private Color tickColor = StylesManager.DefaultValue.Style.LineColor;
+        private Color tickColor = Settings.DefaultValue.Style.LineColor;
         private int tickHeight = 2;
-        private bool tickVisible = StylesManager.DefaultValue.TextVisible;
-        private Color trackLineColor = StylesManager.DefaultValue.Style.LineColor;
+        private bool tickVisible = Settings.DefaultValue.TextVisible;
+        private Color trackLineColor = Settings.DefaultValue.Style.LineColor;
         private int trackLineThickness = 5;
-        private bool valueTickVisible = StylesManager.DefaultValue.TextVisible;
+        private bool valueTickVisible = Settings.DefaultValue.TextVisible;
 
         #endregion
 
@@ -125,7 +125,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
@@ -141,7 +141,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
@@ -152,7 +152,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumRounding, StylesManager.MaximumRounding))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     borderRounding = value;
                 }
@@ -161,7 +161,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
+        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
          Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
@@ -177,7 +177,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
+        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
          Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
@@ -188,7 +188,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     borderSize = value;
                 }
@@ -197,7 +197,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
@@ -334,7 +334,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout), DefaultValue(StylesManager.DefaultValue.HatchSize), Description(Localize.Description.HatchSize)]
+        [Category(Localize.Category.Layout), DefaultValue(Settings.DefaultValue.HatchSize), Description(Localize.Description.HatchSize)]
         public float HatchSize
         {
             get
@@ -364,7 +364,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.HatchVisible), Category(Localize.Category.Behavior),
+        [DefaultValue(Settings.DefaultValue.HatchVisible), Category(Localize.Category.Behavior),
          Description(Localize.Description.ComponentVisible)]
         public bool HatchVisible
         {
@@ -566,7 +566,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.TextVisible), Category(Localize.Category.Appearance),
+        [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Appearance),
          Description(Localize.Description.ComponentVisible)]
         public bool TickVisible
         {
@@ -627,7 +627,7 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
+        [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
         public bool ValueTickVisible
         {
             get

@@ -19,26 +19,26 @@
     {
         #region  ${0} Variables
 
-        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
 
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
 
         private Point mouseLocation;
         private bool selectorVisible;
-        private Color separator = StylesManager.DefaultValue.Style.TabSelected;
-        private Color tabHover = StylesManager.DefaultValue.Style.TabHover;
-        private Color tabMenu = StylesManager.DefaultValue.Style.TabMenu;
-        private Color tabNormal = StylesManager.DefaultValue.Style.TabNormal;
-        private Color tabSelected = StylesManager.DefaultValue.Style.TabSelected;
-        private Color tabSelector = StylesManager.DefaultValue.Style.MainColor;
+        private Color separator = Settings.DefaultValue.Style.TabSelected;
+        private Color tabHover = Settings.DefaultValue.Style.TabHover;
+        private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
+        private Color tabNormal = Settings.DefaultValue.Style.TabNormal;
+        private Color tabSelected = Settings.DefaultValue.Style.TabSelected;
+        private Color tabSelector = Settings.DefaultValue.Style.MainColor;
 
         private StringAlignment textAlignment = StringAlignment.Center;
 
         // private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
-        private Color textNormal = StylesManager.DefaultValue.Style.TabTextNormal;
+        private Color textNormal = Settings.DefaultValue.Style.TabTextNormal;
 
-        private Color textSelected = StylesManager.DefaultValue.Style.TabTextSelected;
+        private Color textSelected = Settings.DefaultValue.Style.TabTextSelected;
 
         #endregion
 
