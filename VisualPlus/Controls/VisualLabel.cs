@@ -116,7 +116,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.HoverColor)]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.MirrorColor)]
         public Color MirrorColor
         {
             get

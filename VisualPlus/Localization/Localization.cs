@@ -56,6 +56,7 @@
             public const string ComponentDiameter = "The diameter of the component.";
             public const string ComponentNoName = "Description not available for component style.";
             public const string TextRenderingHint = "Renders the text in different styles.";
+            public const string MirrorColor = "The mirrored text color."
         }
 
 #if DEBUG
