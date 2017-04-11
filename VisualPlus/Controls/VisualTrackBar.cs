@@ -1093,8 +1093,20 @@
                                                     Height;
                 var stringValue = (float)(Value / (double)dividedValue);
 
-                graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor),
-                    new PointF(Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2 + 2));
+                PointF progressValuePoint = new PointF();
+
+                // Determine draw position on orientation
+                if (Orientation == Orientation.Horizontal)
+                {
+                    progressValuePoint = new PointF(Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2 + 2);
+                }
+                else
+                {
+                    progressValuePoint = new PointF(Width / 2 - textAreaSizeWidth, Height / 2 - textAreaSizeHeight / 2 + 2);
+                }
+
+                // Draws the progress value on the progress bar
+                graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor), progressValuePoint);
             }
 
             // Draw the Tracker
