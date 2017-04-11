@@ -61,6 +61,7 @@
         private Color itemHover = Settings.DefaultValue.Style.ItemHover(0);
         private int itemPadding = 12;
         private Color itemSelected = Settings.DefaultValue.Style.BorderColor(1);
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -305,15 +306,31 @@
         [Browsable(false)]
         private ListViewItem HoveredItem { get; set; }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region ${0} Events
+
 
         protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
         {
             Graphics graphics = e.Graphics;
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
+            graphics.TextRenderingHint = textRendererHint;
 
             Rectangle columnHeaderRectangle = new Rectangle(e.Bounds.X, e.Bounds.Y, Width, e.Bounds.Height);
             GraphicsPath columnHeaderPath = new GraphicsPath();

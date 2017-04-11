@@ -42,6 +42,8 @@
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private int xValue;
         private int yValue;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+
 
         #endregion
 
@@ -292,6 +294,22 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -477,7 +495,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.TextRenderingHint = textRendererHint;
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
@@ -524,10 +542,10 @@
             Rectangle textboxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
 
             StringFormat stringFormat = new StringFormat
-                {
-                    // Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
+            {
+                // Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
 
             graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(foreColor), textboxRectangle, stringFormat);
         }

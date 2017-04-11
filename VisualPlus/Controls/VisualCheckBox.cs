@@ -53,6 +53,7 @@
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private VFXManager rippleEffectsManager;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -326,6 +327,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
@@ -390,7 +406,7 @@
             Graphics graphics = e.Graphics;
             graphics.Clear(BackColor);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
+            graphics.TextRenderingHint = textRendererHint;
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
