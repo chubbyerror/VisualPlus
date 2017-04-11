@@ -16,6 +16,7 @@
         #region  ${0} Variables
 
         private Color hoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private Color mirrorColor = Color.Black;
         private bool hoverVisible;
         private bool mirrored;
         private int mirrorSpacing = 3;
@@ -115,6 +116,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.HoverColor)]
+        public Color MirrorColor
+        {
+            get
+            {
+                return mirrorColor;
+            }
+
+            set
+            {
+                mirrorColor = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region ${0} Events
@@ -163,8 +179,9 @@
 
                 graphics.TranslateTransform(0, Font.Size);
                 graphics.ScaleTransform(1, -1);
-                graphics.DrawString(Text, Font, new SolidBrush(ForeColor), mirrorLocation);
+                graphics.DrawString(Text, Font, new SolidBrush(mirrorColor), mirrorLocation);
                 graphics.ResetTransform();
+                
             }
         }
 
