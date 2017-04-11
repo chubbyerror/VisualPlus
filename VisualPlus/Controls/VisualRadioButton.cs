@@ -29,7 +29,7 @@
         private Point boxLocation = new Point(2, 2);
         private Size boxSize = new Size(10, 10);
         private Point checkLocation = new Point(0, 0);
-        private Color checkMarkColor = Settings.DefaultValue.Style.MainColor;
+        private Color checkMarkColor = Settings.DefaultValue.Style.StyleColor;
         private Size checkSize = new Size(6, 6);
         private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private ControlState controlState = ControlState.Normal;

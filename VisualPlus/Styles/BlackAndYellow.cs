@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Framework.Styles
+﻿namespace VisualPlus.Styles
 {
     internal class BlackAndYellow
     {

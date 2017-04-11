@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Framework.Styles
+﻿namespace VisualPlus.Styles
 {
     using System.Drawing;
 
@@ -30,7 +30,7 @@
 
         Color LineColor { get; }
 
-        Color MainColor { get; }
+        Color StyleColor { get; }
 
         Color ProgressColor { get; }
 

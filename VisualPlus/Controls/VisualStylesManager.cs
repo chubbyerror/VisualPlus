@@ -3,16 +3,22 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Drawing;
     using System.Linq;
 
     using VisualPlus.Enums;
+    using VisualPlus.Framework;
     using VisualPlus.Localization;
 
     public class VisualStylesManager : Component
     {
         #region  ${0} Variables
 
-        private List<string> stylesList = new List<string>();
+        public List<string> StylesList = new List<string>();
+
+        private Styles currentStyle = Settings.DefaultValue.CurrentStyle;
+
+        private Color styleColor = Settings.DefaultValue.Style.StyleColor;
 
         #endregion
 
@@ -23,17 +29,31 @@
             LoadStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description("Visual Theme")]
-        public List<string> Styles
+        [Category(Localize.Category.Appearance), Description("The curent style.")]
+        public Styles Style
         {
             get
             {
-                return stylesList;
+                return currentStyle;
             }
 
             set
             {
-                stylesList = value;
+                currentStyle = value;
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description("The main style color.")]
+        public Color StyleColor
+        {
+            get
+            {
+                return styleColor;
+            }
+
+            set
+            {
+                styleColor = value;
             }
         }
 
@@ -44,7 +64,7 @@
         /// <summary>Loads styles to a string list.</summary>
         private void LoadStyles()
         {
-            stylesList = Enum.GetValues(typeof(Styles)).
+            StylesList = Enum.GetValues(typeof(Styles)).
                               Cast<Styles>().
                               Select(v => v.ToString()).
                               ToList();

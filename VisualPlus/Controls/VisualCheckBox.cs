@@ -43,7 +43,7 @@
         private GraphicsPath checkBoxPath;
         private Rectangle checkBoxRectangle;
         private CheckBoxType checkBoxType = CheckBoxType.Filled;
-        private Color checkMarkColor = Settings.MainColor;
+        private Color checkMarkColor = Settings.DefaultValue.Style.StyleColor;
         private Size checkMarkFillSize = new Size(8, 8);
         private Point checkMarkLocation = new Point(0, 0);
         private GraphicsPath checkMarkPath;

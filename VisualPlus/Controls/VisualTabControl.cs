@@ -31,7 +31,7 @@
         private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
         private Color tabNormal = Settings.DefaultValue.Style.TabNormal;
         private Color tabSelected = Settings.DefaultValue.Style.TabSelected;
-        private Color tabSelector = Settings.DefaultValue.Style.MainColor;
+        private Color tabSelector = Settings.DefaultValue.Style.StyleColor;
 
         private StringAlignment textAlignment = StringAlignment.Center;
 

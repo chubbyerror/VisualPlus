@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Framework.Styles
+﻿namespace VisualPlus.Styles
 {
     using System.Collections.Generic;
     using System.Drawing;
@@ -116,7 +116,7 @@
             }
         }
 
-        public Color MainColor
+        public Color StyleColor
         {
             get
             {
