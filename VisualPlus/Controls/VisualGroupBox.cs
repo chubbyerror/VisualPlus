@@ -433,11 +433,6 @@
                     (control as VisualProgressIndicator).BackColor = groupBoxColor;
                 }
 
-                if (control is VisualProgressSpinner)
-                {
-                    (control as VisualProgressSpinner).BackColor = groupBoxColor;
-                }
-
                 if (control is VisualRadioButton)
                 {
                     (control as VisualRadioButton).BackColor = groupBoxColor;

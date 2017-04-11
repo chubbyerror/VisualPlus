@@ -302,11 +302,6 @@
                     (control as VisualProgressIndicator).BackColor = backgroundColor;
                 }
 
-                if (control is VisualProgressSpinner)
-                {
-                    (control as VisualProgressSpinner).BackColor = backgroundColor;
-                }
-
                 if (control is VisualRadioButton)
                 {
                     (control as VisualRadioButton).BackColor = backgroundColor;
