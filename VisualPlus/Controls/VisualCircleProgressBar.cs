@@ -34,6 +34,7 @@
         private Color progressGradient2 = ControlPaint.LightLight(Settings.DefaultValue.Style.ProgressColor);
         private ProgressShape progressShapeVal = ProgressShape.Round;
         private float progressSize = 5F;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible;
 
         #endregion
@@ -191,6 +192,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
         public bool TextVisible
         {
@@ -216,7 +232,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.TextRenderingHint = textRendererHint;
 
             if (backgroundCircleVisible)
             {
