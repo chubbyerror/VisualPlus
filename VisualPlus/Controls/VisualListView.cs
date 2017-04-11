@@ -303,9 +303,6 @@
             }
         }
 
-        [Browsable(false)]
-        private ListViewItem HoveredItem { get; set; }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
@@ -321,10 +318,12 @@
             }
         }
 
+        [Browsable(false)]
+        private ListViewItem HoveredItem { get; set; }
+
         #endregion
 
         #region ${0} Events
-
 
         protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
         {

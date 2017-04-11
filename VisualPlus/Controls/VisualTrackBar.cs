@@ -3,8 +3,8 @@
     using System;
     using System.ComponentModel;
     using System.Drawing;
-    using System.Drawing.Text;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
@@ -71,13 +71,13 @@
         private bool progressVisible = Settings.DefaultValue.TextVisible;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private Font textFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color tickColor = Settings.DefaultValue.Style.LineColor;
         private int tickHeight = 2;
         private bool tickVisible = Settings.DefaultValue.TextVisible;
         private Color trackLineColor = Settings.DefaultValue.Style.LineColor;
         private int trackLineThickness = 5;
         private bool valueTickVisible = Settings.DefaultValue.TextVisible;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -526,21 +526,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -582,6 +567,21 @@
             set
             {
                 textFont = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
                 Invalidate();
             }
         }

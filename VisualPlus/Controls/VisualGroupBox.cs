@@ -31,11 +31,11 @@
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Color groupBoxColor = Settings.DefaultValue.Style.BackgroundColor(0);
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color titleBoxColor = Settings.DefaultValue.Style.BackgroundColor(1);
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
         private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -192,21 +192,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -233,6 +218,21 @@
             set
             {
                 textDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
                 Invalidate();
             }
         }
@@ -337,10 +337,10 @@
 
             // Draw the specified string from 'Text' property inside the title box
             StringFormat stringFormat = new StringFormat
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
         }

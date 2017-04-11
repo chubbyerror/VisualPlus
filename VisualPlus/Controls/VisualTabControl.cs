@@ -23,7 +23,6 @@
 
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         private Point mouseLocation;
         private bool selectorVisible;
@@ -38,6 +37,8 @@
 
         // private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Color textNormal = Settings.DefaultValue.Style.TabTextNormal;
+
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         private Color textSelected = Settings.DefaultValue.Style.TabTextSelected;
 
@@ -218,21 +219,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
         public Color TextNormal
         {
@@ -244,6 +230,21 @@
             set
             {
                 textNormal = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
                 Invalidate();
             }
         }

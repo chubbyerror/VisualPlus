@@ -7,6 +7,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Components.Symbols;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
@@ -64,8 +65,8 @@
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
         private Font progressFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
-        private StringAlignment valueAlignment = StringAlignment.Center;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private StringAlignment valueAlignment = StringAlignment.Center;
 
         #endregion
 
@@ -477,21 +478,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -503,6 +489,21 @@
             set
             {
                 foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
                 Invalidate();
             }
         }
@@ -790,7 +791,7 @@
                     case ProgressBarTypes.Rating:
                         {
                             // Create rating bar
-                            barStyle.AddPolygon(Components.Symbols.Star.Calculate5PointStar(barLocation, 10, 5));
+                            barStyle.AddPolygon(Star.Calculate5PointStar(barLocation, 10, 5));
                             barStyle.CloseAllFigures();
 
                             break;

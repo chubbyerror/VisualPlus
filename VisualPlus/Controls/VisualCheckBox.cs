@@ -7,6 +7,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Components.Symbols;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
@@ -327,21 +328,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
@@ -371,6 +357,21 @@
             set
             {
                 textDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
                 Invalidate();
             }
         }
@@ -423,7 +424,7 @@
                     Size checkSize = new Size(checkBoxRectangle.Width, checkBoxRectangle.Height);
 
                     // Draw check mark
-                    Components.Symbols.Checkmark.DrawCheckmark(graphics, checkLocation, checkSize, controlCheckTemp, 14F);
+                    Checkmark.DrawCheckmark(graphics, checkLocation, checkSize, controlCheckTemp, 14F);
                 }
                 else
                 {
