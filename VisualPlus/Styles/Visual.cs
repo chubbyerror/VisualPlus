@@ -160,7 +160,7 @@
         {
             get
             {
-                return Color.FromArgb(77, 75, 76);
+                return Color.FromArgb(55, 61, 73);
             }
         }
 
@@ -168,7 +168,7 @@
         {
             get
             {
-                return Color.FromArgb(77, 75, 76);
+                return Color.FromArgb(55, 61, 73);
             }
         }
 
@@ -176,7 +176,7 @@
         {
             get
             {
-                return Color.FromArgb(66, 64, 65);
+                return Color.FromArgb(70, 76, 88);
             }
         }
 
@@ -184,7 +184,7 @@
         {
             get
             {
-                return Color.FromArgb(127, 127, 127);
+                return Color.FromArgb(174, 181, 187);
             }
         }
 
@@ -192,7 +192,7 @@
         {
             get
             {
-                return ColorTranslator.FromHtml("#2D882D");
+                return Color.FromArgb(217, 220, 227);
             }
         }
 
@@ -214,7 +214,8 @@
                 {
                     ControlPaint.LightLight(Color.Gainsboro),
                     ControlPaint.Light(Color.Gainsboro),
-                    Color.FromArgb(66, 64, 65)
+                    Color.FromArgb(66, 64, 65),
+                    Color.FromArgb(241, 244, 249)
                 };
 
             return list;

@@ -19,7 +19,7 @@
     {
         #region  ${0} Variables
 
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
 
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
@@ -337,6 +337,7 @@
                 }
             }
 
+            Invalidate();
             base.OnMouseMove(e);
         }
 
