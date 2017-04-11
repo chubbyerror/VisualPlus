@@ -3,6 +3,7 @@
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Text;
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
@@ -76,6 +77,7 @@
         private Color trackLineColor = Settings.DefaultValue.Style.LineColor;
         private int trackLineThickness = 5;
         private bool valueTickVisible = Settings.DefaultValue.TextVisible;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -524,6 +526,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -871,6 +888,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.TextRenderingHint = textRendererHint;
 
             RectangleF drawRect;
             Rectangle workingRect = Rectangle.Inflate(ClientRectangle, -indentWidth, -indentHeight);

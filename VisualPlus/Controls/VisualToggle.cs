@@ -70,6 +70,7 @@
         private bool toggled;
         private int toggleLocation;
         private ToggleTypes toggleType = ToggleTypes.YesNo;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -314,6 +315,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -412,7 +428,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+            graphics.TextRenderingHint = textRendererHint;
 
             // Set control state color
             Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
