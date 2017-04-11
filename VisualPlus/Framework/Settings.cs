@@ -1,15 +1,14 @@
 namespace VisualPlus.Framework
 {
-    using System.Drawing;
     using System.Drawing.Text;
+
     using VisualPlus.Enums;
-    using VisualPlus.Framework.Styles;
+    using VisualPlus.Styles;
 
     internal class Settings
     {
         #region  ${0} Variables
 
-        public static readonly Color MainColor = Color.Green;
         public static readonly int MaximumBorderSize = 24;
         public static readonly int MaximumCheckBoxBorderRounding = 12;
         public static readonly int MaximumCheckBoxSize = 11;
@@ -37,8 +36,9 @@ namespace VisualPlus.Framework
             public const bool HatchVisible = true;
             public const int BarAmount = 5;
             public const float HatchSize = 2F;
-            public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAlias;
+            public const Styles CurrentStyle = Styles.Visual;
             public static readonly IStyle Style = new Visual();
+            public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAlias;
         }
 
         #endregion

@@ -388,21 +388,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -429,6 +414,21 @@
             set
             {
                 textDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
                 Invalidate();
             }
         }
@@ -528,7 +528,8 @@
                     case DropDownButtons.Bars:
                         {
                             buttonImageSize = new Size(18, 10);
-                            buttonImagePoint = new Point(buttonRectangle.X + 2, buttonRectangle.Y + buttonRectangle.Width / 2 - buttonImageSize.Height);
+                            buttonImagePoint = new Point(buttonRectangle.X + 2,
+                                buttonRectangle.Y + buttonRectangle.Width / 2 - buttonImageSize.Height);
                             Bars.DrawBars(graphics, buttonImagePoint, buttonImageSize, buttonColor, 3, 5);
                             break;
                         }

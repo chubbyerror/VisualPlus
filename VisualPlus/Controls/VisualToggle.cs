@@ -67,10 +67,10 @@
         private Point startPoint;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private string textProcessor;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private bool toggled;
         private int toggleLocation;
         private ToggleTypes toggleType = ToggleTypes.YesNo;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -315,21 +315,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -356,6 +341,21 @@
             set
             {
                 textDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
                 Invalidate();
             }
         }

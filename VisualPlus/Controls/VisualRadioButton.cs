@@ -29,7 +29,7 @@
         private Point boxLocation = new Point(2, 2);
         private Size boxSize = new Size(10, 10);
         private Point checkLocation = new Point(0, 0);
-        private Color checkMarkColor = Settings.DefaultValue.Style.MainColor;
+        private Color checkMarkColor = Settings.DefaultValue.Style.StyleColor;
         private Size checkSize = new Size(6, 6);
         private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private ControlState controlState = ControlState.Normal;
@@ -179,21 +179,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -220,6 +205,21 @@
             set
             {
                 textDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
                 Invalidate();
             }
         }
