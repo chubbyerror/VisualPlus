@@ -33,6 +33,7 @@
         private Color itemSelected = Settings.DefaultValue.Style.BorderColor(1);
         private bool rotateItemColor = true;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -237,6 +238,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -275,7 +291,7 @@
         {
             Graphics graphics = e.Graphics;
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.TextRenderingHint = textRendererHint;
 
             BackColor = Parent.BackColor;
 

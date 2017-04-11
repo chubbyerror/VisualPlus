@@ -23,7 +23,7 @@
 
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         private Point mouseLocation;
         private bool selectorVisible;
@@ -218,7 +218,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get

@@ -43,7 +43,7 @@
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private int xValue;
         private int yValue;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -298,7 +298,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get

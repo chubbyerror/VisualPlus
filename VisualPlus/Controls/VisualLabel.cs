@@ -20,7 +20,7 @@
         private bool mirrored;
         private int mirrorSpacing = 3;
         private Rectangle textBoxRectangle;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -100,7 +100,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -145,10 +145,10 @@
 
             // String format
             StringFormat stringFormat = new StringFormat
-                {
-                    Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Center
-                };
+            {
+                Alignment = StringAlignment.Near,
+                LineAlignment = StringAlignment.Center
+            };
 
             textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
 

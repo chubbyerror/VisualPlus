@@ -51,7 +51,7 @@
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
         private int startIndex;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -388,7 +388,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get

@@ -32,7 +32,7 @@
         private GraphicsPath controlGraphicsPath;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
+        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
 
         #endregion
 

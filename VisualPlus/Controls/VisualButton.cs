@@ -41,7 +41,7 @@
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.textRenderingHint;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -337,7 +337,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Visual Text Renderer.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
