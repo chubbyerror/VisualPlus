@@ -16,7 +16,7 @@
         #region  ${0} Variables
 
         private Color hoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private Color mirrorColor = Color.Black;
+        private Color mirrorColor = Color.FromArgb(125, 255, 255, 255);
         private bool hoverVisible;
         private bool mirrored;
         private int mirrorSpacing = 3;
