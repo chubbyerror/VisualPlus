@@ -186,20 +186,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Shadow smoothness")]
-        public float ShadowSmooth
-        {
-            get
-            {
-                return shadowSmooth;
-            }
-            set
-            {
-                shadowSmooth = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description("Shadow direction")]
         public int ShadowDirection
         {
@@ -210,20 +196,6 @@
             set
             {
                 shadowDirection = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description("Shadow direction")]
-        public int ShadowDepth
-        {
-            get
-            {
-                return shadowDepth;
-            }
-            set
-            {
-                shadowDepth = value;
                 Invalidate();
             }
         }
@@ -288,8 +260,6 @@
                 screenGraphics.DrawImage(shadowBitmap, ClientRectangle, 0, 0,
                     shadowBitmap.Width, shadowBitmap.Height, GraphicsUnit.Pixel);
                 screenGraphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-                screenGraphics.DrawString(Text, Font, new SolidBrush(ForeColor), 0, 0,
-                    StringFormat.GenericTypographic);
             }
 
             // Draw the text
