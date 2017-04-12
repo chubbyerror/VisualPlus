@@ -23,6 +23,16 @@
         private Rectangle textBoxRectangle;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
+        //Shadow variables
+        private bool shadow;
+        private int shadowDirection = 315;
+        private float shadowSmooth = 2f;
+        private int shadowOpacity = 100;
+        private int shadowDepth = 4;
+        private Color shadowColor = Color.Black;
+
+
+
         #endregion
 
         #region ${0} Properties
@@ -131,6 +141,95 @@
             }
         }
 
+        // Shadow Properties
+        [DefaultValue(false), Category(Localize.Category.Appearance),
+         Description("Draws a shadow to the text.")]
+        public bool Shadow
+        {
+            get
+            {
+                return shadow;
+            }
+
+            set
+            {
+                shadow = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description("Sets the shadow color.")]
+        public Color ShadowColor
+        {
+            get
+            {
+                return shadowColor;
+            }
+            set
+            {
+                shadowColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description("Shadow opacity.")]
+        public int ShadowOpacity
+        {
+            get
+            {
+                return shadowOpacity;
+            }
+            set
+            {
+                shadowOpacity = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description("Shadow smoothness")]
+        public float ShadowSmooth
+        {
+            get
+            {
+                return shadowSmooth;
+            }
+            set
+            {
+                shadowSmooth = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description("Shadow direction")]
+        public int ShadowDirection
+        {
+            get
+            {
+                return shadowDirection;
+            }
+            set
+            {
+                shadowDirection = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description("Shadow direction")]
+        public int ShadowDepth
+        {
+            get
+            {
+                return shadowDepth;
+            }
+            set
+            {
+                shadowDepth = value;
+                Invalidate();
+            }
+        }
+
+
+
         #endregion
 
         #region ${0} Events
@@ -161,12 +260,37 @@
 
             // String format
             StringFormat stringFormat = new StringFormat
-                {
-                    Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Center
-                };
+            {
+                Alignment = StringAlignment.Near,
+                LineAlignment = StringAlignment.Center
+            };
 
             textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
+
+            // Draw the shadow
+            if (shadow)
+            {
+                Graphics screenGraphics = e.Graphics;
+                Bitmap shadowBitmap = new Bitmap(Math.Max((int)(Width / shadowSmooth), 1), Math.Max((int)(Height / shadowSmooth), 1));
+                using (Graphics imageGraphics = Graphics.FromImage(shadowBitmap))
+                {
+                    imageGraphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                    Matrix transformMatrix = new Matrix();
+                    transformMatrix.Scale(1 / shadowSmooth, 1 / shadowSmooth);
+                    transformMatrix.Translate((float)(shadowDepth * Math.Cos(shadowDirection)),
+                        (float)(shadowDepth * Math.Sin(shadowDirection)));
+                    imageGraphics.Transform = transformMatrix;
+                    imageGraphics.DrawString(Text, Font,
+                        new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), 0, 0,
+                        StringFormat.GenericTypographic);
+                }
+                screenGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                screenGraphics.DrawImage(shadowBitmap, ClientRectangle, 0, 0,
+                    shadowBitmap.Width, shadowBitmap.Height, GraphicsUnit.Pixel);
+                screenGraphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+                screenGraphics.DrawString(Text, Font, new SolidBrush(ForeColor), 0, 0,
+                    StringFormat.GenericTypographic);
+            }
 
             // Draw the text
             graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textBoxRectangle, stringFormat);
@@ -181,7 +305,7 @@
                 graphics.ScaleTransform(1, -1);
                 graphics.DrawString(Text, Font, new SolidBrush(mirrorColor), mirrorLocation);
                 graphics.ResetTransform();
-                
+
             }
         }
 
