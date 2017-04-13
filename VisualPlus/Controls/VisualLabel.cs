@@ -16,22 +16,21 @@
         #region  ${0} Variables
 
         private Color hoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private Color mirrorColor = Color.FromArgb(125, 255, 255, 255);
         private bool hoverVisible;
+        private Color mirrorColor = Color.FromArgb(120, 0, 0, 0);
         private bool mirrored;
         private int mirrorSpacing = 3;
+
+        // Shadow variables
+        private bool shadow;
+
+        private Color shadowColor = Color.Black;
+        private int shadowDepth = 4;
+        private int shadowDirection = 315;
+        private int shadowOpacity = 100;
+        private float shadowSmooth = 2f;
         private Rectangle textBoxRectangle;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-
-        //Shadow variables
-        private bool shadow;
-        private int shadowDirection = 315;
-        private float shadowSmooth = 2f;
-        private int shadowOpacity = 100;
-        private int shadowDepth = 4;
-        private Color shadowColor = Color.Black;
-
-
 
         #endregion
 
@@ -80,6 +79,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.MirrorColor)]
+        public Color MirrorColor
+        {
+            get
+            {
+                return mirrorColor;
+            }
+
+            set
+            {
+                mirrorColor = value;
+                Invalidate();
+            }
+        }
+
         [DefaultValue(false), Category(Localize.Category.Behavior),
          Description("Draws a reflection of the text.")]
         public bool Mirrored
@@ -111,36 +125,6 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.MirrorColor)]
-        public Color MirrorColor
-        {
-            get
-            {
-                return mirrorColor;
-            }
-
-            set
-            {
-                mirrorColor = value;
-                Invalidate();
-            }
-        }
-
         // Shadow Properties
         [DefaultValue(false), Category(Localize.Category.Appearance),
          Description("Draws a shadow to the text.")]
@@ -165,23 +149,10 @@
             {
                 return shadowColor;
             }
+
             set
             {
                 shadowColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description("Shadow opacity.")]
-        public int ShadowOpacity
-        {
-            get
-            {
-                return shadowOpacity;
-            }
-            set
-            {
-                shadowOpacity = value;
                 Invalidate();
             }
         }
@@ -193,6 +164,7 @@
             {
                 return shadowDirection;
             }
+
             set
             {
                 shadowDirection = value;
@@ -200,7 +172,35 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description("Shadow opacity.")]
+        public int ShadowOpacity
+        {
+            get
+            {
+                return shadowOpacity;
+            }
 
+            set
+            {
+                shadowOpacity = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
 
         #endregion
 
@@ -232,10 +232,10 @@
 
             // String format
             StringFormat stringFormat = new StringFormat
-            {
-                Alignment = StringAlignment.Near,
-                LineAlignment = StringAlignment.Center
-            };
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center
+                };
 
             textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
 
@@ -256,6 +256,7 @@
                         new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), 0, 0,
                         StringFormat.GenericTypographic);
                 }
+
                 screenGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 screenGraphics.DrawImage(shadowBitmap, ClientRectangle, 0, 0,
                     shadowBitmap.Width, shadowBitmap.Height, GraphicsUnit.Pixel);
@@ -275,7 +276,6 @@
                 graphics.ScaleTransform(1, -1);
                 graphics.DrawString(Text, Font, new SolidBrush(mirrorColor), mirrorLocation);
                 graphics.ResetTransform();
-
             }
         }
 
