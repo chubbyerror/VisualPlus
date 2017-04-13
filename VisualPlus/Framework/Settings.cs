@@ -38,7 +38,7 @@ namespace VisualPlus.Framework
             public const float HatchSize = 2F;
             public const Styles CurrentStyle = Styles.Visual;
             public static readonly IStyle Style = new Visual();
-            public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAlias;
+            public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
         }
 
         #endregion
