@@ -27,6 +27,7 @@
         private Point mouseLocation;
         private bool selectorVisible;
         private Color separator = Settings.DefaultValue.Style.TabSelected;
+        private TabAlignment tabAlignment = TabAlignment.Left;
         private Color tabHover = Settings.DefaultValue.Style.TabHover;
         private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
         private Color tabNormal = Settings.DefaultValue.Style.TabNormal;
@@ -55,8 +56,10 @@
 
             UpdateStyles();
 
-            ItemSize = new Size(40, 140);
+            Size = new Size(320, 160);
+            ItemSize = new Size(100, 30);
             MinimumSize = new Size(144, 85);
+            LineAlignment = StringAlignment.Center;
 
             foreach (TabPage page in TabPages)
             {
@@ -275,7 +278,8 @@
             DoubleBuffered = true;
             SizeMode = TabSizeMode.Fixed;
             Appearance = TabAppearance.Normal;
-            Alignment = TabAlignment.Left;
+
+            // Alignment = TabAlignment.Left;
         }
 
         protected override void OnControlAdded(ControlEventArgs e)
@@ -355,17 +359,43 @@
             // ------------------------------- >
             for (var tabIndex = 0; tabIndex <= TabCount - 1; tabIndex++)
             {
-                Rectangle tabRect = new Rectangle(
-                    new Point(
-                        GetTabRect(tabIndex).
-                            Location.X,
-                        GetTabRect(tabIndex).
-                            Location.Y),
-                    new Size(
-                        GetTabRect(tabIndex).
-                            Width,
-                        GetTabRect(tabIndex).
-                            Height));
+                Rectangle tabRect;
+                Rectangle textRect;
+
+                if (Alignment == TabAlignment.Top && Alignment == TabAlignment.Bottom)
+                {
+                    // Top - Bottom
+                    tabRect = new Rectangle(
+                        new Point(
+                            GetTabRect(tabIndex).
+                                Location.X,
+                            GetTabRect(tabIndex).
+                                Location.Y),
+                        new Size(
+                            GetTabRect(tabIndex).
+                                Width,
+                            GetTabRect(tabIndex).
+                                Height));
+
+                    textRect = new Rectangle(tabRect.Left, tabRect.Top, tabRect.Width, tabRect.Height);
+                }
+                else
+                {
+                    // Left - Right
+                    tabRect = new Rectangle(
+                        new Point(
+                            GetTabRect(tabIndex).
+                                Location.X,
+                            GetTabRect(tabIndex).
+                                Location.Y),
+                        new Size(
+                            GetTabRect(tabIndex).
+                                Width,
+                            GetTabRect(tabIndex).
+                                Height));
+
+                    textRect = new Rectangle(tabRect.Left, tabRect.Top, tabRect.Width, tabRect.Height);
+                }
 
                 Rectangle tabHighlighter = new Rectangle(
                     new Point(
@@ -376,8 +406,6 @@
                     new Size(
                         4,
                         tabRect.Height));
-
-                Rectangle textRect = new Rectangle(tabRect.Left + 20, tabRect.Top + 12, tabRect.Width - 40, tabRect.Height);
 
                 if (tabIndex == SelectedIndex)
                 {
@@ -459,7 +487,32 @@
             }
 
             // Draw divider that separates the panels.
-            e.Graphics.DrawLine(new Pen(separator, 2), ItemSize.Height + 2, 0, ItemSize.Height + 2, Height);
+            switch (Alignment)
+            {
+                case TabAlignment.Top:
+                    {
+                        e.Graphics.DrawLine(new Pen(separator, 2), 0, ItemSize.Height + 2, Width, ItemSize.Height + 2);
+                        break;
+                    }
+
+                case TabAlignment.Bottom:
+                    {
+                        e.Graphics.DrawLine(new Pen(separator, 2), 0, Height - ItemSize.Height - 2, Width, Height - ItemSize.Height - 2);
+                        break;
+                    }
+
+                case TabAlignment.Left:
+                    {
+                        e.Graphics.DrawLine(new Pen(separator, 2), ItemSize.Height + 2, 0, ItemSize.Height + 2, Height);
+                        break;
+                    }
+
+                case TabAlignment.Right:
+                    {
+                        e.Graphics.DrawLine(new Pen(separator, 2), Width - ItemSize.Height - 2, 0, Width - ItemSize.Height - 2, Height);
+                        break;
+                    }
+            }
         }
 
         private TabPage GetPageByPoint(TabControl tabControl, Point point)
