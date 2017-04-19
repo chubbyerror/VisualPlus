@@ -20,14 +20,11 @@
         #region  ${0} Variables
 
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
-
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
-
         private Point mouseLocation;
         private bool selectorVisible;
         private Color separator = Settings.DefaultValue.Style.TabSelected;
-        private TabAlignment tabAlignment = TabAlignment.Left;
         private Color tabHover = Settings.DefaultValue.Style.TabHover;
         private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
         private Color tabNormal = Settings.DefaultValue.Style.TabNormal;
@@ -40,7 +37,6 @@
         private Color textNormal = Settings.DefaultValue.Style.TabTextNormal;
 
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-
         private Color textSelected = Settings.DefaultValue.Style.TabTextSelected;
 
         #endregion
