@@ -18,6 +18,101 @@
 
         #region ${0} Methods
 
+        /// <summary>Draws the text image relation.</summary>
+        /// <param name="relation">The relation type.</param>
+        /// <param name="imageRectangle">The image rectangle.</param>
+        /// <param name="fontSize">The text size.</param>
+        /// <param name="outerBounds">The outer bounds.</param>
+        /// <param name="imagePoint">The image Point.</param>
+        /// <returns>The <see cref="Point" />.</returns>
+        public static Point ApplyTextImageRelation(TextImageRelation relation, Rectangle imageRectangle, SizeF fontSize, Rectangle outerBounds, bool imagePoint)
+        {
+            Point newPosition = new Point(0, 0);
+            Point newImagePoint = new Point(0, 0);
+            Point newTextPoint = new Point(0, 0);
+
+            switch (relation)
+            {
+                case TextImageRelation.Overlay:
+                    {
+                        // Set center
+                        newPosition.X = outerBounds.Width / 2;
+                        newPosition.Y = outerBounds.Height / 2;
+
+                        // Set image
+                        newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
+                        newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
+
+                        // Set text
+                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.Y = newPosition.Y - Convert.ToInt32(fontSize.Height) / 2;
+                        break;
+                    }
+
+                case TextImageRelation.ImageBeforeText:
+                    {
+                        // Set center
+                        newPosition.Y = outerBounds.Height / 2;
+
+                        // Set image
+                        newImagePoint.X = newPosition.X + 4;
+                        newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
+
+                        // Set text
+                        newTextPoint.X = newImagePoint.X + imageRectangle.Width;
+                        newTextPoint.Y = newPosition.Y - (int)fontSize.Height / 2;
+                        break;
+                    }
+
+                case TextImageRelation.TextBeforeImage:
+                    {
+                        // Set center
+                        newPosition.Y = outerBounds.Height / 2;
+
+                        // Set text
+                        newTextPoint.X = newPosition.X + 4;
+                        newTextPoint.Y = newPosition.Y - (int)fontSize.Height / 2;
+
+                        // Set image
+                        newImagePoint.X = newTextPoint.X + (int)fontSize.Width;
+                        newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
+                        break;
+                    }
+
+                case TextImageRelation.ImageAboveText:
+                    {
+                        // Set center
+                        newPosition.X = outerBounds.Width / 2;
+
+                        // Set image
+                        newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
+                        newImagePoint.Y = newPosition.Y + 4;
+
+                        // Set text
+                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.Y = newImagePoint.Y + imageRectangle.Height;
+                        break;
+                    }
+
+                case TextImageRelation.TextAboveImage:
+                    {
+                        // Set center
+                        newPosition.X = outerBounds.Width / 2;
+
+                        // Set text
+                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.Y = newImagePoint.Y + 4;
+
+                        // Set image
+                        newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
+                        newImagePoint.Y = newPosition.Y + Convert.ToInt32(fontSize.Height) + 4;
+                        break;
+                    }
+            }
+
+            return imagePoint ? newImagePoint : newTextPoint;
+        }
+
         public static Color BlendColor(Color backgroundColor, Color frontColor, double blend)
         {
             double ratio = blend / 255d;
@@ -46,46 +141,6 @@
             gp.AddArc(x, y, radius * 2, radius * 2, 180, 90);
             gp.CloseFigure();
             return gp;
-        }
-
-
-        /// <summary>
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="drawRectF"></param>
-        /// <param name="drawColor"></param>
-        /// <param name="orientation"></param>
-        public static void DrawTrackBarLine(Graphics g, RectangleF drawRectF, Color drawColor, Orientation orientation)
-        {
-            Color color1;
-            Color color2;
-            Color color3;
-            Color color4;
-            LinearGradientBrush gradientBrush;
-            ColorBlend colorBlend = new ColorBlend();
-
-            color1 = drawColor;
-            color2 = ControlPaint.Light(color1);
-            color3 = ControlPaint.Light(color2);
-            color4 = ControlPaint.Light(color3);
-
-            colorBlend.Colors = new[] { color1, color2, color3, color4 };
-            colorBlend.Positions = new[] { 0, 0.25f, 0.65f, 1 };
-
-            if (orientation == Orientation.Horizontal)
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
-                    new Point((int)drawRectF.Left, (int)drawRectF.Top + (int)drawRectF.Height), color1, color4);
-            }
-            else
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
-                    new Point((int)drawRectF.Left + (int)drawRectF.Width, (int)drawRectF.Top), color1, color4);
-            }
-
-            gradientBrush.InterpolationColors = colorBlend;
-
-            FillPill(gradientBrush, drawRectF, g);
         }
 
         /// <summary>Draws a border around the path.</summary>
@@ -201,7 +256,8 @@
                 // Draw each tick
                 for (var i = 0; i <= tickCount; i++)
                 {
-                    graphics.DrawLine(pen, drawRect.Left + tickFrequencySize * i, drawRect.Top, drawRect.Left + tickFrequencySize * i, drawRect.Bottom);
+                    graphics.DrawLine(pen, drawRect.Left + tickFrequencySize * i, drawRect.Top, drawRect.Left + tickFrequencySize * i,
+                        drawRect.Bottom);
                 }
 
                 // Draw last tick at Maximum
@@ -304,6 +360,45 @@
                 text = Convert.ToString(maximum, 10);
                 graphics.DrawString(text, font, brush, drawRect.Left + drawRect.Width / 2, drawRect.Top, stringFormat);
             }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="drawRectF"></param>
+        /// <param name="drawColor"></param>
+        /// <param name="orientation"></param>
+        public static void DrawTrackBarLine(Graphics g, RectangleF drawRectF, Color drawColor, Orientation orientation)
+        {
+            Color color1;
+            Color color2;
+            Color color3;
+            Color color4;
+            LinearGradientBrush gradientBrush;
+            ColorBlend colorBlend = new ColorBlend();
+
+            color1 = drawColor;
+            color2 = ControlPaint.Light(color1);
+            color3 = ControlPaint.Light(color2);
+            color4 = ControlPaint.Light(color3);
+
+            colorBlend.Colors = new[] { color1, color2, color3, color4 };
+            colorBlend.Positions = new[] { 0, 0.25f, 0.65f, 1 };
+
+            if (orientation == Orientation.Horizontal)
+            {
+                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
+                    new Point((int)drawRectF.Left, (int)drawRectF.Top + (int)drawRectF.Height), color1, color4);
+            }
+            else
+            {
+                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
+                    new Point((int)drawRectF.Left + (int)drawRectF.Width, (int)drawRectF.Top), color1, color4);
+            }
+
+            gradientBrush.InterpolationColors = colorBlend;
+
+            FillPill(gradientBrush, drawRectF, g);
         }
 
         /// <summary>Fills the background with color.</summary>

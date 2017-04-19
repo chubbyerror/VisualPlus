@@ -37,11 +37,15 @@
         private VFXManager hoverEffectsManager;
         private Image icon;
         private GraphicsPath iconGraphicsPath;
-        private Point iconPosition = new Point(4, 0);
+        private Point iconPoint = new Point(0, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
+        private Rectangle textboxRectangle;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private TextImageRelation textImageRelation = TextImageRelation.Overlay;
+        private Point textPoint = new Point(0, 0);
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private SizeF fontSize;
 
         #endregion
 
@@ -62,6 +66,8 @@
             Padding = new Padding(0);
             Size = new Size(100, 25);
             BackColor = Color.Transparent;
+
+            //  textPoint = ClientRectangle.Center();
 
             // Setup effects animation
             effectsManager = new VFXManager(false)
@@ -272,22 +278,6 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.IconPosition)]
-        public Point IconPosition
-        {
-            get
-            {
-                return iconPosition;
-            }
-
-            set
-            {
-                iconPosition = value;
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Layout), Description(Localize.Description.IconSize)]
         public Size IconSize
         {
@@ -363,6 +353,22 @@
             set
             {
                 textDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior), Description(Localize.Description.TextImageRelation)]
+        public new TextImageRelation TextImageRelation
+        {
+            get
+            {
+                return textImageRelation;
+            }
+
+            set
+            {
+                textImageRelation = value;
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -466,6 +472,10 @@
             foreColor = Enabled ? foreColor : textDisabledColor;
             Color controlTempColor = Enabled ? buttonNormal : controlDisabledColor;
 
+            // Gets the font size rectangle.
+            fontSize = graphics.MeasureString(Text, Font);
+            UpdateLocationPoints();
+
             // Draw control state
             if (Enabled)
             {
@@ -525,17 +535,15 @@
 
             if (Icon != null)
             {
+                // Update point
+                iconRectangle.Location = iconPoint;
+
+                // Draw icon
                 graphics.DrawImage(Icon, iconRectangle);
             }
 
-            StringFormat stringFormat = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
             // Draw string
-            graphics.DrawString(Text, Font, new SolidBrush(foreColor), ClientRectangle.Center(), stringFormat);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textboxRectangle);
 
             // Ripple
             if (effectsManager.IsAnimating())
@@ -578,9 +586,12 @@
 
         private void UpdateLocationPoints()
         {
-            iconPosition = new Point(iconPosition.X, Height / 2 - iconSize.Height / 2);
-            iconRectangle = new Rectangle(iconPosition, iconSize);
+            textPoint = GDI.ApplyTextImageRelation(textImageRelation, iconRectangle, fontSize, ClientRectangle, false);
+            textboxRectangle.Location = textPoint;
 
+            iconPoint = GDI.ApplyTextImageRelation(textImageRelation, iconRectangle, fontSize, ClientRectangle, true);
+            iconRectangle = new Rectangle(iconPoint, iconSize);
+            
             iconGraphicsPath = new GraphicsPath();
             iconGraphicsPath.AddRectangle(iconRectangle);
             iconGraphicsPath.CloseAllFigures();

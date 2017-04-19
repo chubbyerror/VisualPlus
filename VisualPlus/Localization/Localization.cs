@@ -57,6 +57,7 @@
             public const string ComponentNoName = "Description not available for component style.";
             public const string TextRenderingHint = "Renders the text in different styles.";
             public const string MirrorColor = "The mirrored text color.";
+            public const string TextImageRelation = "Specifies the position of the text and image relative to each other on a control.";
         }
 
 #if DEBUG
