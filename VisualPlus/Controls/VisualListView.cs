@@ -117,7 +117,7 @@
                 {
                     controlState = ControlState.Hover;
                 };
-            MouseMove += delegate(object sender, MouseEventArgs args)
+            MouseMove += delegate (object sender, MouseEventArgs args)
                 {
                     MouseLocation = args.Location;
                     ListViewItem currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
@@ -354,10 +354,10 @@
             }
 
             StringFormat stringFormat = new StringFormat
-                {
-                    // Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
+            {
+                // Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
 
             // Draw the header text.
             e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText),
@@ -505,12 +505,12 @@
         private static StringFormat GetStringFormat()
         {
             return new StringFormat
-                {
-                    FormatFlags = StringFormatFlags.LineLimit,
-                    Trimming = StringTrimming.EllipsisCharacter,
-                    Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Center
-                };
+            {
+                FormatFlags = StringFormatFlags.LineLimit,
+                Trimming = StringTrimming.EllipsisCharacter,
+                Alignment = StringAlignment.Near,
+                LineAlignment = StringAlignment.Center
+            };
         }
 
         #endregion

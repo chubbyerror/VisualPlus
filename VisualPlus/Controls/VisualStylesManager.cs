@@ -29,7 +29,7 @@
             LoadStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description("The curent style.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.Style)]
         public Styles Style
         {
             get
@@ -43,7 +43,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("The main style color.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.StyleColor)]
         public Color StyleColor
         {
             get

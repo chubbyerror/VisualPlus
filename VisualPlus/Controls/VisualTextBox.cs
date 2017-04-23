@@ -221,7 +221,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("ButtonVisible Image.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ButtonImage)]
         public Image ButtonImage
         {
             get

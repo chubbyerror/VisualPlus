@@ -79,7 +79,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description("The spacing between the mirror.")]
+        [Category(Localize.Category.Layout), Description(Localize.Description.ReflectionSpacing)]
         public int ReflectionSpacing
         {
             get
@@ -96,7 +96,7 @@
 
         // Shadow Properties
         [DefaultValue(false), Category(Localize.Category.Appearance),
-         Description("Draws a shadow to the text.")]
+         Description(Localize.Description.Shadow)]
         public bool Shadow
         {
             get
@@ -111,7 +111,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Sets the shadow color.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ShadowColor)]
         public Color ShadowColor
         {
             get
@@ -126,7 +126,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Shadow direction")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ShadowDirection)]
         public int ShadowDirection
         {
             get
@@ -141,7 +141,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description("Shadow opacity.")]
+        [Category(Localize.Category.Appearance), Description(Localize.Description.ShadowOpacity)]
         public int ShadowOpacity
         {
             get

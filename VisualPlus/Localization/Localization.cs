@@ -58,6 +58,18 @@
             public const string TextRenderingHint = "Renders the text in different styles.";
             public const string MirrorColor = "The mirrored text color.";
             public const string TextImageRelation = "Specifies the position of the text and image relative to each other on a control.";
+            public const string ReflectionSpacing = "Space between the reflection and the text.";
+
+            public const string Shadow = "Draws a dropshadow.";
+            public const string ShadowColor = "The shadow color.";
+            public const string ShadowDirection = "Direction of the shadow.";
+            public const string ShadowOpacity = "Opacity of the shadow.";
+
+            public const string Style = "The visual style.";
+            public const string StyleColor = "The visual style color.";
+
+            public const string ButtonImage = "Image on the button.";
+            public const string ButtonSize = "Size of the button.";
         }
 
 #if DEBUG
