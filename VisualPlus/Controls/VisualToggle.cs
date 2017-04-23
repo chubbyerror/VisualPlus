@@ -284,7 +284,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description("The size of the toggle switch.")]
+        [Category(Localize.Category.Layout), Description(Localize.Description.ButtonSize)]
         public Size ButtonSize
         {
             get
