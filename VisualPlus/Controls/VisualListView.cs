@@ -180,7 +180,7 @@
             }
         }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior)]
+        [DefaultValue(false), Category(Localize.Category.Behavior), Description(Localize.Description.FocusVisible)]
         public bool FocusVisible
         {
             get

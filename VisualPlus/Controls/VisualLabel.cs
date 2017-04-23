@@ -63,8 +63,7 @@
             }
         }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior),
-         Description("Draws a reflection of the text.")]
+        [DefaultValue(false), Category(Localize.Category.Behavior),Description(Localize.Description.Reflection)]
         public bool Reflection
         {
             get
