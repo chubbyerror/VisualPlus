@@ -7,29 +7,29 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
-    [ToolboxBitmap(typeof(Label))]
+    /// <summary>The visual Label.</summary>
+    [ToolboxBitmap(typeof(Label)), Designer(VSDesignerBinding.VisualLabel)]
     public class VisualLabel : Label
     {
         #region  ${0} Variables
 
-        private Color hoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool hoverVisible;
-        private Color mirrorColor = Color.FromArgb(120, 0, 0, 0);
-        private bool mirrored;
-        private int mirrorSpacing = 3;
-
-        // Shadow variables
+        private ControlState controlState = ControlState.Normal;
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color reflectionColor = Color.FromArgb(120, 0, 0, 0);
+        private bool reflection;
+        private int reflectionSpacing = 3;
         private bool shadow;
-
-        private Color shadowColor = Color.Black;
+        private Color shadowColor = Settings.DefaultValue.Style.ShadowColor;
         private int shadowDepth = 4;
         private int shadowDirection = 315;
         private int shadowOpacity = 100;
         private float shadowSmooth = 2f;
         private Rectangle textBoxRectangle;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
@@ -48,79 +48,48 @@
             BackColor = Color.Transparent;
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return hoverVisible;
-            }
-
-            set
-            {
-                hoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.HoverColor)]
-        public Color HoverColor
-        {
-            get
-            {
-                return hoverColor;
-            }
-
-            set
-            {
-                hoverColor = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance), Description(Localize.Description.MirrorColor)]
-        public Color MirrorColor
+        public Color ReflectionColor
         {
             get
             {
-                return mirrorColor;
+                return reflectionColor;
             }
 
             set
             {
-                mirrorColor = value;
+                reflectionColor = value;
                 Invalidate();
             }
         }
 
         [DefaultValue(false), Category(Localize.Category.Behavior),
          Description("Draws a reflection of the text.")]
-        public bool Mirrored
+        public bool Reflection
         {
             get
             {
-                return mirrored;
+                return reflection;
             }
 
             set
             {
-                mirrored = value;
+                reflection = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Layout), Description("The spacing between the mirror.")]
-        public int MirrorSpacing
+        public int ReflectionSpacing
         {
             get
             {
-                return mirrorSpacing;
+                return reflectionSpacing;
             }
 
             set
             {
-                mirrorSpacing = value;
+                reflectionSpacing = value;
                 Invalidate();
             }
         }
@@ -187,6 +156,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        public Color TextColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
@@ -206,20 +190,19 @@
 
         #region ${0} Events
 
-        protected override void OnMouseHover(EventArgs e)
+        protected override void OnMouseEnter(EventArgs e)
         {
-            base.OnMouseHover(e);
+            base.OnMouseEnter(e);
+            controlState = ControlState.Hover;
 
-            if (hoverVisible)
-            {
-                ForeColor = hoverColor;
-            }
+            Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            ForeColor = Settings.DefaultValue.Style.ForeColor(0);
+            controlState = ControlState.Normal;
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -230,6 +213,9 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            // Set control color state
+            foreColor = Enabled ? foreColor : textDisabledColor;
+
             // String format
             StringFormat stringFormat = new StringFormat
                 {
@@ -239,44 +225,54 @@
 
             textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
 
+            // Draw the text
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
+
             // Draw the shadow
             if (shadow)
             {
-                Graphics screenGraphics = e.Graphics;
-                Bitmap shadowBitmap = new Bitmap(Math.Max((int)(Width / shadowSmooth), 1), Math.Max((int)(Height / shadowSmooth), 1));
-                using (Graphics imageGraphics = Graphics.FromImage(shadowBitmap))
-                {
-                    imageGraphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-                    Matrix transformMatrix = new Matrix();
-                    transformMatrix.Scale(1 / shadowSmooth, 1 / shadowSmooth);
-                    transformMatrix.Translate((float)(shadowDepth * Math.Cos(shadowDirection)),
-                        (float)(shadowDepth * Math.Sin(shadowDirection)));
-                    imageGraphics.Transform = transformMatrix;
-                    imageGraphics.DrawString(Text, Font,
-                        new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), 0, 0,
-                        StringFormat.GenericTypographic);
-                }
-
-                screenGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                screenGraphics.DrawImage(shadowBitmap, ClientRectangle, 0, 0,
-                    shadowBitmap.Width, shadowBitmap.Height, GraphicsUnit.Pixel);
-                screenGraphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+                DrawShadow(e);
             }
 
-            // Draw the text
-            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textBoxRectangle, stringFormat);
-
-            // Draw the mirrored text.
-            if (mirrored)
+            // Draw the reflection text.
+            if (reflection)
             {
-                // Mirror location
-                Point mirrorLocation = new Point(0, -textBoxRectangle.Y - textBoxRectangle.Height / 2 - (int)Font.SizeInPoints + mirrorSpacing);
-
-                graphics.TranslateTransform(0, Font.Size);
-                graphics.ScaleTransform(1, -1);
-                graphics.DrawString(Text, Font, new SolidBrush(mirrorColor), mirrorLocation);
-                graphics.ResetTransform();
+                DrawReflection(graphics);
             }
+        }
+
+        private void DrawReflection(Graphics graphics)
+        {
+            // Mirror location
+            Point mirrorLocation = new Point(0, -textBoxRectangle.Y - textBoxRectangle.Height / 2 - (int)Font.SizeInPoints + reflectionSpacing);
+
+            graphics.TranslateTransform(0, Font.Size);
+            graphics.ScaleTransform(1, -1);
+            graphics.DrawString(Text, Font, new SolidBrush(reflectionColor), mirrorLocation);
+            graphics.ResetTransform();
+        }
+
+        private void DrawShadow(PaintEventArgs e)
+        {
+            Graphics screenGraphics = e.Graphics;
+            Bitmap shadowBitmap = new Bitmap(Math.Max((int)(Width / shadowSmooth), 1), Math.Max((int)(Height / shadowSmooth), 1));
+            using (Graphics imageGraphics = Graphics.FromImage(shadowBitmap))
+            {
+                imageGraphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                Matrix transformMatrix = new Matrix();
+                transformMatrix.Scale(1 / shadowSmooth, 1 / shadowSmooth);
+                transformMatrix.Translate((float)(shadowDepth * Math.Cos(shadowDirection)),
+                    (float)(shadowDepth * Math.Sin(shadowDirection)));
+                imageGraphics.Transform = transformMatrix;
+                imageGraphics.DrawString(Text, Font,
+                    new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), 0, 0,
+                    StringFormat.GenericTypographic);
+            }
+
+            screenGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            screenGraphics.DrawImage(shadowBitmap, ClientRectangle, 0, 0,
+                shadowBitmap.Width, shadowBitmap.Height, GraphicsUnit.Pixel);
+            screenGraphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
         }
 
         #endregion

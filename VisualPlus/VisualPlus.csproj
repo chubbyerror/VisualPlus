@@ -56,6 +56,7 @@
     <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualCircleProgressBarDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualContextMenuDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualLabelDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualListBoxDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualListViewDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualTrackBarDesigner.cs" />
