@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,20 +14,7 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    public enum ValueDivisor
-    {
-        /// <summary>The by 1.</summary>
-        By1 = 1,
-
-        /// <summary>The by 10.</summary>
-        By10 = 10,
-
-        /// <summary>The by 100.</summary>
-        By100 = 100,
-
-        /// <summary>The by 1000.</summary>
-        By1000 = 1000
-    }
+    #endregion
 
     /// <summary>The visual TrackBar.</summary>
     [DefaultEvent("ValueChanged")]
@@ -33,7 +22,7 @@
     [Designer(VSDesignerBinding.VisualTrackBar)]
     public sealed class VisualTrackBar : TrackBar
     {
-        #region  ${0} Variables
+        #region Variables
 
         private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
         private static Color progressColor1 = Settings.DefaultValue.Style.ProgressColor;
@@ -83,7 +72,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualTrackBar()
         {
@@ -101,6 +90,25 @@
             Size = new Size(180, 50);
             MinimumSize = new Size(25, 25);
         }
+
+        public enum ValueDivisor
+        {
+            /// <summary>The by 1.</summary>
+            By1 = 1,
+
+            /// <summary>The by 10.</summary>
+            By10 = 10,
+
+            /// <summary>The by 100.</summary>
+            By100 = 100,
+
+            /// <summary>The by 1000.</summary>
+            By1000 = 1000
+        }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.BorderColor)]
@@ -735,7 +743,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnMouseDown(MouseEventArgs e)
         {

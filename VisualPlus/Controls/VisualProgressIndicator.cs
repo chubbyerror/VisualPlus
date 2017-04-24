@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -10,12 +12,14 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual ProgressIndicator.</summary>
     [ToolboxBitmap(typeof(ProgressBar))]
     [Designer(VSDesignerBinding.VisualProgressIndicator)]
     public sealed class VisualProgressIndicator : Control
     {
-        #region  ${0} Variables
+        #region Variables
 
         private static SolidBrush animationColor = new SolidBrush(Color.DimGray);
         private static Size circleSize = new Size(15, 15);
@@ -33,7 +37,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualProgressIndicator()
         {
@@ -48,6 +52,10 @@
             animationSpeed.Interval = 100;
             UpdateStyles();
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -159,7 +167,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnEnabledChanged(EventArgs e)
         {

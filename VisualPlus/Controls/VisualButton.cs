@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,12 +14,14 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual Button.</summary>
     [ToolboxBitmap(typeof(Button))]
     [Designer(VSDesignerBinding.VisualButton)]
     public sealed class VisualButton : Button
     {
-        #region  ${0} Variables
+        #region Variables
 
         private bool animation = true;
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
@@ -50,7 +54,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualButton()
         {
@@ -83,6 +87,10 @@
             hoverEffectsManager.OnAnimationProgress += sender => Invalidate();
             effectsManager.OnAnimationProgress += sender => Invalidate();
         }
+
+        #endregion
+
+        #region Properties
 
         [DefaultValue(Settings.DefaultValue.Animation)]
         [Category(Localize.Category.Behavior)]
@@ -407,7 +415,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnCreateControl()
         {

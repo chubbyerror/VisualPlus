@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -14,16 +16,22 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     internal interface IColor
     {
-        #region ${0} Properties
-
-        /// <summary>Occurs when the <see cref="Color" /> property is changed.</summary>
-        event EventHandler ColorChanged;
+        #region Properties
 
         /// <summary>Gets or sets the component color.</summary>
         /// <value>The component color.</value>
         Color Color { get; set; }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>Occurs when the <see cref="Color" /> property is changed.</summary>
+        event EventHandler ColorChanged;
 
         #endregion
     }
@@ -279,7 +287,46 @@
     [Description("A color wheel component used can be used to pick a color.")]
     public sealed class VisualColorWheel : Control, IColor
     {
-        #region  ${0} Variables
+        #region Variables
+
+        [Category("Property Changed")]
+        public event EventHandler ColorChanged
+        {
+            add
+            {
+                Events.AddHandler(EventColorChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(EventColorChanged, value);
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [DefaultValue(typeof(Color), "Black")]
+        [Description(Localize.Description.ComponentColor)]
+        public Color Color
+        {
+            get
+            {
+                return color;
+            }
+
+            set
+            {
+                if (Color != value)
+                {
+                    color = value;
+
+                    OnColorChanged(EventArgs.Empty);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Variables
 
         private static readonly object EventColorChanged = new object();
         private static readonly object EventColorStepChanged = new object();
@@ -309,7 +356,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualColorWheel()
         {
@@ -328,89 +375,9 @@
             Size = new Size(130, 130);
         }
 
-        [Category("Property Changed")]
-        public event EventHandler ColorChanged
-        {
-            add
-            {
-                Events.AddHandler(EventColorChanged, value);
-            }
+        #endregion
 
-            remove
-            {
-                Events.RemoveHandler(EventColorChanged, value);
-            }
-        }
-
-        [Category("Property Changed")]
-        public event EventHandler ColorStepChanged
-        {
-            add
-            {
-                Events.AddHandler(EventColorStepChanged, value);
-            }
-
-            remove
-            {
-                Events.RemoveHandler(EventColorStepChanged, value);
-            }
-        }
-
-        [Category("Property Changed")]
-        public event EventHandler HslColorChanged
-        {
-            add
-            {
-                Events.AddHandler(EventHslColorChanged, value);
-            }
-
-            remove
-            {
-                Events.RemoveHandler(EventHslColorChanged, value);
-            }
-        }
-
-        [Category("Property Changed")]
-        public event EventHandler LargeChangeChanged
-        {
-            add
-            {
-                Events.AddHandler(EventLargeChangeChanged, value);
-            }
-
-            remove
-            {
-                Events.RemoveHandler(EventLargeChangeChanged, value);
-            }
-        }
-
-        [Category("Property Changed")]
-        public event EventHandler SelectionSizeChanged
-        {
-            add
-            {
-                Events.AddHandler(EventSelectionSizeChanged, value);
-            }
-
-            remove
-            {
-                Events.RemoveHandler(EventSelectionSizeChanged, value);
-            }
-        }
-
-        [Category("Property Changed")]
-        public event EventHandler SmallChangeChanged
-        {
-            add
-            {
-                Events.AddHandler(EventSmallChangeChanged, value);
-            }
-
-            remove
-            {
-                Events.RemoveHandler(EventSmallChangeChanged, value);
-            }
-        }
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.BorderColor)]
@@ -496,27 +463,6 @@
             {
                 borderVisible = value;
                 Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [DefaultValue(typeof(Color), "Black")]
-        [Description(Localize.Description.ComponentColor)]
-        public Color Color
-        {
-            get
-            {
-                return color;
-            }
-
-            set
-            {
-                if (Color != value)
-                {
-                    color = value;
-
-                    OnColorChanged(EventArgs.Empty);
-                }
             }
         }
 
@@ -721,7 +667,77 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
+
+        [Category("Property Changed")]
+        public event EventHandler ColorStepChanged
+        {
+            add
+            {
+                Events.AddHandler(EventColorStepChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(EventColorStepChanged, value);
+            }
+        }
+
+        [Category("Property Changed")]
+        public event EventHandler HslColorChanged
+        {
+            add
+            {
+                Events.AddHandler(EventHslColorChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(EventHslColorChanged, value);
+            }
+        }
+
+        [Category("Property Changed")]
+        public event EventHandler LargeChangeChanged
+        {
+            add
+            {
+                Events.AddHandler(EventLargeChangeChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(EventLargeChangeChanged, value);
+            }
+        }
+
+        [Category("Property Changed")]
+        public event EventHandler SelectionSizeChanged
+        {
+            add
+            {
+                Events.AddHandler(EventSelectionSizeChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(EventSelectionSizeChanged, value);
+            }
+        }
+
+        [Category("Property Changed")]
+        public event EventHandler SmallChangeChanged
+        {
+            add
+            {
+                Events.AddHandler(EventSmallChangeChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(EventSmallChangeChanged, value);
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {

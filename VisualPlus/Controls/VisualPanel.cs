@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.ComponentModel.Design;
@@ -12,13 +14,15 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual panel.</summary>
     // [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     [ToolboxBitmap(typeof(Panel))]
     [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     public sealed partial class VisualPanel : Panel
     {
-        #region  ${0} Variables
+        #region Variables
 
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
@@ -33,7 +37,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualPanel()
         {
@@ -48,6 +52,10 @@
 
             UpdateStyles();
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -195,7 +203,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
@@ -252,8 +260,6 @@
             // Update paths
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
-
-        #endregion
 
         #region ${0} Methods
 
@@ -357,6 +363,8 @@
                 }
             }
         }
+
+        #endregion
 
         #endregion
     }

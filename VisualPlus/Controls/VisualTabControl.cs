@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.Collections;
     using System.ComponentModel;
@@ -14,12 +16,14 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual TabControl.</summary>
     // [ToolboxBitmap(typeof(TabControl)), Designer(StylesManager.BindedDesignerControls.VisualTab)]
     [ToolboxBitmap(typeof(TabControl))]
     public sealed class VisualTabControl : TabControl
     {
-        #region  ${0} Variables
+        #region Variables
 
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
 
@@ -52,7 +56,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualTabControl()
         {
@@ -74,6 +78,10 @@
                 page.BackColor = backgroundColor;
             }
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -391,7 +399,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void CreateHandle()
         {

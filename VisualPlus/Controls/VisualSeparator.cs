@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -9,12 +11,14 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual separator.</summary>
     [ToolboxBitmap(typeof(Control))]
     [Designer(VSDesignerBinding.VisualSeparator)]
     public sealed class VisualSeparator : Control
     {
-        #region  ${0} Variables
+        #region Variables
 
         private Color lineColor = Settings.DefaultValue.Style.LineColor;
         private Orientation separatorOrientation = Orientation.Horizontal;
@@ -22,7 +26,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualSeparator()
         {
@@ -35,6 +39,10 @@
 
             UpdateStyles();
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -107,7 +115,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnPaint(PaintEventArgs e)
         {

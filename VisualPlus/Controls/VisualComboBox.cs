@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -13,21 +15,14 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    public enum DropDownButtons
-    {
-        /// <summary>Use arrow button.</summary>
-        Arrow,
-
-        /// <summary>Use bars button.</summary>
-        Bars
-    }
+    #endregion
 
     /// <summary>The visual ComboBox.</summary>
     [ToolboxBitmap(typeof(ComboBox))]
     [Designer(VSDesignerBinding.VisualComboBox)]
     public sealed class VisualComboBox : ComboBox
     {
-        #region  ${0} Variables
+        #region Variables
 
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private static ControlState controlState = ControlState.Normal;
@@ -56,7 +51,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualComboBox()
         {
@@ -77,6 +72,19 @@
             UpdateLocationPoints();
             BackColor = Color.Transparent;
         }
+
+        public enum DropDownButtons
+        {
+            /// <summary>Use arrow button.</summary>
+            Arrow,
+
+            /// <summary>Use bars button.</summary>
+            Bars
+        }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -458,7 +466,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnDrawItem(DrawItemEventArgs e)
         {

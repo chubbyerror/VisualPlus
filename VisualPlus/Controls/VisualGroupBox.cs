@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.ComponentModel.Design;
@@ -13,12 +15,14 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual GroupBox.</summary>
     [ToolboxBitmap(typeof(GroupBox))]
     [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     public sealed partial class VisualGroupBox : GroupBox
     {
-        #region  ${0} Variables
+        #region Variables
 
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
@@ -40,7 +44,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualGroupBox()
         {
@@ -56,6 +60,10 @@
 
             UpdateStyles();
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.BorderColor)]
@@ -284,7 +292,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
@@ -389,8 +397,6 @@
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
-        #endregion
-
         #region ${0} Methods
 
         public void BackColorFix()
@@ -493,6 +499,8 @@
                 }
             }
         }
+
+        #endregion
 
         #endregion
     }

@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -10,12 +12,14 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual Label.</summary>
     [ToolboxBitmap(typeof(Label))]
     [Designer(VSDesignerBinding.VisualLabel)]
     public sealed class VisualLabel : Label
     {
-        #region  ${0} Variables
+        #region Variables
 
         private const int ShadowDepth = 4;
         private const float ShadowSmooth = 2f;
@@ -33,7 +37,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualLabel()
         {
@@ -43,6 +47,10 @@
 
             BackColor = Color.Transparent;
         }
+
+        #endregion
+
+        #region Properties
 
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
@@ -192,7 +200,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnPaint(PaintEventArgs e)
         {

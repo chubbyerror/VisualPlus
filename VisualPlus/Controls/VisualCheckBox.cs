@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -13,21 +15,14 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    public enum CheckBoxType
-    {
-        /// <summary>The check mark.</summary>
-        CheckMark,
-
-        /// <summary>The filled.</summary>
-        Filled
-    }
+    #endregion
 
     /// <summary>The visual CheckBox.</summary>
     [ToolboxBitmap(typeof(CheckBox))]
     [Designer(VSDesignerBinding.VisualCheckBox)]
     public sealed class VisualCheckBox : CheckBox
     {
-        #region  ${0} Variables
+        #region Variables
 
         private const int Spacing = 2;
         private bool animation = true;
@@ -59,7 +54,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualCheckBox()
         {
@@ -91,6 +86,19 @@
 
             Animation = true;
         }
+
+        public enum CheckBoxType
+        {
+            /// <summary>The check mark.</summary>
+            CheckMark,
+
+            /// <summary>The filled.</summary>
+            Filled
+        }
+
+        #endregion
+
+        #region Properties
 
         [DefaultValue(Settings.DefaultValue.Animation)]
         [Category(Localize.Category.Behavior)]
@@ -278,7 +286,7 @@
 
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.ComponentNoName)]
-        public CheckBoxType CheckBoxType
+        public CheckBoxType BoxType
         {
             get
             {
@@ -395,7 +403,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnMouseHover(EventArgs e)
         {

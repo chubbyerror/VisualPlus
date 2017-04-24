@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -10,10 +12,12 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
+    #endregion
+
     [ToolboxBitmap(typeof(ContextMenuStrip))]
     public class VisualContextMenuStrip : ContextMenuStrip
     {
-        #region  ${0} Variables
+        #region Variables
 
         private static Color arrowColor = Settings.DefaultValue.Style.DropDownButtonColor;
         private static Color arrowDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
@@ -30,7 +34,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualContextMenuStrip()
         {
@@ -38,9 +42,9 @@
             BackColor = backgroundColor;
         }
 
-        public delegate void ClickedEventHandler(object sender);
+        #endregion
 
-        public event ClickedEventHandler Clicked;
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -211,7 +215,9 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
+
+        public event ClickedEventHandler Clicked;
 
         protected override void OnItemClicked(ToolStripItemClickedEventArgs e)
         {
@@ -248,9 +254,11 @@
 
         #endregion
 
+        #region Methods ${0}
+
         public sealed class VisualToolStripMenuItem : ToolStripMenuItem
         {
-            #region ${0} Properties
+            #region Constructors
 
             public VisualToolStripMenuItem()
             {
@@ -260,7 +268,7 @@
 
             #endregion
 
-            #region ${0} Events
+            #region Events
 
             protected override ToolStripDropDown CreateDefaultDropDown()
             {
@@ -279,7 +287,7 @@
 
         public sealed class VisualToolStripRender : ToolStripProfessionalRenderer
         {
-            #region ${0} Events
+            #region Events
 
             protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
             {
@@ -369,5 +377,9 @@
 
             #endregion
         }
+
+        #endregion
+
+        public delegate void ClickedEventHandler(object sender);
     }
 }

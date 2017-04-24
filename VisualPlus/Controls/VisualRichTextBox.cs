@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,17 +14,24 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual RichTextBox.</summary>
     [ToolboxBitmap(typeof(RichTextBox))]
     [Designer(VSDesignerBinding.VisualRichTextBox)]
     [DefaultEvent("TextChanged")]
     public sealed class VisualRichTextBox : RichTextBox
     {
-        #region  ${0} Variables
+        #region Variables
+
+        public RichTextBox RichObject = new RichTextBox();
+
+        #endregion
+
+        #region Variables
 
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private static ControlState controlState = ControlState.Normal;
-        public RichTextBox RichObject = new RichTextBox();
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -38,7 +47,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualRichTextBox()
         {
@@ -58,6 +67,10 @@
 
             UpdateStyles();
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -283,7 +296,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnEnter(EventArgs e)
         {

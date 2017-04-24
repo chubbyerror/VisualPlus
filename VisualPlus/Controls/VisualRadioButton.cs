@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,12 +14,14 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual radio button.</summary>
     [ToolboxBitmap(typeof(RadioButton))]
     [Designer(VSDesignerBinding.VisualRadioButton)]
     public class VisualRadioButton : RadioButton
     {
-        #region  ${0} Variables
+        #region Variables
 
         private const int Spacing = 2;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
@@ -40,7 +44,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualRadioButton()
         {
@@ -52,6 +56,10 @@
             Width = 132;
             UpdateStyles();
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -238,7 +246,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnMouseDown(MouseEventArgs e)
         {

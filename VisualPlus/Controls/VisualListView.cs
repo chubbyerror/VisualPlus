@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -14,13 +16,15 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual ListView.</summary>
     [ToolboxBitmap(typeof(ListView))]
 
     // [ToolboxBitmap(typeof(ListView)), Designer(VSDesignerBinding.VisualListView)]
     public sealed class VisualListView : ListView
     {
-        #region  ${0} Variables
+        #region Variables
 
         private int borderSize = Settings.DefaultValue.BorderSize;
         private bool borderVisible;
@@ -39,7 +43,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualListView()
         {
@@ -101,6 +105,10 @@
                     }
                 };
         }
+
+        #endregion
+
+        #region Properties
 
         [DefaultValue(Settings.DefaultValue.BorderSize)]
         [Category(Localize.Category.Layout)]
@@ -308,7 +316,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
         {
@@ -491,10 +499,12 @@
 
         #endregion
 
+        #region Methods ${0}
+
         [StructLayout(LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
         public class LogFont
         {
-            #region  ${0} Variables
+            #region Variables
 
             public byte CharSet = 0;
             public byte ClipPrecision = 0;
@@ -516,5 +526,7 @@
 
             #endregion
         }
+
+        #endregion
     }
 }

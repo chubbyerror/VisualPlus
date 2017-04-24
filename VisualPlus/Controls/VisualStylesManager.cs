@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -10,11 +12,17 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
+    #endregion
+
     public class VisualStylesManager : Component
     {
-        #region  ${0} Variables
+        #region Variables
 
         public List<string> StylesList = new List<string>();
+
+        #endregion
+
+        #region Variables
 
         private Styles currentStyle = Settings.DefaultValue.CurrentStyle;
 
@@ -22,12 +30,16 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualStylesManager()
         {
             LoadStyles();
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.Style)]
@@ -61,7 +73,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         /// <summary>Loads styles to a string list.</summary>
         private void LoadStyles()

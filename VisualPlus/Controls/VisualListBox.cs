@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,12 +14,14 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual ListBox.</summary>
     [ToolboxBitmap(typeof(ListBox))]
     [Designer(VSDesignerBinding.VisualListBox)]
     public sealed class VisualListBox : ListBox
     {
-        #region  ${0} Variables
+        #region Variables
 
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -38,7 +42,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualListBox()
         {
@@ -56,6 +60,10 @@
             AutoSize = true;
             DrawMode = DrawMode.OwnerDrawVariable;
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.BorderColor)]
@@ -298,7 +306,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnDrawItem(DrawItemEventArgs e)
         {

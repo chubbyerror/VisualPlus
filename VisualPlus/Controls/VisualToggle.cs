@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,17 +14,7 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    public enum ToggleTypes
-    {
-        /// <summary>Yes / No toggle.</summary>
-        YesNo,
-
-        /// <summary>On / Off toggle.</summary>
-        OnOff,
-
-        /// <summary>I / O toggle.</summary>
-        IO
-    }
+    #endregion
 
     /// <summary>The visual Toggle.</summary>
     [ToolboxBitmap(typeof(Control))]
@@ -31,7 +23,7 @@
     [Description("A toggle button allows the user to change a setting between two states.")]
     public sealed class VisualToggle : Control
     {
-        #region  ${0} Variables
+        #region Variables
 
         private readonly Timer animationTimer = new Timer
             {
@@ -66,7 +58,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualToggle()
         {
@@ -84,9 +76,21 @@
             animationTimer.Tick += AnimationTimerTick;
         }
 
-        public delegate void ToggledChangedEventHandler();
+        public enum ToggleTypes
+        {
+            /// <summary>Yes / No toggle.</summary>
+            YesNo,
 
-        public event ToggledChangedEventHandler ToggledChanged;
+            /// <summary>On / Off toggle.</summary>
+            OnOff,
+
+            /// <summary>I / O toggle.</summary>
+            IO
+        }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -405,7 +409,9 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
+
+        public event ToggledChangedEventHandler ToggledChanged;
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -568,14 +574,20 @@
 
         #endregion
 
+        #region Methods ${0}
+
         public class PillStyle
         {
-            #region  ${0} Variables
+            #region Variables
 
             public bool Left;
             public bool Right;
 
             #endregion
         }
+
+        #endregion
+
+        public delegate void ToggledChangedEventHandler();
     }
 }

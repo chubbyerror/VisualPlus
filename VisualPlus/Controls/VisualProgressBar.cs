@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -13,27 +15,14 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    public enum ProgressBarTypes
-    {
-        /// <summary>Bars type.</summary>
-        Bars,
-
-        /// <summary>The horizontal progressbar.</summary>
-        Horizontal,
-
-        /// <summary>The vertical progressbar.</summary>
-        Vertical,
-
-        /// <summary>Rating type.</summary>
-        Rating
-    }
+    #endregion
 
     /// <summary>The visual ProgressBar.</summary>
     [ToolboxBitmap(typeof(ProgressBar))]
     [Designer(VSDesignerBinding.VisualProgressBar)]
     public sealed class VisualProgressBar : ProgressBar
     {
-        #region  ${0} Variables
+        #region Variables
 
         private static int backgroundRotation = 90;
         private static int bars = 5;
@@ -71,7 +60,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualProgressBar()
         {
@@ -87,6 +76,25 @@
             DoubleBuffered = true;
             UpdateStyles();
         }
+
+        public enum ProgressBarTypes
+        {
+            /// <summary>Bars type.</summary>
+            Bars,
+
+            /// <summary>The horizontal progressbar.</summary>
+            Horizontal,
+
+            /// <summary>The vertical progressbar.</summary>
+            Vertical,
+
+            /// <summary>Rating type.</summary>
+            Rating
+        }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -557,7 +565,15 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
+
+        /// <summary>Decreases the progress value.</summary>
+        /// <param name="curValue">Value amount.</param>
+        public void Deincrement(int curValue)
+        {
+            Value -= curValue;
+            Invalidate();
+        }
 
         protected override void OnMouseEnter(EventArgs e)
         {
@@ -912,18 +928,6 @@
                 default:
                     throw new ArgumentOutOfRangeException(nameof(style), style, null);
             }
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        /// <summary>Decreases the progress value.</summary>
-        /// <param name="curValue">Value amount.</param>
-        public void Deincrement(int curValue)
-        {
-            Value -= curValue;
-            Invalidate();
         }
 
         #endregion

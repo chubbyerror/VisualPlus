@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -10,21 +12,14 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
-    public enum ProgressShape
-    {
-        /// <summary>Rectangle shape.</summary>
-        Flat,
-
-        /// <summary>Round shape.</summary>
-        Round
-    }
+    #endregion
 
     /// <summary>The visual CircleProgressBar.</summary>
     [ToolboxBitmap(typeof(ProgressBar))]
     [Designer(VSDesignerBinding.VisualCircleProgressBar)]
     public sealed class VisualCircleProgressBar : ProgressBar
     {
-        #region  ${0} Variables
+        #region Variables
 
         private Color backgroundCircleColor = Settings.DefaultValue.Style.BackgroundProgressCircle;
         private bool backgroundCircleVisible = true;
@@ -40,7 +35,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualCircleProgressBar()
         {
@@ -57,6 +52,19 @@
 
             UpdateStyles();
         }
+
+        public enum ProgressShape
+        {
+            /// <summary>Rectangle shape.</summary>
+            Flat,
+
+            /// <summary>Round shape.</summary>
+            Round
+        }
+
+        #endregion
+
+        #region Properties
 
         [DefaultValue(true)]
         [Category(Localize.Category.Appearance)]
@@ -174,7 +182,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentShape)]
-        public ProgressShape ProgressShape
+        public ProgressShape Shape
         {
             get
             {
@@ -240,7 +248,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -331,8 +339,6 @@
             Size = new Size(Math.Max(Width, Height), Math.Max(Width, Height));
         }
 
-        #endregion
-
         #region ${0} Methods
 
         public void Decrement(int val)
@@ -340,6 +346,8 @@
             Value -= val;
             Invalidate();
         }
+
+        #endregion
 
         #endregion
     }

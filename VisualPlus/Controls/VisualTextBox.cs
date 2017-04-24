@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -13,15 +15,22 @@
     using VisualPlus.Localization;
     using VisualPlus.Properties;
 
+    #endregion
+
     /// <summary>The visual TextBox.</summary>
     [ToolboxBitmap(typeof(TextBox))]
     [Designer(VSDesignerBinding.VisualTextBox)]
     public sealed class VisualTextBox : TextBox
     {
-        #region  ${0} Variables
+        #region Variables
+
+        public TextBox TextBoxObject = new TextBox();
+
+        #endregion
+
+        #region Variables
 
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
-        public TextBox TextBoxObject = new TextBox();
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -48,7 +57,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualTextBox()
         {
@@ -68,9 +77,9 @@
             UpdateStyles();
         }
 
-        public delegate void ButtonClickedEventHandler();
+        #endregion
 
-        public event ButtonClickedEventHandler ButtonClicked;
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -363,7 +372,9 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
+
+        public event ButtonClickedEventHandler ButtonClicked;
 
         private void OnButtonClicked()
         {
@@ -586,6 +597,8 @@
         }
 
         #endregion
+
+        public delegate void ButtonClickedEventHandler();
 
         #region ${0} Methods
 

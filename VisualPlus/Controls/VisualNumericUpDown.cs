@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,13 +14,15 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual NumericUpDown.</summary>
     [ToolboxBitmap(typeof(NumericUpDown))]
     [Designer(VSDesignerBinding.VisualNumericUpDown)]
     [Description("Displays a single numeric value that the user can increment and decrement by clicking up and down button on the control.")]
     public sealed class VisualNumericUpDown : Control
     {
-        #region  ${0} Variables
+        #region Variables
 
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
@@ -47,7 +51,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualNumericUpDown()
         {
@@ -64,6 +68,10 @@
 
             UpdateStyles();
         }
+
+        #endregion
+
+        #region Properties
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -374,7 +382,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
