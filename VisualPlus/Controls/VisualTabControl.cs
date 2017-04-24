@@ -21,13 +21,21 @@
     {
         #region  ${0} Variables
 
-        private bool separatorVisible;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
+
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+
+        private int borderSize = Settings.DefaultValue.BorderSize;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
         private Point mouseLocation;
         private bool selectorVisible;
         private Color separator = Settings.DefaultValue.Style.TabSelected;
+
+        private bool separatorVisible;
         private Color tabHover = Settings.DefaultValue.Style.TabHover;
         private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
         private Color tabNormal = Settings.DefaultValue.Style.TabNormal;
@@ -89,6 +97,93 @@
         }
 
         [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
+        public Color BorderColor
+        {
+            get
+            {
+                return borderColor;
+            }
+
+            set
+            {
+                borderColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
+        public Color BorderHoverColor
+        {
+            get
+            {
+                return borderHoverColor;
+            }
+
+            set
+            {
+                borderHoverColor = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
+        public bool BorderHoverVisible
+        {
+            get
+            {
+                return borderHoverVisible;
+            }
+
+            set
+            {
+                borderHoverVisible = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
+        public int BorderSize
+        {
+            get
+            {
+                return borderSize;
+            }
+
+            set
+            {
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
+                {
+                    borderSize = value;
+                }
+
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
+        public bool BorderVisible
+        {
+            get
+            {
+                return borderVisible;
+            }
+
+            set
+            {
+                borderVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
         public StringAlignment LineAlignment
         {
             get
@@ -99,22 +194,6 @@
             set
             {
                 lineAlignment = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(false)]
-        [Category(Localize.Category.Behavior)]
-        public bool SeparatorVisible
-        {
-            get
-            {
-                return separatorVisible;
-            }
-
-            set
-            {
-                separatorVisible = value;
                 Invalidate();
             }
         }
@@ -147,6 +226,22 @@
             set
             {
                 separator = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
+        public bool SeparatorVisible
+        {
+            get
+            {
+                return separatorVisible;
+            }
+
+            set
+            {
+                separatorVisible = value;
                 Invalidate();
             }
         }
@@ -425,12 +520,13 @@
                         graphics.FillRectangle(new SolidBrush(tabSelector), tabHighlighter);
                     }
 
-                    GraphicsPath borderPath = new GraphicsPath();
-                    borderPath.AddRectangle(tabRect);
-                    borderPath.CloseAllFigures();
-
                     // Draw border
-                    GDI.DrawBorder(graphics, borderPath, 2F, Color.Red);
+                    if (borderVisible)
+                    {
+                        GraphicsPath borderPath = new GraphicsPath();
+                        borderPath.AddRectangle(tabRect);
+                        GDI.DrawBorderType(graphics, controlState, borderPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                    }
 
                     StringFormat stringFormat = new StringFormat
                         {
@@ -469,6 +565,13 @@
                             // Draw hover separator
                             graphics.FillRectangle(new SolidBrush(tabSelector), tabHighlighter);
                         }
+
+                        if (borderVisible)
+                        {
+                            GraphicsPath borderPath = new GraphicsPath();
+                            borderPath.AddRectangle(tabRect);
+                            GDI.DrawBorderType(graphics, controlState, borderPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                        }
                     }
 
                     StringFormat stringFormat = new StringFormat
@@ -490,6 +593,16 @@
                         graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].Size.Height, ImageList.Images[tabIndex].Size.Width);
                     }
                 }
+            }
+
+            DrawSeparator(e);
+        }
+
+        private void DrawSeparator(PaintEventArgs e)
+        {
+            if (!separatorVisible)
+            {
+                return;
             }
 
             // Draw divider that separates the panels.
@@ -518,6 +631,9 @@
                         e.Graphics.DrawLine(new Pen(separator, 2), Width - ItemSize.Height - 2, 0, Width - ItemSize.Height - 2, Height);
                         break;
                     }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
