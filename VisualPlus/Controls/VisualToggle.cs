@@ -25,20 +25,12 @@
     }
 
     /// <summary>The visual Toggle.</summary>
-    [ToolboxBitmap(typeof(Control)), Designer(VSDesignerBinding.VisualToggle), DefaultEvent("ToggledChanged"),
-     Description("A toggle button allows the user to change a setting between two states.")]
-    public class VisualToggle : Control
+    [ToolboxBitmap(typeof(Control))]
+    [Designer(VSDesignerBinding.VisualToggle)]
+    [DefaultEvent("ToggledChanged")]
+    [Description("A toggle button allows the user to change a setting between two states.")]
+    public sealed class VisualToggle : Control
     {
-        public class PillStyle
-        {
-            #region  ${0} Variables
-
-            public bool Left;
-            public bool Right;
-
-            #endregion
-        }
-
         #region  ${0} Variables
 
         private readonly Timer animationTimer = new Timer
@@ -96,7 +88,8 @@
 
         public event ToggledChangedEventHandler ToggledChanged;
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -111,7 +104,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -126,7 +120,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -141,8 +136,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -157,8 +153,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -178,8 +175,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -195,8 +193,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -215,8 +214,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -231,7 +231,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ButtonColor
         {
             get
@@ -246,8 +247,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int ButtonRounding
         {
             get
@@ -267,8 +269,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape ButtonShape
         {
             get
@@ -284,7 +287,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ButtonSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ButtonSize)]
         public Size ButtonSize
         {
             get
@@ -300,7 +304,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
@@ -315,7 +320,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -330,7 +336,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -345,7 +352,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -360,7 +368,9 @@
             }
         }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior), Description(Localize.Description.Toggled)]
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Toggled)]
         public bool Toggled
         {
             get
@@ -377,7 +387,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ToggleType)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ToggleType)]
         public ToggleTypes Type
         {
             get
@@ -556,5 +567,15 @@
         }
 
         #endregion
+
+        public class PillStyle
+        {
+            #region  ${0} Variables
+
+            public bool Left;
+            public bool Right;
+
+            #endregion
+        }
     }
 }

@@ -12,24 +12,26 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual Label.</summary>
-    [ToolboxBitmap(typeof(Label)), Designer(VSDesignerBinding.VisualLabel)]
-    public class VisualLabel : Label
+    [ToolboxBitmap(typeof(Label))]
+    [Designer(VSDesignerBinding.VisualLabel)]
+    public sealed class VisualLabel : Label
     {
         #region  ${0} Variables
 
+        private readonly int shadowDepth = 4;
+        private readonly float shadowSmooth = 2f;
+        private readonly Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private Color reflectionColor = Color.FromArgb(120, 0, 0, 0);
         private bool reflection;
+        private Color reflectionColor = Color.FromArgb(120, 0, 0, 0);
         private int reflectionSpacing = 3;
         private bool shadow;
         private Color shadowColor = Settings.DefaultValue.Style.ShadowColor;
-        private int shadowDepth = 4;
         private int shadowDirection = 315;
         private int shadowOpacity = 100;
-        private float shadowSmooth = 2f;
         private Rectangle textBoxRectangle;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
@@ -48,28 +50,12 @@
             BackColor = Color.Transparent;
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.MirrorColor)]
-        public Color ReflectionColor
-        {
-            get
-            {
-                return reflectionColor;
-            }
-
-            set
-            {
-                reflectionColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(false), Category(Localize.Category.Behavior),Description(Localize.Description.Reflection)]
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Reflection)]
         public bool Reflection
         {
-            get
-            {
-                return reflection;
-            }
+            get => reflection;
 
             set
             {
@@ -78,13 +64,24 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ReflectionSpacing)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.MirrorColor)]
+        public Color ReflectionColor
+        {
+            get => reflectionColor;
+
+            set
+            {
+                reflectionColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ReflectionSpacing)]
         public int ReflectionSpacing
         {
-            get
-            {
-                return reflectionSpacing;
-            }
+            get => reflectionSpacing;
 
             set
             {
@@ -93,15 +90,12 @@
             }
         }
 
-        // Shadow Properties
-        [DefaultValue(false), Category(Localize.Category.Appearance),
-         Description(Localize.Description.Shadow)]
+        [DefaultValue(false)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Shadow)]
         public bool Shadow
         {
-            get
-            {
-                return shadow;
-            }
+            get => shadow;
 
             set
             {
@@ -110,13 +104,11 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ShadowColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ShadowColor)]
         public Color ShadowColor
         {
-            get
-            {
-                return shadowColor;
-            }
+            get => shadowColor;
 
             set
             {
@@ -125,13 +117,11 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ShadowDirection)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ShadowDirection)]
         public int ShadowDirection
         {
-            get
-            {
-                return shadowDirection;
-            }
+            get => shadowDirection;
 
             set
             {
@@ -140,13 +130,11 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ShadowOpacity)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ShadowOpacity)]
         public int ShadowOpacity
         {
-            get
-            {
-                return shadowOpacity;
-            }
+            get => shadowOpacity;
 
             set
             {
@@ -155,13 +143,11 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
-            get
-            {
-                return foreColor;
-            }
+            get => foreColor;
 
             set
             {
@@ -170,13 +156,11 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
-            get
-            {
-                return textRendererHint;
-            }
+            get => textRendererHint;
 
             set
             {

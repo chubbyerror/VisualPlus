@@ -14,8 +14,9 @@
 
     /// <summary>The visual panel.</summary>
     // [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    [ToolboxBitmap(typeof(Panel)), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public partial class VisualPanel : Panel
+    [ToolboxBitmap(typeof(Panel))]
+    [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
+    public sealed partial class VisualPanel : Panel
     {
         #region  ${0} Variables
 
@@ -48,7 +49,8 @@
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -64,7 +66,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -79,7 +82,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -94,8 +98,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -110,8 +115,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -131,8 +137,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -148,8 +155,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -168,8 +176,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -248,7 +257,7 @@
 
         #region ${0} Methods
 
-        public virtual void BackColorFix()
+        public void BackColorFix()
         {
             foreach (object control in Controls)
             {

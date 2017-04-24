@@ -11,7 +11,8 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual ProgressIndicator.</summary>
-    [ToolboxBitmap(typeof(ProgressBar)), Designer(VSDesignerBinding.VisualProgressIndicator)]
+    [ToolboxBitmap(typeof(ProgressBar))]
+    [Designer(VSDesignerBinding.VisualProgressIndicator)]
     public sealed class VisualProgressIndicator : Control
     {
         #region  ${0} Variables
@@ -48,7 +49,8 @@
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color AnimationColor
         {
             get
@@ -62,7 +64,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.AnimationSpeed)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.AnimationSpeed)]
         public int AnimationSpeed
         {
             get
@@ -76,7 +79,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BaseColor
         {
             get
@@ -90,7 +94,9 @@
             }
         }
 
-        [DefaultValue(45F), Category(Localize.Category.Layout), Description(Localize.Description.ComponentDiameter)]
+        [DefaultValue(45F)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentDiameter)]
         public float Circles
         {
             get
@@ -106,7 +112,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
         public Size CircleSize
         {
             get
@@ -121,7 +128,9 @@
             }
         }
 
-        [DefaultValue(7.5F), Category(Localize.Category.Layout), Description(Localize.Description.ComponentDiameter)]
+        [DefaultValue(7.5F)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentDiameter)]
         public float Diameter
         {
             get
@@ -180,16 +189,12 @@
                 if (indicatorIndex == i)
                 {
                     // Current circle
-                    buffGraphics.Graphics.FillEllipse(animationColor, floatPoint[i].
-                        X, floatPoint[i].
-                        Y, circleSize.Width, circleSize.Height);
+                    buffGraphics.Graphics.FillEllipse(animationColor, floatPoint[i].X, floatPoint[i].Y, circleSize.Width, circleSize.Height);
                 }
                 else
                 {
                     // Other circles
-                    buffGraphics.Graphics.FillEllipse(baseColor, floatPoint[i].
-                        X, floatPoint[i].
-                        Y, circleSize.Width, circleSize.Height);
+                    buffGraphics.Graphics.FillEllipse(baseColor, floatPoint[i].X, floatPoint[i].Y, circleSize.Width, circleSize.Height);
                 }
             }
 

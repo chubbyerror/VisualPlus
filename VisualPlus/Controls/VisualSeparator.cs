@@ -10,8 +10,9 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual separator.</summary>
-    [ToolboxBitmap(typeof(Control)), Designer(VSDesignerBinding.VisualSeparator)]
-    public class VisualSeparator : Control
+    [ToolboxBitmap(typeof(Control))]
+    [Designer(VSDesignerBinding.VisualSeparator)]
+    public sealed class VisualSeparator : Control
     {
         #region  ${0} Variables
 
@@ -35,7 +36,8 @@
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color Line
         {
             get
@@ -50,7 +52,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.SeparatorStyle)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.SeparatorStyle)]
         public Orientation Orientation
         {
             get
@@ -86,7 +89,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color Shadow
         {
             get

@@ -28,7 +28,9 @@
     }
 
     /// <summary>The visual TrackBar.</summary>
-    [DefaultEvent("ValueChanged"), ToolboxBitmap(typeof(TrackBar)), Designer(VSDesignerBinding.VisualTrackBar)]
+    [DefaultEvent("ValueChanged")]
+    [ToolboxBitmap(typeof(TrackBar))]
+    [Designer(VSDesignerBinding.VisualTrackBar)]
     public sealed class VisualTrackBar : TrackBar
     {
         #region  ${0} Variables
@@ -100,7 +102,8 @@
             MinimumSize = new Size(25, 25);
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -115,7 +118,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -130,8 +134,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -146,8 +151,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -166,8 +172,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -182,8 +189,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -202,8 +210,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -218,7 +227,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ButtonColor
         {
             get
@@ -233,7 +243,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
         public Size ButtonSize
         {
             get
@@ -248,7 +259,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ButtonTextColor
         {
             get
@@ -263,7 +275,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool ButtonValueVisible
         {
             get
@@ -278,7 +291,9 @@
             }
         }
 
-        [DefaultValue(true), Category(Localize.Category.Behavior), Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(true)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool ButtonVisible
         {
             get
@@ -293,8 +308,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
         public char CharExtension
         {
             get
@@ -309,7 +324,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
@@ -324,7 +340,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color HatchBackColor
         {
             get
@@ -339,7 +356,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color HatchForeColor
         {
             get
@@ -354,7 +372,9 @@
             }
         }
 
-        [Category(Localize.Category.Layout), DefaultValue(Settings.DefaultValue.HatchSize), Description(Localize.Description.HatchSize)]
+        [Category(Localize.Category.Layout)]
+        [DefaultValue(Settings.DefaultValue.HatchSize)]
+        [Description(Localize.Description.HatchSize)]
         public float HatchSize
         {
             get
@@ -369,7 +389,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.HatchStyle)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.HatchStyle)]
         public HatchStyle HatchStyle
         {
             get
@@ -384,8 +405,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.HatchVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(Settings.DefaultValue.HatchVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool HatchVisible
         {
             get
@@ -400,7 +422,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
         public int IndentHeight
         {
             get
@@ -450,7 +473,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ProgressColor1
         {
             get
@@ -465,7 +489,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ProgressColor2
         {
             get
@@ -480,7 +505,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentColor)]
         public BrushType ProgressColorStyle
         {
             get
@@ -495,7 +521,9 @@
             }
         }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior), Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool ProgressValueVisible
         {
             get
@@ -510,8 +538,9 @@
             }
         }
 
-        [DefaultValue(true), Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(true)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool ProgressVisible
         {
             get
@@ -526,7 +555,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -541,7 +571,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -556,7 +587,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentFont)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentFont)]
         public Font TextFont
         {
             get
@@ -571,7 +603,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -586,7 +619,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TickColor
         {
             get
@@ -601,7 +635,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
         public int TickHeight
         {
             get
@@ -616,8 +651,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(Settings.DefaultValue.TextVisible)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool TickVisible
         {
             get
@@ -632,7 +668,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TrackLineColor
         {
             get
@@ -647,7 +684,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
         public int TrackLineThickness
         {
             get
@@ -662,7 +700,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ValueDivisor)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ValueDivisor)]
         public ValueDivisor ValueDivision
         {
             get
@@ -677,7 +716,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
+        [DefaultValue(Settings.DefaultValue.TextVisible)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextVisible)]
         public bool ValueTickVisible
         {
             get
@@ -948,8 +989,7 @@
 
                 // trackerRectangleF.Inflate(0,-1);
                 // Draw the Track Line
-                drawRect = new RectangleF(workingRect.Left, currentUsedPos + buttonSize.Height / 2 - trackLineThickness / 2, workingRect.Width,
-                    trackLineThickness);
+                drawRect = new RectangleF(workingRect.Left, currentUsedPos + buttonSize.Height / 2 - trackLineThickness / 2, workingRect.Width, trackLineThickness);
 
                 // Draws the track line
                 DrawTrackLine(e.Graphics, drawRect);
@@ -1034,13 +1074,11 @@
                 }
 
                 // Remember this for drawing the Tracker later
-                trackerRectangleF = new RectangleF(currentUsedPos, workingRect.Bottom - currentTrackerPos - buttonSize.Width, buttonSize.Height,
-                    buttonSize.Width);
+                trackerRectangleF = new RectangleF(currentUsedPos, workingRect.Bottom - currentTrackerPos - buttonSize.Width, buttonSize.Height, buttonSize.Width);
 
                 // trackerRectangleF.Inflate(-1,0);
                 // Draw the track line
-                drawRect = new RectangleF(currentUsedPos + buttonSize.Height / 2 - trackLineThickness / 2, workingRect.Top, trackLineThickness,
-                    workingRect.Height);
+                drawRect = new RectangleF(currentUsedPos + buttonSize.Height / 2 - trackLineThickness / 2, workingRect.Top, trackLineThickness, workingRect.Height);
 
                 // Draw the track line
                 DrawTrackLine(e.Graphics, drawRect);
@@ -1186,8 +1224,7 @@
             {
                 case Orientation.Horizontal:
                     {
-                        progressRect = new RectangleF(workingRect.Left, indentHeight + buttonSize.Height / 2 - trackLineThickness / 2,
-                            workingRect.Width, trackLineThickness);
+                        progressRect = new RectangleF(workingRect.Left, indentHeight + buttonSize.Height / 2 - trackLineThickness / 2, workingRect.Width, trackLineThickness);
 
                         // Draws the progress to the middle of the button
                         i1 = buttonRectangle.X + buttonRectangle.Width / 2;
@@ -1211,8 +1248,7 @@
                     break;
                 case Orientation.Vertical:
                     {
-                        progressRect = new RectangleF(indentWidth + workingRect.Y + trackLineThickness / 2, indentHeight, trackLineThickness,
-                            workingRect.Height);
+                        progressRect = new RectangleF(indentWidth + workingRect.Y + trackLineThickness / 2, indentHeight, trackLineThickness, workingRect.Height);
 
                         // Draws the progress to the middle of the button
                         i1 = buttonRectangle.Y + buttonRectangle.Height / 2;
@@ -1299,8 +1335,7 @@
                     var stringValue = (float)(Value / (double)dividedValue);
 
                     graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor),
-                        new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2,
-                            buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
+                        new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
                 }
             }
         }

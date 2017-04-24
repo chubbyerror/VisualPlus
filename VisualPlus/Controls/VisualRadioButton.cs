@@ -13,12 +13,13 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual radio button.</summary>
-    [ToolboxBitmap(typeof(RadioButton)), Designer(VSDesignerBinding.VisualRadioButton)]
+    [ToolboxBitmap(typeof(RadioButton))]
+    [Designer(VSDesignerBinding.VisualRadioButton)]
     public class VisualRadioButton : RadioButton
     {
         #region  ${0} Variables
 
-        private const int spacing = 2;
+        private const int Spacing = 2;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -52,7 +53,8 @@
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -67,7 +69,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -82,7 +85,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -97,8 +101,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -113,8 +118,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -133,8 +139,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -149,7 +156,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color CheckMark
         {
             get
@@ -164,7 +172,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColorColor
         {
             get
@@ -179,7 +188,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -194,7 +204,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -209,7 +220,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -288,7 +300,7 @@
             }
 
             // Draw the string specified in 'Text' property
-            Point textPoint = new Point(boxLocation.X + boxSize.Width + spacing, boxSize.Height / 2 - (int)Font.Size / 2);
+            Point textPoint = new Point(boxLocation.X + boxSize.Width + Spacing, boxSize.Height / 2 - (int)Font.Size / 2);
 
             StringFormat stringFormat = new StringFormat();
 

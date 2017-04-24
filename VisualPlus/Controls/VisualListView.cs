@@ -20,32 +20,6 @@
     // [ToolboxBitmap(typeof(ListView)), Designer(VSDesignerBinding.VisualListView)]
     public sealed class VisualListView : ListView
     {
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class LogFont
-        {
-            #region  ${0} Variables
-
-            public byte lfCharSet = 0;
-            public byte lfClipPrecision = 0;
-            public int lfEscapement = 0;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            public string lfFaceName = string.Empty;
-
-            public int lfHeight = 0;
-            public byte lfItalic = 0;
-            public int lfOrientation = 0;
-            public byte lfOutPrecision = 0;
-            public byte lfPitchAndFamily = 0;
-            public byte lfQuality = 0;
-            public byte lfStrikeOut = 0;
-            public byte lfUnderline = 0;
-            public int lfWeight = 0;
-            public int lfWidth = 0;
-
-            #endregion
-        }
-
         #region  ${0} Variables
 
         private int borderSize = Settings.DefaultValue.BorderSize;
@@ -70,8 +44,7 @@
         public VisualListView()
         {
             SetStyle(
-                ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.SupportsTransparentBackColor, true);
+                ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
 
             View = View.Details;
             MultiSelect = false;
@@ -117,7 +90,7 @@
                 {
                     controlState = ControlState.Hover;
                 };
-            MouseMove += delegate (object sender, MouseEventArgs args)
+            MouseMove += delegate(object sender, MouseEventArgs args)
                 {
                     MouseLocation = args.Location;
                     ListViewItem currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
@@ -129,8 +102,9 @@
                 };
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -149,8 +123,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -165,7 +140,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ColumnBackground
         {
             get
@@ -180,7 +156,9 @@
             }
         }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior), Description(Localize.Description.FocusVisible)]
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.FocusVisible)]
         public bool FocusVisible
         {
             get
@@ -195,7 +173,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentFont)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentFont)]
         public Font HeaderFont
         {
             get
@@ -210,7 +189,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color HeaderText
         {
             get
@@ -225,7 +205,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ItemBackground
         {
             get
@@ -240,7 +221,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ItemHover
         {
             get
@@ -270,7 +252,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ItemSelected
         {
             get
@@ -288,7 +271,8 @@
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior)]
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
         public bool StandardHeader
         {
             get
@@ -303,7 +287,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -354,16 +339,13 @@
             }
 
             StringFormat stringFormat = new StringFormat
-            {
-                // Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
+                {
+                    // Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
             // Draw the header text.
-            e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText),
-                new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2,
-                    e.Bounds.Height - itemPadding * 2), stringFormat);
-
+            e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText), new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2, e.Bounds.Height - itemPadding * 2), stringFormat);
             graphics.Dispose();
         }
 
@@ -393,10 +375,7 @@
             foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
             {
                 // Draw text
-                graphics.DrawString(subItem.Text, Font, new SolidBrush(Color.Black),
-                    new Rectangle(subItem.Bounds.X + itemPadding, itemPadding, subItem.Bounds.Width - 2 * itemPadding,
-                        subItem.Bounds.Height - 2 * itemPadding),
-                    GetStringFormat());
+                graphics.DrawString(subItem.Text, Font, new SolidBrush(Color.Black), new Rectangle(subItem.Bounds.X + itemPadding, itemPadding, subItem.Bounds.Width - 2 * itemPadding, subItem.Bounds.Height - 2 * itemPadding), GetStringFormat());
             }
 
             if ((e.State & ListViewItemStates.Selected) != 0)
@@ -450,10 +429,7 @@
                 // Draw the text and background for a subitem with a 
                 // negative value. 
                 double subItemValue;
-                if (e.ColumnIndex > 0 && double.TryParse(
-                        e.SubItem.Text, NumberStyles.Currency,
-                        NumberFormatInfo.CurrentInfo, out subItemValue) &&
-                    subItemValue < 0)
+                if (e.ColumnIndex > 0 && double.TryParse(e.SubItem.Text, NumberStyles.Currency, NumberFormatInfo.CurrentInfo, out subItemValue) && subItemValue < 0)
                 {
                     // Unless the item is selected, draw the standard 
                     // background to make it stand out from the gradient.
@@ -505,14 +481,40 @@
         private static StringFormat GetStringFormat()
         {
             return new StringFormat
-            {
-                FormatFlags = StringFormatFlags.LineLimit,
-                Trimming = StringTrimming.EllipsisCharacter,
-                Alignment = StringAlignment.Near,
-                LineAlignment = StringAlignment.Center
-            };
+                {
+                    FormatFlags = StringFormatFlags.LineLimit,
+                    Trimming = StringTrimming.EllipsisCharacter,
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center
+                };
         }
 
         #endregion
+
+        [StructLayout(LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        public class LogFont
+        {
+            #region  ${0} Variables
+
+            public byte CharSet = 0;
+            public byte ClipPrecision = 0;
+            public int Escapement = 0;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+            public string FaceName = string.Empty;
+
+            public int Height = 0;
+            public byte Italic = 0;
+            public int Orientation = 0;
+            public byte OutPrecision = 0;
+            public byte PitchAndFamily = 0;
+            public byte Quality = 0;
+            public byte StrikeOut = 0;
+            public byte Underline = 0;
+            public int Weight = 0;
+            public int Width = 0;
+
+            #endregion
+        }
     }
 }

@@ -29,7 +29,8 @@
     }
 
     /// <summary>The visual ProgressBar.</summary>
-    [ToolboxBitmap(typeof(ProgressBar)), Designer(VSDesignerBinding.VisualProgressBar)]
+    [ToolboxBitmap(typeof(ProgressBar))]
+    [Designer(VSDesignerBinding.VisualProgressBar)]
     public sealed class VisualProgressBar : ProgressBar
     {
         #region  ${0} Variables
@@ -87,7 +88,8 @@
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor1
         {
             get
@@ -102,7 +104,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor2
         {
             get
@@ -117,7 +120,8 @@
             }
         }
 
-        [DefaultValue(true), Category(Localize.Category.Behavior)]
+        [DefaultValue(true)]
+        [Category(Localize.Category.Behavior)]
         public bool BackgroundGradient
         {
             get
@@ -132,7 +136,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.Rotation)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.Rotation)]
         public int BackgroundRotation
         {
             get
@@ -147,7 +152,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BarAmount), Category(Localize.Category.Behavior), Description(Localize.Description.BarAmount)]
+        [DefaultValue(Settings.DefaultValue.BarAmount)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BarAmount)]
         public int BarAmount
         {
             get
@@ -162,7 +169,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.BarSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BarSize)]
         public Point BarSize
         {
             get
@@ -177,7 +185,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.BarSpacing)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BarSpacing)]
         public int BarSpacing
         {
             get
@@ -192,7 +201,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -207,7 +217,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -222,8 +233,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -238,8 +250,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -259,8 +272,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -276,8 +290,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -296,8 +311,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -312,7 +328,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color HatchBackColor
         {
             get
@@ -327,7 +344,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color HatchForeColor
         {
             get
@@ -342,7 +360,9 @@
             }
         }
 
-        [Category(Localize.Category.Layout), DefaultValue(Settings.DefaultValue.HatchSize), Description(Localize.Description.HatchSize)]
+        [Category(Localize.Category.Layout)]
+        [DefaultValue(Settings.DefaultValue.HatchSize)]
+        [Description(Localize.Description.HatchSize)]
         public float HatchSize
         {
             get
@@ -357,7 +377,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.HatchStyle)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.HatchStyle)]
         public HatchStyle HatchStyle
         {
             get
@@ -372,8 +393,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.HatchVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(Settings.DefaultValue.HatchVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool HatchVisible
         {
             get
@@ -388,7 +410,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
+        [DefaultValue(Settings.DefaultValue.TextVisible)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextVisible)]
         public bool PercentageVisible
         {
             get
@@ -403,7 +427,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ProgressBarStyle)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ProgressBarStyle)]
         public ProgressBarTypes ProgressBarStyle
         {
             get
@@ -418,7 +443,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ProgressColor1
         {
             get
@@ -433,7 +459,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ProgressColor2
         {
             get
@@ -448,7 +475,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentColor)]
         public BrushType ProgressColorStyle
         {
             get
@@ -463,7 +491,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentFont)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentFont)]
         public Font ProgressFont
         {
             get
@@ -478,7 +507,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -493,7 +523,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -508,7 +539,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.Alignment)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.Alignment)]
         public StringAlignment ValueAlignment
         {
             get

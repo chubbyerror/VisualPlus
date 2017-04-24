@@ -13,7 +13,8 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual ListBox.</summary>
-    [ToolboxBitmap(typeof(ListBox)), Designer(VSDesignerBinding.VisualListBox)]
+    [ToolboxBitmap(typeof(ListBox))]
+    [Designer(VSDesignerBinding.VisualListBox)]
     public sealed class VisualListBox : ListBox
     {
         #region  ${0} Variables
@@ -41,9 +42,7 @@
 
         public VisualListBox()
         {
-            SetStyle(
-                ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.SupportsTransparentBackColor, true);
+            SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
 
             UpdateStyles();
 
@@ -58,7 +57,8 @@
             DrawMode = DrawMode.OwnerDrawVariable;
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -73,7 +73,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -88,8 +89,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -104,8 +106,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -125,8 +128,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -142,8 +146,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -162,8 +167,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -178,7 +184,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ItemBackground
         {
             get
@@ -193,7 +200,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ItemBackground2
         {
             get
@@ -208,7 +216,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ItemSelected
         {
             get
@@ -223,7 +232,8 @@
             }
         }
 
-        [DefaultValue(true), Category(Localize.Category.Behavior)]
+        [DefaultValue(true)]
+        [Category(Localize.Category.Behavior)]
         public bool RotateItemColor
         {
             get
@@ -238,7 +248,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -253,7 +264,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -268,7 +280,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -350,8 +363,7 @@
                     };
 
                 // Draw the text
-                e.Graphics.DrawString(Items[e.Index].
-                    ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, stringFormat);
+                e.Graphics.DrawString(Items[e.Index].ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, stringFormat);
             }
         }
 

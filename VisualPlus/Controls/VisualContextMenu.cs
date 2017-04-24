@@ -13,136 +13,6 @@
     [ToolboxBitmap(typeof(ContextMenuStrip))]
     public class VisualContextMenuStrip : ContextMenuStrip
     {
-        public sealed class VisualToolStripMenuItem : ToolStripMenuItem
-        {
-            #region ${0} Properties
-
-            public VisualToolStripMenuItem()
-            {
-                AutoSize = false;
-                Size = new Size(160, 30);
-            }
-
-            #endregion
-
-            #region ${0} Events
-
-            protected override ToolStripDropDown CreateDefaultDropDown()
-            {
-                if (DesignMode)
-                {
-                    return base.CreateDefaultDropDown();
-                }
-
-                VisualContextMenuStrip defaultDropDown = new VisualContextMenuStrip();
-                defaultDropDown.Items.AddRange(base.CreateDefaultDropDown().
-                                                    Items);
-                return defaultDropDown;
-            }
-
-            #endregion
-        }
-
-        public sealed class VisualToolStripRender : ToolStripProfessionalRenderer
-        {
-            #region ${0} Events
-
-            protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
-            {
-                if (arrowVisible)
-                {
-                    int arrowX = e.Item.ContentRectangle.X + e.Item.ContentRectangle.Width;
-                    int arrowY = (e.ArrowRectangle.Y + e.ArrowRectangle.Height) / 2;
-
-                    Point[] arrowPoints =
-                        {
-                            new Point(arrowX - 5, arrowY - 5),
-                            new Point(arrowX, arrowY),
-                            new Point(arrowX - 5, arrowY + 5)
-                        };
-
-                    // Set control state color
-                    foreColor = e.Item.Enabled ? foreColor : textDisabledColor;
-                    Color controlCheckTemp = e.Item.Enabled ? arrowColor : arrowDisabledColor;
-
-                    // Draw the arrowButton
-                    e.Graphics.FillPolygon(new SolidBrush(controlCheckTemp), arrowPoints);
-                }
-            }
-
-            protected override void OnRenderImageMargin(ToolStripRenderEventArgs e)
-            {
-                // Allow to add images to ToolStrips
-                // MyBase.OnRenderImageMargin(e) 
-            }
-
-            protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
-            {
-                e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-                Rectangle textRect = new Rectangle(25, e.Item.ContentRectangle.Y, e.Item.ContentRectangle.Width - (24 + 16),
-                    e.Item.ContentRectangle.Height - 4);
-
-                // Set control state color
-                foreColor = e.Item.Enabled ? foreColor : textDisabledColor;
-
-                StringFormat stringFormat = new StringFormat
-                    {
-                        // Alignment = StringAlignment.Center,
-                        LineAlignment = StringAlignment.Center
-                    };
-
-                e.Graphics.DrawString(e.Text, contextMenuFont, new SolidBrush(foreColor), textRect, stringFormat);
-            }
-
-            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
-            {
-                e.Graphics.InterpolationMode = InterpolationMode.High;
-                e.Graphics.Clear(Settings.DefaultValue.Style.BackgroundColor(0));
-                Rectangle R = new Rectangle(0, e.Item.ContentRectangle.Y - 2, e.Item.ContentRectangle.Width + 4, e.Item.ContentRectangle.Height + 3);
-
-                e.Graphics.FillRectangle(
-                    e.Item.Selected && e.Item.Enabled
-                        ? new SolidBrush(Color.FromArgb(130, backgroundColor))
-                        : new SolidBrush(backgroundColor), R);
-            }
-
-            protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
-            {
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                e.Graphics.DrawLine(new Pen(Color.FromArgb(200, borderColor), borderSize),
-                    new Point(e.Item.Bounds.Left, e.Item.Bounds.Height / 2), new Point(e.Item.Bounds.Right - 5, e.Item.Bounds.Height / 2));
-            }
-
-            protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
-            {
-                base.OnRenderToolStripBackground(e);
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                e.Graphics.InterpolationMode = InterpolationMode.High;
-                e.Graphics.Clear(backgroundColor);
-            }
-
-            protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
-            {
-                if (borderVisible)
-                {
-                    e.Graphics.InterpolationMode = InterpolationMode.High;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-                    Rectangle hoverBorder = new Rectangle(e.AffectedBounds.X, e.AffectedBounds.Y, e.AffectedBounds.Width,
-                        e.AffectedBounds.Height - 1);
-                    GraphicsPath borderPath = new GraphicsPath();
-                    borderPath.AddRectangle(hoverBorder);
-                    borderPath.CloseAllFigures();
-
-                    e.Graphics.SetClip(borderPath);
-                    e.Graphics.DrawPath(new Pen(borderColor), borderPath);
-                    e.Graphics.ResetClip();
-                }
-            }
-
-            #endregion
-        }
-
         #region  ${0} Variables
 
         private static Color arrowColor = Settings.DefaultValue.Style.DropDownButtonColor;
@@ -172,7 +42,8 @@
 
         public event ClickedEventHandler Clicked;
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ArrowColor
         {
             get
@@ -187,7 +58,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ArrowDisabledColor
         {
             get
@@ -202,8 +74,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool ArrowVisible
         {
             get
@@ -218,7 +91,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -233,7 +107,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -248,8 +123,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -268,8 +144,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -284,7 +161,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentFont)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentFont)]
         public Font MenuFont
         {
             get
@@ -299,7 +177,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -314,7 +193,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -367,5 +247,127 @@
         }
 
         #endregion
+
+        public sealed class VisualToolStripMenuItem : ToolStripMenuItem
+        {
+            #region ${0} Properties
+
+            public VisualToolStripMenuItem()
+            {
+                AutoSize = false;
+                Size = new Size(160, 30);
+            }
+
+            #endregion
+
+            #region ${0} Events
+
+            protected override ToolStripDropDown CreateDefaultDropDown()
+            {
+                if (DesignMode)
+                {
+                    return base.CreateDefaultDropDown();
+                }
+
+                VisualContextMenuStrip defaultDropDown = new VisualContextMenuStrip();
+                defaultDropDown.Items.AddRange(base.CreateDefaultDropDown().Items);
+                return defaultDropDown;
+            }
+
+            #endregion
+        }
+
+        public sealed class VisualToolStripRender : ToolStripProfessionalRenderer
+        {
+            #region ${0} Events
+
+            protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+            {
+                if (arrowVisible)
+                {
+                    int arrowX = e.Item.ContentRectangle.X + e.Item.ContentRectangle.Width;
+                    int arrowY = (e.ArrowRectangle.Y + e.ArrowRectangle.Height) / 2;
+
+                    Point[] arrowPoints =
+                        {
+                            new Point(arrowX - 5, arrowY - 5),
+                            new Point(arrowX, arrowY),
+                            new Point(arrowX - 5, arrowY + 5)
+                        };
+
+                    // Set control state color
+                    foreColor = e.Item.Enabled ? foreColor : textDisabledColor;
+                    Color controlCheckTemp = e.Item.Enabled ? arrowColor : arrowDisabledColor;
+
+                    // Draw the arrowButton
+                    e.Graphics.FillPolygon(new SolidBrush(controlCheckTemp), arrowPoints);
+                }
+            }
+
+            protected override void OnRenderImageMargin(ToolStripRenderEventArgs e)
+            {
+                // Allow to add images to ToolStrips
+                // MyBase.OnRenderImageMargin(e) 
+            }
+
+            protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+            {
+                e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+                Rectangle textRect = new Rectangle(25, e.Item.ContentRectangle.Y, e.Item.ContentRectangle.Width - (24 + 16), e.Item.ContentRectangle.Height - 4);
+
+                // Set control state color
+                foreColor = e.Item.Enabled ? foreColor : textDisabledColor;
+
+                StringFormat stringFormat = new StringFormat
+                    {
+                        // Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    };
+
+                e.Graphics.DrawString(e.Text, contextMenuFont, new SolidBrush(foreColor), textRect, stringFormat);
+            }
+
+            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+            {
+                e.Graphics.InterpolationMode = InterpolationMode.High;
+                e.Graphics.Clear(Settings.DefaultValue.Style.BackgroundColor(0));
+                Rectangle R = new Rectangle(0, e.Item.ContentRectangle.Y - 2, e.Item.ContentRectangle.Width + 4, e.Item.ContentRectangle.Height + 3);
+                e.Graphics.FillRectangle(e.Item.Selected && e.Item.Enabled ? new SolidBrush(Color.FromArgb(130, backgroundColor)) : new SolidBrush(backgroundColor), R);
+            }
+
+            protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
+            {
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                e.Graphics.DrawLine(new Pen(Color.FromArgb(200, borderColor), borderSize), new Point(e.Item.Bounds.Left, e.Item.Bounds.Height / 2), new Point(e.Item.Bounds.Right - 5, e.Item.Bounds.Height / 2));
+            }
+
+            protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
+            {
+                base.OnRenderToolStripBackground(e);
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                e.Graphics.InterpolationMode = InterpolationMode.High;
+                e.Graphics.Clear(backgroundColor);
+            }
+
+            protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+            {
+                if (borderVisible)
+                {
+                    e.Graphics.InterpolationMode = InterpolationMode.High;
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+                    Rectangle hoverBorder = new Rectangle(e.AffectedBounds.X, e.AffectedBounds.Y, e.AffectedBounds.Width, e.AffectedBounds.Height - 1);
+                    GraphicsPath borderPath = new GraphicsPath();
+                    borderPath.AddRectangle(hoverBorder);
+                    borderPath.CloseAllFigures();
+
+                    e.Graphics.SetClip(borderPath);
+                    e.Graphics.DrawPath(new Pen(borderColor), borderPath);
+                    e.Graphics.ResetClip();
+                }
+            }
+
+            #endregion
+        }
     }
 }

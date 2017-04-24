@@ -23,12 +23,13 @@
     }
 
     /// <summary>The visual CheckBox.</summary>
-    [ToolboxBitmap(typeof(CheckBox)), Designer(VSDesignerBinding.VisualCheckBox)]
+    [ToolboxBitmap(typeof(CheckBox))]
+    [Designer(VSDesignerBinding.VisualCheckBox)]
     public sealed class VisualCheckBox : CheckBox
     {
         #region  ${0} Variables
 
-        private const int spacing = 2;
+        private const int Spacing = 2;
         private bool animation = true;
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -91,8 +92,9 @@
             Animation = true;
         }
 
-        [DefaultValue(Settings.DefaultValue.Animation), Category(Localize.Category.Behavior),
-         Description(Localize.Description.Animation)]
+        [DefaultValue(Settings.DefaultValue.Animation)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Animation)]
         public bool Animation
         {
             get
@@ -114,7 +116,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -129,7 +132,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -144,8 +148,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -160,8 +165,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -171,8 +177,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumCheckBoxBorderRounding,
-                    Settings.MaximumCheckBoxBorderRounding))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumCheckBoxBorderRounding, Settings.MaximumCheckBoxBorderRounding))
                 {
                     borderRounding = value;
                 }
@@ -182,8 +187,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -199,8 +205,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -219,8 +226,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -235,7 +243,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color CheckBoxColor
         {
             get
@@ -250,7 +259,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentSize)]
         public Size CheckBoxSize
         {
             get
@@ -266,7 +276,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentNoName)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentNoName)]
         public CheckBoxType CheckBoxType
         {
             get
@@ -282,7 +293,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color CheckMarkColor
         {
             get
@@ -297,7 +309,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentSize)]
         public Size CheckMarkFillSize
         {
             get
@@ -313,7 +326,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
@@ -331,7 +345,8 @@
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -346,7 +361,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -361,7 +377,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -446,9 +463,9 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            // Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, boxSize.Height / 2 - (int)Font.Size / 2);
-            // Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, ClientRectangle.Height / 2 - (int)Font.Size / 2);
-            Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, ClientRectangle.Height / 2);
+            // Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + Spacing, boxSize.Height / 2 - (int)Font.Size / 2);
+            // Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + Spacing, ClientRectangle.Height / 2 - (int)Font.Size / 2);
+            Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + Spacing, ClientRectangle.Height / 2);
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 

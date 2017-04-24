@@ -20,7 +20,8 @@
     }
 
     /// <summary>The visual CircleProgressBar.</summary>
-    [ToolboxBitmap(typeof(ProgressBar)), Designer(VSDesignerBinding.VisualCircleProgressBar)]
+    [ToolboxBitmap(typeof(ProgressBar))]
+    [Designer(VSDesignerBinding.VisualCircleProgressBar)]
     public sealed class VisualCircleProgressBar : ProgressBar
     {
         #region  ${0} Variables
@@ -57,7 +58,9 @@
             UpdateStyles();
         }
 
-        [DefaultValue(true), Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(true)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool BackCircleVisible
         {
             get
@@ -72,7 +75,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundCircle
         {
             get
@@ -87,7 +91,9 @@
             }
         }
 
-        [DefaultValue(true), Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(true)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool ForeCircleVisible
         {
             get
@@ -102,7 +108,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ForegroundCircle
         {
             get
@@ -117,7 +124,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.Rotation)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.Rotation)]
         public float GradientRotation
         {
             get
@@ -132,7 +140,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ProgressGradient1
         {
             get
@@ -147,7 +156,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ProgressGradient2
         {
             get
@@ -162,7 +172,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public ProgressShape ProgressShape
         {
             get
@@ -177,7 +188,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.ProgressSize), Category(Localize.Category.Layout), Description(Localize.Description.ProgressSize)]
+        [DefaultValue(Settings.DefaultValue.ProgressSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ProgressSize)]
         public float ProgressSize
         {
             get
@@ -192,7 +205,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -207,7 +221,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Appearance), Description(Localize.Description.TextVisible)]
+        [DefaultValue(Settings.DefaultValue.TextVisible)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextVisible)]
         public bool TextVisible
         {
             get
@@ -268,8 +284,7 @@
                     }
 
                     // Draw progress
-                    graphics.DrawArc(progressPen, 0x18 - 2, 0x18 - 2, Width - 0x30 + 4, Height - 0x30 + 4, -90,
-                        (int)Math.Round(360.0 / Maximum * Value));
+                    graphics.DrawArc(progressPen, 0x18 - 2, 0x18 - 2, Width - 0x30 + 4, Height - 0x30 + 4, -90, (int)Math.Round(360.0 / Maximum * Value));
                 }
             }
 
@@ -288,8 +303,7 @@
                 measuredString = graphics.MeasureString(Convert.ToString(Convert.ToInt32(100 / Maximum * Value)), Font);
 
                 // Draw value string
-                Point textPoint = new Point(Convert.ToInt32(Width / 2 - measuredString.Width / 2),
-                    Convert.ToInt32(Height / 2 - measuredString.Height / 2));
+                Point textPoint = new Point(Convert.ToInt32(Width / 2 - measuredString.Width / 2), Convert.ToInt32(Height / 2 - measuredString.Height / 2));
                 string stringValue = Convert.ToString(Convert.ToInt32(100 / Maximum * Value)) + @"%";
 
                 StringFormat stringFormat = new StringFormat();

@@ -29,7 +29,8 @@
             LoadStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.Style)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Style)]
         public Styles Style
         {
             get
@@ -43,7 +44,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.StyleColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.StyleColor)]
         public Color StyleColor
         {
             get
@@ -64,10 +66,7 @@
         /// <summary>Loads styles to a string list.</summary>
         private void LoadStyles()
         {
-            StylesList = Enum.GetValues(typeof(Styles)).
-                              Cast<Styles>().
-                              Select(v => v.ToString()).
-                              ToList();
+            StylesList = Enum.GetValues(typeof(Styles)).Cast<Styles>().Select(v => v.ToString()).ToList();
         }
 
         #endregion

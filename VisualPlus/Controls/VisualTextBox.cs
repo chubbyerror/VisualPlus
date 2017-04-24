@@ -14,8 +14,9 @@
     using VisualPlus.Properties;
 
     /// <summary>The visual TextBox.</summary>
-    [ToolboxBitmap(typeof(TextBox)), Designer(VSDesignerBinding.VisualTextBox)]
-    public class VisualTextBox : TextBox
+    [ToolboxBitmap(typeof(TextBox))]
+    [Designer(VSDesignerBinding.VisualTextBox)]
+    public sealed class VisualTextBox : TextBox
     {
         #region  ${0} Variables
 
@@ -71,7 +72,8 @@
 
         public event ButtonClickedEventHandler ButtonClicked;
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -86,7 +88,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -101,7 +104,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -116,8 +120,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -132,8 +137,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -153,8 +159,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -170,8 +177,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -190,8 +198,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -206,7 +215,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ButtonColor
         {
             get
@@ -221,7 +231,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ButtonImage)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ButtonImage)]
         public Image ButtonImage
         {
             get
@@ -236,7 +247,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentVisible)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool ButtonVisible
         {
             get
@@ -251,7 +263,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
         public int ButtonWidth
         {
             get
@@ -268,7 +281,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
@@ -283,7 +297,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
         public Size IconSize
         {
             get
@@ -298,7 +313,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -313,7 +329,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -328,7 +345,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -347,7 +365,7 @@
 
         #region ${0} Events
 
-        protected virtual void OnButtonClicked()
+        private void OnButtonClicked()
         {
             ButtonClicked?.Invoke();
         }
@@ -456,8 +474,7 @@
                 graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
 
                 Size imageSize = new Size(iconSize.Width, iconSize.Height);
-                Point imagePoint = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - imageSize.Width / 2,
-                    buttonRectangle.Y + buttonRectangle.Height / 2 - imageSize.Height / 2);
+                Point imagePoint = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - imageSize.Width / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - imageSize.Height / 2);
 
                 Rectangle imageRectangle = new Rectangle(imagePoint, imageSize);
 

@@ -14,24 +14,286 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    [DefaultProperty("Color"), DefaultEvent("ColorChanged"), Description("A color wheel component used can be used to pick a color.")]
-    public class VisualColorWheel : Control, IColor
+    internal interface IColor
+    {
+        #region ${0} Properties
+
+        /// <summary>Occurs when the <see cref="Color" /> property is changed.</summary>
+        event EventHandler ColorChanged;
+
+        /// <summary>Gets or sets the component color.</summary>
+        /// <value>The component color.</value>
+        Color Color { get; set; }
+
+        #endregion
+    }
+
+    [Serializable]
+    public struct HslColorManager
+    {
+        public static readonly HslColorManager Empty;
+
+        private int alpha;
+        private double hue;
+        private bool isEmpty;
+        private double lightness;
+        private double saturation;
+
+        static HslColorManager()
+        {
+            Empty = new HslColorManager
+                {
+                    IsEmpty = true
+                };
+        }
+
+        public HslColorManager(double hue, double saturation, double lightness)
+            : this(255, hue, saturation, lightness)
+        {
+        }
+
+        public HslColorManager(int alpha, double hue, double saturation, double lightness)
+        {
+            this.hue = Math.Min(359, hue);
+            this.saturation = Math.Min(1, saturation);
+            this.lightness = Math.Min(1, lightness);
+            this.alpha = alpha;
+            isEmpty = false;
+        }
+
+        public HslColorManager(Color color)
+        {
+            alpha = color.A;
+            hue = color.GetHue();
+            saturation = color.GetSaturation();
+            lightness = color.GetBrightness();
+            isEmpty = false;
+        }
+
+        public static bool operator ==(HslColorManager a, HslColorManager b)
+        {
+            return a.H == b.H && a.L == b.L && a.S == b.S && a.A == b.A;
+        }
+
+        public static implicit operator HslColorManager(Color color)
+        {
+            return new HslColorManager(color);
+        }
+
+        public static implicit operator Color(HslColorManager colorManager)
+        {
+            return colorManager.ToRgbColor();
+        }
+
+        public static bool operator !=(HslColorManager a, HslColorManager b)
+        {
+            return !(a == b);
+        }
+
+        public int A
+        {
+            get
+            {
+                return alpha;
+            }
+
+            set
+            {
+                alpha = Math.Min(0, Math.Max(255, value));
+            }
+        }
+
+        public double H
+        {
+            get
+            {
+                return hue;
+            }
+
+            set
+            {
+                hue = value;
+
+                if (hue > 359)
+                {
+                    hue = 0;
+                }
+
+                if (hue < 0)
+                {
+                    hue = 359;
+                }
+            }
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return isEmpty;
+            }
+
+            internal set
+            {
+                isEmpty = value;
+            }
+        }
+
+        public double L
+        {
+            get
+            {
+                return lightness;
+            }
+
+            set
+            {
+                lightness = Math.Min(1, Math.Max(0, value));
+            }
+        }
+
+        public double S
+        {
+            get
+            {
+                return saturation;
+            }
+
+            set
+            {
+                saturation = Math.Min(1, Math.Max(0, value));
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            bool result;
+
+            if (obj is HslColorManager)
+            {
+                HslColorManager colorManager = (HslColorManager)obj;
+                result = this == colorManager;
+            }
+            else
+            {
+                result = false;
+            }
+
+            return result;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public Color ToRgbColor()
+        {
+            return ToRgbColor(A);
+        }
+
+        public Color ToRgbColor(int alphaRGB)
+        {
+            double q;
+            if (L < 0.5)
+            {
+                q = L * (1 + S);
+            }
+            else
+            {
+                q = L + S - L * S;
+            }
+
+            double p = 2 * L - q;
+            double hk = H / 360;
+
+            // R, G, B colors
+            double[] tc =
+                {
+                    hk + 1d / 3d,
+                    hk,
+                    hk - 1d / 3d
+                };
+            double[] colors =
+                {
+                    0.0,
+                    0.0,
+                    0.0
+                };
+
+            for (var color = 0; color < colors.Length; color++)
+            {
+                if (tc[color] < 0)
+                {
+                    tc[color] += 1;
+                }
+
+                if (tc[color] > 1)
+                {
+                    tc[color] -= 1;
+                }
+
+                if (tc[color] < 1d / 6d)
+                {
+                    colors[color] = p + (q - p) * 6 * tc[color];
+                }
+                else if (tc[color] >= 1d / 6d && tc[color] < 1d / 2d)
+                {
+                    colors[color] = q;
+                }
+                else if (tc[color] >= 1d / 2d && tc[color] < 2d / 3d)
+                {
+                    colors[color] = p + (q - p) * 6 * (2d / 3d - tc[color]);
+                }
+                else
+                {
+                    colors[color] = p;
+                }
+
+                colors[color] *= 255;
+            }
+
+            return Color.FromArgb(alphaRGB, (int)colors[0], (int)colors[1], (int)colors[2]);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(GetType().
+                Name);
+            builder.Append(" [");
+            builder.Append("H=");
+            builder.Append(H);
+            builder.Append(", S=");
+            builder.Append(S);
+            builder.Append(", L=");
+            builder.Append(L);
+            builder.Append("]");
+
+            return builder.ToString();
+        }
+    }
+
+    [DefaultProperty("Color")]
+    [DefaultEvent("ColorChanged")]
+    [Description("A color wheel component used can be used to pick a color.")]
+    public sealed class VisualColorWheel : Control, IColor
     {
         #region  ${0} Variables
 
-        private static readonly object eventColorChanged = new object();
-        private static readonly object eventColorStepChanged = new object();
-        private static readonly object eventHslColorChanged = new object();
-        private static readonly object eventLargeChangeChanged = new object();
-        private static readonly object eventSelectionSizeChanged = new object();
-        private static readonly object eventSmallChangeChanged = new object();
+        private static readonly object EventColorChanged = new object();
+        private static readonly object EventColorStepChanged = new object();
+        private static readonly object EventHslColorChanged = new object();
+        private static readonly object EventLargeChangeChanged = new object();
+        private static readonly object EventSelectionSizeChanged = new object();
+        private static readonly object EventSmallChangeChanged = new object();
+        private readonly Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
         private int borderSize = Settings.DefaultValue.BorderSize;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Brush brush;
-        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private PointF centerPoint;
         private Color color;
         private HslColorManager colorManagement;
@@ -52,9 +314,8 @@
         public VisualColorWheel()
         {
             SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw |
-                ControlStyles.Selectable |
-                ControlStyles.StandardClick | ControlStyles.StandardDoubleClick | ControlStyles.SupportsTransparentBackColor, true);
+                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Selectable | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick |
+                ControlStyles.SupportsTransparentBackColor, true);
 
             Color = Color.Black;
             ColorStep = 4;
@@ -72,12 +333,12 @@
         {
             add
             {
-                Events.AddHandler(eventColorChanged, value);
+                Events.AddHandler(EventColorChanged, value);
             }
 
             remove
             {
-                Events.RemoveHandler(eventColorChanged, value);
+                Events.RemoveHandler(EventColorChanged, value);
             }
         }
 
@@ -86,12 +347,12 @@
         {
             add
             {
-                Events.AddHandler(eventColorStepChanged, value);
+                Events.AddHandler(EventColorStepChanged, value);
             }
 
             remove
             {
-                Events.RemoveHandler(eventColorStepChanged, value);
+                Events.RemoveHandler(EventColorStepChanged, value);
             }
         }
 
@@ -100,12 +361,12 @@
         {
             add
             {
-                Events.AddHandler(eventHslColorChanged, value);
+                Events.AddHandler(EventHslColorChanged, value);
             }
 
             remove
             {
-                Events.RemoveHandler(eventHslColorChanged, value);
+                Events.RemoveHandler(EventHslColorChanged, value);
             }
         }
 
@@ -114,12 +375,12 @@
         {
             add
             {
-                Events.AddHandler(eventLargeChangeChanged, value);
+                Events.AddHandler(EventLargeChangeChanged, value);
             }
 
             remove
             {
-                Events.RemoveHandler(eventLargeChangeChanged, value);
+                Events.RemoveHandler(EventLargeChangeChanged, value);
             }
         }
 
@@ -128,12 +389,12 @@
         {
             add
             {
-                Events.AddHandler(eventSelectionSizeChanged, value);
+                Events.AddHandler(EventSelectionSizeChanged, value);
             }
 
             remove
             {
-                Events.RemoveHandler(eventSelectionSizeChanged, value);
+                Events.RemoveHandler(EventSelectionSizeChanged, value);
             }
         }
 
@@ -142,16 +403,17 @@
         {
             add
             {
-                Events.AddHandler(eventSmallChangeChanged, value);
+                Events.AddHandler(EventSmallChangeChanged, value);
             }
 
             remove
             {
-                Events.RemoveHandler(eventSmallChangeChanged, value);
+                Events.RemoveHandler(EventSmallChangeChanged, value);
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -166,7 +428,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -181,8 +444,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -197,8 +461,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -217,8 +482,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -233,7 +499,9 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), DefaultValue(typeof(Color), "Black"), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [DefaultValue(typeof(Color), "Black")]
+        [Description(Localize.Description.ComponentColor)]
         public Color Color
         {
             get
@@ -252,8 +520,11 @@
             }
         }
 
+        /// <summary>The color step.</summary>
         /// <exception cref="System.ArgumentOutOfRangeException">Value must be between 1 and 359</exception>
-        [Category(Localize.Category.Appearance), DefaultValue(4), Description("Gets or sets the increment for rendering the color wheel.")]
+        [Category(Localize.Category.Appearance)]
+        [DefaultValue(4)]
+        [Description("Gets or sets the increment for rendering the color wheel.")]
         public int ColorStep
         {
             get
@@ -265,7 +536,7 @@
             {
                 if (value < 1 || value > 359)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "Value must be between 1 and 359");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, @"Value must be between 1 and 359");
                 }
 
                 if (ColorStep != value)
@@ -277,8 +548,9 @@
             }
         }
 
-        [DefaultValue(false), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(false)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool DrawFocusRectangle
         {
             get
@@ -293,7 +565,8 @@
             }
         }
 
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override Font Font
         {
             get
@@ -307,7 +580,8 @@
             }
         }
 
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override Color ForeColor
         {
             get
@@ -321,8 +595,10 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), DefaultValue(typeof(HslColorManager), "0, 0, 0"), Browsable(false),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(Localize.Category.Appearance)]
+        [DefaultValue(typeof(HslColorManager), "0, 0, 0")]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public HslColorManager HslColorManager
         {
             get
@@ -346,7 +622,8 @@
         ///     selection is moved a large distance.
         /// </summary>
         /// <value>A numeric value. The default value is 5.</value>
-        [Category(Localize.Category.Behavior), DefaultValue(5)]
+        [Category(Localize.Category.Behavior)]
+        [DefaultValue(5)]
         public int LargeChange
         {
             get
@@ -365,7 +642,9 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), DefaultValue(10), Description("Gets or sets the size of the selection handle.")]
+        [Category(Localize.Category.Appearance)]
+        [DefaultValue(10)]
+        [Description("Gets or sets the size of the selection handle.")]
         public int SelectionSize
         {
             get
@@ -389,7 +668,8 @@
         ///     selection is moved a small distance.
         /// </summary>
         /// <value>A numeric value. The default value is 1.</value>
-        [Category(Localize.Category.Behavior), DefaultValue(1)]
+        [Category(Localize.Category.Behavior)]
+        [DefaultValue(1)]
         public int SmallChange
         {
             get
@@ -408,7 +688,8 @@
             }
         }
 
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override string Text
         {
             get
@@ -682,6 +963,7 @@
         }
 
         /// <summary>Creates the gradient brush used to paint the wheel.</summary>
+        /// <returns>The <see cref="Brush" />.</returns>
         private Brush CreateGradientBrush()
         {
             Brush result;
@@ -704,6 +986,7 @@
         }
 
         /// <summary>Creates the selection glyph.</summary>
+        /// <returns>The <see cref="Image" />.</returns>
         private Image CreateSelectionGlyph()
         {
             int halfSize = SelectionSize / 2;
@@ -811,7 +1094,7 @@
             }
 
             Refresh();
-            EventHandler handler = (EventHandler)Events[eventColorChanged];
+            EventHandler handler = (EventHandler)Events[EventColorChanged];
             handler?.Invoke(this, e);
         }
 
@@ -820,7 +1103,7 @@
         private void OnColorStepChanged(EventArgs e)
         {
             RefreshWheel();
-            EventHandler handler = (EventHandler)Events[eventColorStepChanged];
+            EventHandler handler = (EventHandler)Events[EventColorStepChanged];
             handler?.Invoke(this, e);
         }
 
@@ -834,7 +1117,7 @@
             }
 
             Invalidate();
-            EventHandler handler = (EventHandler)Events[eventHslColorChanged];
+            EventHandler handler = (EventHandler)Events[EventHslColorChanged];
             handler?.Invoke(this, e);
         }
 
@@ -842,7 +1125,7 @@
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void OnLargeChangeChanged(EventArgs e)
         {
-            EventHandler handler = (EventHandler)Events[eventLargeChangeChanged];
+            EventHandler handler = (EventHandler)Events[EventLargeChangeChanged];
             handler?.Invoke(this, e);
         }
 
@@ -853,7 +1136,7 @@
             SelectionGlyph?.Dispose();
             SelectionGlyph = CreateSelectionGlyph();
             RefreshWheel();
-            EventHandler handler = (EventHandler)Events[eventSelectionSizeChanged];
+            EventHandler handler = (EventHandler)Events[EventSelectionSizeChanged];
             handler?.Invoke(this, e);
         }
 
@@ -861,7 +1144,7 @@
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void OnSmallChangeChanged(EventArgs e)
         {
-            EventHandler handler = (EventHandler)Events[eventSmallChangeChanged];
+            EventHandler handler = (EventHandler)Events[EventSmallChangeChanged];
             handler?.Invoke(this, e);
         }
 
@@ -930,266 +1213,6 @@
                 Invalidate();
             }
         }
-
-        #endregion
-    }
-
-    [Serializable]
-    public struct HslColorManager
-    {
-        public static readonly HslColorManager Empty;
-
-        private int alpha;
-        private double hue;
-        private bool isEmpty;
-        private double lightness;
-        private double saturation;
-
-        static HslColorManager()
-        {
-            Empty = new HslColorManager
-                {
-                    IsEmpty = true
-                };
-        }
-
-        public HslColorManager(double hue, double saturation, double lightness)
-            : this(255, hue, saturation, lightness)
-        {
-        }
-
-        public HslColorManager(int alpha, double hue, double saturation, double lightness)
-        {
-            this.hue = Math.Min(359, hue);
-            this.saturation = Math.Min(1, saturation);
-            this.lightness = Math.Min(1, lightness);
-            this.alpha = alpha;
-            isEmpty = false;
-        }
-
-        public HslColorManager(Color color)
-        {
-            alpha = color.A;
-            hue = color.GetHue();
-            saturation = color.GetSaturation();
-            lightness = color.GetBrightness();
-            isEmpty = false;
-        }
-
-        public static bool operator ==(HslColorManager a, HslColorManager b)
-        {
-            return a.H == b.H && a.L == b.L && a.S == b.S && a.A == b.A;
-        }
-
-        public static implicit operator HslColorManager(Color color)
-        {
-            return new HslColorManager(color);
-        }
-
-        public static implicit operator Color(HslColorManager colorManager)
-        {
-            return colorManager.ToRgbColor();
-        }
-
-        public static bool operator !=(HslColorManager a, HslColorManager b)
-        {
-            return !(a == b);
-        }
-
-        public int A
-        {
-            get
-            {
-                return alpha;
-            }
-
-            set
-            {
-                alpha = Math.Min(0, Math.Max(255, value));
-            }
-        }
-
-        public double H
-        {
-            get
-            {
-                return hue;
-            }
-
-            set
-            {
-                hue = value;
-
-                if (hue > 359)
-                {
-                    hue = 0;
-                }
-
-                if (hue < 0)
-                {
-                    hue = 359;
-                }
-            }
-        }
-
-        public bool IsEmpty
-        {
-            get
-            {
-                return isEmpty;
-            }
-
-            internal set
-            {
-                isEmpty = value;
-            }
-        }
-
-        public double L
-        {
-            get
-            {
-                return lightness;
-            }
-
-            set
-            {
-                lightness = Math.Min(1, Math.Max(0, value));
-            }
-        }
-
-        public double S
-        {
-            get
-            {
-                return saturation;
-            }
-
-            set
-            {
-                saturation = Math.Min(1, Math.Max(0, value));
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            bool result;
-
-            if (obj is HslColorManager)
-            {
-                HslColorManager colorManager = (HslColorManager)obj;
-                result = this == colorManager;
-            }
-            else
-            {
-                result = false;
-            }
-
-            return result;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public Color ToRgbColor()
-        {
-            return ToRgbColor(A);
-        }
-
-        public Color ToRgbColor(int alphaRGB)
-        {
-            double q;
-            if (L < 0.5)
-            {
-                q = L * (1 + S);
-            }
-            else
-            {
-                q = L + S - L * S;
-            }
-
-            double p = 2 * L - q;
-            double hk = H / 360;
-
-            // R, G, B colors
-            double[] tc =
-                {
-                    hk + 1d / 3d,
-                    hk,
-                    hk - 1d / 3d
-                };
-            double[] colors =
-                {
-                    0.0,
-                    0.0,
-                    0.0
-                };
-
-            for (var color = 0; color < colors.Length; color++)
-            {
-                if (tc[color] < 0)
-                {
-                    tc[color] += 1;
-                }
-
-                if (tc[color] > 1)
-                {
-                    tc[color] -= 1;
-                }
-
-                if (tc[color] < 1d / 6d)
-                {
-                    colors[color] = p + (q - p) * 6 * tc[color];
-                }
-                else if (tc[color] >= 1d / 6d && tc[color] < 1d / 2d)
-                {
-                    colors[color] = q;
-                }
-                else if (tc[color] >= 1d / 2d && tc[color] < 2d / 3d)
-                {
-                    colors[color] = p + (q - p) * 6 * (2d / 3d - tc[color]);
-                }
-                else
-                {
-                    colors[color] = p;
-                }
-
-                colors[color] *= 255;
-            }
-
-            return Color.FromArgb(alphaRGB, (int)colors[0], (int)colors[1], (int)colors[2]);
-        }
-
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(GetType().
-                Name);
-            builder.Append(" [");
-            builder.Append("H=");
-            builder.Append(H);
-            builder.Append(", S=");
-            builder.Append(S);
-            builder.Append(", L=");
-            builder.Append(L);
-            builder.Append("]");
-
-            return builder.ToString();
-        }
-    }
-
-    internal interface IColor
-    {
-        #region ${0} Properties
-
-        /// <summary>Occurs when the <see cref="Color" /> property is changed.</summary>
-        event EventHandler ColorChanged;
-
-        /// <summary>Gets or sets the component color.</summary>
-        /// <value>The component color.</value>
-        Color Color { get; set; }
 
         #endregion
     }

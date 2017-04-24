@@ -23,8 +23,9 @@
     }
 
     /// <summary>The visual ComboBox.</summary>
-    [ToolboxBitmap(typeof(ComboBox)), Designer(VSDesignerBinding.VisualComboBox)]
-    public class VisualComboBox : ComboBox
+    [ToolboxBitmap(typeof(ComboBox))]
+    [Designer(VSDesignerBinding.VisualComboBox)]
+    public sealed class VisualComboBox : ComboBox
     {
         #region  ${0} Variables
 
@@ -77,7 +78,8 @@
             BackColor = Color.Transparent;
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -92,7 +94,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -107,7 +110,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -122,8 +126,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -138,8 +143,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -159,8 +165,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -176,8 +183,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -196,8 +204,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -212,7 +221,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ButtonColor
         {
             get
@@ -227,7 +237,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
@@ -242,7 +253,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.DropDownButton)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.DropDownButton)]
         public DropDownButtons DropDownButton
         {
             get
@@ -257,8 +269,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(Settings.DefaultValue.TextVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool DropDownButtonVisible
         {
             get
@@ -273,7 +286,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color MenuItemHover
         {
             get
@@ -288,7 +302,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color MenuItemNormal
         {
             get
@@ -303,7 +318,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color MenuTextColor
         {
             get
@@ -318,7 +334,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color SeparatorColor
         {
             get
@@ -333,7 +350,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color SeparatorShadowColor
         {
             get
@@ -348,8 +366,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.TextVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.ComponentVisible)]
+        [DefaultValue(Settings.DefaultValue.TextVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool SeparatorVisible
         {
             get
@@ -364,7 +383,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.StartIndex)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.StartIndex)]
         public int StartIndex
         {
             get
@@ -388,7 +408,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -403,7 +424,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -418,7 +440,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -488,10 +511,10 @@
             foreColor = Enabled ? foreColor : textDisabledColor;
             Color controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
 
-            // Draw the combobox background
+            // Draw the background
             graphics.FillPath(new SolidBrush(controlCheckTemp), controlGraphicsPath);
 
-            // Setup combobox border
+            // Create border
             if (borderVisible)
             {
                 if (controlState == ControlState.Hover && borderHoverVisible)
@@ -528,8 +551,7 @@
                     case DropDownButtons.Bars:
                         {
                             buttonImageSize = new Size(18, 10);
-                            buttonImagePoint = new Point(buttonRectangle.X + 2,
-                                buttonRectangle.Y + buttonRectangle.Width / 2 - buttonImageSize.Height);
+                            buttonImagePoint = new Point(buttonRectangle.X + 2, buttonRectangle.Y + buttonRectangle.Width / 2 - buttonImageSize.Height);
                             Bars.DrawBars(graphics, buttonImagePoint, buttonImageSize, buttonColor, 3, 5);
                             break;
                         }

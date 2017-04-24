@@ -13,8 +13,9 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual NumericUpDown.</summary>
-    [ToolboxBitmap(typeof(NumericUpDown)), Designer(VSDesignerBinding.VisualNumericUpDown),
-     Description("Displays a single numeric value that the user can increment and decrement by clicking up and down button on the control.")]
+    [ToolboxBitmap(typeof(NumericUpDown))]
+    [Designer(VSDesignerBinding.VisualNumericUpDown)]
+    [Description("Displays a single numeric value that the user can increment and decrement by clicking up and down button on the control.")]
     public sealed class VisualNumericUpDown : Control
     {
         #region  ${0} Variables
@@ -64,7 +65,8 @@
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -79,7 +81,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -94,7 +97,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -109,8 +113,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -125,8 +130,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -146,8 +152,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -163,8 +170,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -183,8 +191,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -199,7 +208,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
         public int ButtonWidth
         {
             get
@@ -215,7 +225,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
@@ -230,7 +241,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color InputField
         {
             get
@@ -293,7 +305,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -308,7 +321,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -323,7 +337,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -517,18 +532,11 @@
             graphics.ResetClip();
 
             // Draw string
-            graphics.DrawString("+", Font, new SolidBrush(foreColor),
-                new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2, Height / 4 - buttonRectangle.Height / 4));
-            graphics.DrawString("-", Font, new SolidBrush(foreColor),
-                new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2 + 1, Height / 2));
+            graphics.DrawString("+", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2, Height / 4 - buttonRectangle.Height / 4));
+            graphics.DrawString("-", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2 + 1, Height / 2));
 
             // Button separator
-            graphics.DrawLine(
-                new Pen(Settings.DefaultValue.Style.BorderColor(0)),
-                buttonRectangle.X,
-                buttonRectangle.Y + buttonRectangle.Height / 2,
-                buttonRectangle.X + buttonRectangle.Width,
-                buttonRectangle.Y + buttonRectangle.Height / 2);
+            graphics.DrawLine(new Pen(Settings.DefaultValue.Style.BorderColor(0)), buttonRectangle.X, buttonRectangle.Y + buttonRectangle.Height / 2, buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + buttonRectangle.Height / 2);
 
             // Draw control border
             if (borderVisible)

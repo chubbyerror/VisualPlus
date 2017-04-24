@@ -13,8 +13,9 @@
     using VisualPlus.Localization;
 
     /// <summary>The visual Button.</summary>
-    [ToolboxBitmap(typeof(Button)), Designer(VSDesignerBinding.VisualButton)]
-    public class VisualButton : Button
+    [ToolboxBitmap(typeof(Button))]
+    [Designer(VSDesignerBinding.VisualButton)]
+    public sealed class VisualButton : Button
     {
         #region  ${0} Variables
 
@@ -33,6 +34,7 @@
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
+        private SizeF fontSize;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private VFXManager hoverEffectsManager;
         private Image icon;
@@ -45,7 +47,6 @@
         private TextImageRelation textImageRelation = TextImageRelation.Overlay;
         private Point textPoint = new Point(0, 0);
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private SizeF fontSize;
 
         #endregion
 
@@ -67,8 +68,6 @@
             Size = new Size(100, 25);
             BackColor = Color.Transparent;
 
-            //  textPoint = ClientRectangle.Center();
-
             // Setup effects animation
             effectsManager = new VFXManager(false)
                 {
@@ -85,8 +84,9 @@
             effectsManager.OnAnimationProgress += sender => Invalidate();
         }
 
-        [DefaultValue(Settings.DefaultValue.Animation), Category(Localize.Category.Behavior),
-         Description(Localize.Description.Animation)]
+        [DefaultValue(Settings.DefaultValue.Animation)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Animation)]
         public bool Animation
         {
             get
@@ -108,7 +108,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -123,7 +124,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -138,8 +140,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -154,8 +157,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -175,8 +179,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -192,8 +197,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderSize)]
         public int BorderSize
         {
             get
@@ -212,8 +218,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -228,7 +235,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
@@ -243,7 +251,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.HoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.HoverColor)]
         public Color HoverColor
         {
             get
@@ -258,7 +267,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.Icon)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Icon)]
         public Image Icon
         {
             get
@@ -278,7 +288,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.IconSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.IconSize)]
         public Size IconSize
         {
             get
@@ -297,7 +308,8 @@
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.NormalColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.NormalColor)]
         public Color NormalColor
         {
             get
@@ -312,7 +324,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.PressedColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.PressedColor)]
         public Color PressedColor
         {
             get
@@ -327,7 +340,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -342,7 +356,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -357,7 +372,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.TextImageRelation)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.TextImageRelation)]
         public new TextImageRelation TextImageRelation
         {
             get
@@ -373,7 +389,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextRenderingHint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -558,8 +575,7 @@
                     {
                         var rippleSize = (int)(animationValue * Width * 2);
                         graphics.SetClip(controlGraphicsPath);
-                        graphics.FillEllipse(rippleBrush,
-                            new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
+                        graphics.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
                     }
                 }
 
@@ -591,7 +607,7 @@
 
             iconPoint = GDI.ApplyTextImageRelation(textImageRelation, iconRectangle, fontSize, ClientRectangle, true);
             iconRectangle = new Rectangle(iconPoint, iconSize);
-            
+
             iconGraphicsPath = new GraphicsPath();
             iconGraphicsPath.AddRectangle(iconRectangle);
             iconGraphicsPath.CloseAllFigures();
