@@ -11,7 +11,7 @@ If you find your issue already exists, make relevant comments and add your [reac
 
 The VisualPlus project is may be spread across multiple reposititories, try to file the issue against the correct repository.
 
-If your issue is a question then please ask the question on  Gitter. [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/VisualPlusUI/Lobby)
+If your issue is a question then please ask the question on  Gitter. [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/VisualPlusUI/General)
 
 If you cannot find an existing issue that describes your bug or feature, submit an issue using the guidelines below.
 
