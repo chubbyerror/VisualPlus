@@ -44,7 +44,7 @@
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
 
             UpdateStyles();
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             BackColor = Color.Transparent;
         }
 

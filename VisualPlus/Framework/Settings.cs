@@ -1,13 +1,17 @@
 namespace VisualPlus.Framework
 {
+    #region Namespace
+
     using System.Drawing.Text;
 
     using VisualPlus.Enums;
     using VisualPlus.Styles;
 
+    #endregion
+
     internal class Settings
     {
-        #region  ${0} Variables
+        #region Variables
 
         public static readonly int MaximumBorderSize = 24;
         public static readonly int MaximumCheckBoxBorderRounding = 12;
@@ -20,7 +24,7 @@ namespace VisualPlus.Framework
 
         #endregion
 
-        #region ${0} Structures
+        #region Methods
 
         public struct DefaultValue
         {

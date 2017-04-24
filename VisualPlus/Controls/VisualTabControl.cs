@@ -75,10 +75,12 @@
             ItemSize = new Size(100, 30);
             MinimumSize = new Size(144, 85);
             LineAlignment = StringAlignment.Center;
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
 
             foreach (TabPage page in TabPages)
             {
                 page.BackColor = backgroundColor;
+                page.Font = Font;
             }
         }
 

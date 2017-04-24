@@ -46,6 +46,7 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Size = new Size(80, 80);
             MinimumSize = new Size(80, 80);
             SetPoints();

@@ -69,6 +69,7 @@
                 ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Maximum = 100;
             Width = 100;
             Height = 20;

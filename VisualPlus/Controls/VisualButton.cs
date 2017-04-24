@@ -72,6 +72,8 @@
             Size = new Size(100, 25);
             BackColor = Color.Transparent;
 
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+
             // Setup effects animation
             effectsManager = new VFXManager(false)
                 {

@@ -71,8 +71,7 @@
 
             BackColor = Color.Transparent;
             Size = new Size(50, 20);
-
-            // barSize = new Size(ClientRectangle.Width, ClientRectangle.Height);
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             animationTimer.Tick += AnimationTimerTick;
         }
 
@@ -413,8 +412,6 @@
 
         #region Events
 
-        public event ToggledChangedEventHandler ToggledChanged;
-
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
@@ -541,13 +538,16 @@
             // Draw string
             Rectangle textboxRectangle;
 
+            var XOff = 5;
+            var XOn = 7;
+
             if (toggled)
             {
-                textboxRectangle = new Rectangle(5, 0, Width - 1, Height - 1);
+                textboxRectangle = new Rectangle(XOff, 0, Width - 1, Height - 1);
             }
             else
             {
-                textboxRectangle = new Rectangle(Width - (int)Font.SizeInPoints - 5 * 2, 0, Width - 1, Height - 1);
+                textboxRectangle = new Rectangle(Width - (int)Font.SizeInPoints - XOn * 2, 0, Width - 1, Height - 1);
             }
 
             StringFormat stringFormat = new StringFormat
@@ -574,9 +574,11 @@
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
+        public event ToggledChangedEventHandler ToggledChanged;
+
         #endregion
 
-        #region Methods ${0}
+        #region Methods
 
         public class PillStyle
         {

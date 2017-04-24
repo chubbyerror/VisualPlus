@@ -46,6 +46,7 @@
                 ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Size = new Size(187, 117);
             Padding = new Padding(5, 5, 5, 5);
             DoubleBuffered = true;

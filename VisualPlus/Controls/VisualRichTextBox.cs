@@ -64,7 +64,7 @@
             AutoWordSelection = false;
             BorderStyle = BorderStyle.None;
             TextChanged += TextBoxTextChanged;
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
         }
 

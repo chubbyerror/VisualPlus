@@ -63,6 +63,8 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+
             // Setup effects animation
             effectsManager = new VFXManager
                 {

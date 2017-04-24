@@ -26,7 +26,7 @@
         private static Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private static int borderSize = Settings.DefaultValue.BorderSize;
         private static bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private static Font contextMenuFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
+        private static Font contextMenuFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private static Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private static Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
 
@@ -40,6 +40,7 @@
         {
             Renderer = new VisualToolStripRender();
             BackColor = backgroundColor;
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
         }
 
         public delegate void ClickedEventHandler(object sender);
@@ -266,6 +267,7 @@
             {
                 AutoSize = false;
                 Size = new Size(160, 30);
+                Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             }
 
             #endregion

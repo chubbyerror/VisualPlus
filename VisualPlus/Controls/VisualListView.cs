@@ -68,7 +68,7 @@
             AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
             UpdateStyles();
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             // Fix for hovers, by default it doesn't redraw
             // TODO: should only redraw when the hovered line changed, this to reduce unnecessary redraws
             MouseLocation = new Point(-1, -1);

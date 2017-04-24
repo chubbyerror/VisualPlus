@@ -68,7 +68,7 @@
 
             BorderStyle = BorderStyle.None;
             AutoSize = false;
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Size = new Size(135, 25);
             CreateTextBox();
             Controls.Add(TextBoxObject);

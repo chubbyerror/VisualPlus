@@ -61,7 +61,7 @@
         private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private Font textFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
+        private Font textFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color tickColor = Settings.DefaultValue.Style.LineColor;
         private int tickHeight = 2;
@@ -82,7 +82,7 @@
                 true);
 
             UpdateStyles();
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             BackColor = Color.Transparent;
             DoubleBuffered = true;
             UpdateStyles();

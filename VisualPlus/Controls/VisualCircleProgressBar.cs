@@ -32,7 +32,7 @@
         private float progressSize = 5F;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible;
-
+        
         #endregion
 
         #region Constructors
@@ -49,7 +49,7 @@
             ForeColor = Settings.DefaultValue.Style.ForeColor(0);
             textVisible = true;
             BackColor = Color.Transparent;
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
         }
 

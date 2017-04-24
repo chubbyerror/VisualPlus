@@ -65,7 +65,7 @@
             maximumValue = 100;
             Size = new Size(70, 29);
             MinimumSize = new Size(62, 29);
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
         }
 

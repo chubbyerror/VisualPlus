@@ -59,6 +59,7 @@
             Size = new Size(250, 150);
             AutoSize = true;
             DrawMode = DrawMode.OwnerDrawVariable;
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
         }
 
         #endregion

@@ -57,7 +57,7 @@
             Size = new Size(220, 180);
             MinimumSize = new Size(136, 50);
             Padding = new Padding(5, 28, 5, 5);
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
         }
 

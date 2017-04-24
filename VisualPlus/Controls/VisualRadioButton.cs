@@ -53,6 +53,7 @@
                 | ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Width = 132;
             UpdateStyles();
         }

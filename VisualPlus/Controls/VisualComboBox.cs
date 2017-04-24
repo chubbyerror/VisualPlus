@@ -71,6 +71,7 @@
             DropDownHeight = 100;
             UpdateLocationPoints();
             BackColor = Color.Transparent;
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
         }
 
         public enum DropDownButtons
