@@ -23,6 +23,7 @@
 
         private Color backgroundCircleColor = Settings.DefaultValue.Style.BackgroundProgressCircle;
         private bool backgroundCircleVisible = true;
+        private Font font = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private Color foregroundCircleColor = Settings.DefaultValue.Style.ForegroundProgressCircle;
         private bool foregroundCircleVisible = true;
         private float gradientRotation;
@@ -32,7 +33,7 @@
         private float progressSize = 5F;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible;
-        
+
         #endregion
 
         #region Constructors
@@ -65,6 +66,22 @@
         #endregion
 
         #region Properties
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentFont)]
+        public Font TextFont
+        {
+            get
+            {
+                return font;
+            }
+
+            set
+            {
+                font = value;
+                Invalidate();
+            }
+        }
 
         [DefaultValue(true)]
         [Category(Localize.Category.Appearance)]
@@ -318,7 +335,7 @@
 
                 // stringFormat.Alignment = StringAlignment.Center;
                 // stringFormat.LineAlignment = StringAlignment.Center;
-                graphics.DrawString(stringValue, Font, new SolidBrush(ForeColor), textPoint, stringFormat);
+                graphics.DrawString(stringValue, font, new SolidBrush(ForeColor), textPoint, stringFormat);
             }
         }
 
@@ -339,15 +356,11 @@
             Size = new Size(Math.Max(Width, Height), Math.Max(Width, Height));
         }
 
-        #region ${0} Methods
-
         public void Decrement(int val)
         {
             Value -= val;
             Invalidate();
         }
-
-        #endregion
 
         #endregion
     }
