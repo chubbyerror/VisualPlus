@@ -19,7 +19,7 @@
     #endregion
 
     /// <summary>The visual TabControl.</summary>
-    // [ToolboxBitmap(typeof(TabControl)), Designer(StylesManager.BindedDesignerControls.VisualTab)]
+    // [Designer(StylesManager.BindedDesignerControls.VisualTab)]
     [ToolboxBitmap(typeof(TabControl))]
     public sealed class VisualTabControl : TabControl
     {
@@ -38,6 +38,9 @@
         private Point mouseLocation;
         private bool selectorVisible;
         private Color separator = Settings.DefaultValue.Style.TabSelected;
+
+        private int separatorSpacing = 2;
+        private float separatorThickness = 2F;
 
         private bool separatorVisible;
         private Color tabHover = Settings.DefaultValue.Style.TabHover;
@@ -82,6 +85,22 @@
         #endregion
 
         #region Properties
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public float SeparatorThickness
+        {
+            get
+            {
+                return separatorThickness;
+            }
+
+            set
+            {
+                separatorThickness = value;
+                Invalidate();
+            }
+        }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -149,6 +168,22 @@
             set
             {
                 borderHoverVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int SeparatorSpacing
+        {
+            get
+            {
+                return separatorSpacing;
+            }
+
+            set
+            {
+                separatorSpacing = value;
                 Invalidate();
             }
         }
@@ -618,25 +653,25 @@
             {
                 case TabAlignment.Top:
                     {
-                        e.Graphics.DrawLine(new Pen(separator, 2), 0, ItemSize.Height + 2, Width, ItemSize.Height + 2);
+                        e.Graphics.DrawLine(new Pen(separator, separatorThickness), 0, ItemSize.Height + separatorSpacing, Width, ItemSize.Height + separatorSpacing);
                         break;
                     }
 
                 case TabAlignment.Bottom:
                     {
-                        e.Graphics.DrawLine(new Pen(separator, 2), 0, Height - ItemSize.Height - 2, Width, Height - ItemSize.Height - 2);
+                        e.Graphics.DrawLine(new Pen(separator, separatorThickness), 0, Height - ItemSize.Height - separatorSpacing, Width, Height - ItemSize.Height - separatorSpacing);
                         break;
                     }
 
                 case TabAlignment.Left:
                     {
-                        e.Graphics.DrawLine(new Pen(separator, 2), ItemSize.Height + 2, 0, ItemSize.Height + 2, Height);
+                        e.Graphics.DrawLine(new Pen(separator, separatorThickness), ItemSize.Height + separatorSpacing, 0, ItemSize.Height + separatorSpacing, Height);
                         break;
                     }
 
                 case TabAlignment.Right:
                     {
-                        e.Graphics.DrawLine(new Pen(separator, 2), Width - ItemSize.Height - 2, 0, Width - ItemSize.Height - 2, Height);
+                        e.Graphics.DrawLine(new Pen(separator, separatorThickness), Width - ItemSize.Height - separatorSpacing, 0, Width - ItemSize.Height - separatorSpacing, Height);
                         break;
                     }
 
