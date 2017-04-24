@@ -30,7 +30,7 @@
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
         private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private int borderSize = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderSize;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private GraphicsPath buttonPath;
@@ -180,19 +180,19 @@
 
         [DefaultValue(Settings.DefaultValue.BorderSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
                 if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
@@ -549,7 +549,7 @@
             // Draw control border
             if (borderVisible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
             }
 
             // Draw value string

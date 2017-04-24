@@ -31,7 +31,7 @@
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
 
-        private int borderSize = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderSize;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
@@ -190,19 +190,19 @@
 
         [DefaultValue(Settings.DefaultValue.BorderSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
                 if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
@@ -568,7 +568,7 @@
                     {
                         GraphicsPath borderPath = new GraphicsPath();
                         borderPath.AddRectangle(tabRect);
-                        GDI.DrawBorderType(graphics, controlState, borderPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                        GDI.DrawBorderType(graphics, controlState, borderPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
                     }
 
                     StringFormat stringFormat = new StringFormat
@@ -613,7 +613,7 @@
                         {
                             GraphicsPath borderPath = new GraphicsPath();
                             borderPath.AddRectangle(tabRect);
-                            GDI.DrawBorderType(graphics, controlState, borderPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                            GDI.DrawBorderType(graphics, controlState, borderPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
                         }
                     }
 

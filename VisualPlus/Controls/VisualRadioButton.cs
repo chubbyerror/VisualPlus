@@ -28,7 +28,7 @@
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderSize = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderSize;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private GraphicsPath boxGraphicsPath;
         private Point boxLocation = new Point(2, 2);
@@ -128,19 +128,19 @@
 
         [DefaultValue(Settings.DefaultValue.BorderSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
                 if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
@@ -294,7 +294,7 @@
             // Draw border
             if (borderVisible)
             {
-                GDI.DrawBorderType(graphics, controlState, boxGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                GDI.DrawBorderType(graphics, controlState, boxGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
             }
 
             // Set control state color

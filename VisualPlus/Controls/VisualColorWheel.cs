@@ -430,7 +430,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderSize)]
+        [Description(Localize.Description.BorderThickness)]
         public int BorderSize
         {
             get

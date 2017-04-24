@@ -16,7 +16,7 @@
             public const string BorderHoverColor = "The controls border hover color.";
             public const string BorderHoverVisible = "Indicates whether the hover border is visible.";
             public const string BorderRounding = "Amount of pixels to curve a smooth path.";
-            public const string BorderSize = "The size of the border in pixels.";
+            public const string BorderThickness = "The size of the border in pixels.";
             public const string BorderVisible = "Indicates whether the border is visible.";
             public const string ComponentColor = "The color of the component.";
             public const string ComponentDiameter = "The diameter of the component.";

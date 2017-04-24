@@ -42,6 +42,8 @@
             BackColor = backgroundColor;
         }
 
+        public delegate void ClickedEventHandler(object sender);
+
         #endregion
 
         #region Properties
@@ -129,7 +131,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderSize)]
+        [Description(Localize.Description.BorderThickness)]
         public int BorderSize
         {
             get
@@ -254,7 +256,7 @@
 
         #endregion
 
-        #region Methods ${0}
+        #region Methods
 
         public sealed class VisualToolStripMenuItem : ToolStripMenuItem
         {
@@ -379,7 +381,5 @@
         }
 
         #endregion
-
-        public delegate void ClickedEventHandler(object sender);
     }
 }

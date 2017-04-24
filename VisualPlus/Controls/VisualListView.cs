@@ -26,7 +26,7 @@
     {
         #region Variables
 
-        private int borderSize = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderSize;
         private bool borderVisible;
         private Color columnBorder = Settings.DefaultValue.Style.BorderColor(0);
         private Color columnHeaderBackground = Settings.DefaultValue.Style.BackgroundColor(3);
@@ -112,19 +112,19 @@
 
         [DefaultValue(Settings.DefaultValue.BorderSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
                 if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
@@ -343,7 +343,7 @@
             if (borderVisible)
             {
                 // Draw column header border
-                GDI.DrawBorder(graphics, columnHeaderPath, borderSize, columnBorder);
+                GDI.DrawBorder(graphics, columnHeaderPath, borderThickness, columnBorder);
             }
 
             StringFormat stringFormat = new StringFormat
@@ -499,7 +499,7 @@
 
         #endregion
 
-        #region Methods ${0}
+        #region Methods
 
         [StructLayout(LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
         public class LogFont

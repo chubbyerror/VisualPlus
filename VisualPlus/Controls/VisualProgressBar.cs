@@ -41,7 +41,7 @@
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
         private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private int borderSize = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderSize;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
@@ -300,19 +300,19 @@
 
         [DefaultValue(Settings.DefaultValue.BorderSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
                 if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
@@ -761,11 +761,11 @@
             {
                 if (controlState == ControlState.Hover && borderHoverVisible)
                 {
-                    GDI.DrawBorder(graphics, graphicsDefaultBorderPath, borderSize, borderHoverColor);
+                    GDI.DrawBorder(graphics, graphicsDefaultBorderPath, borderThickness, borderHoverColor);
                 }
                 else
                 {
-                    GDI.DrawBorder(graphics, graphicsDefaultBorderPath, borderSize, borderColor);
+                    GDI.DrawBorder(graphics, graphicsDefaultBorderPath, borderThickness, borderColor);
                 }
             }
 
@@ -884,11 +884,11 @@
                 {
                     if (controlState == ControlState.Hover && borderHoverVisible)
                     {
-                        GDI.DrawBorder(graphics, barStyle, borderSize, borderHoverColor);
+                        GDI.DrawBorder(graphics, barStyle, borderThickness, borderHoverColor);
                     }
                     else
                     {
-                        GDI.DrawBorder(graphics, barStyle, borderSize, borderColor);
+                        GDI.DrawBorder(graphics, barStyle, borderThickness, borderColor);
                     }
                 }
             }
