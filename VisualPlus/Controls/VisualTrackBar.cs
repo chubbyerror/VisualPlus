@@ -745,6 +745,73 @@
 
         #region Events
 
+        /// <summary>Call the Decrement() method to decrease the value displayed by an integer you specify.</summary>
+        /// <param name="value">The value to decrement.</param>
+        public void Decrement(int value)
+        {
+            if (Value > Minimum)
+            {
+                Value -= value;
+                if (Value < Minimum)
+                {
+                    Value = Minimum;
+                }
+            }
+            else
+            {
+                Value = Minimum;
+            }
+
+            Invalidate();
+        }
+
+        /// <summary>Call the Increment() method to increase the value displayed by an integer you specify.</summary>
+        /// <param name="value">The value to increment.</param>
+        public void Increment(int value)
+        {
+            if (Value < Maximum)
+            {
+                Value += value;
+                if (Value > Maximum)
+                {
+                    Value = Maximum;
+                }
+            }
+            else
+            {
+                Value = Maximum;
+            }
+
+            Invalidate();
+        }
+
+        /// <summary>Sets a new range value.</summary>
+        /// <param name="minimumValue">The minimum.</param>
+        /// <param name="maximumValue">The maximum.</param>
+        public new void SetRange(int minimumValue, int maximumValue)
+        {
+            Minimum = minimumValue;
+
+            if (Minimum > Value)
+            {
+                Value = Minimum;
+            }
+
+            Maximum = maximumValue;
+
+            if (Maximum < Value)
+            {
+                Value = Maximum;
+            }
+
+            if (Maximum < Minimum)
+            {
+                Minimum = Maximum;
+            }
+
+            Invalidate();
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             var offsetValue = 0;
@@ -1318,10 +1385,11 @@
         /// <param name="graphics">Graphics controller.</param>
         private void DrawTracker(Graphics graphics)
         {
+            // Convert from RectangleF to Rectangle.
+            buttonRectangle = Rectangle.Round(trackerRectangleF);
+
             if (buttonVisible)
             {
-                // Convert from RectangleF to Rectangle.
-                buttonRectangle = Rectangle.Round(trackerRectangleF);
                 Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
 
                 buttonPath = GDI.GetBorderShape(buttonRectangle, borderShape, borderRounding);
@@ -1331,20 +1399,17 @@
 
                 // Draw button border
                 GDI.DrawBorderType(graphics, controlState, buttonPath, borderThickness, borderColor, borderHoverColor, borderVisible);
+            }
 
-                // Draw the value on the tracker button
-                if (buttonValueVisible)
-                {
-                    // Get Height of Text Area
-                    float textAreaSizeWidth = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
-                                                       Width;
-                    float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).
-                                                        Height;
-                    var stringValue = (float)(Value / (double)dividedValue);
+            // Draw the value on the tracker button
+            if (buttonValueVisible)
+            {
+                // Get Height of Text Area
+                float textAreaSizeWidth = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).Width;
+                float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).Height;
+                var stringValue = (float)(Value / (double)dividedValue);
 
-                    graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor),
-                        new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
-                }
+                graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor), new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
             }
         }
 
@@ -1354,77 +1419,6 @@
         private void DrawTrackLine(Graphics graphics, RectangleF trackLineRectangleF)
         {
             GDI.DrawTrackBarLine(graphics, trackLineRectangleF, trackLineColor, trackBarType);
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        /// <summary>Call the Decrement() method to decrease the value displayed by an integer you specify.</summary>
-        /// <param name="value">The value to decrement.</param>
-        public void Decrement(int value)
-        {
-            if (Value > Minimum)
-            {
-                Value -= value;
-                if (Value < Minimum)
-                {
-                    Value = Minimum;
-                }
-            }
-            else
-            {
-                Value = Minimum;
-            }
-
-            Invalidate();
-        }
-
-        /// <summary>Call the Increment() method to increase the value displayed by an integer you specify.</summary>
-        /// <param name="value">The value to increment.</param>
-        public void Increment(int value)
-        {
-            if (Value < Maximum)
-            {
-                Value += value;
-                if (Value > Maximum)
-                {
-                    Value = Maximum;
-                }
-            }
-            else
-            {
-                Value = Maximum;
-            }
-
-            Invalidate();
-        }
-
-        /// <summary>Sets a new range value.</summary>
-        /// <param name="minimumValue">The minimum.</param>
-        /// <param name="maximumValue">The maximum.</param>
-        public new void SetRange(int minimumValue, int maximumValue)
-        {
-            Minimum = minimumValue;
-
-            if (Minimum > Value)
-            {
-                Value = Minimum;
-            }
-
-            Maximum = maximumValue;
-
-            if (Maximum < Value)
-            {
-                Value = Maximum;
-            }
-
-            if (Maximum < Minimum)
-            {
-                Minimum = Maximum;
-            }
-
-            Invalidate();
         }
 
         #endregion
