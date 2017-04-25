@@ -204,7 +204,7 @@
             set
             {
                 groupBoxColor = value;
-                BackColorFix();
+                ExceptionHandler.ContainerBackColorFix(this, groupBoxColor);
                 Invalidate();
             }
         }
@@ -297,7 +297,7 @@
         protected override void OnControlAdded(ControlEventArgs e)
         {
             base.OnControlAdded(e);
-            BackColorFix();
+            ExceptionHandler.ContainerBackColorFix(this, groupBoxColor);
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -396,111 +396,6 @@
             // Update paths
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
-
-        #region ${0} Methods
-
-        public void BackColorFix()
-        {
-            foreach (object control in Controls)
-            {
-                if (control is VisualColorWheel)
-                {
-                    (control as VisualColorWheel).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualButton)
-                {
-                    (control as VisualButton).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualCheckBox)
-                {
-                    (control as VisualCheckBox).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualCircleProgressBar)
-                {
-                    (control as VisualCircleProgressBar).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualComboBox)
-                {
-                    (control as VisualComboBox).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualGroupBox)
-                {
-                    (control as VisualGroupBox).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualListBox)
-                {
-                    (control as VisualListBox).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualNumericUpDown)
-                {
-                    (control as VisualNumericUpDown).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualProgressBar)
-                {
-                    (control as VisualProgressBar).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualProgressIndicator)
-                {
-                    (control as VisualProgressIndicator).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualRadioButton)
-                {
-                    (control as VisualRadioButton).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualRichTextBox)
-                {
-                    (control as VisualRichTextBox).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualSeparator)
-                {
-                    (control as VisualSeparator).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualTabControl)
-                {
-                    (control as VisualTabControl).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualTextBox)
-                {
-                    (control as VisualTextBox).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualToggle)
-                {
-                    (control as VisualToggle).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualTrackBar)
-                {
-                    (control as VisualTrackBar).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualListView)
-                {
-                    (control as VisualListView).BackColor = groupBoxColor;
-                }
-
-                if (control is VisualLabel)
-                {
-                    (control as VisualLabel).BackColor = groupBoxColor;
-                }
-            }
-        }
-
-        #endregion
 
         #endregion
     }

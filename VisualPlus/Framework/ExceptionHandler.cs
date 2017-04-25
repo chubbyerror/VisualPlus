@@ -1,10 +1,16 @@
 ﻿namespace VisualPlus.Framework
 {
+    #region Namespace
+
     using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    #endregion
 
     internal class ExceptionHandler
     {
-        #region ${0} Methods
+        #region Events
 
         /// <summary>Returns a bool indicating whether the value is in range.</summary>
         /// <param name="sourceValue">The main value.</param>
@@ -22,6 +28,20 @@
             {
                 // Value not in range
                 throw new ArgumentOutOfRangeException("The value (" + sourceValue + ") must be in range of " + minimumValue + " to " + maximumValue + ".");
+            }
+        }
+
+        /// <summary>Container BackColor Fix.</summary>
+        /// <param name="container">The container control.</param>
+        /// <param name="backgroundColor">The container backgroundColor.</param>
+        public static void ContainerBackColorFix(Control container, Color backgroundColor)
+        {
+            foreach (object control in container.Controls)
+            {
+                if (control != null)
+                {
+                    ((Control)control).BackColor = backgroundColor;
+                }
             }
         }
 

@@ -17,7 +17,6 @@
     #endregion
 
     /// <summary>The visual panel.</summary>
-    // [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     [ToolboxBitmap(typeof(Panel))]
     [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     public sealed partial class VisualPanel : Panel
@@ -70,7 +69,7 @@
             set
             {
                 backgroundColor = value;
-                BackColorFix();
+                ExceptionHandler.ContainerBackColorFix(this, backgroundColor);
                 Invalidate();
             }
         }
@@ -209,7 +208,7 @@
         protected override void OnControlAdded(ControlEventArgs e)
         {
             base.OnControlAdded(e);
-            BackColorFix();
+            ExceptionHandler.ContainerBackColorFix(this, backgroundColor);
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -261,111 +260,6 @@
             // Update paths
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
-
-        #region ${0} Methods
-
-        public void BackColorFix()
-        {
-            foreach (object control in Controls)
-            {
-                if (control is VisualColorWheel)
-                {
-                    (control as VisualColorWheel).BackColor = backgroundColor;
-                }
-
-                if (control is VisualButton)
-                {
-                    (control as VisualButton).BackColor = backgroundColor;
-                }
-
-                if (control is VisualCheckBox)
-                {
-                    (control as VisualCheckBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualCircleProgressBar)
-                {
-                    (control as VisualCircleProgressBar).BackColor = backgroundColor;
-                }
-
-                if (control is VisualComboBox)
-                {
-                    (control as VisualComboBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualGroupBox)
-                {
-                    (control as VisualGroupBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualListBox)
-                {
-                    (control as VisualListBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualNumericUpDown)
-                {
-                    (control as VisualNumericUpDown).BackColor = backgroundColor;
-                }
-
-                if (control is VisualProgressBar)
-                {
-                    (control as VisualProgressBar).BackColor = backgroundColor;
-                }
-
-                if (control is VisualProgressIndicator)
-                {
-                    (control as VisualProgressIndicator).BackColor = backgroundColor;
-                }
-
-                if (control is VisualRadioButton)
-                {
-                    (control as VisualRadioButton).BackColor = backgroundColor;
-                }
-
-                if (control is VisualRichTextBox)
-                {
-                    (control as VisualRichTextBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualSeparator)
-                {
-                    (control as VisualSeparator).BackColor = backgroundColor;
-                }
-
-                if (control is VisualTabControl)
-                {
-                    (control as VisualTabControl).BackColor = backgroundColor;
-                }
-
-                if (control is VisualTextBox)
-                {
-                    (control as VisualTextBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualToggle)
-                {
-                    (control as VisualToggle).BackColor = backgroundColor;
-                }
-
-                if (control is VisualTrackBar)
-                {
-                    (control as VisualTrackBar).BackColor = backgroundColor;
-                }
-
-                if (control is VisualListView)
-                {
-                    (control as VisualListView).BackColor = backgroundColor;
-                }
-
-                if (control is VisualLabel)
-                {
-                    (control as VisualLabel).BackColor = backgroundColor;
-                }
-            }
-        }
-
-        #endregion
 
         #endregion
     }
