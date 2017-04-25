@@ -35,6 +35,7 @@
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Color groupBoxColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private StringAlignment stringAlignment = StringAlignment.Center;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color titleBoxColor = Settings.DefaultValue.Style.BackgroundColor(1);
@@ -210,6 +211,22 @@
         }
 
         [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.StringAlignment)]
+        public StringAlignment StringAlignment
+        {
+            get
+            {
+                return stringAlignment;
+            }
+
+            set
+            {
+                stringAlignment = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -360,7 +377,7 @@
             // Draw the specified string from 'Text' property inside the title box
             StringFormat stringFormat = new StringFormat
                 {
-                    Alignment = StringAlignment.Center,
+                    Alignment = stringAlignment,
                     LineAlignment = StringAlignment.Center
                 };
 

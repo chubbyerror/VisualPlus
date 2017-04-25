@@ -50,6 +50,7 @@
             public const string ShadowDirection = "Direction of the shadow.";
             public const string ShadowOpacity = "Opacity of the shadow.";
             public const string StartIndex = "Gets or sets the starting index.";
+            public const string StringAlignment = "Specifies the alignment of a text string relative to its layout rectangle.";
             public const string Style = "The visual style.";
             public const string StyleColor = "The visual style color.";
             public const string TextColor = "The text color.";
