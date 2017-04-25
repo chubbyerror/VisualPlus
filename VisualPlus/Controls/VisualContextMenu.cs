@@ -15,7 +15,7 @@
     #endregion
 
     [ToolboxBitmap(typeof(ContextMenuStrip))]
-    public class VisualContextMenuStrip : ContextMenuStrip
+    public sealed class VisualContextMenuStrip : ContextMenuStrip
     {
         #region Variables
 

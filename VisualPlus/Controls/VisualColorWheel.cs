@@ -289,20 +289,6 @@
     {
         #region Variables
 
-        [Category("Property Changed")]
-        public event EventHandler ColorChanged
-        {
-            add
-            {
-                Events.AddHandler(EventColorChanged, value);
-            }
-
-            remove
-            {
-                Events.RemoveHandler(EventColorChanged, value);
-            }
-        }
-
         [Category(Localize.Category.Appearance)]
         [DefaultValue(typeof(Color), "Black")]
         [Description(Localize.Description.ComponentColor)]
@@ -321,6 +307,20 @@
 
                     OnColorChanged(EventArgs.Empty);
                 }
+            }
+        }
+
+        [Category("Property Changed")]
+        public event EventHandler ColorChanged
+        {
+            add
+            {
+                Events.AddHandler(EventColorChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(EventColorChanged, value);
             }
         }
 
@@ -669,6 +669,12 @@
 
         #region Events
 
+        /// <summary>Disables any redrawing of the image box</summary>
+        public void BeginUpdate()
+        {
+            updates++;
+        }
+
         [Category("Property Changed")]
         public event EventHandler ColorStepChanged
         {
@@ -680,6 +686,20 @@
             remove
             {
                 Events.RemoveHandler(EventColorStepChanged, value);
+            }
+        }
+
+        /// <summary>Enables the redrawing of the image box</summary>
+        public void EndUpdate()
+        {
+            if (updates > 0)
+            {
+                updates--;
+            }
+
+            if (AllowPainting)
+            {
+                Invalidate();
             }
         }
 
@@ -1204,30 +1224,6 @@
             HslColorManager = new HslColorManager(angle, saturation, 0.5);
             Color = HslColorManager.ToRgbColor();
             LockUpdates = false;
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        /// <summary>Disables any redrawing of the image box</summary>
-        public void BeginUpdate()
-        {
-            updates++;
-        }
-
-        /// <summary>Enables the redrawing of the image box</summary>
-        public void EndUpdate()
-        {
-            if (updates > 0)
-            {
-                updates--;
-            }
-
-            if (AllowPainting)
-            {
-                Invalidate();
-            }
         }
 
         #endregion
