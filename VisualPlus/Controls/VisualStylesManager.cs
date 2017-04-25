@@ -21,6 +21,12 @@
     {
         #region Variables
 
+        public bool Initialized;
+
+        #endregion
+
+        #region Variables
+
         private bool animation = Settings.DefaultValue.Animation;
         private int barAmount = Settings.DefaultValue.BarAmount;
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
@@ -32,7 +38,7 @@
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
         private float progressSize = Settings.DefaultValue.ProgressSize;
-        private IStyle style;
+        private IStyle style = Settings.DefaultValue.Style;
         private Color styleColor = Settings.DefaultValue.Style.StyleColor;
         private TextRenderingHint textRenderingHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible = Settings.DefaultValue.TextVisible;
@@ -40,6 +46,11 @@
         #endregion
 
         #region Constructors
+
+        public VisualStylesManager()
+        {
+            Initialized = true;
+        }
 
         public delegate void StyleChangedEventHandler();
 
@@ -225,6 +236,8 @@
             set
             {
                 currentStyle = value;
+
+                // Change the style
                 StyleChanged?.Invoke();
             }
         }
