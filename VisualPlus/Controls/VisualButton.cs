@@ -51,6 +51,7 @@
         private TextImageRelation textImageRelation = TextImageRelation.Overlay;
         private Point textPoint = new Point(0, 0);
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private VisualStylesManager visualStylesManager;
 
         #endregion
 
@@ -346,6 +347,22 @@
             set
             {
                 buttonPressed = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Design)]
+        [Description(Localize.Description.Style)]
+        public VisualStylesManager StyleManager
+        {
+            get
+            {
+                return visualStylesManager;
+            }
+
+            set
+            {
+                visualStylesManager = value;
                 Invalidate();
             }
         }
