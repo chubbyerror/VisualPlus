@@ -83,6 +83,9 @@
     <Compile Include="Controls\VisualColorWheel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\VisualContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
