@@ -2,27 +2,23 @@
 {
     #region Namespace
 
-    using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Text;
-    using System.Linq;
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
+    /// <summary>The visual Toggle.</summary>
+    [ToolboxBitmap(typeof(Component))]
+    [DefaultEvent("StyleChanged")]
+    [Description("The visual style manager.")]
     public class VisualStylesManager : Component
     {
-        #region Variables
-
-        public List<string> StylesList = new List<string>();
-
-        #endregion
-
         #region Variables
 
         private bool animation = Settings.DefaultValue.Animation;
@@ -36,6 +32,7 @@
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
         private float progressSize = Settings.DefaultValue.ProgressSize;
+        private IStyle style;
         private Color styleColor = Settings.DefaultValue.Style.StyleColor;
         private TextRenderingHint textRenderingHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible = Settings.DefaultValue.TextVisible;
@@ -44,10 +41,7 @@
 
         #region Constructors
 
-        public VisualStylesManager()
-        {
-            LoadStyles();
-        }
+        public delegate void StyleChangedEventHandler();
 
         #endregion
 
@@ -231,6 +225,7 @@
             set
             {
                 currentStyle = value;
+                StyleChanged?.Invoke();
             }
         }
 
@@ -284,11 +279,7 @@
 
         #region Events
 
-        /// <summary>Loads styles to a string list.</summary>
-        private void LoadStyles()
-        {
-            StylesList = Enum.GetValues(typeof(Styles)).Cast<Styles>().Select(v => v.ToString()).ToList();
-        }
+        public event StyleChangedEventHandler StyleChanged;
 
         #endregion
     }
