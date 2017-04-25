@@ -27,6 +27,11 @@
         private Color foregroundCircleColor = Settings.DefaultValue.Style.ForegroundProgressCircle;
         private bool foregroundCircleVisible = true;
         private float gradientRotation;
+        private Image icon;
+        private GraphicsPath iconGraphicsPath;
+        private Point iconPoint;
+        private Rectangle iconRectangle;
+        private Size iconSize = new Size(16, 16);
         private Color progressGradient1 = Settings.DefaultValue.Style.ProgressColor;
         private Color progressGradient2 = ControlPaint.LightLight(Settings.DefaultValue.Style.ProgressColor);
         private ProgressShape progressShapeVal = ProgressShape.Round;
@@ -46,12 +51,15 @@
                 true);
 
             MinimumSize = new Size(100, 100);
-            Size = new Size(130, 130);
+
             ForeColor = Settings.DefaultValue.Style.ForeColor(0);
             textVisible = true;
             BackColor = Color.Transparent;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
+
+            // Attempt to center icon
+            iconPoint = new Point(Width / 2 - iconRectangle.Width / 2, Height / 2 - iconRectangle.Height / 2);
         }
 
         public enum ProgressShape
@@ -66,22 +74,6 @@
         #endregion
 
         #region Properties
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
-        public Font TextFont
-        {
-            get
-            {
-                return font;
-            }
-
-            set
-            {
-                font = value;
-                Invalidate();
-            }
-        }
 
         [DefaultValue(true)]
         [Category(Localize.Category.Appearance)]
@@ -166,6 +158,59 @@
         }
 
         [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Icon)]
+        public Image Icon
+        {
+            get
+            {
+                return icon;
+            }
+
+            set
+            {
+                icon = value;
+                if (AutoSize)
+                {
+                    Size = GetPreferredSize();
+                }
+
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.IconPosition)]
+        public Point IconPoint
+        {
+            get
+            {
+                return iconPoint;
+            }
+
+            set
+            {
+                iconPoint = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.IconSize)]
+        public Size IconSize
+        {
+            get
+            {
+                return iconSize;
+            }
+
+            set
+            {
+                iconSize = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color ProgressGradient1
         {
@@ -197,6 +242,23 @@
             }
         }
 
+        [DefaultValue(Settings.DefaultValue.ProgressSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ProgressSize)]
+        public float ProgressSize
+        {
+            get
+            {
+                return progressSize;
+            }
+
+            set
+            {
+                progressSize = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentShape)]
         public ProgressShape Shape
@@ -213,19 +275,18 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.ProgressSize)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ProgressSize)]
-        public float ProgressSize
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentFont)]
+        public Font TextFont
         {
             get
             {
-                return progressSize;
+                return font;
             }
 
             set
             {
-                progressSize = value;
+                font = value;
                 Invalidate();
             }
         }
@@ -267,6 +328,12 @@
 
         #region Events
 
+        public void Decrement(int val)
+        {
+            Value -= val;
+            Invalidate();
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
@@ -278,7 +345,7 @@
             if (backgroundCircleVisible)
             {
                 // Draw background circle
-                graphics.FillEllipse(new SolidBrush(backgroundCircleColor), 0x18 - 4, 0x18 - 4, Width - 0x30 + 8, Height - 0x30 + 8);
+                graphics.FillEllipse(new SolidBrush(backgroundCircleColor), progressSize, progressSize, Width - progressSize - 1, Height - progressSize - 1);
             }
 
             // Progress
@@ -309,33 +376,38 @@
                     }
 
                     // Draw progress
-                    graphics.DrawArc(progressPen, 0x18 - 2, 0x18 - 2, Width - 0x30 + 4, Height - 0x30 + 4, -90, (int)Math.Round(360.0 / Maximum * Value));
+                    graphics.DrawArc(progressPen, progressSize + 2, progressSize + 2, Width - progressSize * 2, Height - progressSize * 2, -90, (int)Math.Round(360.0 / Maximum * Value));
                 }
             }
 
             if (foregroundCircleVisible)
             {
                 // Draw foreground circle
-                graphics.FillEllipse(new SolidBrush(foregroundCircleColor), 0x18, 0x18, Width - 0x30, Height - 0x30);
+                graphics.FillEllipse(new SolidBrush(foregroundCircleColor), progressSize + 4, progressSize + 4, Width - progressSize - 10, Height - progressSize - 10);
+            }
+
+            iconGraphicsPath = new GraphicsPath();
+            iconGraphicsPath.AddRectangle(iconRectangle);
+            iconGraphicsPath.CloseAllFigures();
+
+            if (Icon != null)
+            {
+                // Point iconPoint = new Point(Width / 2 - iconRectangle.Width / 2, Height / 2 - iconRectangle.Height / 2);
+                iconRectangle = new Rectangle(iconPoint, iconSize);
+
+                // Draw icon
+                graphics.DrawImage(Icon, iconRectangle);
             }
 
             // String percentage
             if (textVisible)
             {
-                SizeF measuredString = new SizeF();
-
-                // String setup
-                measuredString = graphics.MeasureString(Convert.ToString(Convert.ToInt32(100 / Maximum * Value)), Font);
-
-                // Draw value string
+                SizeF measuredString = graphics.MeasureString(Convert.ToString(Convert.ToInt32(100 / Maximum * Value)), Font);
                 Point textPoint = new Point(Convert.ToInt32(Width / 2 - measuredString.Width / 2), Convert.ToInt32(Height / 2 - measuredString.Height / 2));
+
                 string stringValue = Convert.ToString(Convert.ToInt32(100 / Maximum * Value)) + @"%";
 
-                StringFormat stringFormat = new StringFormat();
-
-                // stringFormat.Alignment = StringAlignment.Center;
-                // stringFormat.LineAlignment = StringAlignment.Center;
-                graphics.DrawString(stringValue, font, new SolidBrush(ForeColor), textPoint, stringFormat);
+                graphics.DrawString(stringValue, font, new SolidBrush(ForeColor), textPoint);
             }
         }
 
@@ -351,15 +423,14 @@
             SetStandardSize();
         }
 
+        private Size GetPreferredSize()
+        {
+            return GetPreferredSize(new Size(0, 0));
+        }
+
         private void SetStandardSize()
         {
             Size = new Size(Math.Max(Width, Height), Math.Max(Width, Height));
-        }
-
-        public void Decrement(int val)
-        {
-            Value -= val;
-            Invalidate();
         }
 
         #endregion
