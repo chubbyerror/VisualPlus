@@ -1311,6 +1311,7 @@
             RectangleF progressRect = new RectangleF();
 
             var i1 = 0;
+
             switch (Orientation)
             {
                 case Orientation.Horizontal:
@@ -1319,6 +1320,12 @@
 
                         // Draws the progress to the middle of the button
                         i1 = buttonRectangle.X + buttonRectangle.Width / 2;
+
+                        if (Value == Maximum)
+                        {
+                            i1 = MaxReachedFiller(Orientation, i1);
+                        }
+
                         progressRotation = 0;
 
                         // Progress path
@@ -1343,6 +1350,12 @@
 
                         // Draws the progress to the middle of the button
                         i1 = buttonRectangle.Y + buttonRectangle.Height / 2;
+
+                        if (Value == Maximum)
+                        {
+                            i1 = MaxReachedFiller(Orientation, i1);
+                        }
+
                         progressRotation = -90;
 
                         // Progress path
@@ -1436,6 +1449,32 @@
         private void DrawTrackLine(Graphics graphics, RectangleF trackLineRectangleF)
         {
             GDI.DrawTrackBarLine(graphics, trackLineRectangleF, trackLineColor, trackBarType);
+        }
+
+        /// <summary>Fills the rest of the progress when maximum is reached.</summary>
+        /// <param name="orientation">The orientation.</param>
+        /// <param name="i1">The progress value.</param>
+        /// <returns>Returns filled progress value.</returns>
+        private int MaxReachedFiller(Orientation orientation, int i1)
+        {
+            switch (orientation)
+            {
+                case Orientation.Horizontal:
+                    {
+                        i1 += indentWidth * 2;
+
+                        break;
+                    }
+
+                case Orientation.Vertical:
+                    {
+                        i1 -= indentHeight * 2 + 1;
+
+                        break;
+                    }
+            }
+
+            return i1;
         }
 
         #endregion
