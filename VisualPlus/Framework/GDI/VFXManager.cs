@@ -1,5 +1,7 @@
 namespace VisualPlus.Framework.GDI
 {
+    #region Namespace
+
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -7,9 +9,11 @@ namespace VisualPlus.Framework.GDI
 
     using VisualPlus.Enums;
 
+    #endregion
+
     internal class VFXManager
     {
-        #region  ${0} Variables
+        #region Variables
 
         private const double MaxValue = 1.00;
         private const double MinValue = 0.00;
@@ -21,7 +25,7 @@ namespace VisualPlus.Framework.GDI
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         /// <summary>Initializes a new instance of the <see cref="VFXManager" /> class.Constructor</summary>
         /// <param name="singular">
@@ -55,9 +59,9 @@ namespace VisualPlus.Framework.GDI
 
         public delegate void AnimationProgress(object sender);
 
-        public event AnimationFinished OnAnimationFinished;
+        #endregion
 
-        public event AnimationProgress OnAnimationProgress;
+        #region Properties
 
         public bool CancelAnimation { get; set; }
 
@@ -71,7 +75,256 @@ namespace VisualPlus.Framework.GDI
 
         #endregion
 
-        #region ${0} Events
+        #region Events
+
+        public int GetAnimationCount()
+        {
+            return effectsProgression.Count;
+        }
+
+        public object[] GetData()
+        {
+            if (!Singular)
+            {
+                throw new Exception("Animation is not set to Singular.");
+            }
+
+            if (effectsData.Count == 0)
+            {
+                throw new Exception("Invalid animation");
+            }
+
+            return effectsData[0];
+        }
+
+        public object[] GetData(int index)
+        {
+            if (!(index < effectsData.Count))
+            {
+                throw new IndexOutOfRangeException("Invalid animation index");
+            }
+
+            return effectsData[index];
+        }
+
+        public AnimationDirection GetDirection()
+        {
+            if (!Singular)
+            {
+                throw new Exception("Animation is not set to Singular.");
+            }
+
+            if (animationDirections.Count == 0)
+            {
+                throw new Exception("Invalid animation");
+            }
+
+            return animationDirections[0];
+        }
+
+        public AnimationDirection GetDirection(int index)
+        {
+            if (!(index < animationDirections.Count))
+            {
+                throw new IndexOutOfRangeException("Invalid animation index");
+            }
+
+            return animationDirections[index];
+        }
+
+        public double GetProgress()
+        {
+            if (!Singular)
+            {
+                throw new Exception("Animation is not set to Singular.");
+            }
+
+            if (effectsProgression.Count == 0)
+            {
+                throw new Exception("Invalid animation");
+            }
+
+            return GetProgress(0);
+        }
+
+        public double GetProgress(int index)
+        {
+            if (!(index < GetAnimationCount()))
+            {
+                throw new IndexOutOfRangeException("Invalid animation index");
+            }
+
+            switch (EffectType)
+            {
+                case EffectType.Linear:
+                    return AnimationLinear.CalculateProgress(effectsProgression[index]);
+                case EffectType.EaseInOut:
+                    return AnimationEaseInOut.CalculateProgress(effectsProgression[index]);
+                case EffectType.EaseOut:
+                    return AnimationEaseOut.CalculateProgress(effectsProgression[index]);
+                case EffectType.CustomQuadratic:
+                    return AnimationCustomQuadratic.CalculateProgress(effectsProgression[index]);
+                default:
+                    throw new NotImplementedException("The given EffectType is not implemented");
+            }
+        }
+
+        public Point GetSource(int index)
+        {
+            if (!(index < GetAnimationCount()))
+            {
+                throw new IndexOutOfRangeException("Invalid animation index");
+            }
+
+            return effectsSources[index];
+        }
+
+        public Point GetSource()
+        {
+            if (!Singular)
+            {
+                throw new Exception("Animation is not set to Singular.");
+            }
+
+            if (effectsSources.Count == 0)
+            {
+                throw new Exception("Invalid animation");
+            }
+
+            return effectsSources[0];
+        }
+
+        public bool IsAnimating()
+        {
+            return animationTimer.Enabled;
+        }
+
+        public event AnimationFinished OnAnimationFinished;
+
+        public event AnimationProgress OnAnimationProgress;
+
+        public void SetData(object[] data)
+        {
+            if (!Singular)
+            {
+                throw new Exception("Animation is not set to Singular.");
+            }
+
+            if (effectsData.Count == 0)
+            {
+                throw new Exception("Invalid animation");
+            }
+
+            effectsData[0] = data;
+        }
+
+        public void SetDirection(AnimationDirection direction)
+        {
+            if (!Singular)
+            {
+                throw new Exception("Animation is not set to Singular.");
+            }
+
+            if (effectsProgression.Count == 0)
+            {
+                throw new Exception("Invalid animation");
+            }
+
+            animationDirections[0] = direction;
+        }
+
+        public void SetProgress(double progress)
+        {
+            if (!Singular)
+            {
+                throw new Exception("Animation is not set to Singular.");
+            }
+
+            if (effectsProgression.Count == 0)
+            {
+                throw new Exception("Invalid animation");
+            }
+
+            effectsProgression[0] = progress;
+        }
+
+        public void StartNewAnimation(AnimationDirection animationDirection, object[] data = null)
+        {
+            StartNewAnimation(animationDirection, new Point(0, 0), data);
+        }
+
+        public void StartNewAnimation(AnimationDirection animationDirection, Point animationSource, object[] data = null)
+        {
+            if (!IsAnimating() || CancelAnimation)
+            {
+                if (Singular && animationDirections.Count > 0)
+                {
+                    animationDirections[0] = animationDirection;
+                }
+                else
+                {
+                    animationDirections.Add(animationDirection);
+                }
+
+                if (Singular && effectsSources.Count > 0)
+                {
+                    effectsSources[0] = animationSource;
+                }
+                else
+                {
+                    effectsSources.Add(animationSource);
+                }
+
+                if (!(Singular && effectsProgression.Count > 0))
+                {
+                    switch (animationDirections[animationDirections.Count - 1])
+                    {
+                        case AnimationDirection.InOutRepeatingIn:
+                        case AnimationDirection.InOutIn:
+                        case AnimationDirection.In:
+                            effectsProgression.Add(MinValue);
+                            break;
+                        case AnimationDirection.InOutRepeatingOut:
+                        case AnimationDirection.InOutOut:
+                        case AnimationDirection.Out:
+                            effectsProgression.Add(MaxValue);
+                            break;
+                        default:
+                            throw new Exception("Invalid AnimationDirection");
+                    }
+                }
+
+                if (Singular && effectsData.Count > 0)
+                {
+                    effectsData[0] = data ?? new object[] { };
+                }
+                else
+                {
+                    effectsData.Add(data ?? new object[] { });
+                }
+            }
+
+            animationTimer.Start();
+        }
+
+        public void UpdateProgress(int index)
+        {
+            switch (animationDirections[index])
+            {
+                case AnimationDirection.InOutRepeatingIn:
+                case AnimationDirection.InOutIn:
+                case AnimationDirection.In:
+                    IncrementProgress(index);
+                    break;
+                case AnimationDirection.InOutRepeatingOut:
+                case AnimationDirection.InOutOut:
+                case AnimationDirection.Out:
+                    DecrementProgress(index);
+                    break;
+                default:
+                    throw new Exception("No AnimationDirection has been set");
+            }
+        }
 
         private void AnimationTimerOnTick(object sender, EventArgs eventArgs)
         {
@@ -203,255 +456,6 @@ namespace VisualPlus.Framework.GDI
 
                 animationTimer.Stop();
                 OnAnimationFinished?.Invoke(this);
-            }
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        public int GetAnimationCount()
-        {
-            return effectsProgression.Count;
-        }
-
-        public object[] GetData()
-        {
-            if (!Singular)
-            {
-                throw new Exception("Animation is not set to Singular.");
-            }
-
-            if (effectsData.Count == 0)
-            {
-                throw new Exception("Invalid animation");
-            }
-
-            return effectsData[0];
-        }
-
-        public object[] GetData(int index)
-        {
-            if (!(index < effectsData.Count))
-            {
-                throw new IndexOutOfRangeException("Invalid animation index");
-            }
-
-            return effectsData[index];
-        }
-
-        public AnimationDirection GetDirection()
-        {
-            if (!Singular)
-            {
-                throw new Exception("Animation is not set to Singular.");
-            }
-
-            if (animationDirections.Count == 0)
-            {
-                throw new Exception("Invalid animation");
-            }
-
-            return animationDirections[0];
-        }
-
-        public AnimationDirection GetDirection(int index)
-        {
-            if (!(index < animationDirections.Count))
-            {
-                throw new IndexOutOfRangeException("Invalid animation index");
-            }
-
-            return animationDirections[index];
-        }
-
-        public double GetProgress()
-        {
-            if (!Singular)
-            {
-                throw new Exception("Animation is not set to Singular.");
-            }
-
-            if (effectsProgression.Count == 0)
-            {
-                throw new Exception("Invalid animation");
-            }
-
-            return GetProgress(0);
-        }
-
-        public double GetProgress(int index)
-        {
-            if (!(index < GetAnimationCount()))
-            {
-                throw new IndexOutOfRangeException("Invalid animation index");
-            }
-
-            switch (EffectType)
-            {
-                case EffectType.Linear:
-                    return AnimationLinear.CalculateProgress(effectsProgression[index]);
-                case EffectType.EaseInOut:
-                    return AnimationEaseInOut.CalculateProgress(effectsProgression[index]);
-                case EffectType.EaseOut:
-                    return AnimationEaseOut.CalculateProgress(effectsProgression[index]);
-                case EffectType.CustomQuadratic:
-                    return AnimationCustomQuadratic.CalculateProgress(effectsProgression[index]);
-                default:
-                    throw new NotImplementedException("The given EffectType is not implemented");
-            }
-        }
-
-        public Point GetSource(int index)
-        {
-            if (!(index < GetAnimationCount()))
-            {
-                throw new IndexOutOfRangeException("Invalid animation index");
-            }
-
-            return effectsSources[index];
-        }
-
-        public Point GetSource()
-        {
-            if (!Singular)
-            {
-                throw new Exception("Animation is not set to Singular.");
-            }
-
-            if (effectsSources.Count == 0)
-            {
-                throw new Exception("Invalid animation");
-            }
-
-            return effectsSources[0];
-        }
-
-        public bool IsAnimating()
-        {
-            return animationTimer.Enabled;
-        }
-
-        public void SetData(object[] data)
-        {
-            if (!Singular)
-            {
-                throw new Exception("Animation is not set to Singular.");
-            }
-
-            if (effectsData.Count == 0)
-            {
-                throw new Exception("Invalid animation");
-            }
-
-            effectsData[0] = data;
-        }
-
-        public void SetDirection(AnimationDirection direction)
-        {
-            if (!Singular)
-            {
-                throw new Exception("Animation is not set to Singular.");
-            }
-
-            if (effectsProgression.Count == 0)
-            {
-                throw new Exception("Invalid animation");
-            }
-
-            animationDirections[0] = direction;
-        }
-
-        public void SetProgress(double progress)
-        {
-            if (!Singular)
-            {
-                throw new Exception("Animation is not set to Singular.");
-            }
-
-            if (effectsProgression.Count == 0)
-            {
-                throw new Exception("Invalid animation");
-            }
-
-            effectsProgression[0] = progress;
-        }
-
-        public void StartNewAnimation(AnimationDirection animationDirection, object[] data = null)
-        {
-            StartNewAnimation(animationDirection, new Point(0, 0), data);
-        }
-
-        public void StartNewAnimation(AnimationDirection animationDirection, Point animationSource, object[] data = null)
-        {
-            if (!IsAnimating() || CancelAnimation)
-            {
-                if (Singular && animationDirections.Count > 0)
-                {
-                    animationDirections[0] = animationDirection;
-                }
-                else
-                {
-                    animationDirections.Add(animationDirection);
-                }
-
-                if (Singular && effectsSources.Count > 0)
-                {
-                    effectsSources[0] = animationSource;
-                }
-                else
-                {
-                    effectsSources.Add(animationSource);
-                }
-
-                if (!(Singular && effectsProgression.Count > 0))
-                {
-                    switch (animationDirections[animationDirections.Count - 1])
-                    {
-                        case AnimationDirection.InOutRepeatingIn:
-                        case AnimationDirection.InOutIn:
-                        case AnimationDirection.In:
-                            effectsProgression.Add(MinValue);
-                            break;
-                        case AnimationDirection.InOutRepeatingOut:
-                        case AnimationDirection.InOutOut:
-                        case AnimationDirection.Out:
-                            effectsProgression.Add(MaxValue);
-                            break;
-                        default:
-                            throw new Exception("Invalid AnimationDirection");
-                    }
-                }
-
-                if (Singular && effectsData.Count > 0)
-                {
-                    effectsData[0] = data ?? new object[] { };
-                }
-                else
-                {
-                    effectsData.Add(data ?? new object[] { });
-                }
-            }
-
-            animationTimer.Start();
-        }
-
-        public void UpdateProgress(int index)
-        {
-            switch (animationDirections[index])
-            {
-                case AnimationDirection.InOutRepeatingIn:
-                case AnimationDirection.InOutIn:
-                case AnimationDirection.In:
-                    IncrementProgress(index);
-                    break;
-                case AnimationDirection.InOutRepeatingOut:
-                case AnimationDirection.InOutOut:
-                case AnimationDirection.Out:
-                    DecrementProgress(index);
-                    break;
-                default:
-                    throw new Exception("No AnimationDirection has been set");
             }
         }
 
