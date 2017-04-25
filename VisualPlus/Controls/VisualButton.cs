@@ -583,7 +583,7 @@
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textboxRectangle);
 
             // Ripple
-            if (effectsManager.IsAnimating())
+            if (effectsManager.IsAnimating() && animation)
             {
                 graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 for (var i = 0; i < effectsManager.GetAnimationCount(); i++)
