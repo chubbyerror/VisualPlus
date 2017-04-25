@@ -1326,6 +1326,11 @@
                             i1 = MaxReachedFiller(Orientation, i1);
                         }
 
+                        if (Value == Minimum)
+                        {
+                            i1 = MinReachedFiller(Orientation, i1);
+                        }
+
                         progressRotation = 0;
 
                         // Progress path
@@ -1354,6 +1359,11 @@
                         if (Value == Maximum)
                         {
                             i1 = MaxReachedFiller(Orientation, i1);
+                        }
+
+                        if (Value == Minimum)
+                        {
+                            i1 = MinReachedFiller(Orientation, i1);
                         }
 
                         progressRotation = -90;
@@ -1469,6 +1479,32 @@
                 case Orientation.Vertical:
                     {
                         i1 -= indentHeight * 2 + 1;
+
+                        break;
+                    }
+            }
+
+            return i1;
+        }
+
+        /// <summary>Fills the rest of the progress when maximum is reached.</summary>
+        /// <param name="orientation">The orientation.</param>
+        /// <param name="i1">The progress value.</param>
+        /// <returns>Returns filled progress value.</returns>
+        private int MinReachedFiller(Orientation orientation, int i1)
+        {
+            switch (orientation)
+            {
+                case Orientation.Horizontal:
+                    {
+                        i1 -= indentWidth * 2 + 2;
+
+                        break;
+                    }
+
+                case Orientation.Vertical:
+                    {
+                        i1 += indentHeight * 2 + 2;
 
                         break;
                     }
