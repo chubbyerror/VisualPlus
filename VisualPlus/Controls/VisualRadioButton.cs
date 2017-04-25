@@ -28,7 +28,7 @@
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderThickness = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private GraphicsPath boxGraphicsPath;
         private Point boxLocation = new Point(2, 2);
@@ -127,7 +127,7 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.BorderThickness)]
         public int BorderThickness

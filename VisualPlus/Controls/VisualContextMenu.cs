@@ -24,7 +24,7 @@
         private static bool arrowVisible = Settings.DefaultValue.TextVisible;
         private static Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
         private static Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private static int borderSize = Settings.DefaultValue.BorderSize;
+        private static int borderSize = Settings.DefaultValue.BorderThickness;
         private static bool borderVisible = Settings.DefaultValue.BorderVisible;
         private static Font contextMenuFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private static Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
@@ -130,7 +130,7 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.BorderThickness)]
         public int BorderSize

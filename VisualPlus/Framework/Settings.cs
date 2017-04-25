@@ -29,7 +29,7 @@ namespace VisualPlus.Framework
         public struct DefaultValue
         {
             public const bool Animation = true;
-            public const int BorderSize = 1;
+            public const int BorderThickness = 1;
             public const bool BorderHoverVisible = true;
             public const int BorderRounding = 6;
             public const BorderShape BorderShape = Enums.BorderShape.Rounded;
@@ -40,7 +40,7 @@ namespace VisualPlus.Framework
             public const bool HatchVisible = true;
             public const int BarAmount = 5;
             public const float HatchSize = 2F;
-            public const Styles CurrentStyle = Styles.Visual;
+            public const Styles DefaultStyle = Styles.Visual;
             public static readonly IStyle Style = new Visual();
             public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
         }

@@ -338,7 +338,7 @@
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderSize = Settings.DefaultValue.BorderSize;
+        private int borderSize = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Brush brush;
         private PointF centerPoint;
@@ -428,7 +428,7 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.BorderThickness)]
         public int BorderSize

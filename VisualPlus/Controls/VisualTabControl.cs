@@ -31,7 +31,7 @@
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
 
-        private int borderThickness = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
@@ -190,7 +190,7 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.BorderThickness)]
         public int BorderThickness

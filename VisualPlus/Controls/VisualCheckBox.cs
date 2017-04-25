@@ -31,7 +31,7 @@
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
         private int borderRounding = Settings.DefaultValue.BorderRounding;
         private BorderShape borderShape = Settings.DefaultValue.BorderShape;
-        private int borderThickness = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Size boxSize = new Size(14, 14);
         private Color checkBoxColor = Settings.DefaultValue.Style.BackgroundColor(3);
@@ -215,7 +215,7 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.BorderThickness)]
         public int BorderThickness

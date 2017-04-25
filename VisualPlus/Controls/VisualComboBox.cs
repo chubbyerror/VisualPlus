@@ -31,7 +31,7 @@
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
         private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private int borderThickness = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
         private Color controlDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
@@ -192,7 +192,7 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.BorderThickness)]
         public int BorderThickness

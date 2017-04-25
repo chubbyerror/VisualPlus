@@ -26,7 +26,7 @@
     {
         #region Variables
 
-        private int borderThickness = Settings.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible;
         private Color columnBorder = Settings.DefaultValue.Style.BorderColor(0);
         private Color columnHeaderBackground = Settings.DefaultValue.Style.BackgroundColor(3);
@@ -110,7 +110,7 @@
 
         #region Properties
 
-        [DefaultValue(Settings.DefaultValue.BorderSize)]
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.BorderThickness)]
         public int BorderThickness
