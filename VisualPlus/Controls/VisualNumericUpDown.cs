@@ -384,6 +384,18 @@
 
         #region Events
 
+        public void Decrement(int value)
+        {
+            numericValue -= value;
+            Invalidate();
+        }
+
+        public void Increment(int value)
+        {
+            numericValue += value;
+            Invalidate();
+        }
+
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
             base.OnKeyPress(e);
@@ -540,8 +552,8 @@
             graphics.ResetClip();
 
             // Draw string
-            graphics.DrawString("+", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2, Height / 4 - buttonRectangle.Height / 4));
-            graphics.DrawString("-", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2 + 1, Height / 2));
+            graphics.DrawString("+", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2 - 2, Height / 4 - buttonRectangle.Height / 4));
+            graphics.DrawString("-", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2, Height / 2));
 
             // Button separator
             graphics.DrawLine(new Pen(Settings.DefaultValue.Style.BorderColor(0)), buttonRectangle.X, buttonRectangle.Y + buttonRectangle.Height / 2, buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + buttonRectangle.Height / 2);
@@ -584,22 +596,6 @@
             buttonPath = new GraphicsPath();
             buttonPath.AddRectangle(buttonRectangle);
             buttonPath.CloseAllFigures();
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        public void Decrement(int value)
-        {
-            numericValue -= value;
-            Invalidate();
-        }
-
-        public void Increment(int value)
-        {
-            numericValue += value;
-            Invalidate();
         }
 
         #endregion
