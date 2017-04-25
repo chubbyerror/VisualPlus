@@ -446,6 +446,22 @@
             }
         }
 
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int IndentWidth
+        {
+            get
+            {
+                return indentWidth;
+            }
+
+            set
+            {
+                indentWidth = value;
+                Invalidate();
+            }
+        }
+
         public new Orientation Orientation
         {
             get
@@ -1309,7 +1325,7 @@
                         if (borderShape == BorderShape.Rectangle)
                         {
                             progressPath = new GraphicsPath();
-                            progressPath.AddRectangle(new Rectangle(0, 0, i1 + 1, Height));
+                            progressPath.AddRectangle(new Rectangle(0, 0, i1, Height));
                             progressPath.CloseAllFigures();
                         }
                         else
@@ -1409,7 +1425,8 @@
                 float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString() + charExtension, textFont).Height;
                 var stringValue = (float)(Value / (double)dividedValue);
 
-                graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor), new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
+                graphics.DrawString(stringValue.ToString("0") + charExtension, textFont, new SolidBrush(buttonTextColor),
+                    new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2));
             }
         }
 
