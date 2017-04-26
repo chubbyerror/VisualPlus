@@ -1463,19 +1463,21 @@
 
         private int ProgressFillingBug(Orientation orientation, int i1, bool max)
         {
+            const int Spacing = 2;
+
             if (max)
             {
                 switch (orientation)
                 {
                     case Orientation.Horizontal:
                         {
-                            i1 += indentWidth * 2;
+                            i1 += indentWidth * 2 + Spacing;
                             break;
                         }
 
                     case Orientation.Vertical:
                         {
-                            i1 -= indentHeight * 2 + 1;
+                            i1 -= indentHeight * 2 + Spacing;
                             break;
                         }
                 }
@@ -1486,13 +1488,13 @@
                 {
                     case Orientation.Horizontal:
                         {
-                            i1 -= indentWidth * 2 + 2;
+                            i1 -= indentWidth * 2 + Spacing;
                             break;
                         }
 
                     case Orientation.Vertical:
                         {
-                            i1 += indentHeight * 2 + 2;
+                            i1 += indentHeight * 2 + Spacing;
                             break;
                         }
                 }
