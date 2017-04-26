@@ -25,6 +25,7 @@
         #region Variables
 
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
@@ -33,12 +34,24 @@
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
+
+        private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private Color groupBoxColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private float gradientAngle;
+        private LinearGradientBrush gradientBrush;
+        private float[] gradientPosition = { 0, 1 / 2f, 1 };
+        private Point startPoint;
         private StringAlignment stringAlignment = StringAlignment.Center;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Color titleBoxColor = Settings.DefaultValue.Style.BackgroundColor(1);
+
+        private Color[] titleBoxColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
+                Settings.DefaultValue.Style.BackgroundColor(0),
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+            };
+
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
         private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
@@ -65,6 +78,23 @@
         #endregion
 
         #region Properties
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color BackgroundColor
+        {
+            get
+            {
+                return backgroundColor;
+            }
+
+            set
+            {
+                backgroundColor = value;
+                ExceptionHandler.ContainerBackColorFix(this, backgroundColor);
+                Invalidate();
+            }
+        }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.BorderColor)]
@@ -193,19 +223,34 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color GroupBoxColor
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientAngle
         {
             get
             {
-                return groupBoxColor;
+                return gradientAngle;
             }
 
             set
             {
-                groupBoxColor = value;
-                ExceptionHandler.ContainerBackColorFix(this, groupBoxColor);
+                gradientAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientPosition
+        {
+            get
+            {
+                return gradientPosition;
+            }
+
+            set
+            {
+                gradientPosition = value;
                 Invalidate();
             }
         }
@@ -276,7 +321,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color TitleBoxColor
+        public Color[] TitleBoxColor
         {
             get
             {
@@ -314,7 +359,7 @@
         protected override void OnControlAdded(ControlEventArgs e)
         {
             base.OnControlAdded(e);
-            ExceptionHandler.ContainerBackColorFix(this, groupBoxColor);
+            ExceptionHandler.ContainerBackColorFix(this, backgroundColor);
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -345,8 +390,8 @@
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
 
-            // Draw the body of the GroupBoxColor
-            graphics.FillPath(new SolidBrush(groupBoxColor), controlGraphicsPath);
+            // Draw the body of the BackgroundColor
+            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
 
             // Setup group box border
             if (borderVisible)
@@ -357,8 +402,10 @@
             // Draw the title box
             if (titleBoxVisible)
             {
+                gradientBrush = GDI.CreateGradientBrush(titleBoxColor, gradientPosition, gradientAngle, startPoint, endPoint);
+
                 // Draw the background of the title box
-                graphics.FillPath(new SolidBrush(titleBoxColor), titleBoxPath);
+                graphics.FillPath(gradientBrush, titleBoxPath);
 
                 // Setup title boxborder
                 if (borderVisible)
@@ -412,6 +459,9 @@
 
             // Update paths
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+
+            startPoint = new Point(titleBoxRectangle.Width, 0);
+            endPoint = new Point(titleBoxRectangle.Width, titleBoxRectangle.Height);
         }
 
         #endregion
