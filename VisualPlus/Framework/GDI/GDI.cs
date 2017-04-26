@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Framework.GDI
 {
+    #region Namespace
+
     using System;
     using System.Drawing;
     using System.Drawing.Drawing2D;
@@ -8,15 +10,17 @@
 
     using VisualPlus.Enums;
 
+    #endregion
+
     internal class GDI
     {
-        #region  ${0} Variables
+        #region Variables
 
         public static GraphicsPath GraphicPath = null;
 
         #endregion
 
-        #region ${0} Methods
+        #region Events
 
         /// <summary>Draws the text image relation.</summary>
         /// <param name="relation">The relation type.</param>
@@ -126,6 +130,28 @@
         public static Color BlendColor(Color backgroundColor, Color frontColor)
         {
             return BlendColor(backgroundColor, frontColor, frontColor.A);
+        }
+
+        /// <summary>Creates a gradient brush.</summary>
+        /// <param name="colors">The colors array.</param>
+        /// <param name="positions">The positions array.</param>
+        /// <param name="startPoint">Start position.</param>
+        /// <param name="endPoint">End position.</param>
+        /// <returns>The <see cref="LinearGradientBrush" />.</returns>
+        public static LinearGradientBrush CreateGradientBrush(Color[] colors, float[] positions, Point startPoint, Point endPoint)
+        {
+            LinearGradientBrush linearGradientBrush = new LinearGradientBrush(startPoint, endPoint, Color.Black, Color.Black);
+
+            ColorBlend colorBlend = new ColorBlend
+                {
+                    Positions = positions,
+                    Colors = colors
+                };
+
+            // Define brush color blend
+            linearGradientBrush.InterpolationColors = colorBlend;
+
+            return linearGradientBrush;
         }
 
         public static GraphicsPath CreateRoundRect(float x, float y, float width, float height, float radius)
