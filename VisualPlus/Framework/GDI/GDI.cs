@@ -146,7 +146,7 @@
                 {
                     Positions = positions,
                     Colors = colors
-            };
+                };
 
             // Define brush color blend
             linearGradientBrush.InterpolationColors = colorBlend;
