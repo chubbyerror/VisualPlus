@@ -5,6 +5,7 @@
         public struct Description
         {
             public const string Alignment = "Gets or sets the alignment.";
+            public const string Angle = "Applies the specified angle to the transformation matrix of this Graphics.";
             public const string Animation = "Toggle the animation state.";
             public const string AnimationSpeed = "The speed of the animation.";
             public const string BarAmount = "The amount of bars to display in the progress.";
