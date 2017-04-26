@@ -490,6 +490,7 @@
             SuspendLayout();
             Update();
             ResumeLayout();
+            Invalidate();
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -526,14 +527,7 @@
             // Create border
             if (borderVisible)
             {
-                if (controlState == ControlState.Hover && borderHoverVisible)
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderThickness, borderHoverColor);
-                }
-                else
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderThickness, borderColor);
-                }
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
             }
 
             Rectangle buttonRectangle = new Rectangle(0, 0, 25, 25);
@@ -590,6 +584,11 @@
         {
             base.OnResize(e);
             UpdateLocationPoints();
+        }
+
+        protected override void OnSelectionChangeCommitted(EventArgs e)
+        {
+            OnMouseLeave(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
