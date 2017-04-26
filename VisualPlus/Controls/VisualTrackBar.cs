@@ -29,6 +29,7 @@
         private static int progressRotation;
         private static Orientation trackBarType = Orientation.Horizontal;
         private static RectangleF trackerRectangleF = RectangleF.Empty;
+        private Color backgroundColor = Settings.DefaultValue.Style.LineColor;
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
@@ -76,6 +77,8 @@
         private string prefix;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
+
+        private int progressFiller = 2;
         private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
         private Point startPoint;
@@ -86,7 +89,6 @@
         private Color tickColor = Settings.DefaultValue.Style.LineColor;
         private int tickHeight = 2;
         private bool tickVisible = Settings.DefaultValue.TextVisible;
-        private Color trackLineColor = Settings.DefaultValue.Style.LineColor;
         private int trackLineThickness = 5;
         private bool valueTickVisible = Settings.DefaultValue.TextVisible;
 
@@ -129,6 +131,22 @@
         #endregion
 
         #region Properties
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color BackgroundColor
+        {
+            get
+            {
+                return backgroundColor;
+            }
+
+            set
+            {
+                backgroundColor = value;
+                Invalidate();
+            }
+        }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.BorderColor)]
@@ -581,6 +599,22 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description("Additional progress filler.")]
+        public int ProgressFiller
+        {
+            get
+            {
+                return progressFiller;
+            }
+
+            set
+            {
+                progressFiller = value;
+                Invalidate();
+            }
+        }
+
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.ComponentVisible)]
@@ -740,22 +774,6 @@
             set
             {
                 tickVisible = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color TrackLineColor
-        {
-            get
-            {
-                return trackLineColor;
-            }
-
-            set
-            {
-                trackLineColor = value;
                 Invalidate();
             }
         }
@@ -1488,26 +1506,24 @@
         /// <param name="trackLineRectangleF">Track line rectangle.</param>
         private void DrawTrackLine(Graphics graphics, RectangleF trackLineRectangleF)
         {
-            GDI.DrawTrackBarLine(graphics, trackLineRectangleF, trackLineColor, trackBarType);
+            GDI.DrawTrackBarLine(graphics, trackLineRectangleF, backgroundColor, trackBarType);
         }
 
         private int ProgressFillingBug(Orientation orientation, int i1, bool max)
         {
-            const int Spacing = 2;
-
             if (max)
             {
                 switch (orientation)
                 {
                     case Orientation.Horizontal:
                         {
-                            i1 += indentWidth * 2 + Spacing;
+                            i1 += indentWidth * 2 + progressFiller;
                             break;
                         }
 
                     case Orientation.Vertical:
                         {
-                            i1 -= indentHeight * 2 + Spacing;
+                            i1 -= indentHeight * 2 + progressFiller;
                             break;
                         }
                 }
@@ -1518,13 +1534,13 @@
                 {
                     case Orientation.Horizontal:
                         {
-                            i1 -= indentWidth * 2 + Spacing;
+                            i1 -= indentWidth * 2 + progressFiller;
                             break;
                         }
 
                     case Orientation.Vertical:
                         {
-                            i1 += indentHeight * 2 + Spacing;
+                            i1 += indentHeight * 2 + progressFiller;
                             break;
                         }
                 }
