@@ -138,15 +138,15 @@
         /// <param name="startPoint">Start position.</param>
         /// <param name="endPoint">End position.</param>
         /// <returns>The <see cref="LinearGradientBrush" />.</returns>
-        public static LinearGradientBrush CreateGradientBrush(Gradient gradient, float angle, Point startPoint, Point endPoint)
+        public static LinearGradientBrush CreateGradientBrush(Color[] colors, float[] positions, float angle, Point startPoint, Point endPoint)
         {
             LinearGradientBrush linearGradientBrush = new LinearGradientBrush(startPoint, endPoint, Color.Black, Color.Black);
 
             ColorBlend colorBlend = new ColorBlend
                 {
-                    Positions = gradient.Positions,
-                    Colors = gradient.Colors
-                };
+                    Positions = positions,
+                    Colors = colors
+            };
 
             // Define brush color blend
             linearGradientBrush.InterpolationColors = colorBlend;
