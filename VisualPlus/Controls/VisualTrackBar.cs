@@ -36,16 +36,35 @@
         private BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+
+        private Color[] buttonColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
+                Settings.DefaultValue.Style.ButtonNormalColor,
+                ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor)
+            };
+
         private GraphicsPath buttonPath = new GraphicsPath();
         private Rectangle buttonRectangle;
         private Size buttonSize = new Size(27, 20);
         private Color buttonTextColor = Settings.DefaultValue.Style.ForeColor(0);
         private bool buttonVisible = true;
-        private Color controlDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
+
+        private Color[] controlDisabledColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+                Settings.DefaultValue.Style.ControlDisabled,
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
+            };
+
         private ControlState controlState = ControlState.Normal;
         private ValueDivisor dividedValue = ValueDivisor.By1;
+
+        private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private float gradientAngle;
+        private LinearGradientBrush gradientBrush;
+        private float[] gradientPosition = { 0, 1 / 2f, 1 };
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
@@ -59,6 +78,7 @@
         private BrushType progressColorStyle = BrushType.Gradient;
         private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
+        private Point startPoint;
         private string suffix;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private Font textFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
@@ -237,7 +257,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color ButtonColor
+        public Color[] ButtonColor
         {
             get
             {
@@ -302,7 +322,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ControlDisabled)]
-        public Color ControlDisabledColor
+        public Color[] ControlDisabledColor
         {
             get
             {
@@ -312,6 +332,38 @@
             set
             {
                 controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientAngle
+        {
+            get
+            {
+                return gradientAngle;
+            }
+
+            set
+            {
+                gradientAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientPosition
+        {
+            get
+            {
+                return gradientPosition;
+            }
+
+            set
+            {
+                gradientPosition = value;
                 Invalidate();
             }
         }
@@ -1413,14 +1465,18 @@
             // Convert from RectangleF to Rectangle.
             buttonRectangle = Rectangle.Round(trackerRectangleF);
 
+            startPoint = new Point(buttonRectangle.Width, 0);
+            endPoint = new Point(buttonRectangle.Width, buttonRectangle.Height);
+
             if (buttonVisible)
             {
-                Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
+                var controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
 
                 buttonPath = GDI.GetBorderShape(buttonRectangle, borderShape, borderRounding);
+                gradientBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientPosition, gradientAngle, startPoint, endPoint);
 
                 // Draw button background
-                graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
+                graphics.FillPath(gradientBrush, buttonPath);
 
                 // Draw button border
                 GDI.DrawBorderType(graphics, controlState, buttonPath, borderThickness, borderColor, borderHoverColor, borderVisible);
