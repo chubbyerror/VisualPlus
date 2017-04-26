@@ -486,10 +486,10 @@
 
         protected override void OnLostFocus(EventArgs e)
         {
-            base.OnLostFocus(e);
             SuspendLayout();
             Update();
             ResumeLayout();
+            controlState = ControlState.Normal;
             Invalidate();
         }
 
@@ -588,7 +588,7 @@
 
         protected override void OnSelectionChangeCommitted(EventArgs e)
         {
-            OnMouseLeave(e);
+            OnLostFocus(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
