@@ -26,7 +26,14 @@
 
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private static ControlState controlState = ControlState.Normal;
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+
+        private Color[] backgroundColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
+                Settings.DefaultValue.Style.BackgroundColor(0),
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+            };
+
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
@@ -34,11 +41,22 @@
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
-        private Color controlDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
+
+        private Color[] controlDisabledColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+                Settings.DefaultValue.Style.ControlDisabled,
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
+            };
+
         private GraphicsPath controlGraphicsPath;
         private DropDownButtons dropDownButton = DropDownButtons.Arrow;
         private bool dropDownButtonsVisible = Settings.DefaultValue.TextVisible;
+        private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private float gradientAngle;
+        private LinearGradientBrush gradientBrush;
+        private float[] gradientPosition = { 0, 1 / 2f, 1 };
         private Color menuItemHover = Settings.DefaultValue.Style.ItemHover(0);
         private Color menuItemNormal = Settings.DefaultValue.Style.BackgroundColor(0);
         private Color menuTextColor = Settings.DefaultValue.Style.ForeColor(0);
@@ -46,6 +64,7 @@
         private Color separatorShadowColor = Settings.DefaultValue.Style.ShadowColor;
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
         private int startIndex;
+        private Point startPoint;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
@@ -89,7 +108,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor
+        public Color[] BackgroundColor
         {
             get
             {
@@ -248,7 +267,23 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ControlDisabled)]
-        public Color ControlDisabledColor
+        public Color[] ControlDisabledColor
+        {
+            get
+            {
+                return controlDisabledColor;
+            }
+
+            set
+            {
+                controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
+        public Color[] DisabledColor
         {
             get
             {
@@ -291,6 +326,38 @@
             set
             {
                 dropDownButtonsVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientAngle
+        {
+            get
+            {
+                return gradientAngle;
+            }
+
+            set
+            {
+                gradientAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientPosition
+        {
+            get
+            {
+                return gradientPosition;
+            }
+
+            set
+            {
+                gradientPosition = value;
                 Invalidate();
             }
         }
@@ -519,10 +586,12 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            Color controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
+            var controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
+
+            gradientBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientPosition, gradientAngle, startPoint, endPoint);
 
             // Draw the background
-            graphics.FillPath(new SolidBrush(controlCheckTemp), controlGraphicsPath);
+            graphics.FillPath(gradientBrush, controlGraphicsPath);
 
             // Create border
             if (borderVisible)
@@ -599,6 +668,9 @@
 
         private void UpdateLocationPoints()
         {
+            startPoint = new Point(ClientRectangle.Width, 0);
+            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+
             // Update paths
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
