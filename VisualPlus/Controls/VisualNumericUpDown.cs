@@ -40,6 +40,13 @@
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
 
+        private Color[] buttonColor =
+        {
+            Settings.DefaultValue.Style.ButtonNormalColor,
+            ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
+            Settings.DefaultValue.Style.ButtonNormalColor
+        };
+
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 19;
@@ -64,8 +71,11 @@
         private int yValue;
         private Point startPoint;
         private Point endPoint;
+        private Point buttonStartPoint;
+        private Point buttonEndPoint;
         private float gradientAngle;
         private LinearGradientBrush gradientBrush;
+        private LinearGradientBrush gradientBrush2;
         private float[] gradientPosition = { 0, 1 / 2f, 1 };
 
         #endregion
@@ -231,6 +241,22 @@
             set
             {
                 borderVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.NormalColor)]
+        public Color[] ButtonColor
+        {
+            get
+            {
+                return buttonColor;
+            }
+
+            set
+            {
+                buttonColor = value;
                 Invalidate();
             }
         }
@@ -584,16 +610,19 @@
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
             var controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
+            var controlCheckTemp2 = Enabled ? buttonColor : controlDisabledColor;
 
             graphics.SetClip(controlGraphicsPath);
 
+            // gradients
             gradientBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientPosition, gradientAngle, startPoint, endPoint);
+            gradientBrush2 = GDI.CreateGradientBrush(controlCheckTemp2, gradientPosition, gradientAngle, buttonStartPoint, buttonEndPoint);
 
             // Draw background
             graphics.FillPath(gradientBrush, controlGraphicsPath);
 
             // Buttons background
-            graphics.FillPath(gradientBrush, buttonPath);
+            graphics.FillPath(gradientBrush2, buttonPath);
 
             // Setup buttons border
             if (borderVisible)
@@ -621,10 +650,10 @@
             Rectangle textboxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
 
             StringFormat stringFormat = new StringFormat
-                {
-                    // Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
+            {
+                // Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
 
             graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(foreColor), textboxRectangle, stringFormat);
         }
@@ -645,6 +674,9 @@
         {
             startPoint = new Point(ClientRectangle.Width, 0);
             endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+
+            buttonStartPoint = new Point(ClientRectangle.Width, 0);
+            buttonEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
 
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
