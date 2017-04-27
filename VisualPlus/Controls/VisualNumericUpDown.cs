@@ -25,18 +25,32 @@
         #region Variables
 
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+
+        private Color[] backgroundColor =
+        {
+            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
+            Settings.DefaultValue.Style.BackgroundColor(0),
+            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+        };
+
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
         private int borderRounding = Settings.DefaultValue.BorderRounding;
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 19;
-        private Color controlDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
+
+        private Color[] controlDisabledColor =
+        {
+            ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+            Settings.DefaultValue.Style.ControlDisabled,
+            ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
+        };
+
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
@@ -48,6 +62,11 @@
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private int xValue;
         private int yValue;
+        private Point startPoint;
+        private Point endPoint;
+        private float gradientAngle;
+        private LinearGradientBrush gradientBrush;
+        private float[] gradientPosition = { 0, 1 / 2f, 1 };
 
         #endregion
 
@@ -75,7 +94,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor
+        public Color[] BackgroundColor
         {
             get
             {
@@ -235,7 +254,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ControlDisabled)]
-        public Color ControlDisabledColor
+        public Color[] ControlDisabledColor
         {
             get
             {
@@ -249,9 +268,41 @@
             }
         }
 
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientAngle
+        {
+            get
+            {
+                return gradientAngle;
+            }
+
+            set
+            {
+                gradientAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientPosition
+        {
+            get
+            {
+                return gradientPosition;
+            }
+
+            set
+            {
+                gradientPosition = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color InputField
+        public Color[] InputField
         {
             get
             {
@@ -532,15 +583,17 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            Color controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
+            var controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
 
             graphics.SetClip(controlGraphicsPath);
 
+            gradientBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientPosition, gradientAngle, startPoint, endPoint);
+
             // Draw background
-            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
+            graphics.FillPath(gradientBrush, controlGraphicsPath);
 
             // Buttons background
-            graphics.FillPath(new SolidBrush(controlCheckTemp), buttonPath);
+            graphics.FillPath(gradientBrush, buttonPath);
 
             // Setup buttons border
             if (borderVisible)
@@ -590,6 +643,9 @@
 
         private void UpdateLocationPoints()
         {
+            startPoint = new Point(ClientRectangle.Width, 0);
+            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
