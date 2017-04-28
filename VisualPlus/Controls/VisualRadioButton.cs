@@ -19,7 +19,7 @@
     /// <summary>The visual radio button.</summary>
     [ToolboxBitmap(typeof(RadioButton))]
     [Designer(VSDesignerBinding.VisualRadioButton)]
-    public class VisualRadioButton : RadioButton
+    public sealed class VisualRadioButton : RadioButton
     {
         #region Variables
 
@@ -56,6 +56,7 @@
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Width = 132;
             UpdateStyles();
+            Cursor = Cursors.Hand;
         }
 
         #endregion
@@ -264,12 +265,6 @@
             base.OnMouseEnter(e);
             controlState = ControlState.Hover;
             Invalidate();
-        }
-
-        protected override void OnMouseHover(EventArgs e)
-        {
-            base.OnMouseHover(e);
-            Cursor = Cursors.Hand;
         }
 
         protected override void OnMouseLeave(EventArgs e)

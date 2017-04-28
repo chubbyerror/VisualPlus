@@ -83,6 +83,7 @@
                 true);
 
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Cursor = Cursors.Hand;
 
             // Setup effects animation
             effectsManager = new VFXManager
@@ -461,7 +462,6 @@
         protected override void OnMouseHover(EventArgs e)
         {
             base.OnMouseHover(e);
-            Cursor = Cursors.Hand;
             controlState = ControlState.Hover;
             Invalidate();
         }
