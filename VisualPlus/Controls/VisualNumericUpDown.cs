@@ -69,8 +69,8 @@
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private int xValue;
         private int yValue;
-        private Point backroundStartPoint;
-        private Point backroundEndPoint;
+        private Point backgroundStartPoint;
+        private Point backgroundEndPoint;
         private Point buttonStartPoint;
         private Point buttonEndPoint;
         private float gradientBackroundAngle;
@@ -649,7 +649,7 @@
             graphics.SetClip(controlGraphicsPath);
 
             // gradients
-            gradientBackroundBrush = GDI.CreateGradientBrush(controlBackroundCheckTemp, gradientBackroundPosition, gradientBackroundAngle, backroundStartPoint, backroundEndPoint);
+            gradientBackroundBrush = GDI.CreateGradientBrush(controlBackroundCheckTemp, gradientBackroundPosition, gradientBackroundAngle, backgroundStartPoint, backgroundEndPoint);
             gradientButtonBrush = GDI.CreateGradientBrush(controlButtonCheckTemp, gradientButtonPosition, gradientButtonAngle, buttonStartPoint, buttonEndPoint);
 
             // Draw background
@@ -706,8 +706,8 @@
 
         private void UpdateLocationPoints()
         {
-            backroundStartPoint = new Point(ClientRectangle.Width, 0);
-            backroundEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+            backgroundStartPoint = new Point(ClientRectangle.Width, 0);
+            backgroundEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
 
             buttonStartPoint = new Point(ClientRectangle.Width, 0);
             buttonEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
