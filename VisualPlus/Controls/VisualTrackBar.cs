@@ -135,7 +135,7 @@
             UpdateStyles();
             AutoSize = false;
             Size = new Size(200, 80);
-            MinimumSize = new Size(25, 25);
+            MinimumSize = new Size(10, 10);
         }
 
         public enum ValueDivisor
@@ -1328,7 +1328,8 @@
                 // Setup track bar
                 if (TickStyle == TickStyle.None)
                 {
-                    trackBarLocation = new Point(0, indentHeight + buttonSize.Height / 2);
+                    trackBarLocation = new Point(0, indentHeight);
+                    Size = new Size(ClientRectangle.Width, indentHeight);
                 }
                 else
                 {
@@ -1384,7 +1385,8 @@
                 // Setup track bar
                 if (TickStyle == TickStyle.None)
                 {
-                    trackBarLocation = new Point(indentWidth + buttonSize.Width / 2, indentHeight);
+                    trackBarLocation = new Point(indentWidth, indentHeight);
+                    Size = new Size(indentWidth, ClientRectangle.Height);
                 }
                 else
                 {
@@ -1443,7 +1445,7 @@
             }
             else
             {
-                trackLocation = new Point(indentWidth + textAreaSize.Width + tickHeight + barTickSpacing, barRectangle.Top);
+                trackLocation = new Point(indentWidth, barRectangle.Top);
                 trackSize = new Size(barRectangle.Width, barRectangle.Height);
 
                 // Gradient track bar positions
