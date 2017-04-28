@@ -25,8 +25,14 @@
         #region Variables
 
         private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
-        private static Color progressColor1 = Settings.DefaultValue.Style.ProgressColor;
-        private static int progressRotation;
+
+        private static Color[] progressColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor),
+                Settings.DefaultValue.Style.ProgressColor,
+                ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor)
+            };
+
         private static Orientation trackBarType = Orientation.Horizontal;
         private static Rectangle trackerRectangle = Rectangle.Empty;
 
@@ -71,12 +77,16 @@
         private ValueDivisor dividedValue = ValueDivisor.By1;
         private Point endButtonPoint;
         private Point endPoint;
+        private Point endProgressPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private float gradientBackgroundAngle = 90;
         private float[] gradientBackgroundPosition = { 0, 1 / 2f, 1 };
         private LinearGradientBrush gradientBrush;
         private float gradientButtonAngle;
         private float[] gradientPosition = { 0, 1 / 2f, 1 };
+        private float gradientProgressAngle = 90;
+        private LinearGradientBrush gradientProgressBrush;
+        private float[] gradientProgressPosition = { 0, 1 / 2f, 1 };
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
@@ -87,13 +97,13 @@
         private bool lineTicksVisible = Settings.DefaultValue.TextVisible;
         private float mouseStartPos = -1;
         private string prefix;
-        private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
         private bool progressFilling;
         private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
         private Point startButtonPoint;
         private Point startPoint;
+        private Point startProgressPoint;
         private string suffix;
         private Size textAreaSize;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
@@ -449,6 +459,38 @@
             }
         }
 
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientProgressAngle
+        {
+            get
+            {
+                return gradientProgressAngle;
+            }
+
+            set
+            {
+                gradientProgressAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientProgressPosition
+        {
+            get
+            {
+                return gradientProgressPosition;
+            }
+
+            set
+            {
+                gradientProgressPosition = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color HatchBackColor
@@ -633,32 +675,16 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color ProgressColor1
+        public Color[] ProgressColor
         {
             get
             {
-                return progressColor1;
+                return progressColor;
             }
 
             set
             {
-                progressColor1 = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color ProgressColor2
-        {
-            get
-            {
-                return progressColor2;
-            }
-
-            set
-            {
-                progressColor2 = value;
+                progressColor = value;
                 Invalidate();
             }
         }
@@ -1496,7 +1522,6 @@
                         // Draws the progress to the middle of the button
                         barProgress = buttonRectangle.X + buttonRectangle.Width / 2;
 
-                        progressRotation = 0;
                         progressLocation = new Point(0, 0);
                         progressSize = new Size(barProgress, Height);
 
@@ -1520,7 +1545,6 @@
                         // Draws the progress to the middle of the button
                         barProgress = buttonRectangle.Y + buttonRectangle.Height / 2;
 
-                        progressRotation = -90;
                         progressLocation = new Point(0, barProgress);
 
                         if (Value == Minimum && progressFilling)
@@ -1544,6 +1568,9 @@
             // Clip to the track bar
             graphics.SetClip(trackBarPath);
 
+            startProgressPoint = new Point(ClientRectangle.Width, 0);
+            endProgressPoint = new Point(ClientRectangle.Width, ClientRectangle.Width);
+
             // Progress
             if (barProgress > 1)
             {
@@ -1551,12 +1578,13 @@
                 if (progressColorStyle == BrushType.Gradient)
                 {
                     // Draw gradient progress
-                    graphics.FillPath(new LinearGradientBrush(progressRectangle, progressColor1, progressColor2, progressRotation), progressPath);
+                    gradientProgressBrush = GDI.CreateGradientBrush(progressColor, gradientProgressPosition, gradientProgressAngle, startProgressPoint, endProgressPoint);
+                    graphics.FillPath(gradientProgressBrush, progressPath);
                 }
                 else
                 {
                     // Solid color progress
-                    graphics.FillPath(new SolidBrush(progressColor1), progressPath);
+                    graphics.FillPath(new SolidBrush(progressColor[0]), progressPath);
                 }
 
                 // Draw hatch
