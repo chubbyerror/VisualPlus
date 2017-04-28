@@ -69,12 +69,12 @@
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private int xValue;
         private int yValue;
-        private Point startPoint;
-        private Point endPoint;
+        private Point backroundStartPoint;
+        private Point backroundEndPoint;
         private Point buttonStartPoint;
         private Point buttonEndPoint;
         private float gradientAngle;
-        private LinearGradientBrush gradientBrush;
+        private LinearGradientBrush gradientBackroundBrush;
         private LinearGradientBrush gradientButtonBrush;
         private float[] gradientPosition = { 0, 1 / 2f, 1 };
 
@@ -609,17 +609,17 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            var controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
+            var controlBackroundCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
             var controlButtonCheckTemp = Enabled ? buttonColor : controlDisabledColor;
 
             graphics.SetClip(controlGraphicsPath);
 
             // gradients
-            gradientBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientPosition, gradientAngle, startPoint, endPoint);
+            gradientBackroundBrush = GDI.CreateGradientBrush(controlBackroundCheckTemp, gradientPosition, gradientAngle, backroundStartPoint, backroundEndPoint);
             gradientButtonBrush = GDI.CreateGradientBrush(controlButtonCheckTemp, gradientPosition, gradientAngle, buttonStartPoint, buttonEndPoint);
 
             // Draw background
-            graphics.FillPath(gradientBrush, controlGraphicsPath);
+            graphics.FillPath(gradientBackroundBrush, controlGraphicsPath);
 
             // Buttons background
             graphics.FillPath(gradientButtonBrush, buttonPath);
@@ -672,8 +672,8 @@
 
         private void UpdateLocationPoints()
         {
-            startPoint = new Point(ClientRectangle.Width, 0);
-            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+            backroundStartPoint = new Point(ClientRectangle.Width, 0);
+            backroundEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
 
             buttonStartPoint = new Point(ClientRectangle.Width, 0);
             buttonEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
