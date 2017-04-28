@@ -75,7 +75,7 @@
         private Point buttonEndPoint;
         private float gradientAngle;
         private LinearGradientBrush gradientBrush;
-        private LinearGradientBrush gradientBrush2;
+        private LinearGradientBrush gradientButtonBrush;
         private float[] gradientPosition = { 0, 1 / 2f, 1 };
 
         #endregion
@@ -610,19 +610,19 @@
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
             var controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
-            var controlCheckTemp2 = Enabled ? buttonColor : controlDisabledColor;
+            var controlButtonCheckTemp = Enabled ? buttonColor : controlDisabledColor;
 
             graphics.SetClip(controlGraphicsPath);
 
             // gradients
             gradientBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientPosition, gradientAngle, startPoint, endPoint);
-            gradientBrush2 = GDI.CreateGradientBrush(controlCheckTemp2, gradientPosition, gradientAngle, buttonStartPoint, buttonEndPoint);
+            gradientButtonBrush = GDI.CreateGradientBrush(controlButtonCheckTemp, gradientPosition, gradientAngle, buttonStartPoint, buttonEndPoint);
 
             // Draw background
             graphics.FillPath(gradientBrush, controlGraphicsPath);
 
             // Buttons background
-            graphics.FillPath(gradientBrush2, buttonPath);
+            graphics.FillPath(gradientButtonBrush, buttonPath);
 
             // Setup buttons border
             if (borderVisible)
