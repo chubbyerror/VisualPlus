@@ -26,34 +26,28 @@
         #region Variables
 
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
-
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
         private StringAlignment lineAlignment = StringAlignment.Near;
         private Point mouseLocation;
+        private TabAlignment selectorAlignment = TabAlignment.Top;
+        private int selectorThickness = 4;
         private bool selectorVisible;
         private Color separator = Settings.DefaultValue.Style.TabSelected;
-
         private int separatorSpacing = 2;
         private float separatorThickness = 2F;
-
         private bool separatorVisible;
         private Color tabHover = Settings.DefaultValue.Style.TabHover;
         private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
         private Color tabNormal = Settings.DefaultValue.Style.TabNormal;
         private Color tabSelected = Settings.DefaultValue.Style.TabSelected;
         private Color tabSelector = Settings.DefaultValue.Style.StyleColor;
-
         private StringAlignment textAlignment = StringAlignment.Center;
-
-        // private Color textDisabled = StylesManager.DefaultValue.Style.TextDisabled;
         private Color textNormal = Settings.DefaultValue.Style.TabTextNormal;
-
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color textSelected = Settings.DefaultValue.Style.TabTextSelected;
 
@@ -87,22 +81,6 @@
         #endregion
 
         #region Properties
-
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
-        public float SeparatorThickness
-        {
-            get
-            {
-                return separatorThickness;
-            }
-
-            set
-            {
-                separatorThickness = value;
-                Invalidate();
-            }
-        }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -174,22 +152,6 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
-        public int SeparatorSpacing
-        {
-            get
-            {
-                return separatorSpacing;
-            }
-
-            set
-            {
-                separatorSpacing = value;
-                Invalidate();
-            }
-        }
-
         [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.BorderThickness)]
@@ -243,8 +205,40 @@
             }
         }
 
-        [DefaultValue(false)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Alignment)]
+        public TabAlignment SelectorAlignment
+        {
+            get
+            {
+                return selectorAlignment;
+            }
+
+            set
+            {
+                selectorAlignment = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentSize)]
+        public int SelectorThickness
+        {
+            get
+            {
+                return selectorThickness;
+            }
+
+            set
+            {
+                selectorThickness = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
         public bool SelectorVisible
         {
             get
@@ -271,6 +265,38 @@
             set
             {
                 separator = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int SeparatorSpacing
+        {
+            get
+            {
+                return separatorSpacing;
+            }
+
+            set
+            {
+                separatorSpacing = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public float SeparatorThickness
+        {
+            get
+            {
+                return separatorThickness;
+            }
+
+            set
+            {
+                separatorThickness = value;
                 Invalidate();
             }
         }
@@ -546,22 +572,17 @@
                     textRect = new Rectangle(tabRect.Left, tabRect.Top, tabRect.Width, tabRect.Height);
                 }
 
-                Rectangle tabHighlighter = new Rectangle(
-                    new Point(
-                        GetTabRect(tabIndex).X,
-                        GetTabRect(tabIndex).Y),
-                    new Size(
-                        4,
-                        tabRect.Height));
+                // Draws the TabSelector
+                Rectangle tabHighlighter = GDI.ApplyAnchor(SelectorAlignment, GetTabRect(tabIndex), selectorThickness);
 
                 if (tabIndex == SelectedIndex)
                 {
                     // Draw selected tab
                     graphics.FillRectangle(new SolidBrush(tabSelected), tabRect);
 
+                    // Draw tab selector
                     if (selectorVisible)
                     {
-                        // Tab Selector
                         graphics.FillRectangle(new SolidBrush(tabSelector), tabHighlighter);
                     }
 
@@ -605,9 +626,9 @@
                         // Draw hover background
                         graphics.FillRectangle(new SolidBrush(tabHover), tabRect);
 
+                        // Draw tab selector
                         if (selectorVisible)
                         {
-                            // Draw hover separator
                             graphics.FillRectangle(new SolidBrush(tabSelector), tabHighlighter);
                         }
 
@@ -678,7 +699,9 @@
                     }
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
             }
         }
 

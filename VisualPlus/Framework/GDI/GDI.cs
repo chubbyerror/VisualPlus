@@ -22,6 +22,54 @@
 
         #region Events
 
+        /// <summary>Anchors the rectangle to an anchored alignment of the base rectangle.</summary>
+        /// <param name="anchorStyle">Alignment.</param>
+        /// <param name="baseRectangle">Base rectangle.</param>
+        /// <param name="anchorWidth">Anchor width.</param>
+        /// <returns>Anchored rectangle.</returns>
+        public static Rectangle ApplyAnchor(TabAlignment anchorStyle, Rectangle baseRectangle, int anchorWidth)
+        {
+            Point anchoredLocation;
+            Size anchoredSize;
+
+            switch (anchorStyle)
+            {
+                case TabAlignment.Top:
+                    {
+                        anchoredLocation = new Point(baseRectangle.X, baseRectangle.Y);
+                        anchoredSize = new Size(baseRectangle.Width, anchorWidth);
+                        break;
+                    }
+
+                case TabAlignment.Bottom:
+                    {
+                        anchoredLocation = new Point(baseRectangle.X, baseRectangle.Bottom - anchorWidth);
+                        anchoredSize = new Size(baseRectangle.Width, anchorWidth);
+                        break;
+                    }
+
+                case TabAlignment.Left:
+                    {
+                        anchoredLocation = new Point(baseRectangle.X, baseRectangle.Y);
+                        anchoredSize = new Size(anchorWidth, baseRectangle.Height);
+                        break;
+                    }
+
+                case TabAlignment.Right:
+                    {
+                        anchoredLocation = new Point(baseRectangle.Right - anchorWidth, baseRectangle.Y);
+                        anchoredSize = new Size(anchorWidth, baseRectangle.Height);
+                        break;
+                    }
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(anchorStyle), anchorStyle, null);
+            }
+
+            Rectangle anchoredRectangle = new Rectangle(anchoredLocation, anchoredSize);
+            return anchoredRectangle;
+        }
+
         /// <summary>Draws the text image relation.</summary>
         /// <param name="relation">The relation type.</param>
         /// <param name="imageRectangle">The image rectangle.</param>
