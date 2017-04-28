@@ -27,11 +27,14 @@
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
 
         private Color[] backgroundColor =
-        {
-            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-            Settings.DefaultValue.Style.BackgroundColor(0),
-            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
-        };
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
+                Settings.DefaultValue.Style.BackgroundColor(0),
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+            };
+
+        private Point backgroundEndPoint;
+        private Point backgroundStartPoint;
 
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -41,26 +44,35 @@
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
 
         private Color[] buttonColor =
-        {
-            Settings.DefaultValue.Style.ButtonNormalColor,
-            ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
-            Settings.DefaultValue.Style.ButtonNormalColor
-        };
+            {
+                Settings.DefaultValue.Style.ButtonNormalColor,
+                ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
+                Settings.DefaultValue.Style.ButtonNormalColor
+            };
+
+        private Point buttonEndPoint;
 
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
+        private Point buttonStartPoint;
         private int buttonWidth = 19;
 
         private Color[] controlDisabledColor =
-        {
-            ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-            Settings.DefaultValue.Style.ControlDisabled,
-            ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
-        };
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+                Settings.DefaultValue.Style.ControlDisabled,
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
+            };
 
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private float gradientBackroundAngle;
+        private LinearGradientBrush gradientBackroundBrush;
+        private float[] gradientBackroundPosition = { 0, 1 / 2f, 1 };
+        private float gradientButtonAngle;
+        private LinearGradientBrush gradientButtonBrush;
+        private float[] gradientButtonPosition = { 0, 1 / 2f, 1 };
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
@@ -69,16 +81,6 @@
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private int xValue;
         private int yValue;
-        private Point backgroundStartPoint;
-        private Point backgroundEndPoint;
-        private Point buttonStartPoint;
-        private Point buttonEndPoint;
-        private float gradientBackroundAngle;
-        private float[] gradientBackroundPosition = { 0, 1 / 2f, 1 };
-        private float gradientButtonAngle;
-        private float[] gradientButtonPosition = { 0, 1 / 2f, 1 };
-        private LinearGradientBrush gradientBackroundBrush;
-        private LinearGradientBrush gradientButtonBrush;
 
         #endregion
 
@@ -356,22 +358,6 @@
             set
             {
                 gradientButtonPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] InputField
-        {
-            get
-            {
-                return controlDisabledColor;
-            }
-
-            set
-            {
-                controlDisabledColor = value;
                 Invalidate();
             }
         }
@@ -684,10 +670,10 @@
             Rectangle textboxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
 
             StringFormat stringFormat = new StringFormat
-            {
-                // Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
+                {
+                    // Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
 
             graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(foreColor), textboxRectangle, stringFormat);
         }
