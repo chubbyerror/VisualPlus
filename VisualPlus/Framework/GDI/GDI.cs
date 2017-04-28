@@ -389,45 +389,6 @@
             }
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="drawRectF"></param>
-        /// <param name="drawColor"></param>
-        /// <param name="orientation"></param>
-        public static void DrawTrackBarLine(Graphics g, RectangleF drawRectF, Color drawColor, Orientation orientation)
-        {
-            Color color1;
-            Color color2;
-            Color color3;
-            Color color4;
-            LinearGradientBrush gradientBrush;
-            ColorBlend colorBlend = new ColorBlend();
-
-            color1 = drawColor;
-            color2 = ControlPaint.Light(color1);
-            color3 = ControlPaint.Light(color2);
-            color4 = ControlPaint.Light(color3);
-
-            colorBlend.Colors = new[] { color1, color2, color3, color4 };
-            colorBlend.Positions = new[] { 0, 0.25f, 0.65f, 1 };
-
-            if (orientation == Orientation.Horizontal)
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
-                    new Point((int)drawRectF.Left, (int)drawRectF.Top + (int)drawRectF.Height), color1, color4);
-            }
-            else
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
-                    new Point((int)drawRectF.Left + (int)drawRectF.Width, (int)drawRectF.Top), color1, color4);
-            }
-
-            gradientBrush.InterpolationColors = colorBlend;
-
-            FillPill(gradientBrush, drawRectF, g);
-        }
-
         /// <summary>Fills the background with color.</summary>
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="rectangle">The rectangle.</param>
