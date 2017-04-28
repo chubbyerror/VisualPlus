@@ -107,6 +107,23 @@
             }
         }
 
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentSize)]
+        public Size BoxSize
+        {
+            get
+            {
+                return boxSize;
+            }
+
+            set
+            {
+                boxSize = value;
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
