@@ -41,9 +41,23 @@
         private Point boxLocation = new Point(2, 2);
         private Size boxSize = new Size(10, 10);
         private Point checkLocation = new Point(0, 0);
-        private Color checkMarkColor = Settings.DefaultValue.Style.StyleColor;
+
+        private Color[] checkMarkColor =
+        {
+            ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
+            Settings.DefaultValue.Style.StyleColor,
+            ControlPaint.Light(Settings.DefaultValue.Style.StyleColor)
+        };
+
         private Size checkSize = new Size(6, 6);
-        private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+
+        private Color[] controlDisabledColor =
+        {
+            ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
+            Settings.DefaultValue.Style.TextDisabled,
+            ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled)
+        };
+
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
@@ -53,6 +67,11 @@
         private float gradientBackgroundAngle;
         private LinearGradientBrush gradientBackgroundBrush;
         private float[] gradientBackgroundPosition = { 0, 1 / 2f, 1 };
+        private Point checkMarkStartPoint;
+        private Point checkMarkEndPoint;
+        private float gradientCheckMarkAngle;
+        private LinearGradientBrush gradientCheckMarkBrush;
+        private float[] gradientCheckMarkPosition = { 0, 1 / 2f, 1 };
 
         #endregion
 
@@ -197,7 +216,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color CheckMark
+        public Color[] CheckMark
         {
             get
             {
@@ -213,7 +232,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ControlDisabled)]
-        public Color ControlDisabledColorColor
+        public Color[] ControlDisabledColorColor
         {
             get
             {
@@ -255,6 +274,38 @@
             set
             {
                 gradientBackgroundPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientCheckMarkAngle
+        {
+            get
+            {
+                return gradientCheckMarkAngle;
+            }
+
+            set
+            {
+                gradientCheckMarkAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientCheckMarkPosition
+        {
+            get
+            {
+                return gradientCheckMarkPosition;
+            }
+
+            set
+            {
+                gradientCheckMarkPosition = value;
                 Invalidate();
             }
         }
@@ -345,8 +396,9 @@
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
             graphics.TextRenderingHint = textRendererHint;
 
-            // gradient
+            // gradients
             gradientBackgroundBrush = GDI.CreateGradientBrush(backgroundColor, gradientBackgroundPosition, gradientBackgroundAngle, backroundStartPoint, backroundEndPoint);
+            gradientCheckMarkBrush = GDI.CreateGradientBrush(checkMarkColor, gradientCheckMarkPosition, gradientCheckMarkAngle, checkMarkStartPoint, checkMarkEndPoint);
 
             // CheckMark background color
             graphics.FillPath(gradientBackgroundBrush, boxGraphicsPath);
@@ -359,12 +411,12 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            Color controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
+            var controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
 
             // Draw an ellipse inside the body
             if (Checked)
             {
-                graphics.FillEllipse(new SolidBrush(controlCheckTemp), new Rectangle(checkLocation, checkSize));
+                graphics.FillEllipse(gradientCheckMarkBrush, new Rectangle(checkLocation, checkSize));
             }
 
             // Draw the string specified in 'Text' property
@@ -412,6 +464,11 @@
             // points
             backroundStartPoint = new Point(box.Width, 0);
             backroundEndPoint = new Point(box.Width, box.Height);
+
+            checkMarkStartPoint = new Point(box.Width, 0);
+            checkMarkEndPoint = new Point(box.Width, box.Height);
+
+
         }
 
         #endregion
