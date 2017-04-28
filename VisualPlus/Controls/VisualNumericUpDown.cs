@@ -73,10 +73,12 @@
         private Point backroundEndPoint;
         private Point buttonStartPoint;
         private Point buttonEndPoint;
-        private float gradientAngle;
+        private float gradientBackroundAngle;
+        private float[] gradientBackroundPosition = { 0, 1 / 2f, 1 };
+        private float gradientButtonAngle;
+        private float[] gradientButtonPosition = { 0, 1 / 2f, 1 };
         private LinearGradientBrush gradientBackroundBrush;
         private LinearGradientBrush gradientButtonBrush;
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
 
         #endregion
 
@@ -296,32 +298,64 @@
 
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.Angle)]
-        public float GradientAngle
+        public float GradientBackroundAngle
         {
             get
             {
-                return gradientAngle;
+                return gradientBackroundAngle;
             }
 
             set
             {
-                gradientAngle = value;
+                gradientBackroundAngle = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
+        public float[] GradientBackroundPosition
         {
             get
             {
-                return gradientPosition;
+                return gradientBackroundPosition;
             }
 
             set
             {
-                gradientPosition = value;
+                gradientBackroundPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientButtonAngle
+        {
+            get
+            {
+                return gradientButtonAngle;
+            }
+
+            set
+            {
+                gradientButtonAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientButtonPosition
+        {
+            get
+            {
+                return gradientButtonPosition;
+            }
+
+            set
+            {
+                gradientButtonPosition = value;
                 Invalidate();
             }
         }
@@ -615,8 +649,8 @@
             graphics.SetClip(controlGraphicsPath);
 
             // gradients
-            gradientBackroundBrush = GDI.CreateGradientBrush(controlBackroundCheckTemp, gradientPosition, gradientAngle, backroundStartPoint, backroundEndPoint);
-            gradientButtonBrush = GDI.CreateGradientBrush(controlButtonCheckTemp, gradientPosition, gradientAngle, buttonStartPoint, buttonEndPoint);
+            gradientBackroundBrush = GDI.CreateGradientBrush(controlBackroundCheckTemp, gradientBackroundPosition, gradientBackroundAngle, backroundStartPoint, backroundEndPoint);
+            gradientButtonBrush = GDI.CreateGradientBrush(controlButtonCheckTemp, gradientButtonPosition, gradientButtonAngle, buttonStartPoint, buttonEndPoint);
 
             // Draw background
             graphics.FillPath(gradientBackroundBrush, controlGraphicsPath);
