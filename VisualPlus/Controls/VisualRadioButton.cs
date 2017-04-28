@@ -24,7 +24,14 @@
         #region Variables
 
         private const int Spacing = 2;
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
+
+        private Color[] backgroundColor =
+        {
+            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3)),
+            Settings.DefaultValue.Style.BackgroundColor(3),
+            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3))
+        };
+
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
@@ -41,6 +48,11 @@
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private Point backroundStartPoint;
+        private Point backroundEndPoint;
+        private float gradientBackgroundAngle;
+        private LinearGradientBrush gradientBackgroundBrush;
+        private float[] gradientBackgroundPosition = { 0, 1 / 2f, 1 };
 
         #endregion
 
@@ -65,7 +77,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor
+        public Color[] BackgroundColor
         {
             get
             {
@@ -198,6 +210,38 @@
             }
         }
 
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientBackroundAngle
+        {
+            get
+            {
+                return gradientBackgroundAngle;
+            }
+
+            set
+            {
+                gradientBackgroundAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientBackgroundPosition
+        {
+            get
+            {
+                return gradientBackgroundPosition;
+            }
+
+            set
+            {
+                gradientBackgroundPosition = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.TextColor)]
         public Color TextColor
@@ -284,8 +328,11 @@
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
             graphics.TextRenderingHint = textRendererHint;
 
+            // gradient
+            gradientBackgroundBrush = GDI.CreateGradientBrush(backgroundColor, gradientBackgroundPosition, gradientBackgroundAngle, backroundStartPoint, backroundEndPoint);
+
             // CheckMark background color
-            graphics.FillPath(new SolidBrush(backgroundColor), boxGraphicsPath);
+            graphics.FillPath(gradientBackgroundBrush, boxGraphicsPath);
 
             // Draw border
             if (borderVisible)
@@ -344,6 +391,10 @@
             check = check.AlignCenterX(box);
             check = check.AlignCenterY(box);
             checkLocation = new Point(check.X, check.Y);
+
+            // points
+            backroundStartPoint = new Point(box.Width, 0);
+            backroundEndPoint = new Point(box.Width, box.Height);
         }
 
         #endregion
