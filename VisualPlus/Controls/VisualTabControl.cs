@@ -41,7 +41,14 @@
         private int separatorSpacing = 2;
         private float separatorThickness = 2F;
         private bool separatorVisible;
-        private Color tabHover = Settings.DefaultValue.Style.TabHover;
+
+        private Color[] tabHover =
+        {
+            Settings.DefaultValue.Style.TabSelected,
+            ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
+            Settings.DefaultValue.Style.TabSelected
+        };
+
         private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
 
         private Color[] tabNormal =
@@ -55,8 +62,8 @@
         private Point selectedEndPoint;
         private Point normalStartPoint;
         private Point normalEndPoint;
-        private Point selectorStartPoint;
-        private Point selector;
+        private Point hoverStartPoint;
+        private Point hoverEndPoint;
 
         private Color[] tabSelected =
         {
@@ -65,6 +72,9 @@
             Settings.DefaultValue.Style.TabSelected
         };
 
+        private float gradientHoverAngle;
+        private LinearGradientBrush gradientHoverBrush;
+        private float[] gradientHoverPosition = { 0, 1 / 2f, 1 };
         private float gradientNormalAngle;
         private LinearGradientBrush gradientNormalBrush;
         private float[] gradientNormalPosition = { 0, 1 / 2f, 1 };
@@ -212,6 +222,38 @@
             set
             {
                 borderVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientHoverAngle
+        {
+            get
+            {
+                return gradientHoverAngle;
+            }
+
+            set
+            {
+                gradientHoverAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientHoverPosition
+        {
+            get
+            {
+                return gradientHoverPosition;
+            }
+
+            set
+            {
+                gradientHoverPosition = value;
                 Invalidate();
             }
         }
@@ -409,7 +451,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color TabHover
+        public Color[] TabHover
         {
             get
             {
@@ -636,6 +678,7 @@
             // gradients
             gradientSelectedBrush = GDI.CreateGradientBrush(tabSelected, gradientSelectedPosition, gradientSelectedAngle, selectedStartPoint, selectedEndPoint);
             gradientNormalBrush = GDI.CreateGradientBrush(tabNormal, gradientNormalPosition, gradientNormalAngle, normalStartPoint, normalEndPoint);
+            gradientHoverBrush = GDI.CreateGradientBrush(tabHover, gradientHoverPosition, gradientHoverAngle, hoverStartPoint, hoverEndPoint);
 
             // ------------------------------- >
             for (var tabIndex = 0; tabIndex <= TabCount - 1; tabIndex++)
@@ -722,7 +765,7 @@
                         Cursor = Cursors.Hand;
 
                         // Draw hover background
-                        graphics.FillRectangle(new SolidBrush(tabHover), tabRect);
+                        graphics.FillRectangle(gradientHoverBrush, tabRect);
 
                         // Draw tab selector
                         if (selectorVisible)
@@ -822,6 +865,9 @@
 
             normalStartPoint = new Point(ClientRectangle.Width, 0);
             normalEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+
+            hoverStartPoint = new Point(ClientRectangle.Width, 0);
+            hoverEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
         }
 
         #endregion
