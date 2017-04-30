@@ -23,6 +23,7 @@
         private Color lineColor = Settings.DefaultValue.Style.LineColor;
         private Orientation separatorOrientation = Orientation.Horizontal;
         private Color shadowColor = Settings.DefaultValue.Style.ShadowColor;
+        private bool shadowVisible;
 
         #endregion
 
@@ -113,6 +114,22 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool ShadowVisible
+        {
+            get
+            {
+                return shadowVisible;
+            }
+
+            set
+            {
+                shadowVisible = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region Events
@@ -157,7 +174,10 @@
             graphics.DrawLine(new Pen(lineColor), linePosition, lineSize);
 
             // Draw line shadow
-            graphics.DrawLine(new Pen(shadowColor), shadowPosition, shadowSize);
+            if (shadowVisible)
+            {
+                graphics.DrawLine(new Pen(shadowColor), shadowPosition, shadowSize);
+            }
         }
 
         protected override void OnResize(EventArgs e)
