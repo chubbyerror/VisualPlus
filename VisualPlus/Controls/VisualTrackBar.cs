@@ -96,7 +96,6 @@
         private bool leftButtonDown;
         private bool lineTicksVisible = Settings.DefaultValue.TextVisible;
         private float mouseStartPos = -1;
-        private string prefix;
         private BrushType progressColorStyle = BrushType.Gradient;
         private bool progressFilling;
         private bool progressValueVisible;
@@ -104,7 +103,6 @@
         private Point startButtonPoint;
         private Point startPoint;
         private Point startProgressPoint;
-        private string suffix;
         private Size textAreaSize;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private Font textFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
@@ -657,22 +655,6 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
-        public string Prefix
-        {
-            get
-            {
-                return prefix;
-            }
-
-            set
-            {
-                prefix = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color[] ProgressColor
@@ -752,22 +734,6 @@
             set
             {
                 progressVisible = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
-        public string Suffix
-        {
-            get
-            {
-                return suffix;
-            }
-
-            set
-            {
-                suffix = value;
                 Invalidate();
             }
         }
@@ -1205,12 +1171,12 @@
             if (progressValueVisible)
             {
                 // Get Height of Text Area
-                float textAreaSizeWidth = graphics.MeasureString(prefix + Maximum + suffix, textFont).Width;
-                float textAreaSizeHeight = graphics.MeasureString(prefix + Maximum + suffix, textFont).Height;
+                float textAreaSizeWidth = graphics.MeasureString(Maximum.ToString(), textFont).Width;
+                float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString(), textFont).Height;
                 var stringValue = (float)(Value / (double)dividedValue);
 
                 PointF newPointF = new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2);
-                graphics.DrawString(prefix + stringValue.ToString("0") + suffix, textFont, new SolidBrush(buttonTextColor), newPointF);
+                graphics.DrawString(stringValue.ToString("0"), textFont, new SolidBrush(buttonTextColor), newPointF);
             }
         }
 
