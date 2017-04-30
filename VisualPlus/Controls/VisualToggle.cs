@@ -568,7 +568,10 @@
             graphics.FillPath(gradientButtonBrush, buttonPath);
 
             // Button border
-            GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
+            if (borderVisible)
+            {
+                GDI.DrawBorderType(graphics, controlState, buttonPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
+            }
         }
 
         protected override void OnResize(EventArgs e)
