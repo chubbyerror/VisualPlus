@@ -44,7 +44,14 @@
         private BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+
+        private Color[] buttonColor =
+        {
+            ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
+            Settings.DefaultValue.Style.ButtonNormalColor,
+            ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor)
+        };
+
         private Rectangle buttonRectangle;
         private int buttonRounding = Settings.DefaultValue.BorderRounding;
         private BorderShape buttonShape = Settings.DefaultValue.BorderShape;
@@ -62,6 +69,11 @@
         private Point endPoint;
         private Point backgroundStartPoint;
         private Point backgroundEndPoint;
+        private Point buttonStartPoint;
+        private Point buttonEndPoint;
+        private float gradientButtonAngle;
+        private LinearGradientBrush gradientButtonBrush;
+        private float[] gradientButtonPosition = { 0, 1 / 2f, 1 };
         private float gradientBackgroundAngle;
         private LinearGradientBrush gradientBackgroundBrush;
         private float[] gradientBackgroundPosition = { 0, 1 / 2f, 1 };
@@ -256,7 +268,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color ButtonColor
+        public Color[] ButtonColor
         {
             get
             {
@@ -339,6 +351,38 @@
             set
             {
                 controlDisabledColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientButtonAngle
+        {
+            get
+            {
+                return gradientButtonAngle;
+            }
+
+            set
+            {
+                gradientButtonAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientButtonPosition
+        {
+            get
+            {
+                return gradientBackgroundPosition;
+            }
+
+            set
+            {
+                gradientButtonPosition = value;
                 Invalidate();
             }
         }
@@ -501,6 +545,7 @@
 
             // gradients
             gradientBackgroundBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientBackgroundPosition, gradientBackgroundAngle, backgroundStartPoint, backgroundEndPoint);
+            gradientButtonBrush = GDI.CreateGradientBrush(buttonColor, gradientButtonPosition, gradientButtonAngle, buttonStartPoint, buttonEndPoint);
 
             // Background color
             graphics.FillPath(gradientBackgroundBrush, controlGraphicsPath);
@@ -520,7 +565,7 @@
 
             // Draw button
             GraphicsPath buttonPath = GDI.GetBorderShape(buttonRectangle, buttonShape, buttonRounding);
-            graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
+            graphics.FillPath(gradientButtonBrush, buttonPath);
 
             // Button border
             GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
@@ -626,6 +671,9 @@
 
             backgroundStartPoint = new Point(ClientRectangle.Width, 0);
             backgroundEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+
+            buttonStartPoint = new Point(ClientRectangle.Width, 0);
+            buttonEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
 
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
