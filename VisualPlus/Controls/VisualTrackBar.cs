@@ -1237,7 +1237,7 @@
                 Point progressValueLocation = new Point();
                 if (buttonVisible)
                 {
-                    progressValueLocation = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - formattedProgressValue.Width / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - formattedProgressValue.Width / 2);
+                    progressValueLocation = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - formattedProgressValue.Width / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - formattedProgressValue.Height / 2);
                 }
                 else
                 {
