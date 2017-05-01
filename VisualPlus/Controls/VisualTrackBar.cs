@@ -80,6 +80,8 @@
         private Point endButtonPoint;
         private Point endPoint;
         private Point endProgressPoint;
+
+        private int fillingValue = 25;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private float gradientBackgroundAngle = 90;
         private float[] gradientBackgroundPosition = { 0, 1 / 2f, 1 };
@@ -412,6 +414,22 @@
             }
         }
 
+        [Category(Localize.Category.Data)]
+        [Description("Experiemental: Filling Value.")]
+        public int FillingValue
+        {
+            get
+            {
+                return fillingValue;
+            }
+
+            set
+            {
+                fillingValue = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.Angle)]
         public float GradientBackgroundAngle
@@ -722,7 +740,6 @@
             }
         }
 
-        [DefaultValue(true)]
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentVisible)]
         public bool ProgressFilling
@@ -1004,6 +1021,7 @@
             var offsetValue = 0;
             Point currentPoint = new Point(e.X, e.Y);
 
+            // TODO: Improve location accuracy
             if (trackerRectangle.Contains(currentPoint))
             {
                 if (!leftButtonDown)
@@ -1112,6 +1130,7 @@
             {
                 try
                 {
+                    // TODO: Improve location accuracy
                     switch (trackBarType)
                     {
                         case Orientation.Horizontal:
@@ -1126,10 +1145,7 @@
                                 }
                                 else
                                 {
-                                    offsetValue =
-                                        (int)
-                                        ((currentPoint.X - mouseStartPos - indentWidth) * (Maximum - Minimum) /
-                                         (Width - 2 * indentWidth - buttonSize.Width) + 0.5);
+                                    offsetValue = (int)((currentPoint.X - mouseStartPos - indentWidth) * (Maximum - Minimum) / (Width - 2 * indentWidth - buttonSize.Width) + 0.5);
                                 }
 
                                 break;
@@ -1147,10 +1163,7 @@
                                 }
                                 else
                                 {
-                                    offsetValue =
-                                        (int)
-                                        (((Height - currentPoint.Y + buttonSize.Height) / 2 - mouseStartPos - indentHeight) * (Maximum - Minimum) /
-                                         (Height - 2 * indentHeight) + 0.5);
+                                    offsetValue = (int)(((Height - currentPoint.Y + buttonSize.Height) / 2 - mouseStartPos - indentHeight) * (Maximum - Minimum) / (Height - 2 * indentHeight) + 0.5);
                                 }
 
                                 break;
@@ -1686,7 +1699,7 @@
 
                         if (Value == Maximum && progressFilling)
                         {
-                            progressSize = new Size(barProgress + textAreaSize.Width, Height);
+                            progressSize = new Size(barProgress + fillingValue, Height);
                         }
 
                         progressRectangle = new Rectangle(progressLocation, progressSize);
@@ -1703,12 +1716,12 @@
 
                         if (Value == Minimum && progressFilling)
                         {
-                            progressLocation = new Point(0, barProgress + textAreaSize.Height);
+                            progressLocation = new Point(0, barProgress + fillingValue);
                         }
 
                         if (Value == Maximum && progressFilling)
                         {
-                            progressLocation = new Point(0, barProgress + textAreaSize.Height - 26);
+                            progressLocation = new Point(0, barProgress - fillingValue);
                         }
 
                         progressSize = new Size(Width, Height + textAreaSize.Height);
