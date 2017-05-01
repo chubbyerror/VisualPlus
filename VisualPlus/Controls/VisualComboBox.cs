@@ -545,6 +545,20 @@
                     : new SolidBrush(menuItemNormal),
                 e.Bounds);
 
+            // Setup item
+            Size itemSize = new Size(e.Bounds.Width - borderThickness, e.Bounds.Height - borderThickness);
+            Point itemPoint = new Point(e.Bounds.X, e.Bounds.Y);
+            Rectangle itemBorderRectangle = new Rectangle(itemPoint, itemSize);
+            GraphicsPath itemBorderPath = new GraphicsPath();
+            itemBorderPath.AddRectangle(itemBorderRectangle);
+
+            // Draw item border
+            if (borderVisible)
+            {
+                GDI.DrawBorder(e.Graphics, itemBorderPath, borderThickness, borderColor);
+            }
+
+            // Draw item string
             if (e.Index != -1)
             {
                 e.Graphics.DrawString(GetItemText(Items[e.Index]), e.Font, new SolidBrush(menuTextColor), e.Bounds);
