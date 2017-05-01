@@ -43,6 +43,8 @@
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
             };
 
+        private int barThickness = 10;
+
         private int barTickSpacing = 8;
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -111,7 +113,6 @@
         private int tickHeight = 4;
         private GraphicsPath trackBarPath;
         private Rectangle trackBarRectangle;
-        private int barThickness = 10;
         private bool valueTicksVisible = Settings.DefaultValue.TextVisible;
         private Rectangle workingRectangle;
 
@@ -167,6 +168,22 @@
             set
             {
                 backgroundColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int BarThickness
+        {
+            get
+            {
+                return barThickness;
+            }
+
+            set
+            {
+                barThickness = value;
                 Invalidate();
             }
         }
@@ -834,22 +851,6 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
-        public int BarThickness
-        {
-            get
-            {
-                return barThickness;
-            }
-
-            set
-            {
-                barThickness = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.ValueDivisor)]
         public ValueDivisor ValueDivision
@@ -1312,17 +1313,17 @@
 
                     case TickStyle.BottomRight:
                         {
-                           if (buttonVisible)
+                            if (buttonVisible)
                             {
                                 trackBarLocation = new Point(0, indentHeight + buttonSize.Height / 2);
-                                Size = new Size(ClientRectangle.Width, indentHeight + barThickness + barTickSpacing + tickHeight + textAreaSize.Height + buttonSize.Height);
+                                Size = new Size(ClientRectangle.Width, indentHeight + barThickness + barTickSpacing + tickHeight + textAreaSize.Height + textAreaSize.Height / 2);
                             }
                             else
                             {
                                 trackBarLocation = new Point(0, indentHeight);
                                 Size = new Size(ClientRectangle.Width, indentHeight + barThickness + barTickSpacing + tickHeight + textAreaSize.Height);
                             }
-                            
+
                             break;
                         }
 
@@ -1344,7 +1345,7 @@
 
                     case TickStyle.Both:
                         {
-                            int totalHeight = indentHeight + textAreaSize.Height + tickHeight + barTickSpacing + barThickness + barTickSpacing + tickHeight + textAreaSize.Height + indentHeight + textAreaSize.Height / 2;
+                            int totalHeight = indentHeight + textAreaSize.Height + tickHeight + barTickSpacing + barThickness + barTickSpacing + tickHeight + textAreaSize.Height + textAreaSize.Height / 2;
 
                             trackBarLocation = new Point(0, indentHeight + textAreaSize.Height + tickHeight + barTickSpacing);
                             Size = new Size(ClientRectangle.Width, totalHeight);
@@ -1399,16 +1400,67 @@
                     VerticalStyle(graphics, workingRectangle, true);
                 }
 
-                // Setup track bar
-                //if (TickStyle == TickStyle.None)
-                //{
-                //    trackBarLocation = new Point(indentWidth, indentHeight);
-                //    Size = new Size(indentWidth, ClientRectangle.Height);
-                //}
-                //else
-                //{
-                //    trackBarLocation = new Point(currentUsedPos + buttonSize.Height / 2 - barThickness / 2, indentHeight + buttonSize.Height / 2);
-                //}
+                // Setups the location & sizing
+                switch (TickStyle)
+                {
+                    case TickStyle.TopLeft:
+                        {
+                            if (buttonVisible)
+                            {
+                                trackBarLocation = new Point(indentWidth + textAreaSize.Width + tickHeight + barTickSpacing, 0);
+                                Size = new Size(indentWidth + textAreaSize.Width + tickHeight + barTickSpacing + barThickness + buttonSize.Width / 2, ClientRectangle.Height);
+                            }
+                            else
+                            {
+                                trackBarLocation = new Point(indentWidth + textAreaSize.Width + tickHeight + barTickSpacing, 0);
+                                Size = new Size(indentWidth + textAreaSize.Width + tickHeight + barTickSpacing + barThickness, ClientRectangle.Height);
+                            }
+
+                            break;
+                        }
+
+                    case TickStyle.BottomRight:
+                        {
+                            if (buttonVisible)
+                            {
+                                trackBarLocation = new Point(indentWidth + buttonSize.Width / 2, 0);
+                                Size = new Size(indentWidth + barThickness + barTickSpacing + tickHeight + textAreaSize.Width + buttonSize.Width / 2, ClientRectangle.Height);
+                            }
+                            else
+                            {
+                                trackBarLocation = new Point(0, indentWidth);
+                                Size = new Size(indentWidth + barThickness + barTickSpacing + tickHeight + textAreaSize.Width, ClientRectangle.Height);
+                            }
+
+                            break;
+                        }
+
+                    case TickStyle.None:
+                        {
+                            if (buttonVisible)
+                            {
+                                trackBarLocation = new Point(indentWidth + buttonSize.Width / 2, indentHeight);
+                                Size = new Size(indentWidth + barThickness + buttonSize.Width, ClientRectangle.Height);
+                            }
+                            else
+                            {
+                                trackBarLocation = new Point(indentWidth, indentHeight);
+                                Size = new Size(indentWidth + barThickness, ClientRectangle.Height);
+                            }
+
+                            break;
+                        }
+
+                    case TickStyle.Both:
+                        {
+                            int totalWidth = indentWidth + textAreaSize.Width + tickHeight + barTickSpacing + barThickness + barTickSpacing + tickHeight + textAreaSize.Width;
+
+                            trackBarLocation = new Point(indentWidth + textAreaSize.Width + tickHeight + barTickSpacing, 0);
+                            Size = new Size(totalWidth, ClientRectangle.Height);
+
+                            break;
+                        }
+                }
 
                 trackBarSize = new Size(barThickness, ClientRectangle.Height - indentHeight);
                 trackBarRectangle = new Rectangle(trackBarLocation, trackBarSize);
@@ -1453,8 +1505,8 @@
             // Determine track size by orientation
             if (Orientation == Orientation.Horizontal)
             {
-                trackLocation = new Point(indentWidth + barRectangle.Left, barRectangle.Top);
-                trackSize = new Size(barRectangle.Left + barRectangle.Width - 1, barRectangle.Height);
+                trackLocation = new Point(indentWidth + barRectangle.Left, indentHeight + barRectangle.Top);
+                trackSize = new Size(barRectangle.Width, barRectangle.Height);
 
                 // Gradient track bar positions
                 startPoint = new Point(ClientRectangle.Width, 0);
@@ -1462,7 +1514,7 @@
             }
             else
             {
-                trackLocation = new Point(indentWidth, barRectangle.Top);
+                trackLocation = new Point(indentWidth + barRectangle.Left, indentHeight + barRectangle.Top);
                 trackSize = new Size(barRectangle.Width, barRectangle.Height);
 
                 // Gradient track bar positions
@@ -1803,7 +1855,7 @@
                 if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
                 {
                     // Retrieve tick barRectangle
-                    location = new Point(trackBarRectangle.X + trackBarRectangle.Width + barTickSpacing, workingRectangle.Top + textAreaSize.Height / 2);
+                    location = new Point(trackBarRectangle.Right + barTickSpacing, workingRectangle.Top + textAreaSize.Height / 2);
                     size = new Size(tickHeight, trackBarRectangle.Height - textAreaSize.Height);
                     tickRectangle = new Rectangle(location, size);
 
@@ -1839,7 +1891,7 @@
                 if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
                 {
                     // Retrieve text barRectangle
-                    location = new Point(trackBarRectangle.X + trackBarRectangle.Width + barTickSpacing + tickHeight, workingRectangle.Top + textAreaSize.Height / 2);
+                    location = new Point(trackBarRectangle.Right + barTickSpacing + tickHeight, workingRectangle.Top + textAreaSize.Height / 2);
                     size = new Size(textAreaSize.Width, workingRectangle.Height - textAreaSize.Height);
                     tickRectangle = new Rectangle(location, size);
 
