@@ -32,45 +32,6 @@
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
-        private StringAlignment lineAlignment = StringAlignment.Near;
-        private Point mouseLocation;
-        private TabAlignment selectorAlignment = TabAlignment.Top;
-        private int selectorThickness = 4;
-        private bool selectorVisible;
-        private Color separator = Settings.DefaultValue.Style.TabSelected;
-        private int separatorSpacing = 2;
-        private float separatorThickness = 2F;
-        private bool separatorVisible;
-
-        private Color[] tabHover =
-        {
-            Settings.DefaultValue.Style.TabSelected,
-            ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
-            Settings.DefaultValue.Style.TabSelected
-        };
-
-        private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
-
-        private Color[] tabNormal =
-        {
-            Settings.DefaultValue.Style.TabNormal,
-            ControlPaint.Light(Settings.DefaultValue.Style.TabNormal),
-            Settings.DefaultValue.Style.TabNormal
-        };
-
-        private Point selectedStartPoint;
-        private Point selectedEndPoint;
-        private Point normalStartPoint;
-        private Point normalEndPoint;
-        private Point hoverStartPoint;
-        private Point hoverEndPoint;
-
-        private Color[] tabSelected =
-        {
-            Settings.DefaultValue.Style.TabSelected,
-            ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
-            Settings.DefaultValue.Style.TabSelected
-        };
 
         private float gradientHoverAngle;
         private LinearGradientBrush gradientHoverBrush;
@@ -81,6 +42,48 @@
         private float gradientSelectedAngle;
         private LinearGradientBrush gradientSelectedBrush;
         private float[] gradientSelectedPosition = { 0, 1 / 2f, 1 };
+        private Point hoverEndPoint;
+        private Point hoverStartPoint;
+        private StringAlignment lineAlignment = StringAlignment.Near;
+        private Point mouseLocation;
+        private Point normalEndPoint;
+        private Point normalStartPoint;
+        private Point selectedEndPoint;
+
+        private Point selectedStartPoint;
+        private TabAlignment selectorAlignment = TabAlignment.Top;
+        private TabAlignment selectorAlignment2 = TabAlignment.Bottom;
+        private int selectorThickness = 4;
+        private bool selectorVisible;
+        private bool selectorVisible2;
+        private Color separator = Settings.DefaultValue.Style.TabSelected;
+        private int separatorSpacing = 2;
+        private float separatorThickness = 2F;
+        private bool separatorVisible;
+
+        private Color[] tabHover =
+            {
+                Settings.DefaultValue.Style.TabSelected,
+                ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
+                Settings.DefaultValue.Style.TabSelected
+            };
+
+        private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
+
+        private Color[] tabNormal =
+            {
+                Settings.DefaultValue.Style.TabNormal,
+                ControlPaint.Light(Settings.DefaultValue.Style.TabNormal),
+                Settings.DefaultValue.Style.TabNormal
+            };
+
+        private Color[] tabSelected =
+            {
+                Settings.DefaultValue.Style.TabSelected,
+                ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
+                Settings.DefaultValue.Style.TabSelected
+            };
+
         private Color tabSelector = Settings.DefaultValue.Style.StyleColor;
         private StringAlignment textAlignment = StringAlignment.Center;
         private Color textNormal = Settings.DefaultValue.Style.TabTextNormal;
@@ -354,6 +357,22 @@
         }
 
         [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Alignment)]
+        public TabAlignment SelectorAlignment2
+        {
+            get
+            {
+                return selectorAlignment2;
+            }
+
+            set
+            {
+                selectorAlignment2 = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentSize)]
         public int SelectorThickness
         {
@@ -381,6 +400,22 @@
             set
             {
                 selectorVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool SelectorVisible2
+        {
+            get
+            {
+                return selectorVisible2;
+            }
+
+            set
+            {
+                selectorVisible2 = value;
                 Invalidate();
             }
         }
@@ -669,7 +704,7 @@
             graphics.CompositingMode = CompositingMode.SourceOver;
 
             UpdateLocationPoints();
-            
+
             // Draw tab selector background body
             graphics.FillRectangle(new SolidBrush(tabMenu), new Rectangle(0, 0, Width, Height));
 
@@ -712,7 +747,8 @@
                 }
 
                 // Draws the TabSelector
-                Rectangle tabHighlighter = GDI.ApplyAnchor(SelectorAlignment, GetTabRect(tabIndex), selectorThickness);
+                Rectangle selectorRectangle = GDI.ApplyAnchor(selectorAlignment, GetTabRect(tabIndex), selectorThickness);
+                Rectangle selectorRectangle2 = GDI.ApplyAnchor(SelectorAlignment2, GetTabRect(tabIndex), selectorThickness);
 
                 if (tabIndex == SelectedIndex)
                 {
@@ -722,7 +758,12 @@
                     // Draw tab selector
                     if (selectorVisible)
                     {
-                        graphics.FillRectangle(new SolidBrush(tabSelector), tabHighlighter);
+                        graphics.FillRectangle(new SolidBrush(tabSelector), selectorRectangle);
+                    }
+
+                    if (selectorVisible2)
+                    {
+                        graphics.FillRectangle(new SolidBrush(tabSelector), selectorRectangle2);
                     }
 
                     // Draw border
@@ -734,10 +775,10 @@
                     }
 
                     StringFormat stringFormat = new StringFormat
-                    {
-                        Alignment = textAlignment,
-                        LineAlignment = lineAlignment
-                    };
+                        {
+                            Alignment = textAlignment,
+                            LineAlignment = lineAlignment
+                        };
 
                     // Draw selected tab text
                     graphics.DrawString(
@@ -768,7 +809,12 @@
                         // Draw tab selector
                         if (selectorVisible)
                         {
-                            graphics.FillRectangle(new SolidBrush(tabSelector), tabHighlighter);
+                            graphics.FillRectangle(new SolidBrush(tabSelector), selectorRectangle);
+                        }
+
+                        if (selectorVisible2)
+                        {
+                            graphics.FillRectangle(new SolidBrush(tabSelector), selectorRectangle2);
                         }
 
                         if (borderVisible)
@@ -780,10 +826,10 @@
                     }
 
                     StringFormat stringFormat = new StringFormat
-                    {
-                        Alignment = textAlignment,
-                        LineAlignment = lineAlignment
-                    };
+                        {
+                            Alignment = textAlignment,
+                            LineAlignment = lineAlignment
+                        };
 
                     graphics.DrawString(
                         TabPages[tabIndex].Text,
