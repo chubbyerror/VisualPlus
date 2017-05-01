@@ -98,6 +98,7 @@
         private bool leftButtonDown;
         private bool lineTicksVisible = Settings.DefaultValue.TextVisible;
         private float mouseStartPos = -1;
+        private string prefix;
         private BrushType progressColorStyle = BrushType.Gradient;
         private bool progressFilling;
         private bool progressValueVisible;
@@ -105,6 +106,7 @@
         private Point startButtonPoint;
         private Point startPoint;
         private Point startProgressPoint;
+        private string suffix;
         private Size textAreaSize;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private Font textFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
@@ -672,6 +674,22 @@
             }
         }
 
+        [Category(Localize.Category.Data)]
+        [Description(Localize.Description.TextVisible)]
+        public string Prefix
+        {
+            get
+            {
+                return prefix;
+            }
+
+            set
+            {
+                prefix = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color[] ProgressColor
@@ -751,6 +769,22 @@
             set
             {
                 progressVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Data)]
+        [Description(Localize.Description.TextVisible)]
+        public string Suffix
+        {
+            get
+            {
+                return suffix;
+            }
+
+            set
+            {
+                suffix = value;
                 Invalidate();
             }
         }
@@ -906,6 +940,16 @@
             }
 
             Invalidate();
+        }
+
+        /// <summary>Get's the formatted progress value.</summary>
+        /// <returns>Formatted progress value.</returns>
+        public string GetFormattedProgressValue()
+        {
+            var value = (float)(Value / (double)dividedValue);
+            string formattedString = $"{Prefix}{value}{Suffix}";
+
+            return formattedString;
         }
 
         /// <summary>Call the Increment() method to increase the value displayed by an integer you specify.</summary>
@@ -1171,13 +1215,14 @@
             // Step 4 - Draw progress value
             if (progressValueVisible)
             {
-                // Get Height of Text Area
-                float textAreaSizeWidth = graphics.MeasureString(Maximum.ToString(), textFont).Width;
-                float textAreaSizeHeight = graphics.MeasureString(Maximum.ToString(), textFont).Height;
-                var stringValue = (float)(Value / (double)dividedValue);
+                string value = GetFormattedProgressValue();
 
-                PointF newPointF = new PointF(buttonRectangle.X + buttonRectangle.Width / 2 - textAreaSizeWidth / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - textAreaSizeHeight / 2);
-                graphics.DrawString(stringValue.ToString("0"), textFont, new SolidBrush(buttonTextColor), newPointF);
+                // Size and Position setup
+                Size formattedProgressValue = new Size((int)graphics.MeasureString(Maximum.ToString(), textFont).Width, (int)graphics.MeasureString(Maximum.ToString(), textFont).Height);
+                Point progressValueLocation = new Point(buttonRectangle.X, buttonRectangle.Y);
+
+                // Draw the formatted progress value
+                graphics.DrawString(value, textFont, new SolidBrush(buttonTextColor), progressValueLocation);
             }
         }
 
@@ -1593,9 +1638,8 @@
         /// <param name="graphics">Graphics input.</param>
         private void DrawProgress(Graphics graphics)
         {
-            // Rectangle workingRect = Rectangle.Inflate(ClientRectangle, -indentWidth, -indentHeight);
             GraphicsPath progressPath = new GraphicsPath();
-            Rectangle progressRectangle = new Rectangle();
+            Rectangle progressRectangle;
             Point progressLocation;
             Size progressSize;
 
