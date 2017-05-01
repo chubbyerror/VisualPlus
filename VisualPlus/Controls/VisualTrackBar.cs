@@ -1217,9 +1217,32 @@
             {
                 string value = GetFormattedProgressValue();
 
-                // Size and Position setup
+                // Size
                 Size formattedProgressValue = new Size((int)graphics.MeasureString(Maximum.ToString(), textFont).Width, (int)graphics.MeasureString(Maximum.ToString(), textFont).Height);
-                Point progressValueLocation = new Point(buttonRectangle.X, buttonRectangle.Y);
+
+                // Position
+                Point progressValueLocation = new Point();
+                if (buttonVisible)
+                {
+                    progressValueLocation = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - formattedProgressValue.Width / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - formattedProgressValue.Width / 2);
+                }
+                else
+                {
+                    switch (Orientation)
+                    {
+                        case Orientation.Horizontal:
+                            {
+                                progressValueLocation = new Point(trackerRectangle.X, trackBarRectangle.Y + trackBarRectangle.Height / 2 - formattedProgressValue.Height / 2);
+                                break;
+                            }
+
+                        case Orientation.Vertical:
+                            {
+                                progressValueLocation = new Point(trackBarRectangle.X, trackerRectangle.Y);
+                                break;
+                            }
+                    }
+                }
 
                 // Draw the formatted progress value
                 graphics.DrawString(value, textFont, new SolidBrush(buttonTextColor), progressValueLocation);
