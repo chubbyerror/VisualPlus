@@ -52,6 +52,8 @@
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
             };
 
+        private int titleBoxHeight = 25;
+
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
         private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
@@ -335,6 +337,23 @@
             }
         }
 
+        [DefaultValue("25")]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int TitleBoxHeight
+        {
+            get
+            {
+                return titleBoxHeight;
+            }
+
+            set
+            {
+                titleBoxHeight = value;
+                Invalidate();
+            }
+        }
+
         [DefaultValue(Settings.DefaultValue.TitleBoxVisible)]
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.TitleBoxVisible)]
@@ -445,7 +464,7 @@
 
         private void UpdateLocationPoints()
         {
-            titleBoxRectangle = new Rectangle(0, 0, Width - 1, 25);
+            titleBoxRectangle = new Rectangle(0, 0, Width - 1, titleBoxHeight);
 
             // Determine type of border rounding to draw
             if (borderShape == BorderShape.Rounded)
