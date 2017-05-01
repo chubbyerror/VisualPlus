@@ -221,11 +221,11 @@
         /// <summary>Draws a border around the path.</summary>
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="borderPath">The border path.</param>
-        /// <param name="borderSize">The border size.</param>
+        /// <param name="borderThickness">The border size.</param>
         /// <param name="color">The color.</param>
-        public static void DrawBorder(Graphics graphics, GraphicsPath borderPath, float borderSize, Color color)
+        public static void DrawBorder(Graphics graphics, GraphicsPath borderPath, float borderThickness, Color color)
         {
-            Pen borderPen = new Pen(color, borderSize);
+            Pen borderPen = new Pen(color, borderThickness);
             graphics.DrawPath(borderPen, borderPath);
         }
 
@@ -233,20 +233,20 @@
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="controlState">The control state.</param>
         /// <param name="controlPath">The border path.</param>
-        /// <param name="borderSize">The border size.</param>
+        /// <param name="borderThickness">The border size.</param>
         /// <param name="borderColor">Normal border color.</param>
         /// <param name="borderHoverColor">Hover border color.</param>
         /// <param name="borderHoverVisible">Hover visible.</param>
-        public static void DrawBorderType(Graphics graphics, ControlState controlState, GraphicsPath controlPath, float borderSize, Color borderColor,
+        public static void DrawBorderType(Graphics graphics, ControlState controlState, GraphicsPath controlPath, float borderThickness, Color borderColor,
                                           Color borderHoverColor, bool borderHoverVisible)
         {
             if (controlState == ControlState.Hover && borderHoverVisible)
             {
-                DrawBorder(graphics, controlPath, borderSize, borderHoverColor);
+                DrawBorder(graphics, controlPath, borderThickness, borderHoverColor);
             }
             else
             {
-                DrawBorder(graphics, controlPath, borderSize, borderColor);
+                DrawBorder(graphics, controlPath, borderThickness, borderColor);
             }
         }
 
