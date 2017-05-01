@@ -668,10 +668,8 @@
             graphics.TextRenderingHint = textRendererHint;
             graphics.CompositingMode = CompositingMode.SourceOver;
 
-
             UpdateLocationPoints();
-
-
+            
             // Draw tab selector background body
             graphics.FillRectangle(new SolidBrush(tabMenu), new Rectangle(0, 0, Width, Height));
 
@@ -846,28 +844,16 @@
             }
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            UpdateLocationPoints();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
-        }
-
         private void UpdateLocationPoints()
         {
-            selectedStartPoint = new Point(ClientRectangle.Width, 0);
-            selectedEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+            selectedStartPoint = new Point(ItemSize.Width, 0);
+            selectedEndPoint = new Point(ItemSize.Width, ItemSize.Height);
 
-            normalStartPoint = new Point(ClientRectangle.Width, 0);
-            normalEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+            normalStartPoint = new Point(ItemSize.Width, 0);
+            normalEndPoint = new Point(ItemSize.Width, ItemSize.Height);
 
             hoverStartPoint = new Point(ClientRectangle.Width, 0);
-            hoverEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+            hoverEndPoint = new Point(ItemSize.Width, ItemSize.Height);
         }
 
         #endregion
