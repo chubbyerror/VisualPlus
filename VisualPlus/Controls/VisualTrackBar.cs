@@ -1231,7 +1231,7 @@
                 string value = GetFormattedProgressValue();
 
                 // Size
-                Size formattedProgressValue = new Size((int)graphics.MeasureString(Maximum.ToString(), textFont).Width, (int)graphics.MeasureString(Maximum.ToString(), textFont).Height);
+                Size formattedProgressValue = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
 
                 // Position
                 Point progressValueLocation = new Point();
@@ -1770,18 +1770,6 @@
             }
         }
 
-        /// <summary>Gets the size of the value barRectangle.</summary>
-        /// <param name="graphics">Graphics input.</param>
-        /// <returns>Returns text size.</returns>
-        private Size GetTextSize(Graphics graphics)
-        {
-            int width = Convert.ToInt32(graphics.MeasureString(Maximum.ToString(), textFont).Width);
-            int height = Convert.ToInt32(graphics.MeasureString(Maximum.ToString(), textFont).Height);
-            Size textSize = new Size(width, height);
-
-            return textSize;
-        }
-
         /// <summary>Configures horizontal style.</summary>
         /// <param name="graphics">Graphics input.</param>
         /// <param name="workingRectangle">Working barRectangle.</param>
@@ -1792,7 +1780,7 @@
             currentUsedPos = indentHeight;
             Point location;
             Size size;
-            textAreaSize = GetTextSize(graphics);
+            textAreaSize = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
 
             if (line)
             {
@@ -1911,7 +1899,7 @@
             currentUsedPos = indentWidth;
             Point location;
             Size size;
-            textAreaSize = GetTextSize(graphics);
+            textAreaSize = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
 
             if (line)
             {
