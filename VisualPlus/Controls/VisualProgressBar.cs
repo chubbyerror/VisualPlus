@@ -24,17 +24,28 @@
     {
         #region Variables
 
-        private static int backgroundRotation = 90;
         private static int bars = 5;
         private static int barSpacing = 10;
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
         private static ProgressBarTypes progressBarStyle = ProgressBarTypes.Horizontal;
-        private static Color progressColor1 = Settings.DefaultValue.Style.ProgressColor;
+
+        private static Color[] progressColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor),
+                Settings.DefaultValue.Style.ProgressColor,
+                ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor)
+            };
+
         private static int progressRotation;
-        private bool backColorGradient = true;
-        private Color backgroundColor1 = Settings.DefaultValue.Style.BackgroundColor(0);
-        private Color backgroundColor2 = Settings.DefaultValue.Style.BackgroundColor(1);
+
+        private Color[] backgroundColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
+                Settings.DefaultValue.Style.BackgroundColor(0),
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+            };
+
         private Point barLocation = new Point(0, 0);
         private Point barSize = new Point(15, 15);
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
@@ -44,7 +55,17 @@
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
+
+        private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+
+        private float gradientAngle;
+        private LinearGradientBrush gradientBrush;
+        private float[] gradientPosition = { 0, 1 / 2f, 1 };
+
+        private float gradientProgressAngle;
+        private LinearGradientBrush gradientProgressBrush;
+        private float[] gradientProgressPosition = { 0, 1 / 2f, 1 };
         private GraphicsPath graphicsDefaultBorderPath;
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private GraphicsPath hatchPath = new GraphicsPath();
@@ -52,9 +73,9 @@
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
         private bool percentageVisible;
-        private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
         private Font progressFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
+        private Point startPoint;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private StringAlignment valueAlignment = StringAlignment.Center;
 
@@ -99,64 +120,16 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor1
+        public Color[] BackgroundColor
         {
             get
             {
-                return backgroundColor1;
+                return backgroundColor;
             }
 
             set
             {
-                backgroundColor1 = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor2
-        {
-            get
-            {
-                return backgroundColor2;
-            }
-
-            set
-            {
-                backgroundColor2 = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(true)]
-        [Category(Localize.Category.Behavior)]
-        public bool BackgroundGradient
-        {
-            get
-            {
-                return backColorGradient;
-            }
-
-            set
-            {
-                backColorGradient = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.Rotation)]
-        public int BackgroundRotation
-        {
-            get
-            {
-                return backgroundRotation;
-            }
-
-            set
-            {
-                backgroundRotation = value;
+                backgroundColor = value;
                 Invalidate();
             }
         }
@@ -337,6 +310,70 @@
             }
         }
 
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientProgressAngle
+        {
+            get
+            {
+                return gradientProgressAngle;
+            }
+
+            set
+            {
+                gradientProgressAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientProgressPosition
+        {
+            get
+            {
+                return gradientProgressPosition;
+            }
+
+            set
+            {
+                gradientProgressPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientAngle
+        {
+            get
+            {
+                return gradientAngle;
+            }
+
+            set
+            {
+                gradientAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientPosition
+        {
+            get
+            {
+                return gradientPosition;
+            }
+
+            set
+            {
+                gradientPosition = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color HatchBackColor
@@ -454,32 +491,16 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color ProgressColor1
+        public Color[] ProgressColor
         {
             get
             {
-                return progressColor1;
+                return progressColor;
             }
 
             set
             {
-                progressColor1 = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color ProgressColor2
-        {
-            get
-            {
-                return progressColor2;
-            }
-
-            set
-            {
-                progressColor2 = value;
+                progressColor = value;
                 Invalidate();
             }
         }
@@ -598,6 +619,9 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            startPoint = new Point(ClientRectangle.Width, 0);
+            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+
             if (progressBarStyle == ProgressBarTypes.Horizontal || progressBarStyle == ProgressBarTypes.Vertical)
             {
                 // Draw default progress
@@ -715,28 +739,26 @@
             }
 
             // Draw background
-            GDI.FillBackground(
-                graphics,
-                ClientRectangle,
-                graphicsDefaultBorderPath,
-                backgroundColor1,
-                backgroundColor2,
-                backgroundRotation,
-                backColorGradient);
+            gradientBrush = GDI.CreateGradientBrush(backgroundColor, gradientPosition, gradientAngle, startPoint, endPoint);
+
+            // Draw the background
+            graphics.FillPath(gradientBrush, graphicsDefaultBorderPath);
 
             // Draw progress
             if (i1 > 1)
             {
+                gradientProgressBrush = GDI.CreateGradientBrush(progressColor, gradientProgressPosition, gradientProgressAngle, startPoint, endPoint);
+
                 // Draw progress
                 if (progressColorStyle == BrushType.Gradient)
                 {
                     // Draw gradient progress
-                    graphics.FillPath(new LinearGradientBrush(backgroundRect, progressColor1, progressColor2, progressRotation), progressPath);
+                    graphics.FillPath(gradientProgressBrush, progressPath);
                 }
                 else
                 {
                     // Solid color progress
-                    graphics.FillPath(new SolidBrush(progressColor1), progressPath);
+                    graphics.FillPath(new SolidBrush(progressColor[0]), progressPath);
                 }
 
                 hatchPath = progressPath;
@@ -859,25 +881,19 @@
                 // Draw shape
                 if (colored)
                 {
-                    GDI.FillBackground(
-                        graphics,
-                        ClientRectangle,
-                        barStyle,
-                        progressColor1,
-                        progressColor2,
-                        backgroundRotation,
-                        backColorGradient);
+                    // Draw progress
+                    gradientProgressBrush = GDI.CreateGradientBrush(progressColor, gradientProgressPosition, gradientProgressAngle, startPoint, endPoint);
+
+                    // Draw the background
+                    graphics.FillPath(gradientProgressBrush, barStyle);
                 }
                 else
                 {
-                    GDI.FillBackground(
-                        graphics,
-                        ClientRectangle,
-                        barStyle,
-                        backgroundColor1,
-                        backgroundColor2,
-                        backgroundRotation,
-                        backColorGradient);
+                    // Draw background
+                    gradientBrush = GDI.CreateGradientBrush(backgroundColor, gradientPosition, gradientAngle, startPoint, endPoint);
+
+                    // Draw the background
+                    graphics.FillPath(gradientBrush, barStyle);
                 }
 
                 // Draw border
