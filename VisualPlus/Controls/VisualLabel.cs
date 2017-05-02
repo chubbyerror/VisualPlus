@@ -10,6 +10,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
+    using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
     #endregion
@@ -23,8 +24,26 @@
 
         private const int ShadowDepth = 4;
         private const float ShadowSmooth = 2f;
-        private readonly Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+
+        private readonly Color[] textDisabledColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
+                Settings.DefaultValue.Style.TextDisabled,
+                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled)
+            };
+
+        private Point endPoint;
+
+        private Color[] foreColor =
+            {
+                Settings.DefaultValue.Style.ForeColor(0),
+                Settings.DefaultValue.Style.ForeColor(0),
+                Settings.DefaultValue.Style.ForeColor(0)
+            };
+
+        private float gradientAngle;
+        private LinearGradientBrush gradientBrush;
+        private float[] gradientPosition = { 0, 1 / 2f, 1 };
         private bool reflection;
         private Color reflectionColor = Color.FromArgb(120, 0, 0, 0);
         private int reflectionSpacing = 3;
@@ -32,6 +51,7 @@
         private Color shadowColor = Settings.DefaultValue.Style.ShadowColor;
         private int shadowDirection = 315;
         private int shadowOpacity = 100;
+        private Point startPoint;
         private Rectangle textBoxRectangle;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
@@ -51,6 +71,38 @@
         #endregion
 
         #region Properties
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientAngle
+        {
+            get
+            {
+                return gradientAngle;
+            }
+
+            set
+            {
+                gradientAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientPosition
+        {
+            get
+            {
+                return gradientPosition;
+            }
+
+            set
+            {
+                gradientPosition = value;
+                Invalidate();
+            }
+        }
 
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
@@ -168,7 +220,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.TextColor)]
-        public Color TextColor
+        public Color[] TextColor
         {
             get
             {
@@ -222,8 +274,14 @@
 
             textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
 
+            startPoint = new Point(ClientRectangle.Width, 0);
+            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+
+            // Create gradient text
+            gradientBrush = GDI.CreateGradientBrush(foreColor, gradientPosition, gradientAngle, startPoint, endPoint);
+
             // Draw the text
-            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
+            graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle, stringFormat);
 
             // Draw the shadow
             if (shadow)
