@@ -54,7 +54,7 @@
         private bool percentageVisible;
         private Color progressColor2 = ControlPaint.Light(progressColor1);
         private BrushType progressColorStyle = BrushType.Gradient;
-        private Font progressFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular);
+        private Font progressFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private StringAlignment valueAlignment = StringAlignment.Center;
 
