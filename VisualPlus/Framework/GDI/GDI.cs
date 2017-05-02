@@ -231,8 +231,7 @@
         /// <param name="borderColor">Normal border color.</param>
         /// <param name="borderHoverColor">Hover border color.</param>
         /// <param name="borderHoverVisible">Hover visible.</param>
-        public static void DrawBorderType(Graphics graphics, ControlState controlState, GraphicsPath controlPath, float borderThickness, Color borderColor,
-                                          Color borderHoverColor, bool borderHoverVisible)
+        public static void DrawBorderType(Graphics graphics, ControlState controlState, GraphicsPath controlPath, float borderThickness, Color borderColor, Color borderHoverColor, bool borderHoverVisible)
         {
             if (controlState == ControlState.Hover && borderHoverVisible)
             {
@@ -295,8 +294,7 @@
         /// <param name="maximum"></param>
         /// <param name="tickColor"></param>
         /// <param name="orientation"></param>
-        public static void DrawTickLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color tickColor,
-                                        Orientation orientation)
+        public static void DrawTickLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color tickColor, Orientation orientation)
         {
             // Check input value
             if (maximum == minimum)
@@ -366,8 +364,7 @@
         /// <param name="foreColor"></param>
         /// <param name="font"></param>
         /// <param name="orientation"></param>
-        public static void DrawTickTextLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color foreColor,
-                                            Font font, Orientation orientation)
+        public static void DrawTickTextLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color foreColor, Font font, Orientation orientation)
         {
             // Check input value
             if (maximum == minimum)
@@ -428,34 +425,6 @@
                 // Draw last tick text at Maximum
                 text = Convert.ToString(maximum, 10);
                 graphics.DrawString(text, font, brush, drawRect.Left + drawRect.Width / 2, drawRect.Top, stringFormat);
-            }
-        }
-
-        /// <summary>Fills the background with color.</summary>
-        /// <param name="graphics">Graphics controller.</param>
-        /// <param name="rectangle">The rectangle.</param>
-        /// <param name="graphicsShape">The shape.</param>
-        /// <param name="color1">Color 1.</param>
-        /// <param name="color2">Color 2.</param>
-        /// <param name="rotation">Gradient rotation.</param>
-        /// <param name="gradient">Toggle gradient coloring.</param>
-        public static void FillBackground(
-            Graphics graphics,
-            Rectangle rectangle,
-            GraphicsPath graphicsShape,
-            Color color1,
-            Color color2,
-            int rotation,
-            bool gradient)
-        {
-            if (gradient)
-            {
-                // Fill gradient shape
-                graphics.FillPath(new LinearGradientBrush(rectangle, color1, color2, rotation), graphicsShape);
-            }
-            else
-            {
-                graphics.FillPath(new SolidBrush(color1), graphicsShape);
             }
         }
 
