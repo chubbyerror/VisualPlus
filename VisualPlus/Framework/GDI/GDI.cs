@@ -14,12 +14,6 @@
 
     internal class GDI
     {
-        #region Variables
-
-        public static GraphicsPath GraphicPath = null;
-
-        #endregion
-
         #region Events
 
         /// <summary>Anchors the rectangle to an anchored alignment of the base rectangle.</summary>
@@ -541,6 +535,20 @@
             }
 
             return newShape;
+        }
+
+        /// <summary>Measures the specified string when draw with the specified font.</summary>
+        /// <param name="graphics">Graphics input.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="textFont">The text Font.</param>
+        /// <returns>Returns text size.</returns>
+        public static Size GetTextSize(Graphics graphics, string text, Font textFont)
+        {
+            int width = Convert.ToInt32(graphics.MeasureString(text, textFont).Width);
+            int height = Convert.ToInt32(graphics.MeasureString(text, textFont).Height);
+            Size textSize = new Size(width, height);
+
+            return textSize;
         }
 
         #endregion
