@@ -8,6 +8,7 @@
             public const string Angle = "Applies the specified angle to the transformation matrix of this Graphics.";
             public const string Animation = "Toggle the animation state.";
             public const string AnimationSpeed = "The speed of the animation.";
+            public const string AutoSize = "Gets or sets a value indicating whether the control is automatically resized to display its entire contents.";
             public const string BarAmount = "The amount of bars to display in the progress.";
             public const string BarSize = "The progress bar size.";
             public const string BarSpacing = "The progress bar/s spacing.";

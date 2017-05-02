@@ -13,10 +13,12 @@ namespace VisualPlus.Framework
     {
         #region Variables
 
+        public static readonly int MaximumAlpha = 255;
         public static readonly int MaximumBorderSize = 24;
         public static readonly int MaximumCheckBoxBorderRounding = 12;
         public static readonly int MaximumCheckBoxSize = 11;
         public static readonly int MaximumRounding = 30;
+        public static readonly int MinimumAlpha = 1;
         public static readonly int MinimumBorderSize = 1;
         public static readonly int MinimumCheckBoxBorderRounding = 1;
         public static readonly int MinimumCheckBoxSize = 3;

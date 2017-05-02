@@ -23,7 +23,7 @@
         #region Variables
 
         private const int ShadowDepth = 4;
-        private const float ShadowSmooth = 2f;
+        private const float ShadowSmooth = 1.5f;
 
         private readonly Color[] textDisabledColor =
             {
@@ -31,6 +31,8 @@
                 Settings.DefaultValue.Style.TextDisabled,
                 ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled)
             };
+
+        private bool autoSize;
 
         private Point endPoint;
 
@@ -51,13 +53,15 @@
 
         private Color outlineColor = Color.Red;
 
-        private Point outlineLocationPoint = new Point(0, 6);
+        private Point outlineLocation = new Point(0, 0);
         private bool reflection;
         private Color reflectionColor = Color.FromArgb(120, 0, 0, 0);
-        private int reflectionSpacing = 3;
+        private int reflectionSpacing = 5;
         private bool shadow;
-        private Color shadowColor = Settings.DefaultValue.Style.ShadowColor;
+        private Color shadowColor = Color.Black;
         private int shadowDirection = 315;
+
+        private Point shadowLocation = new Point(0, 0);
         private int shadowOpacity = 100;
         private Point startPoint;
         private Rectangle textBoxRectangle;
@@ -72,7 +76,6 @@
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
 
             UpdateStyles();
-            AutoSize = false;
             BackColor = Color.Transparent;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
         }
@@ -80,6 +83,30 @@
         #endregion
 
         #region Properties
+
+        [DefaultValue(false)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.AutoSize)]
+        public override bool AutoSize
+        {
+            get
+            {
+                return base.AutoSize;
+            }
+
+            set
+            {
+                if ((autoSize != value) & (autoSize == false))
+                {
+                    base.AutoSize = false;
+                    autoSize = value;
+                }
+                else
+                {
+                    base.AutoSize = value;
+                }
+            }
+        }
 
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.Angle)]
@@ -167,12 +194,12 @@
         {
             get
             {
-                return outlineLocationPoint;
+                return outlineLocation;
             }
 
             set
             {
-                outlineLocationPoint = value;
+                outlineLocation = value;
                 Invalidate();
             }
         }
@@ -275,6 +302,22 @@
             }
         }
 
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentLocation)]
+        public Point ShadowLocation
+        {
+            get
+            {
+                return shadowLocation;
+            }
+
+            set
+            {
+                shadowLocation = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ShadowOpacity)]
         public int ShadowOpacity
@@ -286,7 +329,11 @@
 
             set
             {
-                shadowOpacity = value;
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumAlpha, Settings.MaximumAlpha))
+                {
+                    shadowOpacity = value;
+                }
+
                 Invalidate();
             }
         }
@@ -338,13 +385,6 @@
             // Set control color state
             foreColor = Enabled ? foreColor : textDisabledColor;
 
-            // String format
-            StringFormat stringFormat = new StringFormat
-                {
-                    Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Center
-                };
-
             textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
 
             startPoint = new Point(ClientRectangle.Width, 0);
@@ -356,7 +396,13 @@
             // Draw the text outline
             if (outline)
             {
-                DrawOutline(graphics, stringFormat);
+                DrawOutline(graphics);
+            }
+
+            // Draw the shadow
+            if (shadow)
+            {
+                DrawShadow(graphics);
             }
 
             // Configure text orientation
@@ -364,7 +410,7 @@
             {
                 case Orientation.Horizontal:
                     {
-                        graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle, stringFormat);
+                        graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle);
                         break;
                     }
 
@@ -375,12 +421,6 @@
                     }
             }
 
-            // Draw the shadow
-            if (shadow)
-            {
-                DrawShadow(e);
-            }
-
             // Draw the reflection text.
             if (reflection)
             {
@@ -388,11 +428,11 @@
             }
         }
 
-        private void DrawOutline(Graphics graphics, StringFormat stringFormat)
+        private void DrawOutline(Graphics graphics)
         {
             GraphicsPath outlinePath = new GraphicsPath();
 
-            switch (Orientation)
+            switch (orientation)
             {
                 case Orientation.Horizontal:
                     {
@@ -401,8 +441,7 @@
                             Font.FontFamily,
                             (int)Font.Style,
                             graphics.DpiY * Font.SizeInPoints / 72,
-                            outlineLocationPoint,
-                            stringFormat);
+                            outlineLocation, new StringFormat());
 
                         break;
                     }
@@ -414,7 +453,7 @@
                             Font.FontFamily,
                             (int)Font.Style,
                             graphics.DpiY * Font.SizeInPoints / 72,
-                            outlineLocationPoint,
+                            outlineLocation,
                             new StringFormat(StringFormatFlags.DirectionVertical));
 
                         break;
@@ -433,23 +472,41 @@
             graphics.ResetTransform();
         }
 
-        private void DrawShadow(PaintEventArgs e)
+        private void DrawShadow(Graphics graphics)
         {
-            Graphics screenGraphics = e.Graphics;
+            // Create shadow into a bitmap
             Bitmap shadowBitmap = new Bitmap(Math.Max((int)(Width / ShadowSmooth), 1), Math.Max((int)(Height / ShadowSmooth), 1));
+
             using (Graphics imageGraphics = Graphics.FromImage(shadowBitmap))
             {
+                // Setup text render
                 imageGraphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+                // Create transformation matrix
                 Matrix transformMatrix = new Matrix();
                 transformMatrix.Scale(1 / ShadowSmooth, 1 / ShadowSmooth);
                 transformMatrix.Translate((float)(ShadowDepth * Math.Cos(shadowDirection)), (float)(ShadowDepth * Math.Sin(shadowDirection)));
                 imageGraphics.Transform = transformMatrix;
-                imageGraphics.DrawString(Text, Font, new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), 0, 0, StringFormat.GenericTypographic);
+
+                switch (Orientation)
+                {
+                    case Orientation.Horizontal:
+                        {
+                            imageGraphics.DrawString(Text, Font, new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), shadowLocation);
+                            break;
+                        }
+
+                    case Orientation.Vertical:
+                        {
+                            imageGraphics.DrawString(Text, Font, new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), shadowLocation, new StringFormat(StringFormatFlags.DirectionVertical));
+                            break;
+                        }
+                }
             }
 
-            screenGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            screenGraphics.DrawImage(shadowBitmap, ClientRectangle, 0, 0, shadowBitmap.Width, shadowBitmap.Height, GraphicsUnit.Pixel);
-            screenGraphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.DrawImage(shadowBitmap, ClientRectangle, 0, 0, shadowBitmap.Width, shadowBitmap.Height, GraphicsUnit.Pixel);
+            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
         }
 
         #endregion
