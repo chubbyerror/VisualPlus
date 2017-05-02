@@ -570,7 +570,7 @@
 
         /// <summary>Decreases the progress value.</summary>
         /// <param name="curValue">Value amount.</param>
-        public void Deincrement(int curValue)
+        public void Decrement(int curValue)
         {
             Value -= curValue;
             Invalidate();
