@@ -25,7 +25,7 @@
 
         private const int Spacing = 2;
 
-        private Color[] backgroundColor =
+        private Color[] checkBoxColor =
         {
             ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3)),
             Settings.DefaultValue.Style.BackgroundColor(3),
@@ -96,16 +96,16 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color[] BackgroundColor
+        public Color[] CheckBoxColor
         {
             get
             {
-                return backgroundColor;
+                return checkBoxColor;
             }
 
             set
             {
-                backgroundColor = value;
+                checkBoxColor = value;
                 Invalidate();
             }
         }
@@ -397,7 +397,7 @@
             graphics.TextRenderingHint = textRendererHint;
 
             // gradients
-            gradientBackgroundBrush = GDI.CreateGradientBrush(backgroundColor, gradientBackgroundPosition, gradientBackgroundAngle, backroundStartPoint, backroundEndPoint);
+            gradientBackgroundBrush = GDI.CreateGradientBrush(checkBoxColor, gradientBackgroundPosition, gradientBackgroundAngle, backroundStartPoint, backroundEndPoint);
             gradientCheckMarkBrush = GDI.CreateGradientBrush(checkMarkColor, gradientCheckMarkPosition, gradientCheckMarkAngle, checkMarkStartPoint, checkMarkEndPoint);
 
             // CheckMark background color
