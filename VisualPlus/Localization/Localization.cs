@@ -39,6 +39,8 @@
             public const string IconSize = "The icon size.";
             public const string MirrorColor = "The mirrored text color.";
             public const string NormalColor = "The controls normal color.";
+            public const string Outline = "Draws a line around the elements.";
+            public const string Orientation = "Defines the different orientations that a control or layout can have.";
             public const string PressedColor = "The controls pressed color.";
             public const string ProgressBarStyle = "Applies the specified progressbar style.";
             public const string ProgressSize = "The size of the progressbar.";

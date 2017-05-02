@@ -44,6 +44,14 @@
         private float gradientAngle;
         private LinearGradientBrush gradientBrush;
         private float[] gradientPosition = { 0, 1 / 2f, 1 };
+
+        private Orientation orientation = Orientation.Horizontal;
+
+        private bool outline;
+
+        private Color outlineColor = Color.Red;
+
+        private Point outlineLocationPoint = new Point(0, 6);
         private bool reflection;
         private Color reflectionColor = Color.FromArgb(120, 0, 0, 0);
         private int reflectionSpacing = 3;
@@ -64,8 +72,9 @@
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
 
             UpdateStyles();
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            AutoSize = false;
             BackColor = Color.Transparent;
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
         }
 
         #endregion
@@ -100,6 +109,70 @@
             set
             {
                 gradientPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Orientation)]
+        public Orientation Orientation
+        {
+            get
+            {
+                return orientation;
+            }
+
+            set
+            {
+                orientation = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Outline)]
+        public bool Outline
+        {
+            get
+            {
+                return outline;
+            }
+
+            set
+            {
+                outline = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color OutlineColor
+        {
+            get
+            {
+                return outlineColor;
+            }
+
+            set
+            {
+                outlineColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentLocation)]
+        public Point OutlineLocation
+        {
+            get
+            {
+                return outlineLocationPoint;
+            }
+
+            set
+            {
+                outlineLocationPoint = value;
                 Invalidate();
             }
         }
@@ -280,8 +353,27 @@
             // Create gradient text
             gradientBrush = GDI.CreateGradientBrush(foreColor, gradientPosition, gradientAngle, startPoint, endPoint);
 
-            // Draw the text
-            graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle, stringFormat);
+            // Draw the text outline
+            if (outline)
+            {
+                DrawOutline(graphics, stringFormat);
+            }
+
+            // Configure text orientation
+            switch (Orientation)
+            {
+                case Orientation.Horizontal:
+                    {
+                        graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle, stringFormat);
+                        break;
+                    }
+
+                case Orientation.Vertical:
+                    {
+                        graphics.DrawString(Text, Font, gradientBrush, 0, 0, new StringFormat(StringFormatFlags.DirectionVertical));
+                        break;
+                    }
+            }
 
             // Draw the shadow
             if (shadow)
@@ -294,6 +386,42 @@
             {
                 DrawReflection(graphics);
             }
+        }
+
+        private void DrawOutline(Graphics graphics, StringFormat stringFormat)
+        {
+            GraphicsPath outlinePath = new GraphicsPath();
+
+            switch (Orientation)
+            {
+                case Orientation.Horizontal:
+                    {
+                        outlinePath.AddString(
+                            Text,
+                            Font.FontFamily,
+                            (int)Font.Style,
+                            graphics.DpiY * Font.SizeInPoints / 72,
+                            outlineLocationPoint,
+                            stringFormat);
+
+                        break;
+                    }
+
+                case Orientation.Vertical:
+                    {
+                        outlinePath.AddString(
+                            Text,
+                            Font.FontFamily,
+                            (int)Font.Style,
+                            graphics.DpiY * Font.SizeInPoints / 72,
+                            outlineLocationPoint,
+                            new StringFormat(StringFormatFlags.DirectionVertical));
+
+                        break;
+                    }
+            }
+
+            graphics.DrawPath(new Pen(OutlineColor), outlinePath);
         }
 
         private void DrawReflection(Graphics graphics)
