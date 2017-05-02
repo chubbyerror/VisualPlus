@@ -9,7 +9,6 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Components.Symbols;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
@@ -500,11 +499,7 @@
             {
                 if (checkBoxType == CheckBoxType.CheckMark)
                 {
-                    Point checkLocation = new Point(-2, -1);
-                    Size checkSize = new Size(checkBoxRectangle.Width, checkBoxRectangle.Height);
-
-                    // Draw check mark
-                    Checkmark.DrawCheckmark(graphics, checkLocation, checkSize, controlCheckTemp, 14F);
+                    DrawCheckMark(graphics, controlCheckTemp);
                 }
                 else
                 {
@@ -542,14 +537,30 @@
             UpdateLocationPoints();
         }
 
+        private void DrawCheckMark(Graphics graphics, Color controlCheckTemp)
+        {
+            string checkCharString = ((char)0x221A).ToString();
+            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+            Size checkSize = new Size(checkBoxRectangle.Width, checkBoxRectangle.Height);
+            Point checkLocation = new Point(checkBoxRectangle.Width / 2 - checkSize.Width / 2, checkBoxRectangle.Height / 2 - checkSize.Height / 2);
+
+            // Draw checkmark inside clip
+            graphics.SetClip(checkBoxPath);
+
+            // Draw check mark
+            graphics.DrawString(checkCharString, new Font(Font.FontFamily, Font.Size, FontStyle.Bold), new SolidBrush(controlCheckTemp), checkLocation);
+            graphics.ResetClip();
+            graphics.TextRenderingHint = textRendererHint;
+        }
+
         private void UpdateLocationPoints()
         {
             // Update
             checkBoxLocation = new Point(checkBoxLocation.X, ClientRectangle.Height / 2 - boxSize.Height / 2);
             checkBoxRectangle = new Rectangle(checkBoxLocation, boxSize);
 
-            checkMarkLocation = new Point(checkBoxLocation.X + boxSize.Width / 2 - checkMarkFillSize.Width / 2,
-                checkBoxLocation.Y + boxSize.Height / 2 - checkMarkFillSize.Height / 2);
+            checkMarkLocation = new Point(checkBoxLocation.X + boxSize.Width / 2 - checkMarkFillSize.Width / 2, checkBoxLocation.Y + boxSize.Height / 2 - checkMarkFillSize.Height / 2);
 
             checkMarkRectangle = new Rectangle(checkMarkLocation, checkMarkFillSize);
 
