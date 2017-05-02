@@ -33,7 +33,6 @@
             };
 
         private bool autoSize;
-
         private Point endPoint;
 
         private Color[] foreColor =
@@ -46,21 +45,16 @@
         private float gradientAngle;
         private LinearGradientBrush gradientBrush;
         private float[] gradientPosition = { 0, 1 / 2f, 1 };
-
         private Orientation orientation = Orientation.Horizontal;
-
         private bool outline;
-
         private Color outlineColor = Color.Red;
-
         private Point outlineLocation = new Point(0, 0);
         private bool reflection;
         private Color reflectionColor = Color.FromArgb(120, 0, 0, 0);
-        private int reflectionSpacing = 5;
+        private int reflectionSpacing;
         private bool shadow;
         private Color shadowColor = Color.Black;
         private int shadowDirection = 315;
-
         private Point shadowLocation = new Point(0, 0);
         private int shadowOpacity = 100;
         private Point startPoint;
@@ -385,7 +379,14 @@
             // Set control color state
             foreColor = Enabled ? foreColor : textDisabledColor;
 
-            textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
+            if (reflection && orientation == Orientation.Vertical)
+            {
+                textBoxRectangle = new Rectangle(GDI.GetTextSize(graphics, Text, Font).Height, 0, ClientRectangle.Width, ClientRectangle.Height);
+            }
+            else
+            {
+                textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
+            }
 
             startPoint = new Point(ClientRectangle.Width, 0);
             endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
@@ -405,27 +406,14 @@
                 DrawShadow(graphics);
             }
 
-            // Configure text orientation
-            switch (Orientation)
-            {
-                case Orientation.Horizontal:
-                    {
-                        graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle);
-                        break;
-                    }
-
-                case Orientation.Vertical:
-                    {
-                        graphics.DrawString(Text, Font, gradientBrush, 0, 0, new StringFormat(StringFormatFlags.DirectionVertical));
-                        break;
-                    }
-            }
-
             // Draw the reflection text.
             if (reflection)
             {
                 DrawReflection(graphics);
             }
+
+            // Draw text
+            graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle, GetStringFormat());
         }
 
         private void DrawOutline(Graphics graphics)
@@ -465,48 +453,97 @@
 
         private void DrawReflection(Graphics graphics)
         {
-            Point mirrorLocation = new Point(0, -textBoxRectangle.Y - textBoxRectangle.Height / 2 - (int)Font.SizeInPoints + reflectionSpacing);
-            graphics.TranslateTransform(0, Font.Size);
-            graphics.ScaleTransform(1, -1);
-            graphics.DrawString(Text, Font, new SolidBrush(reflectionColor), mirrorLocation);
-            graphics.ResetTransform();
+            Point reflectionLocation = new Point(0, 0);
+            Bitmap reflectionBitmap = new Bitmap(Width, Height);
+            Graphics imageGraphics = Graphics.FromImage(reflectionBitmap);
+
+            // Setup text render
+            imageGraphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+            // Rotate reflection
+            switch (Orientation)
+            {
+                case Orientation.Horizontal:
+                    {
+                        imageGraphics.TranslateTransform(0, GDI.GetTextSize(graphics, Text, Font).Height);
+                        imageGraphics.ScaleTransform(1, -1);
+
+                        reflectionLocation = new Point(0, textBoxRectangle.Y - GDI.GetTextSize(graphics, Text, Font).Height / 2 - reflectionSpacing);
+                        break;
+                    }
+
+                case Orientation.Vertical:
+                    {
+                        imageGraphics.ScaleTransform(-1, 1);
+                        reflectionLocation = new Point(textBoxRectangle.X - GDI.GetTextSize(graphics, Text, Font).Width / 2 + reflectionSpacing, 0);
+                        break;
+                    }
+            }
+
+            // Draw reflected string
+            imageGraphics.DrawString(Text, Font, new SolidBrush(reflectionColor), reflectionLocation, GetStringFormat());
+
+            // Draw the reflection image
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.DrawImage(reflectionBitmap, ClientRectangle, 0, 0, reflectionBitmap.Width, reflectionBitmap.Height, GraphicsUnit.Pixel);
+            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
         }
 
         private void DrawShadow(Graphics graphics)
         {
             // Create shadow into a bitmap
             Bitmap shadowBitmap = new Bitmap(Math.Max((int)(Width / ShadowSmooth), 1), Math.Max((int)(Height / ShadowSmooth), 1));
+            Graphics imageGraphics = Graphics.FromImage(shadowBitmap);
 
-            using (Graphics imageGraphics = Graphics.FromImage(shadowBitmap))
+            // Setup text render
+            imageGraphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+            // Create transformation matrix
+            Matrix transformMatrix = new Matrix();
+            transformMatrix.Scale(1 / ShadowSmooth, 1 / ShadowSmooth);
+            transformMatrix.Translate((float)(ShadowDepth * Math.Cos(shadowDirection)), (float)(ShadowDepth * Math.Sin(shadowDirection)));
+            imageGraphics.Transform = transformMatrix;
+
+            switch (Orientation)
             {
-                // Setup text render
-                imageGraphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                case Orientation.Horizontal:
+                    {
+                        imageGraphics.DrawString(Text, Font, new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), shadowLocation);
+                        break;
+                    }
 
-                // Create transformation matrix
-                Matrix transformMatrix = new Matrix();
-                transformMatrix.Scale(1 / ShadowSmooth, 1 / ShadowSmooth);
-                transformMatrix.Translate((float)(ShadowDepth * Math.Cos(shadowDirection)), (float)(ShadowDepth * Math.Sin(shadowDirection)));
-                imageGraphics.Transform = transformMatrix;
-
-                switch (Orientation)
-                {
-                    case Orientation.Horizontal:
-                        {
-                            imageGraphics.DrawString(Text, Font, new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), shadowLocation);
-                            break;
-                        }
-
-                    case Orientation.Vertical:
-                        {
-                            imageGraphics.DrawString(Text, Font, new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), shadowLocation, new StringFormat(StringFormatFlags.DirectionVertical));
-                            break;
-                        }
-                }
+                case Orientation.Vertical:
+                    {
+                        imageGraphics.DrawString(Text, Font, new SolidBrush(Color.FromArgb(shadowOpacity, shadowColor)), shadowLocation, new StringFormat(StringFormatFlags.DirectionVertical));
+                        break;
+                    }
             }
 
             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             graphics.DrawImage(shadowBitmap, ClientRectangle, 0, 0, shadowBitmap.Width, shadowBitmap.Height, GraphicsUnit.Pixel);
             graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+        }
+
+        private StringFormat GetStringFormat()
+        {
+            StringFormat stringFormat = new StringFormat();
+
+            switch (orientation)
+            {
+                case Orientation.Horizontal:
+                    {
+                        stringFormat = new StringFormat();
+                        break;
+                    }
+
+                case Orientation.Vertical:
+                    {
+                        stringFormat = new StringFormat(StringFormatFlags.DirectionVertical);
+                        break;
+                    }
+            }
+
+            return stringFormat;
         }
 
         #endregion
