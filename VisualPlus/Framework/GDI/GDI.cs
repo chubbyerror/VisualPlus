@@ -540,12 +540,12 @@
         /// <summary>Measures the specified string when draw with the specified font.</summary>
         /// <param name="graphics">Graphics input.</param>
         /// <param name="text">The text.</param>
-        /// <param name="textFont">The text Font.</param>
+        /// <param name="font">The text Font.</param>
         /// <returns>Returns text size.</returns>
-        public static Size GetTextSize(Graphics graphics, string text, Font textFont)
+        public static Size GetTextSize(Graphics graphics, string text, Font font)
         {
-            int width = Convert.ToInt32(graphics.MeasureString(text, textFont).Width);
-            int height = Convert.ToInt32(graphics.MeasureString(text, textFont).Height);
+            int width = Convert.ToInt32(graphics.MeasureString(text, font).Width);
+            int height = Convert.ToInt32(graphics.MeasureString(text, font).Height);
             Size textSize = new Size(width, height);
 
             return textSize;
