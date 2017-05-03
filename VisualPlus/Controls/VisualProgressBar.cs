@@ -37,8 +37,6 @@
                 ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor)
             };
 
-        private static int progressRotation;
-
         private Color[] backgroundColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
@@ -709,7 +707,6 @@
                 case ProgressBarTypes.Horizontal:
                     {
                         i1 = (int)Math.Round((Value - Minimum) / (double)(Maximum - Minimum) * (Width - 2));
-                        progressRotation = 0;
 
                         // Progress path
                         if (borderShape == BorderShape.Rectangle)
@@ -730,7 +727,6 @@
                 case ProgressBarTypes.Vertical:
                     {
                         i1 = (int)Math.Round((Value - Minimum) / (double)(Maximum - Minimum) * (Height - 2));
-                        progressRotation = -90;
 
                         // Progress path
                         if (borderShape == BorderShape.Rectangle)
