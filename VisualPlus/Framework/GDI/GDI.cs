@@ -17,7 +17,7 @@
         #region Events
 
         /// <summary>Anchors the rectangle to an anchored alignment of the base rectangle.</summary>
-        /// <param name="anchorStyle">Alignment.</param>
+        /// <param name="anchorStyle">Alignment style.</param>
         /// <param name="baseRectangle">Base rectangle.</param>
         /// <param name="anchorWidth">Anchor width.</param>
         /// <returns>Anchored rectangle.</returns>
@@ -175,11 +175,12 @@
         }
 
         /// <summary>Creates a gradient brush.</summary>
-        /// <param name="gradient">The gradient.</param>
+        /// <param name="colors">The colors.</param>
+        /// <param name="positions">The positions.</param>
         /// <param name="angle">The angle.</param>
         /// <param name="startPoint">Start position.</param>
         /// <param name="endPoint">End position.</param>
-        /// <returns>The <see cref="LinearGradientBrush" />.</returns>
+        /// <returns>The gradient brush.</returns>
         public static LinearGradientBrush CreateGradientBrush(Color[] colors, float[] positions, float angle, Point startPoint, Point endPoint)
         {
             LinearGradientBrush linearGradientBrush = new LinearGradientBrush(startPoint, endPoint, Color.Black, Color.Black);
@@ -270,15 +271,14 @@
             }
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="drawRect"></param>
-        /// <param name="tickFrequency"></param>
-        /// <param name="minimum"></param>
-        /// <param name="maximum"></param>
-        /// <param name="tickColor"></param>
-        /// <param name="orientation"></param>
+        /// <summary>Draws the tick line.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="drawRect">The rectangle</param>
+        /// <param name="tickFrequency">Tick frequency.</param>
+        /// <param name="minimum">The minimum.</param>
+        /// <param name="maximum">The maximum.</param>
+        /// <param name="tickColor">The tick Color.</param>
+        /// <param name="orientation">The orientation.</param>
         public static void DrawTickLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color tickColor, Orientation orientation)
         {
             // Check input value
@@ -291,7 +291,7 @@
             Pen pen = new Pen(tickColor, 1);
             float tickFrequencySize;
 
-            // Caculate tick number
+            // Calculate tick number
             int tickCount = (maximum - minimum) / tickFrequency;
             if ((maximum - minimum) % tickFrequency == 0)
             {
@@ -303,52 +303,40 @@
                 // Calculate tick's setting
                 tickFrequencySize = drawRect.Width * tickFrequency / (maximum - minimum);
 
-                // ===============================================================
-
                 // Draw each tick
                 for (var i = 0; i <= tickCount; i++)
                 {
-                    graphics.DrawLine(pen, drawRect.Left + tickFrequencySize * i, drawRect.Top, drawRect.Left + tickFrequencySize * i,
-                        drawRect.Bottom);
+                    graphics.DrawLine(pen, drawRect.Left + tickFrequencySize * i, drawRect.Top, drawRect.Left + tickFrequencySize * i, drawRect.Bottom);
                 }
 
                 // Draw last tick at Maximum
                 graphics.DrawLine(pen, drawRect.Right, drawRect.Top, drawRect.Right, drawRect.Bottom);
-
-                // ===============================================================
             }
             else
             {
-                // Orientation.Vertical
                 // Calculate tick's setting
                 tickFrequencySize = drawRect.Height * tickFrequency / (maximum - minimum);
-
-                // ===============================================================
 
                 // Draw each tick
                 for (var i = 0; i <= tickCount; i++)
                 {
-                    graphics.DrawLine(pen, drawRect.Left, drawRect.Bottom - tickFrequencySize * i, drawRect.Right,
-                        drawRect.Bottom - tickFrequencySize * i);
+                    graphics.DrawLine(pen, drawRect.Left, drawRect.Bottom - tickFrequencySize * i, drawRect.Right, drawRect.Bottom - tickFrequencySize * i);
                 }
 
                 // Draw last tick at Maximum
                 graphics.DrawLine(pen, drawRect.Left, drawRect.Top, drawRect.Right, drawRect.Top);
-
-                // ===============================================================
             }
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="drawRect"></param>
-        /// <param name="tickFrequency"></param>
-        /// <param name="minimum"></param>
-        /// <param name="maximum"></param>
-        /// <param name="foreColor"></param>
-        /// <param name="font"></param>
-        /// <param name="orientation"></param>
+        /// <summary>Draws the tick text.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="drawRect">The rectangle</param>
+        /// <param name="tickFrequency">Tick frequency.</param>
+        /// <param name="minimum">The minimum.</param>
+        /// <param name="maximum">The maximum.</param>
+        /// <param name="foreColor">Fore color.</param>
+        /// <param name="font">The font.</param>
+        /// <param name="orientation">The orientation.</param>
         public static void DrawTickTextLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color foreColor, Font font, Orientation orientation)
         {
             // Check input value
@@ -396,7 +384,6 @@
             }
             else
             {
-                // Orientation.Vertical
                 // Calculate tick's setting
                 tickFrequencySize = drawRect.Height * tickFrequency / (maximum - minimum);
 
@@ -410,43 +397,6 @@
                 // Draw last tick text at Maximum
                 text = Convert.ToString(maximum, 10);
                 graphics.DrawString(text, font, brush, drawRect.Left + drawRect.Width / 2, drawRect.Top, stringFormat);
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="rect"></param>
-        /// <param name="g"></param>
-        public static void FillPill(Brush b, RectangleF rect, Graphics g)
-        {
-            if (rect.Width > rect.Height)
-            {
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.FillEllipse(b, new RectangleF(rect.Left, rect.Top, rect.Height, rect.Height));
-                g.FillEllipse(b, new RectangleF(rect.Left + rect.Width - rect.Height, rect.Top, rect.Height, rect.Height));
-
-                float w = rect.Width - rect.Height;
-                float l = rect.Left + rect.Height / 2;
-                g.FillRectangle(b, new RectangleF(l, rect.Top, w, rect.Height));
-                g.SmoothingMode = SmoothingMode.Default;
-            }
-            else if (rect.Width < rect.Height)
-            {
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.FillEllipse(b, new RectangleF(rect.Left, rect.Top, rect.Width, rect.Width));
-                g.FillEllipse(b, new RectangleF(rect.Left, rect.Top + rect.Height - rect.Width, rect.Width, rect.Width));
-
-                float t = rect.Top + rect.Width / 2;
-                float h = rect.Height - rect.Width;
-                g.FillRectangle(b, new RectangleF(rect.Left, t, rect.Width, h));
-                g.SmoothingMode = SmoothingMode.Default;
-            }
-            else if (rect.Width == rect.Height)
-            {
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.FillEllipse(b, rect);
-                g.SmoothingMode = SmoothingMode.Default;
             }
         }
 
