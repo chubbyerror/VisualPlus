@@ -146,6 +146,7 @@
             set
             {
                 orientation = value;
+                Size = GDI.FlipOrientationSize(orientation, Size);
                 Invalidate();
             }
         }
@@ -429,7 +430,8 @@
                             Font.FontFamily,
                             (int)Font.Style,
                             graphics.DpiY * Font.SizeInPoints / 72,
-                            outlineLocation, new StringFormat());
+                            outlineLocation,
+                            new StringFormat());
 
                         break;
                     }

@@ -465,6 +465,33 @@
             }
         }
 
+        /// <summary>Flip the size by orientation.</summary>
+        /// <param name="orientation">The orientation.</param>
+        /// <param name="size">Current size.</param>
+        /// <returns>New size.</returns>
+        public static Size FlipOrientationSize(Orientation orientation, Size size)
+        {
+            Size newSize = new Size(0, 0);
+
+            // Resize
+            if (orientation == Orientation.Vertical)
+            {
+                if (size.Width > size.Height)
+                {
+                    newSize = new Size(size.Height, size.Width);
+                }
+            }
+            else
+            {
+                if (size.Width < size.Height)
+                {
+                    newSize = new Size(size.Height, size.Width);
+                }
+            }
+
+            return newSize;
+        }
+
         /// <summary>Draws the border shape.</summary>
         /// <param name="rectangle">The rectangle.</param>
         /// <param name="borderShape">The border Shape.</param>

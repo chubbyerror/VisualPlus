@@ -26,6 +26,8 @@
 
         private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
 
+        private static Orientation orientation = Orientation.Horizontal;
+
         private static Color[] progressColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor),
@@ -33,7 +35,6 @@
                 ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor)
             };
 
-        private static Orientation trackBarType = Orientation.Horizontal;
         private static Rectangle trackerRectangle = Rectangle.Empty;
 
         private Color[] backgroundColor =
@@ -80,7 +81,6 @@
         private Point endButtonPoint;
         private Point endPoint;
         private Point endProgressPoint;
-
         private int fillingValue = 25;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private float gradientBackgroundAngle = 90;
@@ -137,8 +137,8 @@
             DoubleBuffered = true;
             UpdateStyles();
             AutoSize = false;
-            Size = new Size(200, 80);
-            MinimumSize = new Size(10, 10);
+            Size = new Size(200, 50);
+            MinimumSize = new Size(200, 50);
         }
 
         public enum ValueDivisor
@@ -657,38 +657,20 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Orientation)]
         public new Orientation Orientation
         {
             get
             {
-                return trackBarType;
+                return orientation;
             }
 
             set
             {
-                trackBarType = value;
-
-                // Flip separator size on orientation change.
-                if (trackBarType == Orientation.Horizontal)
-                {
-                    // Horizontal
-                    if (Width < Height)
-                    {
-                        int temp = Width;
-                        Width = Height;
-                        Height = temp;
-                    }
-                }
-                else
-                {
-                    // Vertical
-                    if (Width > Height)
-                    {
-                        int temp = Width;
-                        Width = Height;
-                        Height = temp;
-                    }
-                }
+                orientation = value;
+                Size = GDI.FlipOrientationSize(orientation, Size);
+                Invalidate();
             }
         }
 
@@ -1028,7 +1010,7 @@
                 {
                     leftButtonDown = true;
                     Capture = true;
-                    switch (trackBarType)
+                    switch (orientation)
                     {
                         case Orientation.Horizontal:
                             {
@@ -1048,7 +1030,7 @@
             }
             else
             {
-                switch (trackBarType)
+                switch (orientation)
                 {
                     case Orientation.Horizontal:
                         {
@@ -1110,7 +1092,7 @@
         protected override void OnMouseHover(EventArgs e)
         {
             base.OnMouseHover(e);
-            Cursor = trackBarType == Orientation.Vertical ? Cursors.SizeNS : Cursors.SizeWE;
+            Cursor = orientation == Orientation.Vertical ? Cursors.SizeNS : Cursors.SizeWE;
             Invalidate();
         }
 
@@ -1131,7 +1113,7 @@
                 try
                 {
                     // TODO: Improve location accuracy
-                    switch (trackBarType)
+                    switch (orientation)
                     {
                         case Orientation.Horizontal:
                             {
@@ -1356,7 +1338,7 @@
             Size trackerSize;
 
             // Draw tick by orientation
-            if (trackBarType == Orientation.Horizontal)
+            if (orientation == Orientation.Horizontal)
             {
                 // Start location
                 currentUsedPos = indentHeight;
@@ -1798,7 +1780,7 @@
                     currentUsedPos += tickHeight;
 
                     // Draw tick line
-                    GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                    GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, orientation);
                 }
 
                 if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
@@ -1815,7 +1797,7 @@
                     currentUsedPos += tickHeight;
 
                     // Draw tick line
-                    GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                    GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, orientation);
                 }
             }
             else
@@ -1834,7 +1816,7 @@
                     currentUsedPos += tickHeight;
 
                     // Draw text 
-                    GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, trackBarType);
+                    GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, orientation);
                 }
 
                 if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
@@ -1851,7 +1833,7 @@
                     currentUsedPos += tickHeight;
 
                     // Draw text 
-                    GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, trackBarType);
+                    GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, orientation);
                 }
             }
         }
@@ -1917,7 +1899,7 @@
                     currentUsedPos += tickHeight;
 
                     // Draw tick line
-                    GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                    GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, orientation);
                 }
 
                 if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
@@ -1934,7 +1916,7 @@
                     currentUsedPos += tickHeight;
 
                     // Draw tick line
-                    GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, trackBarType);
+                    GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, orientation);
                 }
             }
             else
@@ -1953,7 +1935,7 @@
                     currentUsedPos += tickHeight;
 
                     // Draw text 
-                    GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, trackBarType);
+                    GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, orientation);
                 }
 
                 if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
@@ -1970,7 +1952,7 @@
                     currentUsedPos += tickHeight;
 
                     // Draw text 
-                    GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, trackBarType);
+                    GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, orientation);
                 }
             }
         }

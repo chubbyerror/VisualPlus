@@ -72,6 +72,8 @@
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
+
+        private Size minimumSize = new Size(100, 20);
         private bool percentageVisible;
         private BrushType progressColorStyle = BrushType.Gradient;
         private Font progressFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
@@ -92,8 +94,10 @@
 
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Maximum = 100;
-            Width = 100;
-            Height = 20;
+
+            Size = minimumSize;
+            MinimumSize = minimumSize;
+
             percentageVisible = true;
             DoubleBuffered = true;
             UpdateStyles();
@@ -312,38 +316,6 @@
 
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.Angle)]
-        public float GradientProgressAngle
-        {
-            get
-            {
-                return gradientProgressAngle;
-            }
-
-            set
-            {
-                gradientProgressAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientProgressPosition
-        {
-            get
-            {
-                return gradientProgressPosition;
-            }
-
-            set
-            {
-                gradientProgressPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
         public float GradientAngle
         {
             get
@@ -370,6 +342,38 @@
             set
             {
                 gradientPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientProgressAngle
+        {
+            get
+            {
+                return gradientProgressAngle;
+            }
+
+            set
+            {
+                gradientProgressAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientProgressPosition
+        {
+            get
+            {
+                return gradientProgressPosition;
+            }
+
+            set
+            {
+                gradientProgressPosition = value;
                 Invalidate();
             }
         }
@@ -485,6 +489,19 @@
             set
             {
                 progressBarStyle = value;
+
+                if (progressBarStyle == ProgressBarTypes.Horizontal)
+                {
+                    Size = GDI.FlipOrientationSize(Orientation.Horizontal, Size);
+                }
+                else if (progressBarStyle == ProgressBarTypes.Vertical)
+                {
+                    Size = GDI.FlipOrientationSize(Orientation.Vertical, Size);
+                }
+
+                // Resize check
+                OnResize(EventArgs.Empty);
+
                 Invalidate();
             }
         }
@@ -648,35 +665,30 @@
 
         protected override void OnResize(EventArgs e)
         {
-            base.OnResize(e);
             switch (progressBarStyle)
             {
                 case ProgressBarTypes.Bars:
                     {
                         Height = barSize.Y;
-                        Size minimumSize = new Size(bars * barSize.X, barSize.Y + 2);
-                        MinimumSize = minimumSize;
+                        MinimumSize = new Size(bars * barSize.X, barSize.Y + 2);
                         break;
                     }
 
                 case ProgressBarTypes.Horizontal:
                     {
-                        Size minimumSize = new Size(60, 10);
                         MinimumSize = minimumSize;
                         break;
                     }
 
                 case ProgressBarTypes.Rating:
                     {
-                        Size minimumSize = new Size(bars * barSize.X, barSize.Y + 2);
-                        MinimumSize = minimumSize;
+                        MinimumSize = new Size(bars * barSize.X, barSize.Y + 2);
                         break;
                     }
 
                 case ProgressBarTypes.Vertical:
                     {
-                        Size minimumSize = new Size(10, 60);
-                        MinimumSize = minimumSize;
+                        MinimumSize = new Size(minimumSize.Height, minimumSize.Width);
                         break;
                     }
             }
