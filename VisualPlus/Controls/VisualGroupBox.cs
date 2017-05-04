@@ -93,7 +93,7 @@
             set
             {
                 backgroundColor = value;
-                ExceptionHandler.ContainerBackColorFix(this, backgroundColor);
+                ExceptionHandler.ApplyContainerBackColorChange(this, backgroundColor);
                 Invalidate();
             }
         }
@@ -377,8 +377,12 @@
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
-            base.OnControlAdded(e);
-            ExceptionHandler.ContainerBackColorFix(this, backgroundColor);
+            ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, false);
+        }
+
+        protected override void OnControlRemoved(ControlEventArgs e)
+        {
+            ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, true);
         }
 
         protected override void OnMouseEnter(EventArgs e)

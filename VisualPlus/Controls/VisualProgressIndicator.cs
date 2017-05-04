@@ -188,8 +188,11 @@
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+
+
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
+
 
             buffGraphics.Graphics.Clear(BackColor);
             int num2 = floatPoint.Length - 1;
