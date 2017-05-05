@@ -27,6 +27,7 @@
         public const string VisualTab = NamespaceLocation + "VisualTabDesigner";
         public const string VisualTextBox = NamespaceLocation + "VisualTextBoxDesigner";
         public const string VisualToggle = NamespaceLocation + "VisualToggleDesigner";
+        public const string VisualToolTip = NamespaceLocation + "VisualToolTip";
         public const string VisualTrackBar = NamespaceLocation + "VisualTrackBarDesigner";
     }
 }

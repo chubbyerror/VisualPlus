@@ -59,6 +59,7 @@
     <Compile Include="Controls\BehaviorDesign\VisualLabelDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualListBoxDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualListViewDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualToolTipDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualTrackBarDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualToggleDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualTextBoxDesigner.cs" />
@@ -99,6 +100,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\VisualStylesManager.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Framework\ExceptionHandler.cs" />
