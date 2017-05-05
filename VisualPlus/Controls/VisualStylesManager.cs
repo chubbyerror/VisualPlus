@@ -2,6 +2,7 @@
 {
     #region Namespace
 
+    using System;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Text;
@@ -293,6 +294,25 @@
         #region Events
 
         public event StyleChangedEventHandler StyleChanged;
+
+        #endregion
+
+        #region Methods
+
+        public interface IComponent : IDisposable
+        {
+            #region Properties
+
+            ISite Site { get; set; }
+
+            #endregion
+
+            #region Events
+
+            event EventHandler Disposed;
+
+            #endregion
+        }
 
         #endregion
     }
