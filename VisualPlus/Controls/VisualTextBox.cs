@@ -52,6 +52,14 @@
         private int textboxHeight = 20;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private Color waterMarkActiveColor;
+        private SolidBrush waterMarkBrush;
+        private Color waterMarkColor;
+        private Panel waterMarkContainer;
+        private Font waterMarkFont;
+        private string waterMarkText = "Custom text...";
+
+        private bool watermarkVisible;
         private int xValue;
         private int yValue;
 
@@ -73,9 +81,23 @@
             CreateTextBox();
             Controls.Add(TextBoxObject);
             BackColor = Color.Transparent;
-            TextChanged += TextBoxTextChanged;
             UpdateStyles();
+
+            // Sets some default values to the watermark properties
+            waterMarkColor = Color.LightGray;
+            waterMarkActiveColor = Color.Gray;
+            waterMarkFont = Font;
+            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+            waterMarkContainer = null;
+
+            // Draw the watermark, for design time
+            if (watermarkVisible)
+            {
+                DrawWaterMark();
+            }
         }
+
+        public delegate void ButtonClickedEventHandler();
 
         #endregion
 
@@ -370,15 +392,108 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Watermark)]
+        public string WaterMark
+        {
+            get
+            {
+                return waterMarkText;
+            }
+
+            set
+            {
+                waterMarkText = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color WaterMarkActiveForeColor
+        {
+            get
+            {
+                return waterMarkActiveColor;
+            }
+
+            set
+            {
+                waterMarkActiveColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentFont)]
+        public Font WaterMarkFont
+        {
+            get
+            {
+                return waterMarkFont;
+            }
+
+            set
+            {
+                waterMarkFont = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color WaterMarkForeColor
+        {
+            get
+            {
+                return waterMarkColor;
+            }
+
+            set
+            {
+                waterMarkColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool WatermarkVisible
+        {
+            get
+            {
+                return watermarkVisible;
+            }
+
+            set
+            {
+                watermarkVisible = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region Events
 
         public event ButtonClickedEventHandler ButtonClicked;
 
-        private void OnButtonClicked()
+        public void CreateTextBox()
         {
-            ButtonClicked?.Invoke();
+            TextBox tb = TextBoxObject;
+            tb.Size = new Size(Width, Height);
+            tb.Location = new Point(5, 2);
+            tb.Text = string.Empty;
+            tb.BorderStyle = BorderStyle.None;
+            tb.TextAlign = HorizontalAlignment.Left;
+            tb.Font = Font;
+            tb.ForeColor = ForeColor;
+            tb.BackColor = backgroundColor;
+            tb.UseSystemPasswordChar = UseSystemPasswordChar;
+            tb.Multiline = false;
+
+            TextBoxObject.KeyDown += OnKeyDown;
+            TextBoxObject.TextChanged += OnBaseTextBoxChanged;
         }
 
         protected override void OnEnter(EventArgs e)
@@ -386,6 +501,19 @@
             base.OnEnter(e);
             controlState = ControlState.Hover;
             Invalidate();
+
+            if (watermarkVisible)
+            {
+                // If focused use focus color
+                waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+
+                // Don't draw watermark if contains text.
+                if (TextLength <= 0)
+                {
+                    RemoveWaterMark();
+                    DrawWaterMark();
+                }
+            }
         }
 
         protected override void OnFontChanged(EventArgs e)
@@ -408,11 +536,38 @@
             TextBoxObject.Focus();
         }
 
+        protected override void OnInvalidated(InvalidateEventArgs e)
+        {
+            base.OnInvalidated(e);
+
+            // Check if there is a watermark
+            if (waterMarkContainer != null)
+            {
+                // if there is a watermark it should also be invalidated();
+                waterMarkContainer.Invalidate();
+            }
+        }
+
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
             controlState = ControlState.Normal;
             Invalidate();
+
+            if (watermarkVisible)
+            {
+                // If the user has written something and left the control
+                if (TextLength > 0)
+                {
+                    // Remove the watermark
+                    RemoveWaterMark();
+                }
+                else
+                {
+                    // But if the user didn't write anything, then redraw the control.
+                    Invalidate();
+                }
+            }
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -496,10 +651,9 @@
 
                 graphics.SetClip(controlGraphicsPath);
 
-                // button border?
+                // Button border
                 if (borderVisible)
                 {
-                    // Draw buttons border
                     GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
                 }
 
@@ -525,7 +679,10 @@
                 }
             }
 
-            // graphics.SetClip(controlGraphicsPath);
+            if (watermarkVisible)
+            {
+                DrawWaterMark();
+            }
         }
 
         protected override void OnResize(EventArgs e)
@@ -557,6 +714,34 @@
             base.OnTextChanged(e);
             TextBoxObject.Text = Text;
             Invalidate();
+
+            if (watermarkVisible)
+            {
+                // If the text of the text box is not empty.
+                if (TextLength > 0)
+                {
+                    // Remove the watermark
+                    RemoveWaterMark();
+                }
+                else
+                {
+                    // But if the text is empty, draw the watermark again.
+                    DrawWaterMark();
+                }
+            }
+        }
+
+        private void DrawWaterMark()
+        {
+            if (waterMarkContainer == null && TextLength <= 0)
+            {
+                waterMarkContainer = new Panel(); // Creates the new panel instance
+                waterMarkContainer.Paint += waterMarkContainer_Paint;
+                waterMarkContainer.Invalidate();
+                waterMarkContainer.Click += waterMarkContainer_Click;
+                Controls.Add(waterMarkContainer); // adds the control
+                waterMarkContainer.BringToFront();
+            }
         }
 
         private void OnBaseTextBoxChanged(object s, EventArgs e)
@@ -581,6 +766,15 @@
             }
         }
 
+        private void RemoveWaterMark()
+        {
+            if (waterMarkContainer != null)
+            {
+                Controls.Remove(waterMarkContainer);
+                waterMarkContainer = null;
+            }
+        }
+
         private void UpdateLocationPoints()
         {
             if (!Multiline)
@@ -596,33 +790,26 @@
             buttonPath.CloseAllFigures();
         }
 
-        #endregion
-
-        public delegate void ButtonClickedEventHandler();
-
-        #region ${0} Methods
-
-        public void CreateTextBox()
+        private void waterMarkContainer_Click(object sender, EventArgs e)
         {
-            TextBox tb = TextBoxObject;
-            tb.Size = new Size(Width, Height);
-            tb.Location = new Point(5, 2);
-            tb.Text = string.Empty;
-            tb.BorderStyle = BorderStyle.None;
-            tb.TextAlign = HorizontalAlignment.Left;
-            tb.Font = Font;
-            tb.ForeColor = ForeColor;
-            tb.BackColor = backgroundColor;
-            tb.UseSystemPasswordChar = UseSystemPasswordChar;
-            tb.Multiline = false;
-
-            TextBoxObject.KeyDown += OnKeyDown;
-            TextBoxObject.TextChanged += OnBaseTextBoxChanged;
+            Focus();
         }
 
-        public void TextBoxTextChanged(object s, EventArgs e)
+        private void waterMarkContainer_Paint(object sender, PaintEventArgs e)
         {
-            TextBoxObject.Text = Text;
+            // Configure the watermark
+            waterMarkContainer.Location = new Point(2, 0);
+            waterMarkContainer.Height = Height;
+            waterMarkContainer.Width = Width;
+
+            // Forces it to resize with the parent control
+            waterMarkContainer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+
+            // Set color
+            waterMarkBrush = ContainsFocus ? new SolidBrush(waterMarkActiveColor) : new SolidBrush(waterMarkColor);
+
+            // Draws the string on the panel
+            e.Graphics.DrawString(waterMarkText, waterMarkFont, waterMarkBrush, new PointF(-2f, 1f));
         }
 
         #endregion

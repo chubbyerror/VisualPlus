@@ -67,6 +67,8 @@
             public const string ToggleType = "Applies the specified toggle type.";
             public const string TrackBarType = "Sets or gets the specified trackbar type.";
             public const string ValueDivisor = "The value division.";
+            public const string Watermark = "The watermark to display for the control.";
+
         }
 
 #if DEBUG
