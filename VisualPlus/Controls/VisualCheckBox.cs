@@ -45,7 +45,13 @@
         private GraphicsPath checkBoxPath;
         private Rectangle checkBoxRectangle;
         private CheckBoxType checkBoxType = CheckBoxType.Filled;
-        private Color checkMarkColor = Settings.DefaultValue.Style.StyleColor;
+
+        private Color[] checkMarkColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
+                Settings.DefaultValue.Style.StyleColor
+            };
+
         private Size checkMarkFillSize = new Size(8, 8);
         private Point checkMarkLocation = new Point(0, 0);
         private GraphicsPath checkMarkPath;
@@ -60,12 +66,18 @@
 
         private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
+        private Point endCheckPoint;
         private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private float gradientAngle;
         private LinearGradientBrush gradientBrush;
+        private float gradientCheckAngle;
+        private LinearGradientBrush gradientCheckBrush;
+        private float[] gradientCheckPosition = { 0, 1 };
         private float[] gradientPosition = { 0, 1 / 2f, 1 };
         private VFXManager rippleEffectsManager;
+
+        private Point startCheckPoint;
         private Point startPoint;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
@@ -324,7 +336,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color CheckMarkColor
+        public Color[] CheckMarkColor
         {
             get
             {
@@ -383,6 +395,38 @@
             set
             {
                 gradientAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientCheckAngle
+        {
+            get
+            {
+                return gradientCheckAngle;
+            }
+
+            set
+            {
+                gradientCheckAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientCheckPosition
+        {
+            get
+            {
+                return gradientCheckPosition;
+            }
+
+            set
+            {
+                gradientCheckPosition = value;
                 Invalidate();
             }
         }
@@ -490,23 +534,25 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            Color controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor[0];
+            var controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
 
             gradientBrush = GDI.CreateGradientBrush(checkBoxColor, gradientPosition, gradientAngle, startPoint, endPoint);
 
             // Draw checkbox background
             graphics.FillPath(gradientBrush, checkBoxPath);
 
+            gradientCheckBrush = GDI.CreateGradientBrush(checkMarkColor, gradientCheckPosition, gradientCheckAngle, startCheckPoint, endCheckPoint);
+
             if (Checked)
             {
                 if (checkBoxType == CheckBoxType.CheckMark)
                 {
-                    DrawCheckMark(graphics, controlCheckTemp);
+                    DrawCheckMark(graphics, gradientCheckBrush);
                 }
                 else
                 {
                     // Draw filled check mark
-                    graphics.FillPath(new SolidBrush(controlCheckTemp), checkMarkPath);
+                    graphics.FillPath(gradientCheckBrush, checkMarkPath);
                 }
             }
 
@@ -539,7 +585,7 @@
             UpdateLocationPoints();
         }
 
-        private void DrawCheckMark(Graphics graphics, Color controlCheckTemp)
+        private void DrawCheckMark(Graphics graphics, LinearGradientBrush controlCheckTemp)
         {
             string checkCharString = ((char)0x221A).ToString();
             graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
@@ -551,7 +597,7 @@
             graphics.SetClip(checkBoxPath);
 
             // Draw check mark
-            graphics.DrawString(checkCharString, new Font(Font.FontFamily, Font.Size, FontStyle.Bold), new SolidBrush(controlCheckTemp), checkLocation);
+            graphics.DrawString(checkCharString, new Font(Font.FontFamily, Font.Size, FontStyle.Bold), controlCheckTemp, checkLocation);
             graphics.ResetClip();
             graphics.TextRenderingHint = textRendererHint;
         }
@@ -572,6 +618,9 @@
 
             startPoint = new Point(checkBoxRectangle.Width, 0);
             endPoint = new Point(checkBoxRectangle.Width, checkBoxRectangle.Height);
+
+            startCheckPoint = new Point(checkBoxRectangle.Width, 0);
+            endCheckPoint = new Point(checkBoxRectangle.Width, checkBoxRectangle.Height);
         }
 
         #endregion
