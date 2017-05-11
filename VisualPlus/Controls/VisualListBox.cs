@@ -9,9 +9,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
     #endregion
@@ -26,12 +24,8 @@
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private GraphicsPath controlGraphicsPath;
-        private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Color itemBackground = Settings.DefaultValue.Style.BackgroundColor(0);
         private Color itemBackground2 = Settings.DefaultValue.Style.BorderColor(0);
@@ -111,46 +105,6 @@
             set
             {
                 borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
-        public int BorderRounding
-        {
-            get
-            {
-                return borderRounding;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
-                {
-                    borderRounding = value;
-                }
-
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderShape)]
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
-        public BorderShape BorderShape
-        {
-            get
-            {
-                return borderShape;
-            }
-
-            set
-            {
-                borderShape = value;
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -309,19 +263,17 @@
 
         #region Events
 
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            Invalidate();
+        }
+
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
             Graphics graphics = e.Graphics;
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
-
-            BackColor = Parent.BackColor;
-
-            UpdateLocationPoints();
-
-            GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
-
-            e.Graphics.SetClip(controlGraphicsPath);
 
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
 
@@ -362,8 +314,10 @@
                 // Set control state color
                 foreColor = Enabled ? foreColor : textDisabledColor;
 
+                Rectangle background = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1);
+
                 // Draw the background
-                e.Graphics.FillRectangle(new SolidBrush(color), e.Bounds);
+                e.Graphics.FillRectangle(new SolidBrush(color), background);
 
                 StringFormat stringFormat = new StringFormat
                     {
@@ -374,40 +328,6 @@
                 // Draw the text
                 e.Graphics.DrawString(Items[e.Index].ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, stringFormat);
             }
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
-            Invalidate();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
-            Invalidate();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            UpdateLocationPoints();
-            Invalidate();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
-            Invalidate();
-        }
-
-        private void UpdateLocationPoints()
-        {
-            // Update paths
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
         #endregion
