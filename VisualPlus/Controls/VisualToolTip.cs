@@ -21,6 +21,8 @@
     {
         #region Variables
 
+        private bool autoSize = true;
+
         private Color[] backgroundColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
@@ -44,7 +46,7 @@
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
         private Color lineColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Padding padding;
+        private Padding padding = new Padding(4, 4, 4, 4);
         private Rectangle separator;
         private int separatorThickness = 1;
         private int spacing = 2;
@@ -57,7 +59,11 @@
         private Color titleColor = Color.Gray;
         private Font titleFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Bold);
         private Point titlePoint;
+        private Size toolTipSize = new Size(100, 40);
         private ToolTipType toolTipType = ToolTipType.Default;
+
+        private int xWidth;
+        private int yHeight;
 
         #endregion
 
@@ -65,7 +71,6 @@
 
         public VisualToolTip()
         {
-            Padding = new Padding(4, 4, 4, 4);
             IsBalloon = false;
             OwnerDraw = true;
             Popup += VisualToolTip_Popup;
@@ -87,6 +92,21 @@
         #endregion
 
         #region Properties
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.AutoSize)]
+        public bool AutoSize
+        {
+            get
+            {
+                return autoSize;
+            }
+
+            set
+            {
+                autoSize = value;
+            }
+        }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -245,7 +265,7 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color Line
+        public Color LineColor
         {
             get
             {
@@ -270,6 +290,36 @@
             set
             {
                 padding = value;
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentSize)]
+        public int SeparatorThickness
+        {
+            get
+            {
+                return separatorThickness;
+            }
+
+            set
+            {
+                separatorThickness = value;
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentSize)]
+        public int Spacing
+        {
+            get
+            {
+                return spacing;
+            }
+
+            set
+            {
+                spacing = value;
             }
         }
 
@@ -393,6 +443,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentSize)]
+        public Size ToolTipSize
+        {
+            get
+            {
+                return toolTipSize;
+            }
+
+            set
+            {
+                toolTipSize = value;
+            }
+        }
+
         #endregion
 
         #region Events
@@ -511,25 +576,30 @@
 
         private void VisualToolTip_Popup(object sender, PopupEventArgs e)
         {
-            var xWidth = 0;
-            var yHeight = 0;
-
             switch (toolTipType)
             {
                 case ToolTipType.Default:
                     {
-                        xWidth = GetTipWidth(TextRenderer.MeasureText(title, Font).Width, TextRenderer.MeasureText(text, Font).Width);
-                        yHeight = TextRenderer.MeasureText(title, Font).Height + separatorThickness + GetTipHeight(TextRenderer.MeasureText(text, Font).Height);
+                        if (!autoSize)
+                        {
+                            xWidth = toolTipSize.Width;
+                            yHeight = toolTipSize.Height;
+                        }
+                        else
+                        {
+                            xWidth = GetTipWidth(TextRenderer.MeasureText(title, Font).Width, TextRenderer.MeasureText(text, Font).Width);
+                            yHeight = TextRenderer.MeasureText(title, Font).Height + SeparatorThickness + GetTipHeight(TextRenderer.MeasureText(text, Font).Height);
+                        }
 
                         titlePoint.X = padding.Left;
                         titlePoint.Y = padding.Top;
 
-                        Point separatorPoint = new Point(padding.Left + spacing, TextRenderer.MeasureText(title, Font).Height + 5);
-                        Size separatorSize = new Size(xWidth - spacing, separatorThickness);
+                        Point separatorPoint = new Point(padding.Left + Spacing, TextRenderer.MeasureText(title, Font).Height + 5);
+                        Size separatorSize = new Size(xWidth, SeparatorThickness);
                         separator = new Rectangle(separatorPoint, separatorSize);
 
-                        textPoint.X = padding.Left + iconSize.Width + spacing;
-                        textPoint.Y = separator.Y + spacing;
+                        textPoint.X = padding.Left + iconSize.Width + Spacing;
+                        textPoint.Y = separator.Y + Spacing;
 
                         iconPoint = new Point(padding.Left, textPoint.Y);
                         break;
