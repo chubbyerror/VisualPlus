@@ -24,9 +24,13 @@
     {
         #region Variables
 
-        private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
+        protected Orientation orientation = Orientation.Horizontal;
 
-        private static Orientation orientation = Orientation.Horizontal;
+        #endregion
+
+        #region Variables
+
+        private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
 
         private static Color[] progressColor =
             {

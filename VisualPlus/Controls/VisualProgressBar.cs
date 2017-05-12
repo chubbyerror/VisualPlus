@@ -24,11 +24,15 @@
     {
         #region Variables
 
+        protected BorderShape borderShape = Settings.DefaultValue.BorderShape;
+
+        #endregion
+
+        #region Variables
+
         private static int bars = 5;
         private static int barSpacing = 10;
-        private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
-        private static ProgressBarTypes progressBarStyle = ProgressBarTypes.Horizontal;
 
         private static Color[] progressColor =
             {
@@ -73,6 +77,7 @@
 
         private Size minimumSize = new Size(100, 20);
         private bool percentageVisible;
+        private ProgressBarTypes progressBarStyle = ProgressBarTypes.Horizontal;
         private BrushType progressColorStyle = BrushType.Gradient;
         private Font progressFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private Point startPoint;

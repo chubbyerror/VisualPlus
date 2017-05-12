@@ -30,7 +30,12 @@
 
         #region Variables
 
-        private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        protected BorderShape borderShape = Settings.DefaultValue.BorderShape;
+
+        #endregion
+
+        #region Variables
+
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);

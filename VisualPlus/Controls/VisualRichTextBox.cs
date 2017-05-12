@@ -30,8 +30,12 @@
 
         #region Variables
 
-        private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
-        private static ControlState controlState = ControlState.Normal;
+        protected BorderShape borderShape = Settings.DefaultValue.BorderShape;
+
+        #endregion
+
+        #region Variables
+
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -41,6 +45,7 @@
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private GraphicsPath controlGraphicsPath;
+        private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
@@ -298,6 +303,25 @@
 
         #region Events
 
+        public void CreateRichTextBox()
+        {
+            // BackColor = Color.Transparent;
+            RichTextBox rtb = RichObject;
+            rtb.BackColor = backgroundColor;
+            rtb.ForeColor = ForeColor;
+            rtb.Size = new Size(Width - 10, 100);
+            rtb.Location = new Point(7, 5);
+            rtb.Text = string.Empty;
+            rtb.BorderStyle = BorderStyle.None;
+            rtb.Font = Font;
+            rtb.Multiline = true;
+        }
+
+        public void TextBoxTextChanged(object s, EventArgs e)
+        {
+            RichObject.Text = Text;
+        }
+
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
@@ -371,29 +395,6 @@
         {
             base.OnSizeChanged(e);
             RichObject.Size = new Size(Width - 13, Height - 11);
-        }
-
-        #endregion
-
-        #region Methods
-
-        public void CreateRichTextBox()
-        {
-            // BackColor = Color.Transparent;
-            RichTextBox rtb = RichObject;
-            rtb.BackColor = backgroundColor;
-            rtb.ForeColor = ForeColor;
-            rtb.Size = new Size(Width - 10, 100);
-            rtb.Location = new Point(7, 5);
-            rtb.Text = string.Empty;
-            rtb.BorderStyle = BorderStyle.None;
-            rtb.Font = Font;
-            rtb.Multiline = true;
-        }
-
-        public void TextBoxTextChanged(object s, EventArgs e)
-        {
-            RichObject.Text = Text;
         }
 
         #endregion
