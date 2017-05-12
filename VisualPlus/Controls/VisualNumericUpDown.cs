@@ -24,7 +24,11 @@
     {
         #region Variables
 
-        private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        protected static BorderShape borderShape = Settings.DefaultValue.BorderShape;
+
+        #endregion
+
+        #region Variables
 
         private Color[] backgroundColor =
             {
