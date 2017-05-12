@@ -35,13 +35,13 @@
 
         private float gradientHoverAngle;
         private LinearGradientBrush gradientHoverBrush;
-        private float[] gradientHoverPosition = { 0, 1 / 2f, 1 };
+        private float[] gradientHoverPosition = { 0, 1 };
         private float gradientNormalAngle;
         private LinearGradientBrush gradientNormalBrush;
-        private float[] gradientNormalPosition = { 0, 1 / 2f, 1 };
+        private float[] gradientNormalPosition = { 0, 1 };
         private float gradientSelectedAngle;
         private LinearGradientBrush gradientSelectedBrush;
-        private float[] gradientSelectedPosition = { 0, 1 / 2f, 1 };
+        private float[] gradientSelectedPosition = { 0, 1 };
         private Point hoverEndPoint;
         private Point hoverStartPoint;
         private StringAlignment lineAlignment = StringAlignment.Near;
@@ -63,7 +63,6 @@
 
         private Color[] tabHover =
             {
-                Settings.DefaultValue.Style.TabSelected,
                 ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
                 Settings.DefaultValue.Style.TabSelected
             };
@@ -72,14 +71,12 @@
 
         private Color[] tabNormal =
             {
-                Settings.DefaultValue.Style.TabNormal,
                 ControlPaint.Light(Settings.DefaultValue.Style.TabNormal),
                 Settings.DefaultValue.Style.TabNormal
             };
 
         private Color[] tabSelected =
             {
-                Settings.DefaultValue.Style.TabSelected,
                 ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
                 Settings.DefaultValue.Style.TabSelected
             };
