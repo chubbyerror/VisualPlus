@@ -22,7 +22,7 @@
             properties.Remove("ImageIndex");
             properties.Remove("ImageKey");
             properties.Remove("ImageList");
-            properties.Remove("TextImageRelation");
+            // properties.Remove("TextImageRelation");
 
             properties.Remove("BackColor");
             properties.Remove("BackgroundImage");

@@ -1,10 +1,14 @@
 ﻿namespace VisualPlus.Framework.GDI
 {
+    #region Namespace
+
     using System;
+
+    #endregion
 
     internal class AnimationLinear
     {
-        #region ${0} Methods
+        #region Events
 
         public static double CalculateProgress(double progress)
         {
@@ -16,14 +20,19 @@
 
     internal class AnimationEaseInOut
     {
-        #region  ${0} Variables
+        #region Variables
 
         public static double Pi = Math.PI;
         public static double PiHalf = Math.PI / 2;
 
         #endregion
 
-        #region ${0} Events
+        #region Events
+
+        public static double CalculateProgress(double progress)
+        {
+            return EaseInOut(progress);
+        }
 
         private static double EaseInOut(double s)
         {
@@ -31,20 +40,11 @@
         }
 
         #endregion
-
-        #region ${0} Methods
-
-        public static double CalculateProgress(double progress)
-        {
-            return EaseInOut(progress);
-        }
-
-        #endregion
     }
 
     public static class AnimationEaseOut
     {
-        #region ${0} Methods
+        #region Events
 
         public static double CalculateProgress(double progress)
         {
@@ -56,7 +56,7 @@
 
     public static class AnimationCustomQuadratic
     {
-        #region ${0} Methods
+        #region Events
 
         public static double CalculateProgress(double progress)
         {

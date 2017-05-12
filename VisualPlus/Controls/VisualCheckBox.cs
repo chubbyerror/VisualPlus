@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,51 +14,77 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    public enum CheckBoxType
-    {
-        /// <summary>The check mark.</summary>
-        CheckMark,
-
-        /// <summary>The filled.</summary>
-        Filled
-    }
+    #endregion
 
     /// <summary>The visual CheckBox.</summary>
-    [ToolboxBitmap(typeof(CheckBox)), Designer(VSDesignerBinding.VisualCheckBox)]
+    [ToolboxBitmap(typeof(CheckBox))]
+    [Designer(VSDesignerBinding.VisualCheckBox)]
     public sealed class VisualCheckBox : CheckBox
     {
-        #region  ${0} Variables
+        #region Variables
 
-        private const int spacing = 2;
+        private const int Spacing = 2;
         private bool animation = true;
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Size boxSize = new Size(14, 14);
-        private Color checkBoxColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
+
+        private Color[] checkBoxColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3)),
+                Settings.DefaultValue.Style.BackgroundColor(3),
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3))
+            };
+
         private Point checkBoxLocation = new Point(0, 0);
         private GraphicsPath checkBoxPath;
         private Rectangle checkBoxRectangle;
         private CheckBoxType checkBoxType = CheckBoxType.Filled;
-        private Color checkMarkColor = StylesManager.MainColor;
+
+        private Color[] checkMarkColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
+                Settings.DefaultValue.Style.StyleColor
+            };
+
         private Size checkMarkFillSize = new Size(8, 8);
         private Point checkMarkLocation = new Point(0, 0);
         private GraphicsPath checkMarkPath;
         private Rectangle checkMarkRectangle;
-        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+
+        private Color[] controlDisabledColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+                Settings.DefaultValue.Style.ControlDisabled,
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
+            };
+
         private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
+        private Point endCheckPoint;
+        private Point endPoint;
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private float gradientAngle;
+        private LinearGradientBrush gradientBrush;
+        private float gradientCheckAngle;
+        private LinearGradientBrush gradientCheckBrush;
+        private float[] gradientCheckPosition = { 0, 1 };
+        private float[] gradientPosition = { 0, 1 / 2f, 1 };
         private VFXManager rippleEffectsManager;
-        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+
+        private Point startCheckPoint;
+        private Point startPoint;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualCheckBox()
         {
@@ -64,6 +92,9 @@
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
+
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Cursor = Cursors.Hand;
 
             // Setup effects animation
             effectsManager = new VFXManager
@@ -89,8 +120,22 @@
             Animation = true;
         }
 
-        [DefaultValue(StylesManager.DefaultValue.Animation), Category(Localize.Category.Behavior),
-         Description(Localize.Description.Animation)]
+        public enum CheckBoxType
+        {
+            /// <summary>The check mark.</summary>
+            CheckMark,
+
+            /// <summary>The filled.</summary>
+            Filled
+        }
+
+        #endregion
+
+        #region Properties
+
+        [DefaultValue(Settings.DefaultValue.Animation)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Animation)]
         public bool Animation
         {
             get
@@ -112,7 +157,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -127,7 +173,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -142,8 +189,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -158,8 +206,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -169,8 +218,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumCheckBoxBorderRounding,
-                    StylesManager.MaximumCheckBoxBorderRounding))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumCheckBoxBorderRounding, Settings.MaximumCheckBoxBorderRounding))
                 {
                     borderRounding = value;
                 }
@@ -180,8 +228,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -197,28 +246,30 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -233,8 +284,26 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color CheckBoxColor
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentNoName)]
+        public CheckBoxType BoxType
+        {
+            get
+            {
+                return checkBoxType;
+            }
+
+            set
+            {
+                checkBoxType = value;
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color[] CheckBoxColor
         {
             get
             {
@@ -248,7 +317,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentSize)]
         public Size CheckBoxSize
         {
             get
@@ -264,24 +334,9 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentNoName)]
-        public CheckBoxType CheckBoxType
-        {
-            get
-            {
-                return checkBoxType;
-            }
-
-            set
-            {
-                checkBoxType = value;
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color CheckMarkColor
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color[] CheckMarkColor
         {
             get
             {
@@ -295,7 +350,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentSize)]
         public Size CheckMarkFillSize
         {
             get
@@ -311,8 +367,9 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
-        public Color ControlDisabledColor
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
+        public Color[] ControlDisabledColor
         {
             get
             {
@@ -326,10 +383,75 @@
             }
         }
 
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientAngle
+        {
+            get
+            {
+                return gradientAngle;
+            }
+
+            set
+            {
+                gradientAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientCheckAngle
+        {
+            get
+            {
+                return gradientCheckAngle;
+            }
+
+            set
+            {
+                gradientCheckAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientCheckPosition
+        {
+            get
+            {
+                return gradientCheckPosition;
+            }
+
+            set
+            {
+                gradientCheckPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientPosition
+        {
+            get
+            {
+                return gradientPosition;
+            }
+
+            set
+            {
+                gradientPosition = value;
+                Invalidate();
+            }
+        }
+
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -344,7 +466,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -359,14 +482,29 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnMouseHover(EventArgs e)
         {
             base.OnMouseHover(e);
-            Cursor = Cursors.Hand;
             controlState = ControlState.Hover;
             Invalidate();
         }
@@ -388,41 +526,40 @@
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            graphics.Clear(BackColor);
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
+            graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.CompositingQuality = CompositingQuality.GammaCorrected;
+            graphics.TextRenderingHint = textRendererHint;
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            Color controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
+            var controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
+
+            gradientBrush = GDI.CreateGradientBrush(checkBoxColor, gradientPosition, gradientAngle, startPoint, endPoint);
 
             // Draw checkbox background
-            graphics.FillPath(new SolidBrush(CheckBoxColor), checkBoxPath);
+            graphics.FillPath(gradientBrush, checkBoxPath);
+
+            gradientCheckBrush = GDI.CreateGradientBrush(checkMarkColor, gradientCheckPosition, gradientCheckAngle, startCheckPoint, endCheckPoint);
 
             if (Checked)
             {
                 if (checkBoxType == CheckBoxType.CheckMark)
                 {
-                    // Draw check mark
-                    Point pt = new Point(-2, -1);
-                    Rectangle layoutRectangle = new Rectangle(pt, new Size(checkBoxRectangle.Width, checkBoxRectangle.Height));
-
-                    using (Font wing = new Font("Wingdings", 14f, FontStyle.Regular))
-                    {
-                        e.Graphics.DrawString("ü", wing, new SolidBrush(controlCheckTemp), layoutRectangle);
-                    }
+                    DrawCheckMark(graphics, gradientCheckBrush);
                 }
                 else
                 {
                     // Draw filled check mark
-                    graphics.FillPath(new SolidBrush(controlCheckTemp), checkMarkPath);
+                    graphics.FillPath(gradientCheckBrush, checkMarkPath);
                 }
             }
 
             // Setup checkbox border
             if (BorderVisible)
             {
-                GDI.DrawBorderType(graphics, controlState, checkBoxPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                GDI.DrawBorderType(graphics, controlState, checkBoxPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
             }
 
             // Draw string
@@ -432,9 +569,7 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            // Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, boxSize.Height / 2 - (int)Font.Size / 2);
-            // Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, ClientRectangle.Height / 2 - (int)Font.Size / 2);
-            Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + spacing, ClientRectangle.Height / 2);
+            Point textPoint = new Point(checkBoxLocation.X + boxSize.Width + Spacing, ClientRectangle.Height / 2);
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 
@@ -450,20 +585,42 @@
             UpdateLocationPoints();
         }
 
+        private void DrawCheckMark(Graphics graphics, LinearGradientBrush controlCheckTemp)
+        {
+            string checkCharString = ((char)0x221A).ToString();
+            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+            Size checkSize = new Size(checkBoxRectangle.Width, checkBoxRectangle.Height);
+            Point checkLocation = new Point(checkBoxRectangle.Width / 2 - checkSize.Width / 2, checkBoxRectangle.Height / 2 - checkSize.Height / 2);
+
+            // Draw checkmark inside clip
+            graphics.SetClip(checkBoxPath);
+
+            // Draw check mark
+            graphics.DrawString(checkCharString, new Font(Font.FontFamily, Font.Size, FontStyle.Bold), controlCheckTemp, checkLocation);
+            graphics.ResetClip();
+            graphics.TextRenderingHint = textRendererHint;
+        }
+
         private void UpdateLocationPoints()
         {
             // Update
             checkBoxLocation = new Point(checkBoxLocation.X, ClientRectangle.Height / 2 - boxSize.Height / 2);
             checkBoxRectangle = new Rectangle(checkBoxLocation, boxSize);
 
-            checkMarkLocation = new Point(checkBoxLocation.X + boxSize.Width / 2 - checkMarkFillSize.Width / 2,
-                checkBoxLocation.Y + boxSize.Height / 2 - checkMarkFillSize.Height / 2);
+            checkMarkLocation = new Point(checkBoxLocation.X + boxSize.Width / 2 - checkMarkFillSize.Width / 2, checkBoxLocation.Y + boxSize.Height / 2 - checkMarkFillSize.Height / 2);
 
             checkMarkRectangle = new Rectangle(checkMarkLocation, checkMarkFillSize);
 
             // Update paths
             checkBoxPath = GDI.GetBorderShape(checkBoxRectangle, borderShape, borderRounding);
             checkMarkPath = GDI.GetBorderShape(checkMarkRectangle, borderShape, 1);
+
+            startPoint = new Point(checkBoxRectangle.Width, 0);
+            endPoint = new Point(checkBoxRectangle.Width, checkBoxRectangle.Height);
+
+            startCheckPoint = new Point(checkBoxRectangle.Width, 0);
+            endCheckPoint = new Point(checkBoxRectangle.Width, checkBoxRectangle.Height);
         }
 
         #endregion

@@ -1,30 +1,24 @@
 namespace VisualPlus.Framework
 {
-    using System.Drawing;
+    #region Namespace
+
+    using System.Drawing.Text;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework.Styles;
+    using VisualPlus.Styles;
 
-    public enum Style
+    #endregion
+
+    internal class Settings
     {
-        // Note: If you implement more styles or your own styles, just add enumeration here.
+        #region Variables
 
-        /// <summary>Visual Style.</summary>
-        Visual = 0,
-
-        /// <summary>Black and Yellow Style.</summary>
-        BlackAndYellow = 1
-    }
-
-    internal class StylesManager
-    {
-        #region  ${0} Variables
-
-        public static readonly Color MainColor = Color.Green;
+        public static readonly int MaximumAlpha = 255;
         public static readonly int MaximumBorderSize = 24;
         public static readonly int MaximumCheckBoxBorderRounding = 12;
         public static readonly int MaximumCheckBoxSize = 11;
         public static readonly int MaximumRounding = 30;
+        public static readonly int MinimumAlpha = 1;
         public static readonly int MinimumBorderSize = 1;
         public static readonly int MinimumCheckBoxBorderRounding = 1;
         public static readonly int MinimumCheckBoxSize = 3;
@@ -32,12 +26,12 @@ namespace VisualPlus.Framework
 
         #endregion
 
-        #region ${0} Structures
+        #region Methods
 
         public struct DefaultValue
         {
             public const bool Animation = true;
-            public const int BorderSize = 1;
+            public const int BorderThickness = 1;
             public const bool BorderHoverVisible = true;
             public const int BorderRounding = 6;
             public const BorderShape BorderShape = Enums.BorderShape.Rounded;
@@ -48,8 +42,9 @@ namespace VisualPlus.Framework
             public const bool HatchVisible = true;
             public const int BarAmount = 5;
             public const float HatchSize = 2F;
-
+            public const Styles DefaultStyle = Styles.Visual;
             public static readonly IStyle Style = new Visual();
+            public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
         }
 
         #endregion

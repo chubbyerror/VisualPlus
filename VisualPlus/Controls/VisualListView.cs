@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -14,63 +16,39 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual ListView.</summary>
     [ToolboxBitmap(typeof(ListView))]
 
     // [ToolboxBitmap(typeof(ListView)), Designer(VSDesignerBinding.VisualListView)]
     public sealed class VisualListView : ListView
     {
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class LogFont
-        {
-            #region  ${0} Variables
+        #region Variables
 
-            public byte lfCharSet = 0;
-            public byte lfClipPrecision = 0;
-            public int lfEscapement = 0;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            public string lfFaceName = string.Empty;
-
-            public int lfHeight = 0;
-            public byte lfItalic = 0;
-            public int lfOrientation = 0;
-            public byte lfOutPrecision = 0;
-            public byte lfPitchAndFamily = 0;
-            public byte lfQuality = 0;
-            public byte lfStrikeOut = 0;
-            public byte lfUnderline = 0;
-            public int lfWeight = 0;
-            public int lfWidth = 0;
-
-            #endregion
-        }
-
-        #region  ${0} Variables
-
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible;
-        private Color columnBorder = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color columnHeaderBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
+        private Color columnBorder = Settings.DefaultValue.Style.BorderColor(0);
+        private Color columnHeaderBackground = Settings.DefaultValue.Style.BackgroundColor(3);
         private ControlState controlState = ControlState.Normal;
         private bool drawFocusRectangle;
         private bool drawStandardHeader;
         private Font headerFont = new Font("Helvetica", 10, FontStyle.Regular);
-        private Color headerText = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color itemBackground = StylesManager.DefaultValue.Style.BackgroundColor(3);
-        private Color itemHover = StylesManager.DefaultValue.Style.ItemHover(0);
+        private Color headerText = Settings.DefaultValue.Style.ForeColor(0);
+        private Color itemBackground = Settings.DefaultValue.Style.BackgroundColor(3);
+        private Color itemHover = Settings.DefaultValue.Style.ItemHover(0);
         private int itemPadding = 12;
-        private Color itemSelected = StylesManager.DefaultValue.Style.BorderColor(1);
+        private Color itemSelected = Settings.DefaultValue.Style.BorderColor(1);
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualListView()
         {
             SetStyle(
-                ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.SupportsTransparentBackColor, true);
+                ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
 
             View = View.Details;
             MultiSelect = false;
@@ -90,7 +68,7 @@
             AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
             UpdateStyles();
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             // Fix for hovers, by default it doesn't redraw
             // TODO: should only redraw when the hovered line changed, this to reduce unnecessary redraws
             MouseLocation = new Point(-1, -1);
@@ -128,28 +106,34 @@
                 };
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        #endregion
+
+        #region Properties
+
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -164,7 +148,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ColumnBackground
         {
             get
@@ -179,7 +164,9 @@
             }
         }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior)]
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.FocusVisible)]
         public bool FocusVisible
         {
             get
@@ -194,7 +181,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentFont)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentFont)]
         public Font HeaderFont
         {
             get
@@ -209,7 +197,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color HeaderText
         {
             get
@@ -224,7 +213,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ItemBackground
         {
             get
@@ -239,7 +229,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ItemHover
         {
             get
@@ -269,7 +260,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ItemSelected
         {
             get
@@ -287,7 +279,8 @@
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior)]
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
         public bool StandardHeader
         {
             get
@@ -302,18 +295,34 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         [Browsable(false)]
         private ListViewItem HoveredItem { get; set; }
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
         {
             Graphics graphics = e.Graphics;
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.TextRenderingHint = TextRenderingHint.SystemDefault;
+            graphics.TextRenderingHint = textRendererHint;
 
             Rectangle columnHeaderRectangle = new Rectangle(e.Bounds.X, e.Bounds.Y, Width, e.Bounds.Height);
             GraphicsPath columnHeaderPath = new GraphicsPath();
@@ -334,7 +343,7 @@
             if (borderVisible)
             {
                 // Draw column header border
-                GDI.DrawBorder(graphics, columnHeaderPath, borderSize, columnBorder);
+                GDI.DrawBorder(graphics, columnHeaderPath, borderThickness, columnBorder);
             }
 
             StringFormat stringFormat = new StringFormat
@@ -344,10 +353,7 @@
                 };
 
             // Draw the header text.
-            e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText),
-                new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2,
-                    e.Bounds.Height - itemPadding * 2), stringFormat);
-
+            e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText), new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2, e.Bounds.Height - itemPadding * 2), stringFormat);
             graphics.Dispose();
         }
 
@@ -372,15 +378,12 @@
             }
 
             // Draw separator
-            graphics.DrawLine(new Pen(StylesManager.DefaultValue.Style.BorderColor(0)), e.Bounds.Left, 0, e.Bounds.Right, 0);
+            graphics.DrawLine(new Pen(Settings.DefaultValue.Style.BorderColor(0)), e.Bounds.Left, 0, e.Bounds.Right, 0);
 
             foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
             {
                 // Draw text
-                graphics.DrawString(subItem.Text, Font, new SolidBrush(Color.Black),
-                    new Rectangle(subItem.Bounds.X + itemPadding, itemPadding, subItem.Bounds.Width - 2 * itemPadding,
-                        subItem.Bounds.Height - 2 * itemPadding),
-                    GetStringFormat());
+                graphics.DrawString(subItem.Text, Font, new SolidBrush(Color.Black), new Rectangle(subItem.Bounds.X + itemPadding, itemPadding, subItem.Bounds.Width - 2 * itemPadding, subItem.Bounds.Height - 2 * itemPadding), GetStringFormat());
             }
 
             if ((e.State & ListViewItemStates.Selected) != 0)
@@ -434,10 +437,7 @@
                 // Draw the text and background for a subitem with a 
                 // negative value. 
                 double subItemValue;
-                if (e.ColumnIndex > 0 && double.TryParse(
-                        e.SubItem.Text, NumberStyles.Currency,
-                        NumberFormatInfo.CurrentInfo, out subItemValue) &&
-                    subItemValue < 0)
+                if (e.ColumnIndex > 0 && double.TryParse(e.SubItem.Text, NumberStyles.Currency, NumberFormatInfo.CurrentInfo, out subItemValue) && subItemValue < 0)
                 {
                     // Unless the item is selected, draw the standard 
                     // background to make it stand out from the gradient.
@@ -495,6 +495,36 @@
                     Alignment = StringAlignment.Near,
                     LineAlignment = StringAlignment.Center
                 };
+        }
+
+        #endregion
+
+        #region Methods
+
+        [StructLayout(LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        public class LogFont
+        {
+            #region Variables
+
+            public byte CharSet = 0;
+            public byte ClipPrecision = 0;
+            public int Escapement = 0;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+            public string FaceName = string.Empty;
+
+            public int Height = 0;
+            public byte Italic = 0;
+            public int Orientation = 0;
+            public byte OutPrecision = 0;
+            public byte PitchAndFamily = 0;
+            public byte Quality = 0;
+            public byte StrikeOut = 0;
+            public byte Underline = 0;
+            public int Weight = 0;
+            public int Width = 0;
+
+            #endregion
         }
 
         #endregion

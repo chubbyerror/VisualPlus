@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -10,11 +12,14 @@
     using VisualPlus.Framework;
     using VisualPlus.Localization;
 
+    #endregion
+
     /// <summary>The visual ProgressIndicator.</summary>
-    [ToolboxBitmap(typeof(ProgressBar)), Designer(VSDesignerBinding.VisualProgressIndicator)]
+    [ToolboxBitmap(typeof(ProgressBar))]
+    [Designer(VSDesignerBinding.VisualProgressIndicator)]
     public sealed class VisualProgressIndicator : Control
     {
-        #region  ${0} Variables
+        #region Variables
 
         private static SolidBrush animationColor = new SolidBrush(Color.DimGray);
         private static Size circleSize = new Size(15, 15);
@@ -32,7 +37,7 @@
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualProgressIndicator()
         {
@@ -41,6 +46,7 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Size = new Size(80, 80);
             MinimumSize = new Size(80, 80);
             SetPoints();
@@ -48,7 +54,12 @@
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        #endregion
+
+        #region Properties
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color AnimationColor
         {
             get
@@ -62,7 +73,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.AnimationSpeed)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.AnimationSpeed)]
         public int AnimationSpeed
         {
             get
@@ -76,7 +88,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BaseColor
         {
             get
@@ -90,7 +103,9 @@
             }
         }
 
-        [DefaultValue(45F), Category(Localize.Category.Layout), Description(Localize.Description.ComponentDiameter)]
+        [DefaultValue(45F)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentDiameter)]
         public float Circles
         {
             get
@@ -106,7 +121,8 @@
             }
         }
 
-        [Category(Localize.Category.Layout), Description(Localize.Description.ComponentSize)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
         public Size CircleSize
         {
             get
@@ -121,7 +137,9 @@
             }
         }
 
-        [DefaultValue(7.5F), Category(Localize.Category.Layout), Description(Localize.Description.ComponentDiameter)]
+        [DefaultValue(7.5F)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentDiameter)]
         public float Diameter
         {
             get
@@ -150,7 +168,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnEnabledChanged(EventArgs e)
         {
@@ -170,8 +188,11 @@
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+
+
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
+
 
             buffGraphics.Graphics.Clear(BackColor);
             int num2 = floatPoint.Length - 1;
@@ -180,16 +201,12 @@
                 if (indicatorIndex == i)
                 {
                     // Current circle
-                    buffGraphics.Graphics.FillEllipse(animationColor, floatPoint[i].
-                        X, floatPoint[i].
-                        Y, circleSize.Width, circleSize.Height);
+                    buffGraphics.Graphics.FillEllipse(animationColor, floatPoint[i].X, floatPoint[i].Y, circleSize.Width, circleSize.Height);
                 }
                 else
                 {
                     // Other circles
-                    buffGraphics.Graphics.FillEllipse(baseColor, floatPoint[i].
-                        X, floatPoint[i].
-                        Y, circleSize.Width, circleSize.Height);
+                    buffGraphics.Graphics.FillEllipse(baseColor, floatPoint[i].X, floatPoint[i].Y, circleSize.Width, circleSize.Height);
                 }
             }
 

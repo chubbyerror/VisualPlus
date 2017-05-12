@@ -14,6 +14,7 @@
         public const string VisualComboBox = NamespaceLocation + "VisualComboBoxDesigner";
         public const string VisualContextMenu = NamespaceLocation + "VisualContextMenuDesigner";
         public const string VisualGroupBox = NamespaceLocation + "VisualGroupBoxDesigner";
+        public const string VisualLabel = NamespaceLocation + "VisualLabelDesigner";
         public const string VisualListBox = NamespaceLocation + "VisualListBoxDesigner";
         public const string VisualListView = NamespaceLocation + "VisualListViewDesigner";
         public const string VisualNumericUpDown = NamespaceLocation + "VisualNumericUpDownDesigner";
@@ -26,6 +27,7 @@
         public const string VisualTab = NamespaceLocation + "VisualTabDesigner";
         public const string VisualTextBox = NamespaceLocation + "VisualTextBoxDesigner";
         public const string VisualToggle = NamespaceLocation + "VisualToggleDesigner";
+        public const string VisualToolTip = NamespaceLocation + "VisualToolTip";
         public const string VisualTrackBar = NamespaceLocation + "VisualTrackBarDesigner";
     }
 }

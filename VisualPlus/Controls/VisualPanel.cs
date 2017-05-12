@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.ComponentModel.Design;
@@ -12,27 +14,29 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    /// <summary>The visual panel.</summary>
-    // [ToolboxBitmap(typeof(Panel)), Designer(VSDesignerBinding.VisualPanel), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    [ToolboxBitmap(typeof(Panel)), Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public partial class VisualPanel : Panel
-    {
-        #region  ${0} Variables
+    #endregion
 
-        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
+    /// <summary>The visual panel.</summary>
+    [ToolboxBitmap(typeof(Panel))]
+    [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
+    public sealed partial class VisualPanel : Panel
+    {
+        #region Variables
+
+        private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualPanel()
         {
@@ -41,6 +45,7 @@
                 ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Size = new Size(187, 117);
             Padding = new Padding(5, 5, 5, 5);
             DoubleBuffered = true;
@@ -48,7 +53,12 @@
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        #endregion
+
+        #region Properties
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -59,12 +69,13 @@
             set
             {
                 backgroundColor = value;
-                BackColorFix();
+                ExceptionHandler.ApplyContainerBackColorChange(this, backgroundColor);
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -79,7 +90,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -94,8 +106,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -110,8 +123,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -121,7 +135,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumRounding, StylesManager.MaximumRounding))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     borderRounding = value;
                 }
@@ -131,8 +145,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -148,28 +163,30 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -186,12 +203,16 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
-            base.OnControlAdded(e);
-            BackColorFix();
+            ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, false);
+        }
+
+        protected override void OnControlRemoved(ControlEventArgs e)
+        {
+            ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, true);
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -222,14 +243,7 @@
             // Setup control border
             if (borderVisible)
             {
-                if (controlState == ControlState.Hover && borderHoverVisible)
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
-                }
-                else
-                {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
-                }
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
             }
         }
 
@@ -249,116 +263,6 @@
         {
             // Update paths
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        public virtual void BackColorFix()
-        {
-            foreach (object control in Controls)
-            {
-                if (control is VisualColorWheel)
-                {
-                    (control as VisualColorWheel).BackColor = backgroundColor;
-                }
-
-                if (control is VisualButton)
-                {
-                    (control as VisualButton).BackColor = backgroundColor;
-                }
-
-                if (control is VisualCheckBox)
-                {
-                    (control as VisualCheckBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualCircleProgressBar)
-                {
-                    (control as VisualCircleProgressBar).BackColor = backgroundColor;
-                }
-
-                if (control is VisualComboBox)
-                {
-                    (control as VisualComboBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualGroupBox)
-                {
-                    (control as VisualGroupBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualListBox)
-                {
-                    (control as VisualListBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualNumericUpDown)
-                {
-                    (control as VisualNumericUpDown).BackColor = backgroundColor;
-                }
-
-                if (control is VisualProgressBar)
-                {
-                    (control as VisualProgressBar).BackColor = backgroundColor;
-                }
-
-                if (control is VisualProgressIndicator)
-                {
-                    (control as VisualProgressIndicator).BackColor = backgroundColor;
-                }
-
-                if (control is VisualProgressSpinner)
-                {
-                    (control as VisualProgressSpinner).BackColor = backgroundColor;
-                }
-
-                if (control is VisualRadioButton)
-                {
-                    (control as VisualRadioButton).BackColor = backgroundColor;
-                }
-
-                if (control is VisualRichTextBox)
-                {
-                    (control as VisualRichTextBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualSeparator)
-                {
-                    (control as VisualSeparator).BackColor = backgroundColor;
-                }
-
-                if (control is VisualTabControl)
-                {
-                    (control as VisualTabControl).BackColor = backgroundColor;
-                }
-
-                if (control is VisualTextBox)
-                {
-                    (control as VisualTextBox).BackColor = backgroundColor;
-                }
-
-                if (control is VisualToggle)
-                {
-                    (control as VisualToggle).BackColor = backgroundColor;
-                }
-
-                if (control is VisualTrackBar)
-                {
-                    (control as VisualTrackBar).BackColor = backgroundColor;
-                }
-
-                if (control is VisualListView)
-                {
-                    (control as VisualListView).BackColor = backgroundColor;
-                }
-
-                if (control is VisualLabel)
-                {
-                    (control as VisualLabel).BackColor = backgroundColor;
-                }
-            }
         }
 
         #endregion

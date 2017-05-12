@@ -1,10 +1,16 @@
-﻿namespace VisualPlus.Framework.Styles
+﻿namespace VisualPlus.Styles
 {
+    #region Namespace
+
     using System.Drawing;
+
+    using VisualPlus.Enums;
+
+    #endregion
 
     public interface IStyle
     {
-        #region ${0} Properties
+        #region Properties
 
         Color BackgroundProgressCircle { get; }
 
@@ -28,13 +34,13 @@
 
         Color LineColor { get; }
 
-        Color MainColor { get; }
+        Color StyleColor { get; }
 
         Color ProgressColor { get; }
 
         Color ShadowColor { get; }
 
-        Style StyleManagement { get; }
+        Styles StyleManagement { get; }
 
         Color TabHover { get; }
 
@@ -50,9 +56,11 @@
 
         Color TextDisabled { get; }
 
+        FontFamily FontFamily { get; }
+
         #endregion
 
-        #region ${0} Methods
+        #region Events
 
         Color BackgroundColor(int depth);
 

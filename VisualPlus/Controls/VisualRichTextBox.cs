@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,30 +14,45 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    /// <summary>The visual RichTextBox.</summary>
-    [ToolboxBitmap(typeof(RichTextBox)), Designer(VSDesignerBinding.VisualRichTextBox), DefaultEvent("TextChanged")]
-    public class VisualRichTextBox : RichTextBox
-    {
-        #region  ${0} Variables
+    #endregion
 
-        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
-        private static ControlState controlState = ControlState.Normal;
+    /// <summary>The visual RichTextBox.</summary>
+    [ToolboxBitmap(typeof(RichTextBox))]
+    [Designer(VSDesignerBinding.VisualRichTextBox)]
+    [DefaultEvent("TextChanged")]
+    public sealed class VisualRichTextBox : RichTextBox
+    {
+        #region Variables
+
         public RichTextBox RichObject = new RichTextBox();
-        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
-        private GraphicsPath controlGraphicsPath;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
-        #region ${0} Properties
+        #region Variables
+
+        protected BorderShape borderShape = Settings.DefaultValue.BorderShape;
+
+        #endregion
+
+        #region Variables
+
+        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private GraphicsPath controlGraphicsPath;
+        private ControlState controlState = ControlState.Normal;
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+
+        #endregion
+
+        #region Constructors
 
         public VisualRichTextBox()
         {
@@ -52,11 +69,16 @@
             AutoWordSelection = false;
             BorderStyle = BorderStyle.None;
             TextChanged += TextBoxTextChanged;
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        #endregion
+
+        #region Properties
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -71,7 +93,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -86,7 +109,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -101,8 +125,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -117,8 +142,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -128,7 +154,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumRounding, StylesManager.MaximumRounding))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     borderRounding = value;
                 }
@@ -138,8 +164,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -155,28 +182,30 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -191,7 +220,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
@@ -221,7 +251,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -236,7 +267,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -251,9 +283,44 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
-        #region ${0} Events
+        #region Events
+
+        public void CreateRichTextBox()
+        {
+            // BackColor = Color.Transparent;
+            RichTextBox rtb = RichObject;
+            rtb.BackColor = backgroundColor;
+            rtb.ForeColor = ForeColor;
+            rtb.Size = new Size(Width - 10, 100);
+            rtb.Location = new Point(7, 5);
+            rtb.Text = string.Empty;
+            rtb.BorderStyle = BorderStyle.None;
+            rtb.Font = Font;
+            rtb.Multiline = true;
+        }
+
+        public void TextBoxTextChanged(object s, EventArgs e)
+        {
+            RichObject.Text = Text;
+        }
 
         protected override void OnEnter(EventArgs e)
         {
@@ -289,7 +356,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.TextRenderingHint = textRendererHint;
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
@@ -306,11 +373,11 @@
             {
                 if (controlState == ControlState.Hover && borderHoverVisible)
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
+                    GDI.DrawBorder(graphics, controlGraphicsPath, borderThickness, borderHoverColor);
                 }
                 else
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
+                    GDI.DrawBorder(graphics, controlGraphicsPath, borderThickness, borderColor);
                 }
             }
 
@@ -328,29 +395,6 @@
         {
             base.OnSizeChanged(e);
             RichObject.Size = new Size(Width - 13, Height - 11);
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        public void CreateRichTextBox()
-        {
-            // BackColor = Color.Transparent;
-            RichTextBox rtb = RichObject;
-            rtb.BackColor = backgroundColor;
-            rtb.ForeColor = ForeColor;
-            rtb.Size = new Size(Width - 10, 100);
-            rtb.Location = new Point(7, 5);
-            rtb.Text = string.Empty;
-            rtb.BorderStyle = BorderStyle.None;
-            rtb.Font = Font;
-            rtb.Multiline = true;
-        }
-
-        public void TextBoxTextChanged(object s, EventArgs e)
-        {
-            RichObject.Text = Text;
         }
 
         #endregion

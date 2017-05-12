@@ -1,11 +1,15 @@
 ﻿namespace VisualPlus.Controls.BehaviorDesign
 {
+    #region Namespace
+
     using System.Collections;
     using System.Windows.Forms.Design;
 
-    internal class VisualButtonDesigner : ControlDesigner
+    #endregion
+
+    internal class VisualToolTipDesigner : ControlDesigner
     {
-        #region ${0} Events
+        #region Events
 
         protected override void PreFilterProperties(IDictionary properties)
         {
@@ -13,6 +17,7 @@
             properties.Remove("Padding");
             properties.Remove("FlatAppearance");
             properties.Remove("FlatStyle");
+
             properties.Remove("AutoEllipsis");
             properties.Remove("UseCompatibleTextRendering");
 
@@ -21,14 +26,14 @@
             properties.Remove("ImageIndex");
             properties.Remove("ImageKey");
             properties.Remove("ImageList");
-            // properties.Remove("TextImageRelation");
+            properties.Remove("TextImageRelation");
 
             // properties.Remove("BackColor");
             properties.Remove("BackgroundImage");
             properties.Remove("BackgroundImageLayout");
             properties.Remove("UseVisualStyleBackColor");
 
-            // properties.Remove("ComponentFont");
+            // properties.Remove("Font");
             properties.Remove("ForeColor");
             properties.Remove("RightToLeft");
 

@@ -3,7 +3,7 @@
     using System.Collections;
     using System.Windows.Forms.Design;
 
-    internal class VisualButtonDesigner : ControlDesigner
+    internal class VisualLabelDesigner : ControlDesigner
     {
         #region ${0} Events
 
@@ -13,6 +13,7 @@
             properties.Remove("Padding");
             properties.Remove("FlatAppearance");
             properties.Remove("FlatStyle");
+
             properties.Remove("AutoEllipsis");
             properties.Remove("UseCompatibleTextRendering");
 
@@ -21,14 +22,14 @@
             properties.Remove("ImageIndex");
             properties.Remove("ImageKey");
             properties.Remove("ImageList");
-            // properties.Remove("TextImageRelation");
+            properties.Remove("TextImageRelation");
 
             // properties.Remove("BackColor");
             properties.Remove("BackgroundImage");
             properties.Remove("BackgroundImageLayout");
             properties.Remove("UseVisualStyleBackColor");
 
-            // properties.Remove("ComponentFont");
+            // properties.Remove("Font");
             properties.Remove("ForeColor");
             properties.Remove("RightToLeft");
 

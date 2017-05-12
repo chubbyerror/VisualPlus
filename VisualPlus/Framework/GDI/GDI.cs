@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Framework.GDI
 {
+    #region Namespace
+
     using System;
     using System.Drawing;
     using System.Drawing.Drawing2D;
@@ -8,15 +10,154 @@
 
     using VisualPlus.Enums;
 
+    #endregion
+
     internal class GDI
     {
-        #region  ${0} Variables
+        #region Events
 
-        public static GraphicsPath GraphicPath = null;
+        /// <summary>Anchors the rectangle to an anchored alignment of the base rectangle.</summary>
+        /// <param name="anchorStyle">Alignment style.</param>
+        /// <param name="baseRectangle">Base rectangle.</param>
+        /// <param name="anchorWidth">Anchor width.</param>
+        /// <returns>Anchored rectangle.</returns>
+        public static Rectangle ApplyAnchor(TabAlignment anchorStyle, Rectangle baseRectangle, int anchorWidth)
+        {
+            Point anchoredLocation;
+            Size anchoredSize;
 
-        #endregion
+            switch (anchorStyle)
+            {
+                case TabAlignment.Top:
+                    {
+                        anchoredLocation = new Point(baseRectangle.X, baseRectangle.Y);
+                        anchoredSize = new Size(baseRectangle.Width, anchorWidth);
+                        break;
+                    }
 
-        #region ${0} Methods
+                case TabAlignment.Bottom:
+                    {
+                        anchoredLocation = new Point(baseRectangle.X, baseRectangle.Bottom - anchorWidth);
+                        anchoredSize = new Size(baseRectangle.Width, anchorWidth);
+                        break;
+                    }
+
+                case TabAlignment.Left:
+                    {
+                        anchoredLocation = new Point(baseRectangle.X, baseRectangle.Y);
+                        anchoredSize = new Size(anchorWidth, baseRectangle.Height);
+                        break;
+                    }
+
+                case TabAlignment.Right:
+                    {
+                        anchoredLocation = new Point(baseRectangle.Right - anchorWidth, baseRectangle.Y);
+                        anchoredSize = new Size(anchorWidth, baseRectangle.Height);
+                        break;
+                    }
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(anchorStyle), anchorStyle, null);
+            }
+
+            Rectangle anchoredRectangle = new Rectangle(anchoredLocation, anchoredSize);
+            return anchoredRectangle;
+        }
+
+        /// <summary>Draws the text image relation.</summary>
+        /// <param name="relation">The relation type.</param>
+        /// <param name="imageRectangle">The image rectangle.</param>
+        /// <param name="fontSize">The text size.</param>
+        /// <param name="outerBounds">The outer bounds.</param>
+        /// <param name="imagePoint">The image Point.</param>
+        /// <returns>The <see cref="Point" />.</returns>
+        public static Point ApplyTextImageRelation(TextImageRelation relation, Rectangle imageRectangle, SizeF fontSize, Rectangle outerBounds, bool imagePoint)
+        {
+            Point newPosition = new Point(0, 0);
+            Point newImagePoint = new Point(0, 0);
+            Point newTextPoint = new Point(0, 0);
+
+            switch (relation)
+            {
+                case TextImageRelation.Overlay:
+                    {
+                        // Set center
+                        newPosition.X = outerBounds.Width / 2;
+                        newPosition.Y = outerBounds.Height / 2;
+
+                        // Set image
+                        newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
+                        newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
+
+                        // Set text
+                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.Y = newPosition.Y - Convert.ToInt32(fontSize.Height) / 2;
+                        break;
+                    }
+
+                case TextImageRelation.ImageBeforeText:
+                    {
+                        // Set center
+                        newPosition.Y = outerBounds.Height / 2;
+
+                        // Set image
+                        newImagePoint.X = newPosition.X + 4;
+                        newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
+
+                        // Set text
+                        newTextPoint.X = newImagePoint.X + imageRectangle.Width;
+                        newTextPoint.Y = newPosition.Y - (int)fontSize.Height / 2;
+                        break;
+                    }
+
+                case TextImageRelation.TextBeforeImage:
+                    {
+                        // Set center
+                        newPosition.Y = outerBounds.Height / 2;
+
+                        // Set text
+                        newTextPoint.X = newPosition.X + 4;
+                        newTextPoint.Y = newPosition.Y - (int)fontSize.Height / 2;
+
+                        // Set image
+                        newImagePoint.X = newTextPoint.X + (int)fontSize.Width;
+                        newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
+                        break;
+                    }
+
+                case TextImageRelation.ImageAboveText:
+                    {
+                        // Set center
+                        newPosition.X = outerBounds.Width / 2;
+
+                        // Set image
+                        newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
+                        newImagePoint.Y = newPosition.Y + 4;
+
+                        // Set text
+                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.Y = newImagePoint.Y + imageRectangle.Height;
+                        break;
+                    }
+
+                case TextImageRelation.TextAboveImage:
+                    {
+                        // Set center
+                        newPosition.X = outerBounds.Width / 2;
+
+                        // Set text
+                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.Y = newImagePoint.Y + 4;
+
+                        // Set image
+                        newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
+                        newImagePoint.Y = newPosition.Y + Convert.ToInt32(fontSize.Height) + 4;
+                        break;
+                    }
+            }
+
+            return imagePoint ? newImagePoint : newTextPoint;
+        }
 
         public static Color BlendColor(Color backgroundColor, Color frontColor, double blend)
         {
@@ -33,115 +174,38 @@
             return BlendColor(backgroundColor, frontColor, frontColor.A);
         }
 
-        /// <summary>Calculates a 5 point star.</summary>
-        /// <param name="originF"> The originF is the middle of the star.</param>
-        /// <param name="outerRadius">Radius of the surrounding circle.</param>
-        /// <param name="innerRadius">Radius of the circle for the "inner" points</param>
-        /// <returns>10 PointF array.</returns>
-        public static PointF[] Calculate5PointStar(PointF originF, float outerRadius, float innerRadius)
+        /// <summary>Creates a gradient brush.</summary>
+        /// <param name="colors">The colors.</param>
+        /// <param name="positions">The positions.</param>
+        /// <param name="angle">The angle.</param>
+        /// <param name="startPoint">Start position.</param>
+        /// <param name="endPoint">End position.</param>
+        /// <returns>The gradient brush.</returns>
+        public static LinearGradientBrush CreateGradientBrush(Color[] colors, float[] positions, float angle, Point startPoint, Point endPoint)
         {
-            // Define some variables to avoid as much calculations as possible
-            // conversions to radians
-            const double Ang36 = Math.PI / 5.0; // 36Â° x PI/180
-            const double Ang72 = 2.0 * Ang36; // 72Â° x PI/180
+            LinearGradientBrush linearGradientBrush = new LinearGradientBrush(startPoint, endPoint, Color.Black, Color.Black);
 
-            // some sine and cosine values we need
-            var sin36 = (float)Math.Sin(Ang36);
-            var sin72 = (float)Math.Sin(Ang72);
-            var cos36 = (float)Math.Cos(Ang36);
-            var cos72 = (float)Math.Cos(Ang72);
+            ColorBlend colorBlend = new ColorBlend
+                {
+                    Positions = positions,
+                    Colors = colors
+                };
 
-            // Fill array with 10 originF points
-            PointF[] pointsArray = { originF, originF, originF, originF, originF, originF, originF, originF, originF, originF };
-            pointsArray[0].Y -= outerRadius; // top off the star, or on a clock this is 12:00 or 0:00 hours
-            pointsArray[1].X += innerRadius * sin36;
-            pointsArray[1].Y -= innerRadius * cos36; // 0:06 hours
-            pointsArray[2].X += outerRadius * sin72;
-            pointsArray[2].Y -= outerRadius * cos72; // 0:12 hours
-            pointsArray[3].X += innerRadius * sin72;
-            pointsArray[3].Y += innerRadius * cos72; // 0:18
-            pointsArray[4].X += outerRadius * sin36;
-            pointsArray[4].Y += outerRadius * cos36; // 0:24 
+            // Define brush color blend
+            linearGradientBrush.InterpolationColors = colorBlend;
+            linearGradientBrush.RotateTransform(angle);
 
-            // Phew! Glad I got that trig working.
-            pointsArray[5].Y += innerRadius;
-
-            // I use the symmetry of the star figure here
-            pointsArray[6].X += pointsArray[6].X - pointsArray[4].X;
-            pointsArray[6].Y = pointsArray[4].Y; // mirror point
-            pointsArray[7].X += pointsArray[7].X - pointsArray[3].X;
-            pointsArray[7].Y = pointsArray[3].Y; // mirror point
-            pointsArray[8].X += pointsArray[8].X - pointsArray[2].X;
-            pointsArray[8].Y = pointsArray[2].Y; // mirror point
-            pointsArray[9].X += pointsArray[9].X - pointsArray[1].X;
-            pointsArray[9].Y = pointsArray[1].Y; // mirror point
-
-            return pointsArray;
-        }
-
-        public static GraphicsPath CreateRoundRect(float x, float y, float width, float height, float radius)
-        {
-            GraphicsPath gp = new GraphicsPath();
-            gp.AddLine(x + radius, y, x + width - radius * 2, y);
-            gp.AddArc(x + width - radius * 2, y, radius * 2, radius * 2, 270, 90);
-            gp.AddLine(x + width, y + radius, x + width, y + height - radius * 2);
-            gp.AddArc(x + width - radius * 2, y + height - radius * 2, radius * 2, radius * 2, 0, 90);
-            gp.AddLine(x + width - radius * 2, y + height, x + radius, y + height);
-            gp.AddArc(x, y + height - radius * 2, radius * 2, radius * 2, 90, 90);
-            gp.AddLine(x, y + height - radius * 2, x, y + radius);
-            gp.AddArc(x, y, radius * 2, radius * 2, 180, 90);
-            gp.CloseFigure();
-            return gp;
-        }
-
-
-        /// <summary>
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="drawRectF"></param>
-        /// <param name="drawColor"></param>
-        /// <param name="orientation"></param>
-        public static void DrawTrackBarLine(Graphics g, RectangleF drawRectF, Color drawColor, Orientation orientation)
-        {
-            Color color1;
-            Color color2;
-            Color color3;
-            Color color4;
-            LinearGradientBrush gradientBrush;
-            ColorBlend colorBlend = new ColorBlend();
-
-            color1 = drawColor;
-            color2 = ControlPaint.Light(color1);
-            color3 = ControlPaint.Light(color2);
-            color4 = ControlPaint.Light(color3);
-
-            colorBlend.Colors = new[] { color1, color2, color3, color4 };
-            colorBlend.Positions = new[] { 0, 0.25f, 0.65f, 1 };
-
-            if (orientation == Orientation.Horizontal)
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
-                    new Point((int)drawRectF.Left, (int)drawRectF.Top + (int)drawRectF.Height), color1, color4);
-            }
-            else
-            {
-                gradientBrush = new LinearGradientBrush(new Point((int)drawRectF.Left, (int)drawRectF.Top),
-                    new Point((int)drawRectF.Left + (int)drawRectF.Width, (int)drawRectF.Top), color1, color4);
-            }
-
-            gradientBrush.InterpolationColors = colorBlend;
-
-            FillPill(gradientBrush, drawRectF, g);
+            return linearGradientBrush;
         }
 
         /// <summary>Draws a border around the path.</summary>
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="borderPath">The border path.</param>
-        /// <param name="borderSize">The border size.</param>
+        /// <param name="borderThickness">The border size.</param>
         /// <param name="color">The color.</param>
-        public static void DrawBorder(Graphics graphics, GraphicsPath borderPath, float borderSize, Color color)
+        public static void DrawBorder(Graphics graphics, GraphicsPath borderPath, float borderThickness, Color color)
         {
-            Pen borderPen = new Pen(color, borderSize);
+            Pen borderPen = new Pen(color, borderThickness);
             graphics.DrawPath(borderPen, borderPath);
         }
 
@@ -149,20 +213,19 @@
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="controlState">The control state.</param>
         /// <param name="controlPath">The border path.</param>
-        /// <param name="borderSize">The border size.</param>
+        /// <param name="borderThickness">The border size.</param>
         /// <param name="borderColor">Normal border color.</param>
         /// <param name="borderHoverColor">Hover border color.</param>
         /// <param name="borderHoverVisible">Hover visible.</param>
-        public static void DrawBorderType(Graphics graphics, ControlState controlState, GraphicsPath controlPath, float borderSize, Color borderColor,
-                                          Color borderHoverColor, bool borderHoverVisible)
+        public static void DrawBorderType(Graphics graphics, ControlState controlState, GraphicsPath controlPath, float borderThickness, Color borderColor, Color borderHoverColor, bool borderHoverVisible)
         {
             if (controlState == ControlState.Hover && borderHoverVisible)
             {
-                DrawBorder(graphics, controlPath, borderSize, borderHoverColor);
+                DrawBorder(graphics, controlPath, borderThickness, borderHoverColor);
             }
             else
             {
-                DrawBorder(graphics, controlPath, borderSize, borderColor);
+                DrawBorder(graphics, controlPath, borderThickness, borderColor);
             }
         }
 
@@ -208,17 +271,15 @@
             }
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="drawRect"></param>
-        /// <param name="tickFrequency"></param>
-        /// <param name="minimum"></param>
-        /// <param name="maximum"></param>
-        /// <param name="tickColor"></param>
-        /// <param name="orientation"></param>
-        public static void DrawTickLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color tickColor,
-                                        Orientation orientation)
+        /// <summary>Draws the tick line.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="drawRect">The rectangle</param>
+        /// <param name="tickFrequency">Tick frequency.</param>
+        /// <param name="minimum">The minimum.</param>
+        /// <param name="maximum">The maximum.</param>
+        /// <param name="tickColor">The tick Color.</param>
+        /// <param name="orientation">The orientation.</param>
+        public static void DrawTickLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color tickColor, Orientation orientation)
         {
             // Check input value
             if (maximum == minimum)
@@ -230,7 +291,7 @@
             Pen pen = new Pen(tickColor, 1);
             float tickFrequencySize;
 
-            // Caculate tick number
+            // Calculate tick number
             int tickCount = (maximum - minimum) / tickFrequency;
             if ((maximum - minimum) % tickFrequency == 0)
             {
@@ -242,8 +303,6 @@
                 // Calculate tick's setting
                 tickFrequencySize = drawRect.Width * tickFrequency / (maximum - minimum);
 
-                // ===============================================================
-
                 // Draw each tick
                 for (var i = 0; i <= tickCount; i++)
                 {
@@ -252,43 +311,33 @@
 
                 // Draw last tick at Maximum
                 graphics.DrawLine(pen, drawRect.Right, drawRect.Top, drawRect.Right, drawRect.Bottom);
-
-                // ===============================================================
             }
             else
             {
-                // Orientation.Vertical
                 // Calculate tick's setting
                 tickFrequencySize = drawRect.Height * tickFrequency / (maximum - minimum);
-
-                // ===============================================================
 
                 // Draw each tick
                 for (var i = 0; i <= tickCount; i++)
                 {
-                    graphics.DrawLine(pen, drawRect.Left, drawRect.Bottom - tickFrequencySize * i, drawRect.Right,
-                        drawRect.Bottom - tickFrequencySize * i);
+                    graphics.DrawLine(pen, drawRect.Left, drawRect.Bottom - tickFrequencySize * i, drawRect.Right, drawRect.Bottom - tickFrequencySize * i);
                 }
 
                 // Draw last tick at Maximum
                 graphics.DrawLine(pen, drawRect.Left, drawRect.Top, drawRect.Right, drawRect.Top);
-
-                // ===============================================================
             }
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="drawRect"></param>
-        /// <param name="tickFrequency"></param>
-        /// <param name="minimum"></param>
-        /// <param name="maximum"></param>
-        /// <param name="foreColor"></param>
-        /// <param name="font"></param>
-        /// <param name="orientation"></param>
-        public static void DrawTickTextLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color foreColor,
-                                            Font font, Orientation orientation)
+        /// <summary>Draws the tick text.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="drawRect">The rectangle</param>
+        /// <param name="tickFrequency">Tick frequency.</param>
+        /// <param name="minimum">The minimum.</param>
+        /// <param name="maximum">The maximum.</param>
+        /// <param name="foreColor">Fore color.</param>
+        /// <param name="font">The font.</param>
+        /// <param name="orientation">The orientation.</param>
+        public static void DrawTickTextLine(Graphics graphics, RectangleF drawRect, int tickFrequency, int minimum, int maximum, Color foreColor, Font font, Orientation orientation)
         {
             // Check input value
             if (maximum == minimum)
@@ -335,7 +384,6 @@
             }
             else
             {
-                // Orientation.Vertical
                 // Calculate tick's setting
                 tickFrequencySize = drawRect.Height * tickFrequency / (maximum - minimum);
 
@@ -352,69 +400,31 @@
             }
         }
 
-        /// <summary>Fills the background with color.</summary>
-        /// <param name="graphics">Graphics controller.</param>
-        /// <param name="rectangle">The rectangle.</param>
-        /// <param name="graphicsShape">The shape.</param>
-        /// <param name="color1">Color 1.</param>
-        /// <param name="color2">Color 2.</param>
-        /// <param name="rotation">Gradient rotation.</param>
-        /// <param name="gradient">Toggle gradient coloring.</param>
-        public static void FillBackground(
-            Graphics graphics,
-            Rectangle rectangle,
-            GraphicsPath graphicsShape,
-            Color color1,
-            Color color2,
-            int rotation,
-            bool gradient)
+        /// <summary>Flip the size by orientation.</summary>
+        /// <param name="orientation">The orientation.</param>
+        /// <param name="size">Current size.</param>
+        /// <returns>New size.</returns>
+        public static Size FlipOrientationSize(Orientation orientation, Size size)
         {
-            if (gradient)
+            Size newSize = new Size(0, 0);
+
+            // Resize
+            if (orientation == Orientation.Vertical)
             {
-                // Fill gradient shape
-                graphics.FillPath(new LinearGradientBrush(rectangle, color1, color2, rotation), graphicsShape);
+                if (size.Width > size.Height)
+                {
+                    newSize = new Size(size.Height, size.Width);
+                }
             }
             else
             {
-                graphics.FillPath(new SolidBrush(color1), graphicsShape);
+                if (size.Width < size.Height)
+                {
+                    newSize = new Size(size.Height, size.Width);
+                }
             }
-        }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="rect"></param>
-        /// <param name="g"></param>
-        public static void FillPill(Brush b, RectangleF rect, Graphics g)
-        {
-            if (rect.Width > rect.Height)
-            {
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.FillEllipse(b, new RectangleF(rect.Left, rect.Top, rect.Height, rect.Height));
-                g.FillEllipse(b, new RectangleF(rect.Left + rect.Width - rect.Height, rect.Top, rect.Height, rect.Height));
-
-                float w = rect.Width - rect.Height;
-                float l = rect.Left + rect.Height / 2;
-                g.FillRectangle(b, new RectangleF(l, rect.Top, w, rect.Height));
-                g.SmoothingMode = SmoothingMode.Default;
-            }
-            else if (rect.Width < rect.Height)
-            {
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.FillEllipse(b, new RectangleF(rect.Left, rect.Top, rect.Width, rect.Width));
-                g.FillEllipse(b, new RectangleF(rect.Left, rect.Top + rect.Height - rect.Width, rect.Width, rect.Width));
-
-                float t = rect.Top + rect.Width / 2;
-                float h = rect.Height - rect.Width;
-                g.FillRectangle(b, new RectangleF(rect.Left, t, rect.Width, h));
-                g.SmoothingMode = SmoothingMode.Default;
-            }
-            else if (rect.Width == rect.Height)
-            {
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.FillEllipse(b, rect);
-                g.SmoothingMode = SmoothingMode.Default;
-            }
+            return newSize;
         }
 
         /// <summary>Draws the border shape.</summary>
@@ -456,6 +466,20 @@
             }
 
             return newShape;
+        }
+
+        /// <summary>Measures the specified string when draw with the specified font.</summary>
+        /// <param name="graphics">Graphics input.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="font">The text Font.</param>
+        /// <returns>Returns text size.</returns>
+        public static Size GetTextSize(Graphics graphics, string text, Font font)
+        {
+            int width = Convert.ToInt32(graphics.MeasureString(text, font).Width);
+            int height = Convert.ToInt32(graphics.MeasureString(text, font).Height);
+            Size textSize = new Size(width, height);
+
+            return textSize;
         }
 
         #endregion

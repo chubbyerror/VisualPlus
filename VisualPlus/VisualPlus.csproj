@@ -50,10 +50,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Symbols\Arrow.cs" />
+    <Compile Include="Components\Symbols\Bars.cs" />
+    <Compile Include="Components\Symbols\Checkmark.cs" />
+    <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualCircleProgressBarDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualContextMenuDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualLabelDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualListBoxDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualListViewDesigner.cs" />
+    <Compile Include="Controls\BehaviorDesign\VisualToolTipDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualTrackBarDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualToggleDesigner.cs" />
     <Compile Include="Controls\BehaviorDesign\VisualTextBoxDesigner.cs" />
@@ -78,6 +84,9 @@
     <Compile Include="Controls\VisualColorWheel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\VisualContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -90,16 +99,24 @@
     <Compile Include="Controls\VisualListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualStylesManager.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\VisualToolTip.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Framework\ExceptionHandler.cs" />
     <Compile Include="Framework\GDI\ColorHelper.cs" />
     <Compile Include="Framework\Extensions.cs" />
+    <Compile Include="Framework\GDI\Gradient.cs" />
     <Compile Include="Framework\GDI\VFX.cs" />
     <Compile Include="Framework\GDI\VFXManager.cs" />
     <Compile Include="Framework\MathHelper.cs" />
-    <Compile Include="Framework\Styles\BlackAndYellow.cs" />
-    <Compile Include="Framework\Styles\IStyle.cs" />
-    <Compile Include="Framework\StylesManager.cs" />
-    <Compile Include="Framework\Styles\Visual.cs" />
+    <Compile Include="Enums\Styles.cs" />
+    <Compile Include="Styles\BlackAndYellow.cs" />
+    <Compile Include="Styles\IStyle.cs" />
+    <Compile Include="Framework\Settings.cs" />
+    <Compile Include="Styles\Visual.cs" />
     <Compile Include="Enums\Animation.cs" />
     <Compile Include="Enums\BorderShape.cs" />
     <Compile Include="Enums\BorderStyle.cs" />
@@ -150,9 +167,6 @@
     <Compile Include="Enums\ControlState.cs" />
     <Compile Include="Localization\Localization.cs" />
     <Compile Include="Framework\VSDesigner.cs" />
-    <Compile Include="Controls\VisualProgressSpinner.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -167,9 +181,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Components\Controls\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Icon.ico" />
+    <None Include="Resources\search.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

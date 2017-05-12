@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -12,63 +14,81 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    public enum ToggleTypes
-    {
-        /// <summary>Yes / No toggle.</summary>
-        YesNo,
-
-        /// <summary>On / Off toggle.</summary>
-        OnOff,
-
-        /// <summary>I / O toggle.</summary>
-        IO
-    }
+    #endregion
 
     /// <summary>The visual Toggle.</summary>
-    [ToolboxBitmap(typeof(Control)), Designer(VSDesignerBinding.VisualToggle), DefaultEvent("ToggledChanged"),
-     Description("A toggle button allows the user to change a setting between two states.")]
-    public class VisualToggle : Control
+    [ToolboxBitmap(typeof(Control))]
+    [Designer(VSDesignerBinding.VisualToggle)]
+    [DefaultEvent("ToggledChanged")]
+    [Description("A toggle button allows the user to change a setting between two states.")]
+    public sealed class VisualToggle : Control
     {
-        public class PillStyle
-        {
-            #region  ${0} Variables
-
-            public bool Left;
-            public bool Right;
-
-            #endregion
-        }
-
-        #region  ${0} Variables
+        #region Variables
 
         private readonly Timer animationTimer = new Timer
             {
                 Interval = 1
             };
 
-        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(0);
+        private Color[] backgroundColor =
+        {
+            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
+            Settings.DefaultValue.Style.BackgroundColor(0),
+            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+        };
 
-        private Rectangle barSlider;
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color buttonColor = StylesManager.DefaultValue.Style.ButtonNormalColor;
-        private Color controlDisabledColor = StylesManager.DefaultValue.Style.ControlDisabled;
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+
+        private Color[] buttonColor =
+        {
+            ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
+            Settings.DefaultValue.Style.ButtonNormalColor,
+            ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor)
+        };
+
+        private Rectangle buttonRectangle;
+        private int buttonRounding = Settings.DefaultValue.BorderRounding;
+        private BorderShape buttonShape = Settings.DefaultValue.BorderShape;
+        private Size buttonSize = new Size(20, 16);
+
+        private Color[] controlDisabledColor =
+        {
+            ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+            Settings.DefaultValue.Style.ControlDisabled,
+            ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
+        };
+
+        private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Size sizeHandle = new Size(15, 20);
-        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
+        private Point endPoint;
+        private Point backgroundStartPoint;
+        private Point backgroundEndPoint;
+        private Point buttonStartPoint;
+        private Point buttonEndPoint;
+        private float gradientButtonAngle;
+        private LinearGradientBrush gradientButtonBrush;
+        private float[] gradientButtonPosition = { 0, 1 / 2f, 1 };
+        private float gradientBackgroundAngle;
+        private LinearGradientBrush gradientBackgroundBrush;
+        private float[] gradientBackgroundPosition = { 0, 1 / 2f, 1 };
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Point startPoint;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private string textProcessor;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private bool toggled;
         private int toggleLocation;
         private ToggleTypes toggleType = ToggleTypes.YesNo;
-        private int xBar;
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualToggle()
         {
@@ -77,19 +97,35 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            BackColor = Color.Transparent;
-
             UpdateStyles();
-            animationTimer.Tick += AnimationTimerTick;
 
+            BackColor = Color.Transparent;
+            Size = new Size(50, 20);
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            animationTimer.Tick += AnimationTimerTick;
         }
 
         public delegate void ToggledChangedEventHandler();
 
-        public event ToggledChangedEventHandler ToggledChanged;
+        public enum ToggleTypes
+        {
+            /// <summary>Yes / No toggle.</summary>
+            YesNo,
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor
+            /// <summary>On / Off toggle.</summary>
+            OnOff,
+
+            /// <summary>I / O toggle.</summary>
+            IO
+        }
+
+        #endregion
+
+        #region Properties
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color[] BackgroundColor
         {
             get
             {
@@ -103,7 +139,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -118,7 +155,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -133,8 +171,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -149,28 +188,70 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
+        public int BorderRounding
         {
             get
             {
-                return borderSize;
+                return borderRounding;
             }
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
-                    borderSize = value;
+                    borderRounding = value;
+                }
+
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
+        public BorderShape BorderShape
+        {
+            get
+            {
+                return borderShape;
+            }
+
+            set
+            {
+                borderShape = value;
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
+        {
+            get
+            {
+                return borderThickness;
+            }
+
+            set
+            {
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
+                {
+                    borderThickness = value;
                 }
 
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -185,8 +266,9 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color ButtonColor
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color[] ButtonColor
         {
             get
             {
@@ -200,8 +282,66 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
-        public Color ControlDisabledColor
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
+        public int ButtonRounding
+        {
+            get
+            {
+                return buttonRounding;
+            }
+
+            set
+            {
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
+                {
+                    buttonRounding = value;
+                }
+
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
+        public BorderShape ButtonShape
+        {
+            get
+            {
+                return buttonShape;
+            }
+
+            set
+            {
+                buttonShape = value;
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ButtonSize)]
+        public Size ButtonSize
+        {
+            get
+            {
+                return buttonSize;
+            }
+
+            set
+            {
+                buttonSize = value;
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
+        public Color[] ControlDisabledColor
         {
             get
             {
@@ -215,7 +355,72 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientButtonAngle
+        {
+            get
+            {
+                return gradientButtonAngle;
+            }
+
+            set
+            {
+                gradientButtonAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientButtonPosition
+        {
+            get
+            {
+                return gradientBackgroundPosition;
+            }
+
+            set
+            {
+                gradientButtonPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientBackgroundAngle
+        {
+            get
+            {
+                return gradientBackgroundAngle;
+            }
+
+            set
+            {
+                gradientBackgroundAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientBackgroundPosition
+        {
+            get
+            {
+                return gradientBackgroundPosition;
+            }
+
+            set
+            {
+                gradientBackgroundPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -230,7 +435,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -245,7 +451,25 @@
             }
         }
 
-        [DefaultValue(false), Category(Localize.Category.Behavior), Description(Localize.Description.Toggled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Toggled)]
         public bool Toggled
         {
             get
@@ -262,7 +486,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ToggleType)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ToggleType)]
         public ToggleTypes Type
         {
             get
@@ -279,7 +504,7 @@
 
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -313,61 +538,52 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+            graphics.TextRenderingHint = textRendererHint;
 
-            checked
+            // Set control state color
+            var controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
+
+            // gradients
+            gradientBackgroundBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientBackgroundPosition, gradientBackgroundAngle, backgroundStartPoint, backgroundEndPoint);
+            gradientButtonBrush = GDI.CreateGradientBrush(buttonColor, gradientButtonPosition, gradientButtonAngle, buttonStartPoint, buttonEndPoint);
+
+            // Background color
+            graphics.FillPath(gradientBackgroundBrush, controlGraphicsPath);
+
+            // Draw pill border
+            if (borderVisible)
             {
-                // Bar slider
-                barSlider = new Rectangle(8, 10, Width - 21, Height - 21);
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
+            }
 
-                // Pill graphic path
-                GraphicsPath pillPath = (GraphicsPath)Pill(
-                    0,
-                    (int)Math.Round(Height / 2.0 - sizeHandle.Height / 2.0),
-                    Width - 1,
-                    sizeHandle.Height - 5,
-                    new PillStyle
-                        {
-                            Left = true,
-                            Right = true
-                        });
+            // Determines button state to draw
+            Point buttonPoint = toggled ? endPoint : startPoint;
+            buttonRectangle = new Rectangle(buttonPoint, buttonSize);
 
-                // Button
-                Rectangle buttonRectangle = new Rectangle(
-                    barSlider.X + (int)Math.Round(barSlider.Width * (toggleLocation / 80.0)) - (int)Math.Round(sizeHandle.Width / 2.0),
-                    barSlider.Y + (int)Math.Round(barSlider.Height / 2.0) - (int)Math.Round(sizeHandle.Height / 2.0 - 1.0),
-                    sizeHandle.Width,
-                    sizeHandle.Height - 5);
+            // Draw toggle
+            DrawToggleType(graphics);
 
-                // Set control state color
-                Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
+            // Draw button
+            GraphicsPath buttonPath = GDI.GetBorderShape(buttonRectangle, buttonShape, buttonRounding);
+            graphics.FillPath(gradientButtonBrush, buttonPath);
 
-                // Background color
-                graphics.FillPath(new SolidBrush(controlTempColor), pillPath);
-
-                // Draw pill border
-                if (borderVisible)
-                {
-                    GDI.DrawBorderType(graphics, controlState, pillPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
-                }
-
-                // Draw toggle
-                DrawToggleType(graphics);
-
-                // Button
-                GraphicsPath buttonPath = GDI.DrawRoundedRectangle(buttonRectangle, 15);
-                graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
-
-                // Button border
-                GDI.DrawBorder(graphics, buttonPath, 1, StylesManager.DefaultValue.Style.BorderColor(0));
+            // Button border
+            if (borderVisible)
+            {
+                GDI.DrawBorderType(graphics, controlState, buttonPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
             }
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            Width = 41;
-            Height = 23;
+            UpdateLocationPoints();
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            UpdateLocationPoints();
         }
 
         private void AnimationTimerTick(object sender, EventArgs e)
@@ -397,48 +613,21 @@
             {
                 case ToggleTypes.YesNo:
                     {
-                        if (Toggled)
-                        {
-                            textProcessor = "Yes";
-                            xBar = barSlider.X + 7;
-                        }
-                        else
-                        {
-                            textProcessor = "No";
-                            xBar = barSlider.X + 18;
-                        }
+                        textProcessor = Toggled ? "Yes" : "No";
 
                         break;
                     }
 
                 case ToggleTypes.OnOff:
                     {
-                        if (Toggled)
-                        {
-                            textProcessor = "On";
-                            xBar = barSlider.X + 7;
-                        }
-                        else
-                        {
-                            textProcessor = "Off";
-                            xBar = barSlider.X + 18;
-                        }
+                        textProcessor = Toggled ? "On" : "Off";
 
                         break;
                     }
 
                 case ToggleTypes.IO:
                     {
-                        if (Toggled)
-                        {
-                            textProcessor = "I";
-                            xBar = barSlider.X + 7;
-                        }
-                        else
-                        {
-                            textProcessor = "O";
-                            xBar = barSlider.X + 18;
-                        }
+                        textProcessor = Toggled ? "I" : "O";
 
                         break;
                     }
@@ -448,57 +637,64 @@
             foreColor = Enabled ? foreColor : textDisabledColor;
 
             // Draw string
+            Rectangle textboxRectangle;
+
+            var XOff = 5;
+            var XOn = 7;
+
+            if (toggled)
+            {
+                textboxRectangle = new Rectangle(XOff, 0, Width - 1, Height - 1);
+            }
+            else
+            {
+                textboxRectangle = new Rectangle(Width - (int)Font.SizeInPoints - XOn * 2, 0, Width - 1, Height - 1);
+            }
+
             StringFormat stringFormat = new StringFormat
                 {
-                    Alignment = StringAlignment.Center,
+                    // Alignment = StringAlignment.Center,
                     LineAlignment = StringAlignment.Center
                 };
 
+            // Draw the string
             graphics.DrawString(
                 textProcessor,
                 new Font(Font.FontFamily, 7f, Font.Style),
                 new SolidBrush(foreColor),
-                xBar,
-                barSlider.Y,
+                textboxRectangle,
                 stringFormat);
         }
 
-        #endregion
-
-        #region ${0} Methods
-
-        public GraphicsPath Pill(Rectangle rectangle, PillStyle pillStyle)
+        private void UpdateLocationPoints()
         {
-            GraphicsPath extractValue = new GraphicsPath();
+            // Update button location points
+            startPoint = new Point(0 + 2, ClientRectangle.Height / 2 - buttonSize.Height / 2);
+            endPoint = new Point(ClientRectangle.Width - buttonSize.Width - 2, ClientRectangle.Height / 2 - buttonSize.Height / 2);
 
-            if (pillStyle.Left)
-            {
-                extractValue.AddArc(new Rectangle(rectangle.X, rectangle.Y, rectangle.Height, rectangle.Height), -270, 180);
-            }
-            else
-            {
-                extractValue.AddLine(rectangle.X, rectangle.Y + rectangle.Height, rectangle.X, rectangle.Y);
-            }
+            backgroundStartPoint = new Point(ClientRectangle.Width, 0);
+            backgroundEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
 
-            if (pillStyle.Right)
-            {
-                extractValue.AddArc(
-                    new Rectangle(rectangle.X + rectangle.Width - rectangle.Height, rectangle.Y, rectangle.Height, rectangle.Height),
-                    -90,
-                    180);
-            }
-            else
-            {
-                extractValue.AddLine(rectangle.X + rectangle.Width, rectangle.Y, rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height);
-            }
+            buttonStartPoint = new Point(ClientRectangle.Width, 0);
+            buttonEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
 
-            extractValue.CloseAllFigures();
-            return extractValue;
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
-        public object Pill(int x, int y, int width, int height, PillStyle pillStyle)
+        public event ToggledChangedEventHandler ToggledChanged;
+
+        #endregion
+
+        #region Methods
+
+        public class PillStyle
         {
-            return Pill(new Rectangle(x, y, width, height), pillStyle);
+            #region Variables
+
+            public bool Left;
+            public bool Right;
+
+            #endregion
         }
 
         #endregion

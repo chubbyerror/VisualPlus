@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -7,21 +9,49 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
+    using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
-    /// <summary>The visual separator.</summary>
-    [ToolboxBitmap(typeof(Control)), Designer(VSDesignerBinding.VisualSeparator)]
-    public class VisualSeparator : Control
-    {
-        #region  ${0} Variables
+    #endregion
 
-        private Color lineColor = StylesManager.DefaultValue.Style.LineColor;
+    /// <summary>The visual separator.</summary>
+    [ToolboxBitmap(typeof(Control))]
+    [Designer(VSDesignerBinding.VisualSeparator)]
+    public sealed class VisualSeparator : Control
+    {
+        #region Variables
+
+        private Point endPoint;
+        private float gradientAngle = 90;
+        private LinearGradientBrush gradientBrush;
+        private float[] gradientPosition = { 0, 1 / 2f, 1 };
+        private LinearGradientBrush gradientShadowBrush;
+        private float[] gradientShadowPosition = { 0, 1 / 2f, 1 };
+
+        private Color[] lineColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.LineColor),
+                Settings.DefaultValue.Style.LineColor,
+                ControlPaint.Light(Settings.DefaultValue.Style.LineColor)
+            };
+
+        private Rectangle lineRectangle;
         private Orientation separatorOrientation = Orientation.Horizontal;
-        private Color shadowColor = StylesManager.DefaultValue.Style.ShadowColor;
+
+        private Color[] shadowColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ShadowColor),
+                Settings.DefaultValue.Style.ShadowColor,
+                ControlPaint.Light(Settings.DefaultValue.Style.ShadowColor)
+            };
+
+        private Rectangle shadowRectangle;
+        private bool shadowVisible;
+        private Point startPoint;
 
         #endregion
 
-        #region ${0} Properties
+        #region Constructors
 
         public VisualSeparator()
         {
@@ -35,8 +65,61 @@
             UpdateStyles();
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color Line
+        #endregion
+
+        #region Properties
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientAngle
+        {
+            get
+            {
+                return gradientAngle;
+            }
+
+            set
+            {
+                gradientAngle = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientPosition
+        {
+            get
+            {
+                return gradientPosition;
+            }
+
+            set
+            {
+                gradientPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.GradientPosition)]
+        public float[] GradientShadowPosition
+        {
+            get
+            {
+                return gradientShadowPosition;
+            }
+
+            set
+            {
+                gradientShadowPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color[] LineColor
         {
             get
             {
@@ -50,7 +133,8 @@
             }
         }
 
-        [Category(Localize.Category.Behavior), Description(Localize.Description.SeparatorStyle)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.SeparatorStyle)]
         public Orientation Orientation
         {
             get
@@ -86,8 +170,9 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
-        public Color Shadow
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color[] ShadowColor
         {
             get
             {
@@ -101,9 +186,25 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool ShadowVisible
+        {
+            get
+            {
+                return shadowVisible;
+            }
+
+            set
+            {
+                shadowVisible = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
-        #region ${0} Events
+        #region Events
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -113,9 +214,9 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
 
             Point linePosition = new Point();
-            Point lineSize = new Point();
+            Size lineSize = new Size();
             Point shadowPosition = new Point();
-            Point shadowSize = new Point();
+            Size shadowSize = new Size();
 
             // Get the line position and size
             switch (separatorOrientation)
@@ -123,29 +224,47 @@
                 case Orientation.Horizontal:
                     {
                         linePosition = new Point(0, 1);
-                        lineSize = new Point(Width, 1);
+                        lineSize = new Size(Width, 1);
 
                         shadowPosition = new Point(0, 2);
-                        shadowSize = new Point(Width, 2);
+                        shadowSize = new Size(Width, 2);
                         break;
                     }
 
                 case Orientation.Vertical:
                     {
                         linePosition = new Point(1, 0);
-                        lineSize = new Point(1, Height);
+                        lineSize = new Size(1, Height);
 
                         shadowPosition = new Point(2, 0);
-                        shadowSize = new Point(2, Height);
+                        shadowSize = new Size(2, Height);
                         break;
                     }
             }
 
-            // Draw line
-            graphics.DrawLine(new Pen(lineColor), linePosition, lineSize);
+            // Create line rectangle
+            lineRectangle = new Rectangle(linePosition, lineSize);
 
-            // Draw line shadow
-            graphics.DrawLine(new Pen(shadowColor), shadowPosition, shadowSize);
+            startPoint = new Point(ClientRectangle.Width, 0);
+            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Width);
+
+            // Create line brush
+            gradientBrush = GDI.CreateGradientBrush(lineColor, gradientPosition, gradientAngle, startPoint, endPoint);
+
+            // Draw line
+            graphics.DrawRectangle(new Pen(gradientBrush), lineRectangle);
+
+            if (shadowVisible)
+            {
+                // Create shadow rectangle
+                shadowRectangle = new Rectangle(shadowPosition, shadowSize);
+
+                // Create shadow brush
+                gradientShadowBrush = GDI.CreateGradientBrush(shadowColor, gradientShadowPosition, gradientAngle, startPoint, endPoint);
+
+                // Draw shadow
+                graphics.DrawRectangle(new Pen(gradientShadowBrush), shadowRectangle);
+            }
         }
 
         protected override void OnResize(EventArgs e)

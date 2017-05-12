@@ -1,5 +1,7 @@
 ﻿namespace VisualPlus.Controls
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -11,31 +13,64 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
+    using VisualPlus.Properties;
+
+    #endregion
 
     /// <summary>The visual TextBox.</summary>
-    [ToolboxBitmap(typeof(TextBox)), Designer(VSDesignerBinding.VisualTextBox)]
-    public class VisualTextBox : TextBox
+    [ToolboxBitmap(typeof(TextBox))]
+    [Designer(VSDesignerBinding.VisualTextBox)]
+    public sealed class VisualTextBox : TextBox
     {
-        #region  ${0} Variables
+        #region Variables
 
-        private static BorderShape borderShape = StylesManager.DefaultValue.BorderShape;
         public TextBox TextBoxObject = new TextBox();
-        private Color backgroundColor = StylesManager.DefaultValue.Style.BackgroundColor(3);
-        private Color borderColor = StylesManager.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = StylesManager.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = StylesManager.DefaultValue.BorderHoverVisible;
-        private int borderRounding = StylesManager.DefaultValue.BorderRounding;
-        private int borderSize = StylesManager.DefaultValue.BorderSize;
-        private bool borderVisible = StylesManager.DefaultValue.BorderVisible;
-        private Color controlDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
-        private GraphicsPath controlGraphicsPath;
-        private ControlState controlState = ControlState.Normal;
-        private Color foreColor = StylesManager.DefaultValue.Style.ForeColor(0);
-        private Color textDisabledColor = StylesManager.DefaultValue.Style.TextDisabled;
 
         #endregion
 
-        #region ${0} Properties
+        #region Variables
+
+        protected BorderShape borderShape = Settings.DefaultValue.BorderShape;
+
+        #endregion
+
+        #region Variables
+
+        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
+        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private int borderThickness = Settings.DefaultValue.BorderThickness;
+        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+        private Image buttonImage = Resources.search;
+        private GraphicsPath buttonPath;
+        private Rectangle buttonRectangle;
+        private bool buttonVisible;
+        private int buttonWidth = 19;
+        private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private GraphicsPath controlGraphicsPath;
+        private ControlState controlState = ControlState.Normal;
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Size iconSize = new Size(13, 13);
+        private int textboxHeight = 20;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private Color waterMarkActiveColor;
+        private SolidBrush waterMarkBrush;
+        private Color waterMarkColor;
+        private Panel waterMarkContainer;
+        private Font waterMarkFont;
+        private string waterMarkText = "Custom text...";
+
+        private bool watermarkVisible;
+        private int xValue;
+        private int yValue;
+
+        #endregion
+
+        #region Constructors
 
         public VisualTextBox()
         {
@@ -43,18 +78,38 @@
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
+
             BorderStyle = BorderStyle.None;
             AutoSize = false;
-
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Size = new Size(135, 25);
             CreateTextBox();
             Controls.Add(TextBoxObject);
-            Size = new Size(135, 19);
             BackColor = Color.Transparent;
-            TextChanged += TextBoxTextChanged;
             UpdateStyles();
+
+            // Sets some default values to the watermark properties
+            waterMarkColor = Color.LightGray;
+            waterMarkActiveColor = Color.Gray;
+            waterMarkFont = Font;
+            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+            waterMarkContainer = null;
+
+            // Draw the watermark, for design time
+            if (watermarkVisible)
+            {
+                DrawWaterMark();
+            }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        public delegate void ButtonClickedEventHandler();
+
+        #endregion
+
+        #region Properties
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color BackgroundColor
         {
             get
@@ -69,7 +124,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderColor)]
         public Color BorderColor
         {
             get
@@ -84,7 +140,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.BorderHoverColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.BorderHoverColor)]
         public Color BorderHoverColor
         {
             get
@@ -99,8 +156,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderHoverVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderHoverVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderHoverVisible)]
         public bool BorderHoverVisible
         {
             get
@@ -115,8 +173,9 @@
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderRounding), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderRounding)]
         public int BorderRounding
         {
             get
@@ -126,18 +185,19 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumRounding, StylesManager.MaximumRounding))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     borderRounding = value;
                 }
 
-                controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderShape), Category(Localize.Category.Appearance),
-         Description(Localize.Description.ComponentShape)]
+        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentShape)]
         public BorderShape BorderShape
         {
             get
@@ -148,33 +208,35 @@
             set
             {
                 borderShape = value;
-                controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+                UpdateLocationPoints();
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderSize), Category(Localize.Category.Layout),
-         Description(Localize.Description.BorderSize)]
-        public int BorderSize
+        [DefaultValue(Settings.DefaultValue.BorderThickness)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.BorderThickness)]
+        public int BorderThickness
         {
             get
             {
-                return borderSize;
+                return borderThickness;
             }
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, StylesManager.MinimumBorderSize, StylesManager.MaximumBorderSize))
+                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
-                    borderSize = value;
+                    borderThickness = value;
                 }
 
                 Invalidate();
             }
         }
 
-        [DefaultValue(StylesManager.DefaultValue.BorderVisible), Category(Localize.Category.Behavior),
-         Description(Localize.Description.BorderVisible)]
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
         public bool BorderVisible
         {
             get
@@ -189,7 +251,74 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ControlDisabled)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color ButtonColor
+        {
+            get
+            {
+                return buttonColor;
+            }
+
+            set
+            {
+                buttonColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ButtonImage)]
+        public Image ButtonImage
+        {
+            get
+            {
+                return buttonImage;
+            }
+
+            set
+            {
+                buttonImage = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool ButtonVisible
+        {
+            get
+            {
+                return buttonVisible;
+            }
+
+            set
+            {
+                buttonVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int ButtonWidth
+        {
+            get
+            {
+                return buttonWidth;
+            }
+
+            set
+            {
+                buttonWidth = value;
+
+                UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ControlDisabled)]
         public Color ControlDisabledColor
         {
             get
@@ -204,7 +333,24 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.TextColor)]
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public Size IconSize
+        {
+            get
+            {
+                return iconSize;
+            }
+
+            set
+            {
+                iconSize = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
             get
@@ -219,7 +365,8 @@
             }
         }
 
-        [Category(Localize.Category.Appearance), Description(Localize.Description.ComponentColor)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
             get
@@ -234,15 +381,144 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.TextRenderingHint)]
+        public TextRenderingHint TextRendering
+        {
+            get
+            {
+                return textRendererHint;
+            }
+
+            set
+            {
+                textRendererHint = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Watermark)]
+        public string WaterMark
+        {
+            get
+            {
+                return waterMarkText;
+            }
+
+            set
+            {
+                waterMarkText = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color WaterMarkActiveForeColor
+        {
+            get
+            {
+                return waterMarkActiveColor;
+            }
+
+            set
+            {
+                waterMarkActiveColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentFont)]
+        public Font WaterMarkFont
+        {
+            get
+            {
+                return waterMarkFont;
+            }
+
+            set
+            {
+                waterMarkFont = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color WaterMarkForeColor
+        {
+            get
+            {
+                return waterMarkColor;
+            }
+
+            set
+            {
+                waterMarkColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool WatermarkVisible
+        {
+            get
+            {
+                return watermarkVisible;
+            }
+
+            set
+            {
+                watermarkVisible = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
-        #region ${0} Events
+        #region Events
+
+        public event ButtonClickedEventHandler ButtonClicked;
+
+        public void CreateTextBox()
+        {
+            TextBox tb = TextBoxObject;
+            tb.Size = new Size(Width, Height);
+            tb.Location = new Point(5, 2);
+            tb.Text = string.Empty;
+            tb.BorderStyle = BorderStyle.None;
+            tb.TextAlign = HorizontalAlignment.Left;
+            tb.Font = Font;
+            tb.ForeColor = ForeColor;
+            tb.BackColor = backgroundColor;
+            tb.UseSystemPasswordChar = UseSystemPasswordChar;
+            tb.Multiline = false;
+
+            TextBoxObject.KeyDown += OnKeyDown;
+            TextBoxObject.TextChanged += OnBaseTextBoxChanged;
+        }
 
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
             controlState = ControlState.Hover;
             Invalidate();
+
+            if (watermarkVisible)
+            {
+                // If focused use focus color
+                waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+
+                // Don't draw watermark if contains text.
+                if (TextLength <= 0)
+                {
+                    RemoveWaterMark();
+                    DrawWaterMark();
+                }
+            }
         }
 
         protected override void OnFontChanged(EventArgs e)
@@ -265,11 +541,76 @@
             TextBoxObject.Focus();
         }
 
+        protected override void OnInvalidated(InvalidateEventArgs e)
+        {
+            base.OnInvalidated(e);
+
+            // Check if there is a watermark
+            if (waterMarkContainer != null)
+            {
+                // if there is a watermark it should also be invalidated();
+                waterMarkContainer.Invalidate();
+            }
+        }
+
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
             controlState = ControlState.Normal;
             Invalidate();
+
+            if (watermarkVisible)
+            {
+                // If the user has written something and left the control
+                if (TextLength > 0)
+                {
+                    // Remove the watermark
+                    RemoveWaterMark();
+                }
+                else
+                {
+                    // But if the user didn't write anything, then redraw the control.
+                    Invalidate();
+                }
+            }
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            OnMouseClick(e);
+
+            if (buttonVisible)
+            {
+                // Check if mouse in X position.
+                if (xValue > buttonRectangle.X && xValue < Width)
+                {
+                    // Determine the button middle separator by checking for the Y position.
+                    if (yValue > buttonRectangle.Y && yValue < Height)
+                    {
+                        ButtonClicked.Invoke();
+                    }
+                }
+            }
+
+            Invalidate();
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            xValue = e.Location.X;
+            yValue = e.Location.Y;
+            Invalidate();
+
+            // IBeam cursor toggle
+            if (e.X < buttonRectangle.X)
+            {
+                Cursor = Cursors.IBeam;
+            }
+            else
+            {
+                Cursor = Cursors.Default;
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -278,7 +619,10 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.TextRenderingHint = textRendererHint;
+
+            UpdateLocationPoints();
+            graphics.SetClip(controlGraphicsPath);
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
@@ -287,33 +631,63 @@
             TextBoxObject.BackColor = controlTempColor;
             TextBoxObject.ForeColor = foreColor;
 
-            // Setup internal textbox object
-            TextBoxObject.Width = Width - 10;
+            // Setup internal text box object
             TextBoxObject.TextAlign = TextAlign;
             TextBoxObject.UseSystemPasswordChar = UseSystemPasswordChar;
 
-            // Draw background backcolor
+            // Draw background back color
             graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
+
+            // Setup button
+            if (!Multiline && buttonVisible)
+            {
+                // Buttons background
+                graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
+
+                Size imageSize = new Size(iconSize.Width, iconSize.Height);
+                Point imagePoint = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - imageSize.Width / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - imageSize.Height / 2);
+
+                Rectangle imageRectangle = new Rectangle(imagePoint, imageSize);
+
+                graphics.SetClip(buttonPath);
+
+                // Draw the image
+                graphics.DrawImage(buttonImage, imageRectangle);
+
+                graphics.SetClip(controlGraphicsPath);
+
+                // Button border
+                if (borderVisible)
+                {
+                    GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
+                }
+
+                TextBoxObject.Width = buttonRectangle.X - 10;
+            }
+            else
+            {
+                TextBoxObject.Width = Width - 10;
+            }
+
+            graphics.ResetClip();
 
             // Draw border
             if (borderVisible)
             {
                 if (controlState == ControlState.Hover && borderHoverVisible)
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderHoverColor);
+                    GDI.DrawBorder(graphics, controlGraphicsPath, borderThickness, borderHoverColor);
                 }
                 else
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderSize, borderColor);
+                    GDI.DrawBorder(graphics, controlGraphicsPath, borderThickness, borderColor);
                 }
             }
 
-            graphics.SetClip(controlGraphicsPath);
-        }
-
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            base.OnPaintBackground(e);
+            if (watermarkVisible)
+            {
+                DrawWaterMark();
+            }
         }
 
         protected override void OnResize(EventArgs e)
@@ -327,11 +701,17 @@
             }
             else
             {
-                // Auto adjust the textbox height depending on the font size.
-                Height = Convert.ToInt32(Font.Size) * 2 + 1;
+                // Auto adjust the text box height depending on the font size.
+                textboxHeight = Convert.ToInt32(Font.Size) * 2 + 1;
             }
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+            UpdateLocationPoints();
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            UpdateLocationPoints();
         }
 
         protected override void OnTextChanged(EventArgs e)
@@ -339,6 +719,34 @@
             base.OnTextChanged(e);
             TextBoxObject.Text = Text;
             Invalidate();
+
+            if (watermarkVisible)
+            {
+                // If the text of the text box is not empty.
+                if (TextLength > 0)
+                {
+                    // Remove the watermark
+                    RemoveWaterMark();
+                }
+                else
+                {
+                    // But if the text is empty, draw the watermark again.
+                    DrawWaterMark();
+                }
+            }
+        }
+
+        private void DrawWaterMark()
+        {
+            if (waterMarkContainer == null && TextLength <= 0)
+            {
+                waterMarkContainer = new Panel(); // Creates the new panel instance
+                waterMarkContainer.Paint += waterMarkContainer_Paint;
+                waterMarkContainer.Invalidate();
+                waterMarkContainer.Click += waterMarkContainer_Click;
+                Controls.Add(waterMarkContainer); // adds the control
+                waterMarkContainer.BringToFront();
+            }
         }
 
         private void OnBaseTextBoxChanged(object s, EventArgs e)
@@ -363,32 +771,50 @@
             }
         }
 
-        #endregion
-
-        #region ${0} Methods
-
-        public void CreateTextBox()
+        private void RemoveWaterMark()
         {
-            // BackColor = backgroundColor;
-            TextBox tb = TextBoxObject;
-            tb.Size = new Size(Width, Height);
-            tb.Location = new Point(5, 2);
-            tb.Text = string.Empty;
-            tb.BorderStyle = BorderStyle.None;
-            tb.TextAlign = HorizontalAlignment.Left;
-            tb.Font = Font;
-            tb.ForeColor = ForeColor;
-            tb.BackColor = backgroundColor;
-            tb.UseSystemPasswordChar = UseSystemPasswordChar;
-            tb.Multiline = false;
-
-            TextBoxObject.KeyDown += OnKeyDown;
-            TextBoxObject.TextChanged += OnBaseTextBoxChanged;
+            if (waterMarkContainer != null)
+            {
+                Controls.Remove(waterMarkContainer);
+                waterMarkContainer = null;
+            }
         }
 
-        public void TextBoxTextChanged(object s, EventArgs e)
+        private void UpdateLocationPoints()
         {
-            TextBoxObject.Text = Text;
+            if (!Multiline)
+            {
+                Height = textboxHeight;
+            }
+
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+            buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
+
+            buttonPath = new GraphicsPath();
+            buttonPath.AddRectangle(buttonRectangle);
+            buttonPath.CloseAllFigures();
+        }
+
+        private void waterMarkContainer_Click(object sender, EventArgs e)
+        {
+            Focus();
+        }
+
+        private void waterMarkContainer_Paint(object sender, PaintEventArgs e)
+        {
+            // Configure the watermark
+            waterMarkContainer.Location = new Point(2, 0);
+            waterMarkContainer.Height = Height;
+            waterMarkContainer.Width = Width;
+
+            // Forces it to resize with the parent control
+            waterMarkContainer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+
+            // Set color
+            waterMarkBrush = ContainsFocus ? new SolidBrush(waterMarkActiveColor) : new SolidBrush(waterMarkColor);
+
+            // Draws the string on the panel
+            e.Graphics.DrawString(waterMarkText, waterMarkFont, waterMarkBrush, new PointF(-2f, 1f));
         }
 
         #endregion

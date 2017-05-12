@@ -1,36 +1,24 @@
-﻿namespace VisualPlus.Framework.Styles
+﻿namespace VisualPlus.Styles
 {
+    #region Namespace
+
     using System.Collections.Generic;
     using System.Drawing;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
+
+    #endregion
+
     public class Visual : IStyle
     {
-        #region  ${0} Variables
-
-        private readonly Color defaultBackgroundColorNoDepth = Color.White;
-        private readonly Color defaultBorderColorNoDepth = Color.FromArgb(180, 180, 180);
-        private readonly Color defaultForeColorNoDepth = Color.Black;
-        private readonly Color defaultItemHoverNoDepth = Color.White;
-        private readonly Color defaultItemNormalNoDepth = Color.White;
-
-        #endregion
-
-        #region ${0} Properties
+        #region Variables
 
         public Color BackgroundProgressCircle
         {
             get
             {
                 return Color.FromArgb(52, 73, 96);
-            }
-        }
-
-        public SolidBrush BrushFontItemDisable
-        {
-            get
-            {
-                return new SolidBrush(Color.DarkGray);
             }
         }
 
@@ -114,7 +102,7 @@
             }
         }
 
-        public Color MainColor
+        public Color StyleColor
         {
             get
             {
@@ -138,11 +126,11 @@
             }
         }
 
-        public Style StyleManagement
+        public Styles StyleManagement
         {
             get
             {
-                return Style.Visual;
+                return Styles.Visual;
             }
         }
 
@@ -158,7 +146,7 @@
         {
             get
             {
-                return Color.FromArgb(77, 75, 76);
+                return Color.FromArgb(55, 61, 73);
             }
         }
 
@@ -166,7 +154,7 @@
         {
             get
             {
-                return Color.FromArgb(77, 75, 76);
+                return Color.FromArgb(55, 61, 73);
             }
         }
 
@@ -174,7 +162,7 @@
         {
             get
             {
-                return Color.FromArgb(66, 64, 65);
+                return Color.FromArgb(70, 76, 88);
             }
         }
 
@@ -182,7 +170,7 @@
         {
             get
             {
-                return Color.FromArgb(127, 127, 127);
+                return Color.FromArgb(174, 181, 187);
             }
         }
 
@@ -190,7 +178,7 @@
         {
             get
             {
-                return ColorTranslator.FromHtml("#2D882D");
+                return Color.FromArgb(217, 220, 227);
             }
         }
 
@@ -202,9 +190,89 @@
             }
         }
 
+        public FontFamily FontFamily
+        {
+            get
+            {
+                return new FontFamily("Verdana");
+            }
+        }
+
+        public Color BackgroundColor(int depth)
+        {
+            if (depth < GetBackgroundColor().Count)
+            {
+                return GetBackgroundColor()[depth];
+            }
+
+            return defaultBackgroundColorNoDepth;
+        }
+
+        public Color BorderColor(int depth)
+        {
+            if (depth < GetBorderColor().Count)
+            {
+                return GetBorderColor()[depth];
+            }
+
+            return defaultBorderColorNoDepth;
+        }
+
+        public Color ForeColor(int depth)
+        {
+            if (depth < GetForeColor().Count)
+            {
+                return GetForeColor()[depth];
+            }
+
+            return defaultForeColorNoDepth;
+        }
+
+        public Color ItemHover(int depth)
+        {
+            if (depth < GetItemHover().Count)
+            {
+                return GetItemHover()[depth];
+            }
+
+            return defaultItemHoverNoDepth;
+        }
+
+        public Color ItemNormal(int depth)
+        {
+            if (depth < GetItemNormal().Count)
+            {
+                return GetItemNormal()[depth];
+            }
+
+            return defaultItemNormalNoDepth;
+        }
+
         #endregion
 
-        #region ${0} Events
+        #region Variables
+
+        private readonly Color defaultBackgroundColorNoDepth = Color.White;
+        private readonly Color defaultBorderColorNoDepth = Color.FromArgb(180, 180, 180);
+        private readonly Color defaultForeColorNoDepth = Color.Black;
+        private readonly Color defaultItemHoverNoDepth = Color.White;
+        private readonly Color defaultItemNormalNoDepth = Color.White;
+
+        #endregion
+
+        #region Properties
+
+        public SolidBrush BrushFontItemDisable
+        {
+            get
+            {
+                return new SolidBrush(Color.DarkGray);
+            }
+        }
+
+        #endregion
+
+        #region Events
 
         private static List<Color> GetBackgroundColor()
         {
@@ -212,7 +280,8 @@
                 {
                     ControlPaint.LightLight(Color.Gainsboro),
                     ControlPaint.Light(Color.Gainsboro),
-                    Color.FromArgb(66, 64, 65)
+                    Color.FromArgb(66, 64, 65),
+                    Color.FromArgb(241, 244, 249)
                 };
 
             return list;
@@ -261,65 +330,6 @@
                 };
 
             return list;
-        }
-
-        #endregion
-
-        #region ${0} Methods
-
-        public Color BackgroundColor(int depth)
-        {
-            if (depth < GetBackgroundColor().
-                    Count)
-            {
-                return GetBackgroundColor()[depth];
-            }
-
-            return defaultBackgroundColorNoDepth;
-        }
-
-        public Color BorderColor(int depth)
-        {
-            if (depth < GetBorderColor().
-                    Count)
-            {
-                return GetBorderColor()[depth];
-            }
-
-            return defaultBorderColorNoDepth;
-        }
-
-        public Color ForeColor(int depth)
-        {
-            if (depth < GetForeColor().
-                    Count)
-            {
-                return GetForeColor()[depth];
-            }
-
-            return defaultForeColorNoDepth;
-        }
-
-        public Color ItemHover(int depth)
-        {
-            if (depth < GetItemHover().
-                    Count)
-            {
-                return GetItemHover()[depth];
-            }
-
-            return defaultItemHoverNoDepth;
-        }
-
-        public Color ItemNormal(int depth)
-        {
-            if (depth < GetItemNormal().
-                    Count)
-            {
-                return GetItemNormal()[depth];
-            }
-
-            return defaultItemNormalNoDepth;
         }
 
         #endregion
