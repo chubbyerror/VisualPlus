@@ -57,6 +57,8 @@
         private float gradientAngle;
         private LinearGradientBrush gradientBrush;
         private float[] gradientPosition = { 0, 1 / 2f, 1 };
+
+        private bool itemBorderVisible;
         private Color menuItemHover = Settings.DefaultValue.Style.ItemHover(0);
         private Color menuItemNormal = Settings.DefaultValue.Style.BackgroundColor(0);
         private Color menuTextColor = Settings.DefaultValue.Style.ForeColor(0);
@@ -373,6 +375,23 @@
             }
         }
 
+        [DefaultValue(Settings.DefaultValue.BorderVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.BorderVisible)]
+        public bool ItemBorderVisible
+        {
+            get
+            {
+                return itemBorderVisible;
+            }
+
+            set
+            {
+                itemBorderVisible = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color MenuItemHover
@@ -644,7 +663,7 @@
             itemBorderPath.AddRectangle(itemBorderRectangle);
 
             // Draw item border
-            if (borderVisible)
+            if (itemBorderVisible)
             {
                 GDI.DrawBorder(e.Graphics, itemBorderPath, borderThickness, borderColor);
             }
