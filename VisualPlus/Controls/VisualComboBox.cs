@@ -68,6 +68,13 @@
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
+        private Color waterMarkActiveColor = Color.Gray;
+        private SolidBrush waterMarkBrush;
+        private Color waterMarkColor = Color.LightGray;
+        private Font waterMarkFont;
+        private string waterMarkText = "Custom text...";
+        private bool watermarkVisible;
+
         #endregion
 
         #region Constructors
@@ -91,6 +98,10 @@
             UpdateLocationPoints();
             BackColor = Color.Transparent;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+
+            // Sets some default values to the watermark properties
+            waterMarkFont = Font;
+            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
         }
 
         public enum DropDownButtons
@@ -532,6 +543,86 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Watermark)]
+        public string WaterMark
+        {
+            get
+            {
+                return waterMarkText;
+            }
+
+            set
+            {
+                waterMarkText = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color WaterMarkActiveForeColor
+        {
+            get
+            {
+                return waterMarkActiveColor;
+            }
+
+            set
+            {
+                waterMarkActiveColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentFont)]
+        public Font WaterMarkFont
+        {
+            get
+            {
+                return waterMarkFont;
+            }
+
+            set
+            {
+                waterMarkFont = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color WaterMarkForeColor
+        {
+            get
+            {
+                return waterMarkColor;
+            }
+
+            set
+            {
+                waterMarkColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool WatermarkVisible
+        {
+            get
+            {
+                return watermarkVisible;
+            }
+
+            set
+            {
+                watermarkVisible = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region Events
@@ -563,6 +654,18 @@
             {
                 e.Graphics.DrawString(GetItemText(Items[e.Index]), e.Font, new SolidBrush(menuTextColor), e.Bounds);
             }
+        }
+
+        protected override void OnEnter(EventArgs e)
+        {
+            base.OnEnter(e);
+            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+        }
+
+        protected override void OnLeave(EventArgs e)
+        {
+            base.OnLeave(e);
+            waterMarkBrush = new SolidBrush(waterMarkColor);
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -661,6 +764,12 @@
                 };
 
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
+
+            // Draw the watermark
+            if (watermarkVisible && Text.Length == 0)
+            {
+                graphics.DrawString(waterMarkText, WaterMarkFont, waterMarkBrush, textBoxRectangle, stringFormat);
+            }
         }
 
         protected override void OnResize(EventArgs e)
