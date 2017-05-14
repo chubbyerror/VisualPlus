@@ -49,11 +49,7 @@ BitCoin donations are also welcome: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
 - [Visual Studio 2017](https://www.visualstudio.com/downloads/)
 
 ## Screenshots
-![Imgur](http://i.imgur.com/e4w6xER.jpg)
-
-![Imgur](http://i.imgur.com/w6skfXF.jpg)
-
-![Imgur](http://i.imgur.com/F5mjJHD.jpg)
+![Imgur](https://i.imgur.com/7F3bKCH.jpg)
 
 ## License
 This repository is licensed with the [GPLv3](LICENSE) license.
