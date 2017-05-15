@@ -25,6 +25,10 @@
     {
         #region Variables
 
+        private TabAlignment alignment = TabAlignment.Top;
+        private bool arrowSelectorVisible = true;
+        private int arrowSpacing = 10;
+        private int arrowThickness = 5;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -32,7 +36,6 @@
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private ControlState controlState = ControlState.Normal;
-
         private float gradientHoverAngle;
         private LinearGradientBrush gradientHoverBrush;
         private float[] gradientHoverPosition = { 0, 1 };
@@ -44,12 +47,12 @@
         private float[] gradientSelectedPosition = { 0, 1 };
         private Point hoverEndPoint;
         private Point hoverStartPoint;
+        private Size itemSize = new Size(100, 25);
         private StringAlignment lineAlignment = StringAlignment.Near;
         private Point mouseLocation;
         private Point normalEndPoint;
         private Point normalStartPoint;
         private Point selectedEndPoint;
-
         private Point selectedStartPoint;
         private TabAlignment selectorAlignment = TabAlignment.Top;
         private TabAlignment selectorAlignment2 = TabAlignment.Bottom;
@@ -102,10 +105,10 @@
             UpdateStyles();
 
             Size = new Size(320, 160);
-            ItemSize = new Size(100, 30);
             MinimumSize = new Size(144, 85);
             LineAlignment = StringAlignment.Center;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            ItemSize = itemSize;
 
             foreach (TabPage page in TabPages)
             {
@@ -117,6 +120,99 @@
         #endregion
 
         #region Properties
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Alignment)]
+        public new TabAlignment Alignment
+        {
+            get
+            {
+                return alignment;
+            }
+
+            set
+            {
+                alignment = value;
+                base.Alignment = alignment;
+
+                // Resize tabs
+                switch (alignment)
+                {
+                    case TabAlignment.Top:
+                    case TabAlignment.Bottom:
+                        {
+                            if (itemSize.Width < itemSize.Height)
+                            {
+                                ItemSize = new Size(itemSize.Height, itemSize.Width);
+                            }
+
+                            break;
+                        }
+
+                    case TabAlignment.Left:
+                    case TabAlignment.Right:
+                        {
+                            if (itemSize.Width > itemSize.Height)
+                            {
+                                ItemSize = new Size(itemSize.Height, itemSize.Width);
+                            }
+
+                            break;
+                        }
+                }
+
+                UpdateArrowLocation();
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool ArrowSelectorVisible
+        {
+            get
+            {
+                return arrowSelectorVisible;
+            }
+
+            set
+            {
+                arrowSelectorVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int ArrowSpacing
+        {
+            get
+            {
+                return arrowSpacing;
+            }
+
+            set
+            {
+                arrowSpacing = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int ArrowThickness
+        {
+            get
+            {
+                return arrowThickness;
+            }
+
+            set
+            {
+                arrowThickness = value;
+                Invalidate();
+            }
+        }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
@@ -318,6 +414,23 @@
             set
             {
                 gradientSelectedPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentSize)]
+        public new Size ItemSize
+        {
+            get
+            {
+                return itemSize;
+            }
+
+            set
+            {
+                itemSize = value;
+                base.ItemSize = itemSize;
                 Invalidate();
             }
         }
@@ -771,6 +884,11 @@
                         GDI.DrawBorderType(graphics, controlState, borderPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
                     }
 
+                    if (arrowSelectorVisible)
+                    {
+                        DrawSelectionArrow(e, tabRect);
+                    }
+
                     StringFormat stringFormat = new StringFormat
                         {
                             Alignment = textAlignment,
@@ -846,6 +964,68 @@
             DrawSeparator(e);
         }
 
+        private void DrawSelectionArrow(PaintEventArgs e, Rectangle selectedRectangle)
+        {
+            var points = new Point[3];
+
+            switch (Alignment)
+            {
+                case TabAlignment.Left:
+                    {
+                        points[0].X = selectedRectangle.Right - ArrowThickness;
+                        points[0].Y = selectedRectangle.Y + selectedRectangle.Height / 2;
+
+                        points[1].X = selectedRectangle.Right + ArrowSpacing;
+                        points[1].Y = selectedRectangle.Top + ArrowSpacing;
+
+                        points[2].X = selectedRectangle.Right + ArrowSpacing;
+                        points[2].Y = selectedRectangle.Bottom - ArrowSpacing;
+                        break;
+                    }
+
+                case TabAlignment.Top:
+                    {
+                        points[0].X = selectedRectangle.X + selectedRectangle.Width / 2;
+                        points[0].Y = selectedRectangle.Bottom - ArrowThickness;
+
+                        points[1].X = selectedRectangle.Left + ArrowSpacing;
+                        points[1].Y = selectedRectangle.Bottom + ArrowSpacing;
+
+                        points[2].X = selectedRectangle.Right - ArrowSpacing;
+                        points[2].Y = selectedRectangle.Bottom + ArrowSpacing;
+                        break;
+                    }
+
+                case TabAlignment.Bottom:
+                    {
+                        points[0].X = selectedRectangle.X + selectedRectangle.Width / 2;
+                        points[0].Y = selectedRectangle.Top + ArrowThickness;
+
+                        points[1].X = selectedRectangle.Left + ArrowSpacing;
+                        points[1].Y = selectedRectangle.Top - ArrowSpacing;
+
+                        points[2].X = selectedRectangle.Right - ArrowSpacing;
+                        points[2].Y = selectedRectangle.Top - ArrowSpacing;
+                        break;
+                    }
+
+                case TabAlignment.Right:
+                    {
+                        points[0].X = selectedRectangle.Left + ArrowThickness;
+                        points[0].Y = selectedRectangle.Y + selectedRectangle.Height / 2;
+
+                        points[1].X = selectedRectangle.Left - ArrowSpacing;
+                        points[1].Y = selectedRectangle.Top + ArrowSpacing;
+
+                        points[2].X = selectedRectangle.Left - ArrowSpacing;
+                        points[2].Y = selectedRectangle.Bottom - ArrowSpacing;
+                        break;
+                    }
+            }
+
+            e.Graphics.FillPolygon(new SolidBrush(backgroundColor), points);
+        }
+
         private void DrawSeparator(PaintEventArgs e)
         {
             if (!separatorVisible)
@@ -883,6 +1063,28 @@
                 default:
                     {
                         throw new ArgumentOutOfRangeException();
+                    }
+            }
+        }
+
+        private void UpdateArrowLocation()
+        {
+            switch (alignment)
+            {
+                case TabAlignment.Top:
+                case TabAlignment.Bottom:
+                    {
+                        arrowThickness = 5;
+                        arrowSpacing = 10;
+                        break;
+                    }
+
+                case TabAlignment.Left:
+                case TabAlignment.Right:
+                    {
+                        arrowThickness = 10;
+                        arrowSpacing = 3;
+                        break;
                     }
             }
         }
