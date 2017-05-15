@@ -1,36 +1,20 @@
-﻿using System;
-using System.Drawing;
-
-namespace VisualPlus.Framework.GDI
+﻿namespace VisualPlus.Framework.GDI
 {
+    #region Namespace
+
+    using System;
+    using System.Drawing;
+
+    #endregion
+
     internal class ColorHelper
     {
-        #region ${0} Events
+        #region Events
 
-        /// <summary>
-        /// </summary>
-        /// <param name="ibase"></param>
-        /// <param name="blend"></param>
-        /// <returns></returns>
-        private static int SoftLightMath(int ibase, int blend)
+        public static Color ColorFromHtml(string withoutHash)
         {
-            float dbase;
-            float dblend;
-            dbase = (float) ibase / 255;
-            dblend = (float) blend / 255;
-            if (dblend < 0.5)
-            {
-                return (int) ((2 * dbase * dblend + Math.Pow(dbase, 2) * (1 - 2 * dblend)) * 255);
-            }
-            else
-            {
-                return (int) ((Math.Sqrt(dbase) * (2 * dblend - 1) + 2 * dbase * (1 - dblend)) * 255);
-            }
+            return ColorTranslator.FromHtml("#" + withoutHash);
         }
-
-        #endregion
-
-        #region ${0} Methods
 
         public static string ColorToHtml(Color color)
         {
@@ -45,42 +29,43 @@ namespace VisualPlus.Framework.GDI
         /// <returns></returns>
         public static Color CreateColorFromRGB(int red, int green, int blue)
         {
-            //Corect Red element
+            // Corect Red element
             int r = red;
             if (r > 255)
             {
                 r = 255;
             }
+
             if (r < 0)
             {
                 r = 0;
             }
-            //Corect Green element
+
+            // Corect Green element
             int g = green;
             if (g > 255)
             {
                 g = 255;
             }
+
             if (g < 0)
             {
                 g = 0;
             }
-            //Correct Blue Element
+
+            // Correct Blue Element
             int b = blue;
             if (b > 255)
             {
                 b = 255;
             }
+
             if (b < 0)
             {
                 b = 0;
             }
-            return Color.FromArgb(r, g, b);
-        }
 
-        public static Color ColorFromHtml(string withouthHash)
-        {
-            return ColorTranslator.FromHtml("#" + withouthHash);
+            return Color.FromArgb(r, g, b);
         }
 
         /// <summary>
@@ -106,9 +91,9 @@ namespace VisualPlus.Framework.GDI
             r2 = baseColor.R;
             g2 = baseColor.G;
             b2 = baseColor.B;
-            r3 = (int) (r1 * ((float) opacity / 100) + r2 * (1 - (float) opacity / 100));
-            g3 = (int) (g1 * ((float) opacity / 100) + g2 * (1 - (float) opacity / 100));
-            b3 = (int) (b1 * ((float) opacity / 100) + b2 * (1 - (float) opacity / 100));
+            r3 = (int)(r1 * ((float)opacity / 100) + r2 * (1 - (float)opacity / 100));
+            g3 = (int)(g1 * ((float)opacity / 100) + g2 * (1 - (float)opacity / 100));
+            b3 = (int)(b1 * ((float)opacity / 100) + b2 * (1 - (float)opacity / 100));
             return CreateColorFromRGB(r3, g3, b3);
         }
 
@@ -121,15 +106,15 @@ namespace VisualPlus.Framework.GDI
         {
             double dbase;
             double dblend;
-            dbase = (double) ibase / 255;
-            dblend = (double) blend / 255;
+            dbase = (double)ibase / 255;
+            dblend = (double)blend / 255;
             if (dbase < 0.5)
             {
-                return (int) (2 * dbase * dblend * 255);
+                return (int)(2 * dbase * dblend * 255);
             }
             else
             {
-                return (int) ((1 - 2 * (1 - dbase) * (1 - dblend)) * 255);
+                return (int)((1 - 2 * (1 - dbase) * (1 - dblend)) * 255);
             }
         }
 
@@ -189,6 +174,27 @@ namespace VisualPlus.Framework.GDI
             g3 = SoftLightMath(g1, g2);
             b3 = SoftLightMath(b1, b2);
             return OpacityMix(CreateColorFromRGB(r3, g3, b3), baseColor, opacity);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="ibase"></param>
+        /// <param name="blend"></param>
+        /// <returns></returns>
+        private static int SoftLightMath(int ibase, int blend)
+        {
+            float dbase;
+            float dblend;
+            dbase = (float)ibase / 255;
+            dblend = (float)blend / 255;
+            if (dblend < 0.5)
+            {
+                return (int)((2 * dbase * dblend + Math.Pow(dbase, 2) * (1 - 2 * dblend)) * 255);
+            }
+            else
+            {
+                return (int)((Math.Sqrt(dbase) * (2 * dblend - 1) + 2 * dbase * (1 - dblend)) * 255);
+            }
         }
 
         #endregion
