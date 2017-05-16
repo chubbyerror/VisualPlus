@@ -9,6 +9,7 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    using VisualPlus.Components.Symbols;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
@@ -31,8 +32,17 @@
         private int borderRounding = Settings.DefaultValue.BorderRounding;
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
+        private Direction buttonDirection = Direction.Right;
+        private Rectangle buttonRectangle;
+        private int buttonWidth = 19;
+        private bool contracted;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
+        private bool expandButtonVisible = true;
+        private Size originalSize;
+        private int xValue;
+        private int yValue;
 
         #endregion
 
@@ -51,6 +61,8 @@
             DoubleBuffered = true;
 
             UpdateStyles();
+
+            originalSize = ClientRectangle.Size;
         }
 
         #endregion
@@ -201,6 +213,54 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color ButtonColor
+        {
+            get
+            {
+                return buttonColor;
+            }
+
+            set
+            {
+                buttonColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Direction)]
+        public Direction ButtonDirection
+        {
+            get
+            {
+                return buttonDirection;
+            }
+
+            set
+            {
+                buttonDirection = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool ExpandButtonVisible
+        {
+            get
+            {
+                return expandButtonVisible;
+            }
+
+            set
+            {
+                expandButtonVisible = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region Events
@@ -215,6 +275,63 @@
             ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, true);
         }
 
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            OnMouseClick(e);
+
+            if (ExpandButtonVisible)
+            {
+                if (buttonDirection == Direction.Left)
+                {
+                    // Check if mouse in X position.
+                    if (xValue > 0 && xValue < buttonRectangle.Width)
+                    {
+                        // Determine the button middle separator by checking for the Y position.
+                        if (yValue > buttonRectangle.Y && yValue < buttonRectangle.Height)
+                        {
+                            if (contracted)
+                            {
+                                Expand(false);
+                            }
+                            else
+                            {
+                                Expand(true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Focus();
+                    }
+                }
+                else
+                {
+                    // Check if mouse in X position.
+                    if (xValue > Width - buttonRectangle.Width && xValue < Width)
+                    {
+                        // Determine the button middle separator by checking for the Y position.
+                        if (yValue > buttonRectangle.Y && yValue < buttonRectangle.Height)
+                        {
+                            if (contracted)
+                            {
+                                Expand(false);
+                            }
+                            else
+                            {
+                                Expand(true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Focus();
+                    }
+                }
+
+                Invalidate();
+            }
+        }
+
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
@@ -227,6 +344,41 @@
             base.OnMouseLeave(e);
             controlState = ControlState.Normal;
             Invalidate();
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            xValue = e.Location.X;
+            yValue = e.Location.Y;
+            Invalidate();
+
+            // Cursor toggle
+            if (ExpandButtonVisible)
+            {
+                if (buttonDirection == Direction.Left)
+                {
+                    if (e.X < buttonRectangle.X + buttonRectangle.Width && e.Y < buttonRectangle.Y + buttonRectangle.Height)
+                    {
+                        Cursor = Cursors.Hand;
+                    }
+                    else
+                    {
+                        Cursor = Cursors.Default;
+                    }
+                }
+                else
+                {
+                    if (e.X > Width - buttonRectangle.Width && e.Y < buttonRectangle.Y + buttonRectangle.Height)
+                    {
+                        Cursor = Cursors.Hand;
+                    }
+                    else
+                    {
+                        Cursor = Cursors.Default;
+                    }
+                }
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -245,6 +397,27 @@
             {
                 GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
             }
+
+            if (ExpandButtonVisible)
+            {
+                buttonRectangle = new Rectangle(0, 0, 25, 25);
+                Point buttonImagePoint;
+                Size buttonImageSize;
+
+                // Draw button
+                buttonImageSize = new Size(25, 25);
+
+                if (buttonDirection == Direction.Left)
+                {
+                    buttonImagePoint = new Point(buttonRectangle.X, buttonRectangle.Y);
+                }
+                else
+                {
+                    buttonImagePoint = new Point(Width - buttonRectangle.Width, buttonRectangle.Y);
+                }
+
+                Arrow.DrawArrow(graphics, buttonImagePoint, buttonImageSize, ButtonColor, 13);
+            }
         }
 
         protected override void OnResize(EventArgs e)
@@ -259,10 +432,30 @@
             UpdateLocationPoints();
         }
 
+        private void Expand(bool contract)
+        {
+            int height;
+
+            if (contract)
+            {
+                height = buttonRectangle.Height;
+                contracted = true;
+            }
+            else
+            {
+                height = originalSize.Height;
+                contracted = false;
+            }
+
+            Size = new Size(ClientRectangle.Width, height);
+        }
+
         private void UpdateLocationPoints()
         {
             // Update paths
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+
+            buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
         }
 
         #endregion

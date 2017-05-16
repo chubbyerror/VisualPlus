@@ -105,6 +105,7 @@
     <Compile Include="Controls\VisualToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Enums\Direction.cs" />
     <Compile Include="Framework\ExceptionHandler.cs" />
     <Compile Include="Framework\GDI\ColorHelper.cs" />
     <Compile Include="Framework\Extensions.cs" />

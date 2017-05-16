@@ -29,6 +29,7 @@
             public const string ComponentSize = "The size of the component in pixels.";
             public const string ComponentVisible = "Indicates whether the component is visible.";
             public const string ControlDisabled = "The disabled color for the control.";
+            public const string Direction = "The flow of data.";
             public const string DropDownButton = "Applies the specified drop down button style.";
             public const string FocusVisible = "Sets input focus to the control";
             public const string GradientPosition = "The position of the gradient colors.";
