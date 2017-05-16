@@ -119,7 +119,6 @@
     <Compile Include="Styles\Visual.cs" />
     <Compile Include="Enums\Animation.cs" />
     <Compile Include="Enums\BorderShape.cs" />
-    <Compile Include="Enums\BorderStyle.cs" />
     <Compile Include="Controls\VisualComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -163,7 +162,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Framework\GDI\GDI.cs" />
-    <Compile Include="Enums\BrushType.cs" />
     <Compile Include="Enums\ControlState.cs" />
     <Compile Include="Localization\Localization.cs" />
     <Compile Include="Framework\VSDesigner.cs" />

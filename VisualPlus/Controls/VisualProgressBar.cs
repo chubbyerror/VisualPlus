@@ -74,11 +74,9 @@
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
-
         private Size minimumSize = new Size(100, 20);
         private bool percentageVisible;
         private ProgressBarTypes progressBarStyle = ProgressBarTypes.Horizontal;
-        private BrushType progressColorStyle = BrushType.Gradient;
         private Font progressFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private Point startPoint;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
@@ -525,22 +523,6 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentColor)]
-        public BrushType ProgressColorStyle
-        {
-            get
-            {
-                return progressColorStyle;
-            }
-
-            set
-            {
-                progressColorStyle = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentFont)]
         public Font ProgressFont
@@ -760,19 +742,9 @@
             // Draw progress
             if (i1 > 1)
             {
-                gradientProgressBrush = GDI.CreateGradientBrush(progressColor, gradientProgressPosition, gradientProgressAngle, startPoint, endPoint);
-
                 // Draw progress
-                if (progressColorStyle == BrushType.Gradient)
-                {
-                    // Draw gradient progress
-                    graphics.FillPath(gradientProgressBrush, progressPath);
-                }
-                else
-                {
-                    // Solid color progress
-                    graphics.FillPath(new SolidBrush(progressColor[0]), progressPath);
-                }
+                gradientProgressBrush = GDI.CreateGradientBrush(progressColor, gradientProgressPosition, gradientProgressAngle, startPoint, endPoint);
+                graphics.FillPath(gradientProgressBrush, progressPath);
 
                 hatchPath = progressPath;
 

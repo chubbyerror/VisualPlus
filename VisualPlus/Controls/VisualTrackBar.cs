@@ -105,7 +105,6 @@
         private bool lineTicksVisible = Settings.DefaultValue.TextVisible;
         private float mouseStartPos = -1;
         private string prefix;
-        private BrushType progressColorStyle = BrushType.Gradient;
         private bool progressFilling;
         private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
@@ -706,22 +705,6 @@
             set
             {
                 progressColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentColor)]
-        public BrushType ProgressColorStyle
-        {
-            get
-            {
-                return progressColorStyle;
-            }
-
-            set
-            {
-                progressColorStyle = value;
                 Invalidate();
             }
         }
@@ -1728,17 +1711,8 @@
             if (barProgress > 1)
             {
                 // Draw progress
-                if (progressColorStyle == BrushType.Gradient)
-                {
-                    // Draw gradient progress
-                    gradientProgressBrush = GDI.CreateGradientBrush(progressColor, gradientProgressPosition, gradientProgressAngle, startProgressPoint, endProgressPoint);
-                    graphics.FillPath(gradientProgressBrush, progressPath);
-                }
-                else
-                {
-                    // Solid color progress
-                    graphics.FillPath(new SolidBrush(progressColor[0]), progressPath);
-                }
+                gradientProgressBrush = GDI.CreateGradientBrush(progressColor, gradientProgressPosition, gradientProgressAngle, startProgressPoint, endProgressPoint);
+                graphics.FillPath(gradientProgressBrush, progressPath);
 
                 // Draw hatch
                 if (hatchVisible)
