@@ -58,6 +58,8 @@
         private Rectangle titleBoxRectangle;
         private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
 
+        private VerticalDirection vertDirection = VerticalDirection.Top;
+
         #endregion
 
         #region Constructors
@@ -75,6 +77,15 @@
             Padding = new Padding(5, 28, 5, 5);
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
+        }
+
+        public enum VerticalDirection
+        {
+            /// <summary>The bottom.</summary>
+            Bottom,
+
+            /// <summary>The top.</summary>
+            Top
         }
 
         #endregion
@@ -221,6 +232,22 @@
             set
             {
                 borderVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentNoName)]
+        public VerticalDirection Direction
+        {
+            get
+            {
+                return vertDirection;
+            }
+
+            set
+            {
+                vertDirection = value;
                 Invalidate();
             }
         }
@@ -468,7 +495,18 @@
 
         private void UpdateLocationPoints()
         {
-            titleBoxRectangle = new Rectangle(0, 0, Width - 1, titleBoxHeight);
+            Point titlePoint;
+
+            if (vertDirection == VerticalDirection.Top)
+            {
+                titlePoint = new Point(0, 0);
+            }
+            else
+            {
+                titlePoint = new Point(0, Height - titleBoxHeight - 1);
+            }
+
+            titleBoxRectangle = new Rectangle(titlePoint.X, titlePoint.Y, Width - 1, titleBoxHeight);
 
             // Determine type of border rounding to draw
             if (borderShape == BorderShape.Rounded)
