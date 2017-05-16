@@ -9,7 +9,6 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
-    using VisualPlus.Components.Symbols;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
@@ -24,6 +23,12 @@
     {
         #region Variables
 
+        public bool Expanded = true;
+
+        #endregion
+
+        #region Variables
+
         private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
@@ -35,8 +40,8 @@
         private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
         private Direction buttonDirection = Direction.Right;
         private Rectangle buttonRectangle;
-        private int buttonWidth = 19;
-        private bool contracted;
+        private Size buttonSize = new Size(12, 10);
+        private int buttonSpacing = 6;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private bool expandButtonVisible = true;
@@ -64,6 +69,8 @@
 
             originalSize = ClientRectangle.Size;
         }
+
+        public delegate void ButtonClickedEventHandler();
 
         #endregion
 
@@ -245,6 +252,38 @@
             }
         }
 
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public Size ButtonSize
+        {
+            get
+            {
+                return buttonSize;
+            }
+
+            set
+            {
+                buttonSize = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int ButtonSpacing
+        {
+            get
+            {
+                return buttonSpacing;
+            }
+
+            set
+            {
+                buttonSpacing = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.ComponentVisible)]
         public bool ExpandButtonVisible
@@ -265,6 +304,8 @@
 
         #region Events
 
+        public event ButtonClickedEventHandler ButtonClicked;
+
         protected override void OnControlAdded(ControlEventArgs e)
         {
             ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, false);
@@ -284,12 +325,12 @@
                 if (buttonDirection == Direction.Left)
                 {
                     // Check if mouse in X position.
-                    if (xValue > 0 && xValue < buttonRectangle.Width)
+                    if (xValue > buttonRectangle.X && xValue < buttonSize.Width + ButtonSpacing)
                     {
                         // Determine the button middle separator by checking for the Y position.
-                        if (yValue > buttonRectangle.Y && yValue < buttonRectangle.Height)
+                        if (yValue > buttonRectangle.Y && yValue < buttonSize.Height + ButtonSpacing)
                         {
-                            if (contracted)
+                            if (Expanded)
                             {
                                 Expand(false);
                             }
@@ -297,6 +338,8 @@
                             {
                                 Expand(true);
                             }
+
+                            ButtonClicked.Invoke();
                         }
                     }
                     else
@@ -307,12 +350,12 @@
                 else
                 {
                     // Check if mouse in X position.
-                    if (xValue > Width - buttonRectangle.Width && xValue < Width)
+                    if (xValue > Width - buttonRectangle.X - buttonSize.Width && xValue < Width - buttonRectangle.X)
                     {
                         // Determine the button middle separator by checking for the Y position.
-                        if (yValue > buttonRectangle.Y && yValue < buttonRectangle.Height)
+                        if (yValue > buttonRectangle.Y && yValue < buttonRectangle.Y + buttonRectangle.Height)
                         {
-                            if (contracted)
+                            if (Expanded)
                             {
                                 Expand(false);
                             }
@@ -320,6 +363,8 @@
                             {
                                 Expand(true);
                             }
+
+                            ButtonClicked.Invoke();
                         }
                     }
                     else
@@ -358,7 +403,7 @@
             {
                 if (buttonDirection == Direction.Left)
                 {
-                    if (e.X < buttonRectangle.X + buttonRectangle.Width && e.Y < buttonRectangle.Y + buttonRectangle.Height)
+                    if (e.X < buttonRectangle.X + buttonSize.Width && e.Y < buttonRectangle.Y + buttonSize.Height)
                     {
                         Cursor = Cursors.Hand;
                     }
@@ -369,7 +414,7 @@
                 }
                 else
                 {
-                    if (e.X > Width - buttonRectangle.Width && e.Y < buttonRectangle.Y + buttonRectangle.Height)
+                    if (e.X > Width - buttonRectangle.X - buttonSize.Width && e.Y < buttonRectangle.Y + buttonSize.Height)
                     {
                         Cursor = Cursors.Hand;
                     }
@@ -387,6 +432,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
+
             UpdateLocationPoints();
 
             // Draw background
@@ -400,23 +446,7 @@
 
             if (ExpandButtonVisible)
             {
-                buttonRectangle = new Rectangle(0, 0, 25, 25);
-                Point buttonImagePoint;
-                Size buttonImageSize;
-
-                // Draw button
-                buttonImageSize = new Size(25, 25);
-
-                if (buttonDirection == Direction.Left)
-                {
-                    buttonImagePoint = new Point(buttonRectangle.X, buttonRectangle.Y);
-                }
-                else
-                {
-                    buttonImagePoint = new Point(Width - buttonRectangle.Width, buttonRectangle.Y);
-                }
-
-                Arrow.DrawArrow(graphics, buttonImagePoint, buttonImageSize, ButtonColor, 13);
+                DrawExpanderArrow(e);
             }
         }
 
@@ -432,19 +462,77 @@
             UpdateLocationPoints();
         }
 
+        private void DrawExpanderArrow(PaintEventArgs e)
+        {
+            var points = new Point[3];
+            if (buttonDirection == Direction.Left)
+            {
+                if (Expanded)
+                {
+                    points[0].X = buttonRectangle.X + ButtonSize.Width / 2;
+                    points[0].Y = buttonRectangle.Y;
+
+                    points[1].X = buttonRectangle.X;
+                    points[1].Y = buttonRectangle.Y + ButtonSize.Height;
+
+                    points[2].X = buttonRectangle.X + ButtonSize.Width;
+                    points[2].Y = buttonRectangle.Y + ButtonSize.Height;
+                }
+                else
+                {
+                    points[0].X = buttonRectangle.X;
+                    points[0].Y = buttonRectangle.Y;
+
+                    points[1].X = buttonRectangle.X + ButtonSize.Width;
+                    points[1].Y = buttonRectangle.Y;
+
+                    points[2].X = buttonRectangle.X + ButtonSize.Width / 2;
+                    points[2].Y = buttonRectangle.Y + ButtonSize.Height;
+                }
+            }
+            else
+            {
+                if (Expanded)
+                {
+                    points[0].X = Width - buttonRectangle.X - ButtonSize.Width / 2;
+                    points[0].Y = buttonRectangle.Y;
+
+                    points[1].X = Width - buttonRectangle.X - buttonSize.Width;
+                    points[1].Y = buttonRectangle.Y + ButtonSize.Height;
+
+                    points[2].X = Width - buttonRectangle.X;
+                    points[2].Y = buttonRectangle.Y + ButtonSize.Height;
+                }
+                else
+                {
+                    points[0].X = Width - buttonRectangle.X - buttonSize.Width;
+                    points[0].Y = buttonRectangle.Y;
+
+                    points[1].X = Width - buttonRectangle.X;
+                    points[1].Y = buttonRectangle.Y;
+
+                    points[2].X = Width - buttonRectangle.X - ButtonSize.Width / 2;
+                    points[2].Y = buttonRectangle.Y + ButtonSize.Height;
+                }
+            }
+
+            e.Graphics.FillPolygon(new SolidBrush(buttonColor), points);
+        }
+
         private void Expand(bool contract)
         {
             int height;
 
             if (contract)
             {
-                height = buttonRectangle.Height;
-                contracted = true;
+                height = originalSize.Height;
+                Expanded = true;
             }
             else
             {
-                height = originalSize.Height;
-                contracted = false;
+                height = buttonRectangle.X + buttonRectangle.Height + ButtonSpacing;
+
+                Expanded = false;
             }
 
             Size = new Size(ClientRectangle.Width, height);
@@ -452,10 +540,8 @@
 
         private void UpdateLocationPoints()
         {
-            // Update paths
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
-
-            buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
+            buttonRectangle = new Rectangle(ButtonSpacing, ButtonSpacing, ButtonSize.Width, ButtonSize.Height);
         }
 
         #endregion
