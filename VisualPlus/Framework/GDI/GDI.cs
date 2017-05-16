@@ -482,6 +482,27 @@
             return textSize;
         }
 
+        /// <summary>Initialize the graphics processor.</summary>
+        /// <param name="e">Paint event.</param>
+        /// <param name="compositingMode">Compositing mode.</param>
+        /// <param name="compositingQuality">Compositing quality.</param>
+        /// <param name="interpolationMode">Interpolation mode.</param>
+        /// <param name="pixelOffsetMode">Pixel offset mode.</param>
+        /// <param name="smoothingMode">Smoothing mode.</param>
+        /// <param name="textRenderingHint">Text rendering hint.</param>
+        /// <returns>Processed graphics.</returns>
+        public static Graphics Initialize(PaintEventArgs e, CompositingMode compositingMode, CompositingQuality compositingQuality, InterpolationMode interpolationMode, PixelOffsetMode pixelOffsetMode, SmoothingMode smoothingMode, TextRenderingHint textRenderingHint)
+        {
+            Graphics graphics = e.Graphics;
+            graphics.CompositingMode = compositingMode;
+            graphics.CompositingQuality = compositingQuality;
+            graphics.InterpolationMode = interpolationMode;
+            graphics.PixelOffsetMode = pixelOffsetMode;
+            graphics.SmoothingMode = smoothingMode;
+            graphics.TextRenderingHint = textRenderingHint;
+            return graphics;
+        }
+
         #endregion
     }
 }
