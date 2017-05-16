@@ -78,6 +78,8 @@
                 Settings.DefaultValue.Style.TabNormal
             };
 
+        private Rectangle tabRectangle;
+
         private Color[] tabSelected =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
@@ -87,6 +89,7 @@
         private Color tabSelector = Settings.DefaultValue.Style.StyleColor;
         private StringAlignment textAlignment = StringAlignment.Center;
         private Color textNormal = Settings.DefaultValue.Style.TabTextNormal;
+        private Rectangle textRectangle;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color textSelected = Settings.DefaultValue.Style.TabTextSelected;
 
@@ -807,12 +810,8 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Graphics graphics = e.Graphics;
+            Graphics graphics = GDI.Initialize(e, CompositingMode.SourceOver, CompositingQuality.Default, InterpolationMode.Default, PixelOffsetMode.Default, SmoothingMode.HighQuality, textRendererHint);
             graphics.Clear(Parent.BackColor);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = textRendererHint;
-            graphics.CompositingMode = CompositingMode.SourceOver;
-
             UpdateLocationPoints();
 
             // Draw tab selector background body
@@ -823,47 +822,24 @@
             gradientNormalBrush = GDI.CreateGradientBrush(tabNormal, gradientNormalPosition, gradientNormalAngle, normalStartPoint, normalEndPoint);
             gradientHoverBrush = GDI.CreateGradientBrush(tabHover, gradientHoverPosition, gradientHoverAngle, hoverStartPoint, hoverEndPoint);
 
-            // ------------------------------- >
             for (var tabIndex = 0; tabIndex <= TabCount - 1; tabIndex++)
             {
-                Rectangle tabRect;
-                Rectangle textRect;
-
-                if (Alignment == TabAlignment.Top && Alignment == TabAlignment.Bottom)
-                {
-                    // Top - Bottom
-                    tabRect = new Rectangle(
-                        new Point(
-                            GetTabRect(tabIndex).Location.X,
-                            GetTabRect(tabIndex).Location.Y),
-                        new Size(
-                            GetTabRect(tabIndex).Width,
-                            GetTabRect(tabIndex).Height));
-
-                    textRect = new Rectangle(tabRect.Left, tabRect.Top, tabRect.Width, tabRect.Height);
-                }
-                else
-                {
-                    // Left - Right
-                    tabRect = new Rectangle(
-                        new Point(
-                            GetTabRect(tabIndex).Location.X,
-                            GetTabRect(tabIndex).Location.Y),
-                        new Size(
-                            GetTabRect(tabIndex).Width,
-                            GetTabRect(tabIndex).Height));
-
-                    textRect = new Rectangle(tabRect.Left, tabRect.Top, tabRect.Width, tabRect.Height);
-                }
+                ConfigureAlignmentStyle(tabIndex);
 
                 // Draws the TabSelector
                 Rectangle selectorRectangle = GDI.ApplyAnchor(selectorAlignment, GetTabRect(tabIndex), selectorThickness);
                 Rectangle selectorRectangle2 = GDI.ApplyAnchor(SelectorAlignment2, GetTabRect(tabIndex), selectorThickness);
 
+                StringFormat stringFormat = new StringFormat
+                    {
+                        Alignment = textAlignment,
+                        LineAlignment = lineAlignment
+                    };
+
                 if (tabIndex == SelectedIndex)
                 {
                     // Draw selected tab
-                    graphics.FillRectangle(gradientSelectedBrush, tabRect);
+                    graphics.FillRectangle(gradientSelectedBrush, tabRectangle);
 
                     // Draw tab selector
                     if (selectorVisible)
@@ -880,46 +856,40 @@
                     if (borderVisible)
                     {
                         GraphicsPath borderPath = new GraphicsPath();
-                        borderPath.AddRectangle(tabRect);
+                        borderPath.AddRectangle(tabRectangle);
                         GDI.DrawBorderType(graphics, controlState, borderPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
                     }
 
                     if (arrowSelectorVisible)
                     {
-                        DrawSelectionArrow(e, tabRect);
+                        DrawSelectionArrow(e, tabRectangle);
                     }
-
-                    StringFormat stringFormat = new StringFormat
-                        {
-                            Alignment = textAlignment,
-                            LineAlignment = lineAlignment
-                        };
 
                     // Draw selected tab text
                     graphics.DrawString(
                         TabPages[tabIndex].Text,
                         Font,
                         new SolidBrush(textSelected),
-                        textRect,
+                        textRectangle,
                         stringFormat);
 
                     // Draw image list
                     if (ImageList != null)
                     {
-                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].Size.Height, ImageList.Images[tabIndex].Size.Width);
+                        graphics.DrawImage(ImageList.Images[tabIndex], tabRectangle.X + 12, tabRectangle.Y + 11, ImageList.Images[tabIndex].Size.Height, ImageList.Images[tabIndex].Size.Width);
                     }
                 }
                 else
                 {
                     // Draw other TabPages
-                    graphics.FillRectangle(gradientNormalBrush, tabRect);
+                    graphics.FillRectangle(gradientNormalBrush, tabRectangle);
 
-                    if (controlState == ControlState.Hover && tabRect.Contains(mouseLocation))
+                    if (controlState == ControlState.Hover && tabRectangle.Contains(mouseLocation))
                     {
                         Cursor = Cursors.Hand;
 
                         // Draw hover background
-                        graphics.FillRectangle(gradientHoverBrush, tabRect);
+                        graphics.FillRectangle(gradientHoverBrush, tabRectangle);
 
                         // Draw tab selector
                         if (selectorVisible)
@@ -935,33 +905,57 @@
                         if (borderVisible)
                         {
                             GraphicsPath borderPath = new GraphicsPath();
-                            borderPath.AddRectangle(tabRect);
+                            borderPath.AddRectangle(tabRectangle);
                             GDI.DrawBorderType(graphics, controlState, borderPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
                         }
                     }
-
-                    StringFormat stringFormat = new StringFormat
-                        {
-                            Alignment = textAlignment,
-                            LineAlignment = lineAlignment
-                        };
 
                     graphics.DrawString(
                         TabPages[tabIndex].Text,
                         Font,
                         new SolidBrush(textNormal),
-                        textRect,
+                        textRectangle,
                         stringFormat);
 
                     // Draw image list
                     if (ImageList != null)
                     {
-                        graphics.DrawImage(ImageList.Images[tabIndex], tabRect.X + 12, tabRect.Y + 11, ImageList.Images[tabIndex].Size.Height, ImageList.Images[tabIndex].Size.Width);
+                        graphics.DrawImage(ImageList.Images[tabIndex], tabRectangle.X + 12, tabRectangle.Y + 11, ImageList.Images[tabIndex].Size.Height, ImageList.Images[tabIndex].Size.Width);
                     }
                 }
             }
 
             DrawSeparator(e);
+        }
+
+        private void ConfigureAlignmentStyle(int tabIndex)
+        {
+            if (Alignment == TabAlignment.Top && Alignment == TabAlignment.Bottom)
+            {
+                // Top - Bottom
+                tabRectangle = new Rectangle(
+                    new Point(
+                        GetTabRect(tabIndex).Location.X,
+                        GetTabRect(tabIndex).Location.Y),
+                    new Size(
+                        GetTabRect(tabIndex).Width,
+                        GetTabRect(tabIndex).Height));
+
+                textRectangle = new Rectangle(tabRectangle.Left, tabRectangle.Top, tabRectangle.Width, tabRectangle.Height);
+            }
+            else
+            {
+                // Left - Right
+                tabRectangle = new Rectangle(
+                    new Point(
+                        GetTabRect(tabIndex).Location.X,
+                        GetTabRect(tabIndex).Location.Y),
+                    new Size(
+                        GetTabRect(tabIndex).Width,
+                        GetTabRect(tabIndex).Height));
+
+                textRectangle = new Rectangle(tabRectangle.Left, tabRectangle.Top, tabRectangle.Width, tabRectangle.Height);
+            }
         }
 
         private void DrawSelectionArrow(PaintEventArgs e, Rectangle selectedRectangle)
