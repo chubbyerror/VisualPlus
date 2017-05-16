@@ -71,9 +71,9 @@
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private float gradientBackroundAngle;
-        private LinearGradientBrush gradientBackroundBrush;
-        private float[] gradientBackroundPosition = { 0, 1 / 2f, 1 };
+        private float gradientBackgroundAngle;
+        private LinearGradientBrush gradientBackgroundBrush;
+        private float[] gradientBackgroundPosition = { 0, 1 / 2f, 1 };
         private float gradientButtonAngle;
         private LinearGradientBrush gradientButtonBrush;
         private float[] gradientButtonPosition = { 0, 1 / 2f, 1 };
@@ -304,32 +304,32 @@
 
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.Angle)]
-        public float GradientBackroundAngle
+        public float GradientBackgroundAngle
         {
             get
             {
-                return gradientBackroundAngle;
+                return gradientBackgroundAngle;
             }
 
             set
             {
-                gradientBackroundAngle = value;
+                gradientBackgroundAngle = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.GradientPosition)]
-        public float[] GradientBackroundPosition
+        public float[] GradientBackgroundPosition
         {
             get
             {
-                return gradientBackroundPosition;
+                return gradientBackgroundPosition;
             }
 
             set
             {
-                gradientBackroundPosition = value;
+                gradientBackgroundPosition = value;
                 Invalidate();
             }
         }
@@ -639,11 +639,11 @@
             graphics.SetClip(controlGraphicsPath);
 
             // gradients
-            gradientBackroundBrush = GDI.CreateGradientBrush(controlBackroundCheckTemp, gradientBackroundPosition, gradientBackroundAngle, backgroundStartPoint, backgroundEndPoint);
+            gradientBackgroundBrush = GDI.CreateGradientBrush(controlBackroundCheckTemp, gradientBackgroundPosition, gradientBackgroundAngle, backgroundStartPoint, backgroundEndPoint);
             gradientButtonBrush = GDI.CreateGradientBrush(controlButtonCheckTemp, gradientButtonPosition, gradientButtonAngle, buttonStartPoint, buttonEndPoint);
 
             // Draw background
-            graphics.FillPath(gradientBackroundBrush, controlGraphicsPath);
+            graphics.FillPath(gradientBackgroundBrush, controlGraphicsPath);
 
             // Buttons background
             graphics.FillPath(gradientButtonBrush, buttonPath);
