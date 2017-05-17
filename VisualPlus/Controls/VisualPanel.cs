@@ -339,7 +339,7 @@
                                 Expand(true);
                             }
 
-                            ButtonClicked.Invoke();
+                            ButtonClicked?.Invoke();
                         }
                     }
                     else
@@ -364,7 +364,7 @@
                                 Expand(true);
                             }
 
-                            ButtonClicked.Invoke();
+                            ButtonClicked?.Invoke();
                         }
                     }
                     else
