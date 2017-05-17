@@ -812,19 +812,14 @@
         {
             Graphics graphics = GDI.Initialize(e, CompositingMode.SourceOver, CompositingQuality.Default, InterpolationMode.Default, PixelOffsetMode.Default, SmoothingMode.HighQuality, textRendererHint);
             graphics.Clear(Parent.BackColor);
-            UpdateLocationPoints();
 
             // Draw tab selector background body
             graphics.FillRectangle(new SolidBrush(tabMenu), new Rectangle(0, 0, Width, Height));
 
-            // gradients
-            gradientSelectedBrush = GDI.CreateGradientBrush(tabSelected, gradientSelectedPosition, gradientSelectedAngle, selectedStartPoint, selectedEndPoint);
-            gradientNormalBrush = GDI.CreateGradientBrush(tabNormal, gradientNormalPosition, gradientNormalAngle, normalStartPoint, normalEndPoint);
-            gradientHoverBrush = GDI.CreateGradientBrush(tabHover, gradientHoverPosition, gradientHoverAngle, hoverStartPoint, hoverEndPoint);
-
             for (var tabIndex = 0; tabIndex <= TabCount - 1; tabIndex++)
             {
                 ConfigureAlignmentStyle(tabIndex);
+                ConfigureGradientPoints(tabIndex);
 
                 // Draws the TabSelector
                 Rectangle selectorRectangle = GDI.ApplyAnchor(selectorAlignment, GetTabRect(tabIndex), selectorThickness);
@@ -958,6 +953,22 @@
             }
         }
 
+        private void ConfigureGradientPoints(int tabIndex)
+        {
+            selectedStartPoint = new Point(GetTabRect(tabIndex).Width, 0);
+            selectedEndPoint = new Point(GetTabRect(tabIndex).Width, GetTabRect(tabIndex).Height);
+
+            normalStartPoint = new Point(GetTabRect(tabIndex).Width, 0);
+            normalEndPoint = new Point(GetTabRect(tabIndex).Width, GetTabRect(tabIndex).Height);
+
+            hoverStartPoint = new Point(GetTabRect(tabIndex).Width, 0);
+            hoverEndPoint = new Point(GetTabRect(tabIndex).Width, GetTabRect(tabIndex).Height);
+
+            gradientSelectedBrush = GDI.CreateGradientBrush(tabSelected, gradientSelectedPosition, gradientSelectedAngle, selectedStartPoint, selectedEndPoint);
+            gradientNormalBrush = GDI.CreateGradientBrush(tabNormal, gradientNormalPosition, gradientNormalAngle, normalStartPoint, normalEndPoint);
+            gradientHoverBrush = GDI.CreateGradientBrush(tabHover, gradientHoverPosition, gradientHoverAngle, hoverStartPoint, hoverEndPoint);
+        }
+
         private void DrawSelectionArrow(PaintEventArgs e, Rectangle selectedRectangle)
         {
             var points = new Point[3];
@@ -1081,18 +1092,6 @@
                         break;
                     }
             }
-        }
-
-        private void UpdateLocationPoints()
-        {
-            selectedStartPoint = new Point(ItemSize.Width, 0);
-            selectedEndPoint = new Point(ItemSize.Width, ItemSize.Height);
-
-            normalStartPoint = new Point(ItemSize.Width, 0);
-            normalEndPoint = new Point(ItemSize.Width, ItemSize.Height);
-
-            hoverStartPoint = new Point(ClientRectangle.Width, 0);
-            hoverEndPoint = new Point(ItemSize.Width, ItemSize.Height);
         }
 
         #endregion
