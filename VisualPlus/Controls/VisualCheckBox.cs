@@ -614,6 +614,52 @@
             Invalidate();
         }
 
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+
+            if (DesignMode)
+            {
+                return;
+            }
+
+            controlState = ControlState.Normal;
+            MouseEnter += (sender, args) =>
+                {
+                    controlState = ControlState.Hover;
+                };
+            MouseLeave += (sender, args) =>
+                {
+                    MouseLocation = new Point(-1, -1);
+                    controlState = ControlState.Normal;
+                };
+            MouseDown += (sender, args) =>
+                {
+                    controlState = ControlState.Down;
+
+                    if (animation && args.Button == MouseButtons.Left && IsMouseInCheckArea())
+                    {
+                        rippleEffectsManager.SecondaryIncrement = 0;
+                        rippleEffectsManager.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
+                    }
+                };
+            MouseUp += (sender, args) =>
+                {
+                    controlState = ControlState.Hover;
+                    rippleEffectsManager.SecondaryIncrement = 0.08;
+                };
+            MouseMove += (sender, args) =>
+                {
+                    MouseLocation = args.Location;
+                    Cursor = IsMouseInCheckArea() ? Cursors.Hand : Cursors.Default;
+                };
+        }
+
+        private bool IsMouseInCheckArea()
+        {
+            return checkBoxRectangle.Contains(MouseLocation);
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
@@ -628,7 +674,7 @@
             var controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
 
             // Update
-            checkBoxPoint = new Point(checkBoxPoint.X, ClientRectangle.Height / 2 - boxSize.Height / 2);
+            checkBoxPoint = new Point(0, ClientRectangle.Height / 2 - boxSize.Height / 2);
             checkBoxRectangle = new Rectangle(checkBoxPoint, boxSize);
 
             checkRectangle = new Rectangle(checkPoint, checkMarkFillSize);
@@ -646,8 +692,34 @@
             // Draw checkbox background
             graphics.FillPath(gradientBrush, checkBoxPath);
 
-            gradientCheckBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientCheckPosition, gradientCheckAngle, startCheckPoint, endCheckPoint);
+            // draw ripple animation
+            if (animation && rippleEffectsManager.IsAnimating())
+            {
+                for (var i = 0; i < rippleEffectsManager.GetAnimationCount(); i++)
+                {
+                    double animationValue = rippleEffectsManager.GetProgress(i);
 
+                    Point animationSource = new Point(checkBoxRectangle.X + checkBoxRectangle.Width / 2, checkBoxRectangle.Y + checkBoxRectangle.Height / 2);
+                    SolidBrush animationBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), (bool)rippleEffectsManager.GetData(i)[0] ? Color.Black : checkMarkColor[0]));
+                    
+                    int height = checkBoxRectangle.Height;
+                    int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + 0.2d * animationValue)) : height;
+
+                    using (GraphicsPath path = GDI.DrawRoundedRectangle(
+                            animationSource.X - size / 2,
+                            animationSource.Y - size / 2,
+                            size,
+                            size,
+                            size / 2))
+                    {
+                        graphics.FillPath(animationBrush, path);
+                    }
+
+                    animationBrush.Dispose();
+                }
+            }
+            
+            gradientCheckBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientCheckPosition, gradientCheckAngle, startCheckPoint, endCheckPoint);
             if (Checked)
             {
                 switch (checkBoxType)
