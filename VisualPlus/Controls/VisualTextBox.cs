@@ -587,7 +587,7 @@
                     // Determine the button middle separator by checking for the Y position.
                     if (yValue > buttonRectangle.Y && yValue < Height)
                     {
-                        ButtonClicked.Invoke();
+                        ButtonClicked?.Invoke();
                     }
                 }
             }
