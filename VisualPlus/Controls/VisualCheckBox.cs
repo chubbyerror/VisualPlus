@@ -593,27 +593,6 @@
                 "iVBORw0KGgoAAAANSUhEUgAAABMAAAAQCAYAAAD0xERiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEySURBVDhPY/hPRUBdw/79+/efVHz77bf/X37+wRAn2bDff/7+91l+83/YmtsYBpJs2ITjz/8rTbrwP2Dlrf9XXn5FkSPJsD13P/y3nHsVbNjyy28w5Ik27NWXX//TNt8DG1S19zFWNRiGvfzy8//ccy9RxEB4wvFnYIMMZl7+//brLwx5EEYx7MP33/9dF18Ha1py8RVcHBR7mlMvgsVXX8X0Hgwz/P379z8yLtz5AKxJdcpFcBj9+v3nf/CqW2Cx5E13UdSiYwzDvv36/d9/BUSzzvRL/0t2PQSzQd57+vEHilp0jGEYCJ9+8hnuGhiee+4Vhjp0jNUwEN566/1/m/mQZJC/48H/zz9+YVWHjHEaBsKgwAZ59eH771jl0TFew0D48osvWMWxYYKGEY///gcAqiuA6kEmfEMAAAAASUVORK5CYII=";
         }
 
-        protected override void OnMouseHover(EventArgs e)
-        {
-            base.OnMouseHover(e);
-            controlState = ControlState.Hover;
-            Invalidate();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
-            Invalidate();
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-            controlState = ControlState.Hover;
-            Invalidate();
-        }
-
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
@@ -655,9 +634,25 @@
                 };
         }
 
-        private bool IsMouseInCheckArea()
+        protected override void OnMouseHover(EventArgs e)
         {
-            return checkBoxRectangle.Contains(MouseLocation);
+            base.OnMouseHover(e);
+            controlState = ControlState.Hover;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            controlState = ControlState.Normal;
+            Invalidate();
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            controlState = ControlState.Hover;
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -701,16 +696,16 @@
 
                     Point animationSource = new Point(checkBoxRectangle.X + checkBoxRectangle.Width / 2, checkBoxRectangle.Y + checkBoxRectangle.Height / 2);
                     SolidBrush animationBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), (bool)rippleEffectsManager.GetData(i)[0] ? Color.Black : checkMarkColor[0]));
-                    
+
                     int height = checkBoxRectangle.Height;
                     int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + 0.2d * animationValue)) : height;
 
                     using (GraphicsPath path = GDI.DrawRoundedRectangle(
-                            animationSource.X - size / 2,
-                            animationSource.Y - size / 2,
-                            size,
-                            size,
-                            size / 2))
+                        animationSource.X - size / 2,
+                        animationSource.Y - size / 2,
+                        size,
+                        size,
+                        size / 2))
                     {
                         graphics.FillPath(animationBrush, path);
                     }
@@ -718,7 +713,7 @@
                     animationBrush.Dispose();
                 }
             }
-            
+
             gradientCheckBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientCheckPosition, gradientCheckAngle, startCheckPoint, endCheckPoint);
             if (Checked)
             {
@@ -789,6 +784,11 @@
 
             graphics.ResetClip();
             graphics.TextRenderingHint = textRendererHint;
+        }
+
+        private bool IsMouseInCheckArea()
+        {
+            return checkBoxRectangle.Contains(MouseLocation);
         }
 
         private void UpdateCheckPoint()
