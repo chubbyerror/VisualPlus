@@ -24,13 +24,9 @@
         #region Variables
 
         private const int Spacing = 2;
-
-        private Color[] checkBoxColor =
-        {
-            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3)),
-            Settings.DefaultValue.Style.BackgroundColor(3),
-            ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3))
-        };
+        private bool animation = true;
+        private Point backgroundEndPoint;
+        private Point backgroundStartPoint;
 
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
@@ -39,39 +35,47 @@
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private GraphicsPath boxGraphicsPath;
         private Point boxLocation = new Point(2, 2);
+
+        private Rectangle boxRectangle;
         private Size boxSize = new Size(10, 10);
+
+        private Color[] checkBoxColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3)),
+                Settings.DefaultValue.Style.BackgroundColor(3)
+            };
+
         private Point checkLocation = new Point(0, 0);
 
         private Color[] checkMarkColor =
-        {
-            ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
-            Settings.DefaultValue.Style.StyleColor,
-            ControlPaint.Light(Settings.DefaultValue.Style.StyleColor)
-        };
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
+                Settings.DefaultValue.Style.StyleColor
+            };
+
+        private Point checkMarkEndPoint;
+        private Point checkMarkStartPoint;
 
         private Size checkSize = new Size(6, 6);
 
         private Color[] controlDisabledColor =
-        {
-            ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
-            Settings.DefaultValue.Style.TextDisabled,
-            ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled)
-        };
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
+                Settings.DefaultValue.Style.TextDisabled
+            };
 
         private ControlState controlState = ControlState.Normal;
+        private VFXManager effectsManager;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Point backroundStartPoint;
-        private Point backroundEndPoint;
         private float gradientBackgroundAngle;
         private LinearGradientBrush gradientBackgroundBrush;
-        private float[] gradientBackgroundPosition = { 0, 1 / 2f, 1 };
-        private Point checkMarkStartPoint;
-        private Point checkMarkEndPoint;
+        private float[] gradientBackgroundPosition = { 0, 1 };
         private float gradientCheckMarkAngle;
         private LinearGradientBrush gradientCheckMarkBrush;
-        private float[] gradientCheckMarkPosition = { 0, 1 / 2f, 1 };
+        private float[] gradientCheckMarkPosition = { 0, 1 };
+        private VFXManager rippleEffectsManager;
+        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -88,24 +92,55 @@
             Width = 132;
             UpdateStyles();
             Cursor = Cursors.Hand;
+
+            // Setup effects animation
+            effectsManager = new VFXManager
+                {
+                    Increment = 0.05,
+                    EffectType = EffectType.EaseInOut
+                };
+            rippleEffectsManager = new VFXManager(false)
+                {
+                    Increment = 0.10,
+                    SecondaryIncrement = 0.08,
+                    EffectType = EffectType.Linear
+                };
+
+            effectsManager.OnAnimationProgress += sender => Invalidate();
+            rippleEffectsManager.OnAnimationProgress += sender => Invalidate();
+
+            CheckedChanged += (sender, args) =>
+                {
+                    effectsManager.StartNewAnimation(Checked ? AnimationDirection.In : AnimationDirection.Out);
+                };
+
+            Animation = true;
         }
 
         #endregion
 
         #region Properties
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] CheckBoxColor
+        [DefaultValue(Settings.DefaultValue.Animation)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Animation)]
+        public bool Animation
         {
             get
             {
-                return checkBoxColor;
+                return animation;
             }
 
             set
             {
-                checkBoxColor = value;
+                animation = value;
+                AutoSize = AutoSize; // Make AutoSize directly set the bounds.
+
+                if (value)
+                {
+                    Margin = new Padding(0);
+                }
+
                 Invalidate();
             }
         }
@@ -122,23 +157,6 @@
             set
             {
                 borderColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentSize)]
-        public Size BoxSize
-        {
-            get
-            {
-                return boxSize;
-            }
-
-            set
-            {
-                boxSize = value;
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -214,6 +232,38 @@
             }
         }
 
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentSize)]
+        public Size BoxSize
+        {
+            get
+            {
+                return boxSize;
+            }
+
+            set
+            {
+                boxSize = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color[] CheckBoxColor
+        {
+            get
+            {
+                return checkBoxColor;
+            }
+
+            set
+            {
+                checkBoxColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color[] CheckMark
@@ -246,22 +296,6 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientBackroundAngle
-        {
-            get
-            {
-                return gradientBackgroundAngle;
-            }
-
-            set
-            {
-                gradientBackgroundAngle = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.GradientPosition)]
         public float[] GradientBackgroundPosition
@@ -274,6 +308,22 @@
             set
             {
                 gradientBackgroundPosition = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Angle)]
+        public float GradientBackroundAngle
+        {
+            get
+            {
+                return gradientBackgroundAngle;
+            }
+
+            set
+            {
+                gradientBackgroundAngle = value;
                 Invalidate();
             }
         }
@@ -309,6 +359,9 @@
                 Invalidate();
             }
         }
+
+        [Browsable(false)]
+        public Point MouseLocation { get; set; }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.TextColor)]
@@ -362,6 +415,47 @@
 
         #region Events
 
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+
+            if (DesignMode)
+            {
+                return;
+            }
+
+            controlState = ControlState.Normal;
+            MouseEnter += (sender, args) =>
+                {
+                    controlState = ControlState.Hover;
+                };
+            MouseLeave += (sender, args) =>
+                {
+                    MouseLocation = new Point(-1, -1);
+                    controlState = ControlState.Normal;
+                };
+            MouseDown += (sender, args) =>
+                {
+                    controlState = ControlState.Down;
+
+                    if (animation && args.Button == MouseButtons.Left && IsMouseInCheckArea())
+                    {
+                        rippleEffectsManager.SecondaryIncrement = 0;
+                        rippleEffectsManager.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
+                    }
+                };
+            MouseUp += (sender, args) =>
+                {
+                    controlState = ControlState.Hover;
+                    rippleEffectsManager.SecondaryIncrement = 0.08;
+                };
+            MouseMove += (sender, args) =>
+                {
+                    MouseLocation = args.Location;
+                    Cursor = IsMouseInCheckArea() ? Cursors.Hand : Cursors.Default;
+                };
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (!Checked)
@@ -395,9 +489,30 @@
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
             graphics.TextRenderingHint = textRendererHint;
 
-            // gradients
-            gradientBackgroundBrush = GDI.CreateGradientBrush(checkBoxColor, gradientBackgroundPosition, gradientBackgroundAngle, backroundStartPoint, backroundEndPoint);
-            gradientCheckMarkBrush = GDI.CreateGradientBrush(checkMarkColor, gradientCheckMarkPosition, gradientCheckMarkAngle, checkMarkStartPoint, checkMarkEndPoint);
+            // Set control state color
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            var controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
+
+            boxGraphicsPath = new GraphicsPath();
+            boxGraphicsPath.AddEllipse(boxLocation.X, boxLocation.Y, boxSize.Width, boxSize.Height);
+            boxGraphicsPath.CloseAllFigures();
+
+            // Centers the check location according to the checkbox
+            boxRectangle = new Rectangle(boxLocation.X, boxLocation.Y, boxSize.Width, boxSize.Height);
+
+            Rectangle check = new Rectangle(boxRectangle.X, boxRectangle.Y, checkSize.Width / 2, checkSize.Height / 2);
+            check = check.AlignCenterX(boxRectangle);
+            check = check.AlignCenterY(boxRectangle);
+            checkLocation = new Point(check.X, check.Y);
+
+            backgroundStartPoint = new Point(boxRectangle.Width, 0);
+            backgroundEndPoint = new Point(boxRectangle.Width, boxRectangle.Height);
+
+            checkMarkStartPoint = new Point(boxRectangle.Width, 0);
+            checkMarkEndPoint = new Point(boxRectangle.Width, boxRectangle.Height);
+
+            gradientBackgroundBrush = GDI.CreateGradientBrush(checkBoxColor, gradientBackgroundPosition, gradientBackgroundAngle, backgroundStartPoint, backgroundEndPoint);
+            gradientCheckMarkBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientCheckMarkPosition, gradientCheckMarkAngle, checkMarkStartPoint, checkMarkEndPoint);
 
             // CheckMark background color
             graphics.FillPath(gradientBackgroundBrush, boxGraphicsPath);
@@ -408,9 +523,31 @@
                 GDI.DrawBorderType(graphics, controlState, boxGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
             }
 
-            // Set control state color
-            foreColor = Enabled ? foreColor : textDisabledColor;
-            var controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
+            if (animation && rippleEffectsManager.IsAnimating())
+            {
+                for (var i = 0; i < rippleEffectsManager.GetAnimationCount(); i++)
+                {
+                    double animationValue = rippleEffectsManager.GetProgress(i);
+
+                    Point animationSource = new Point(boxRectangle.X + boxRectangle.Width / 2, boxRectangle.Y + boxRectangle.Height / 2);
+                    SolidBrush animationBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), (bool)rippleEffectsManager.GetData(i)[0] ? Color.Black : checkMarkColor[0]));
+
+                    int height = boxRectangle.Height;
+                    int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + 0.2d * animationValue)) : height;
+
+                    using (GraphicsPath path = GDI.DrawRoundedRectangle(
+                        animationSource.X - size / 2,
+                        animationSource.Y - size / 2,
+                        size,
+                        size,
+                        size / 2))
+                    {
+                        graphics.FillPath(animationBrush, path);
+                    }
+
+                    animationBrush.Dispose();
+                }
+            }
 
             // Draw an ellipse inside the body
             if (Checked)
@@ -428,46 +565,15 @@
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            UpdateLocationPoints();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
-        }
-
         protected override void OnTextChanged(EventArgs e)
         {
             Invalidate();
             base.OnTextChanged(e);
         }
 
-        private void UpdateLocationPoints()
+        private bool IsMouseInCheckArea()
         {
-            boxGraphicsPath = new GraphicsPath();
-            boxGraphicsPath.AddEllipse(boxLocation.X, boxLocation.Y, boxSize.Width, boxSize.Height);
-            boxGraphicsPath.CloseAllFigures();
-
-            // Centers the check location according to the checkbox
-            Rectangle box = new Rectangle(boxLocation.X, boxLocation.Y, boxSize.Width, boxSize.Height);
-
-            Rectangle check = new Rectangle(box.X, box.Y, checkSize.Width / 2, checkSize.Height / 2);
-            check = check.AlignCenterX(box);
-            check = check.AlignCenterY(box);
-            checkLocation = new Point(check.X, check.Y);
-
-            // points
-            backroundStartPoint = new Point(box.Width, 0);
-            backroundEndPoint = new Point(box.Width, box.Height);
-
-            checkMarkStartPoint = new Point(box.Width, 0);
-            checkMarkEndPoint = new Point(box.Width, box.Height);
-
-
+            return boxRectangle.Contains(MouseLocation);
         }
 
         #endregion
