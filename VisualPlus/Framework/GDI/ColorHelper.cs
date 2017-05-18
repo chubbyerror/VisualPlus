@@ -11,6 +11,37 @@
     {
         #region Events
 
+        public static double BlendColor(double foreColor, double backgroundColor, double alpha)
+        {
+            double result = backgroundColor + alpha * (foreColor - backgroundColor);
+            if (result < 0.0)
+            {
+                result = 0.0;
+            }
+
+            if (result > 255)
+            {
+                result = 255;
+            }
+
+            return result;
+        }
+
+        public static Color BlendColor(Color backgroundColor, Color frontColor, double blend)
+        {
+            double ratio = blend / 255d;
+            double invRatio = 1d - ratio;
+            var r = (int)(backgroundColor.R * invRatio + frontColor.R * ratio);
+            var g = (int)(backgroundColor.G * invRatio + frontColor.G * ratio);
+            var b = (int)(backgroundColor.B * invRatio + frontColor.B * ratio);
+            return Color.FromArgb(r, g, b);
+        }
+
+        public static Color BlendColor(Color backgroundColor, Color frontColor)
+        {
+            return BlendColor(backgroundColor, frontColor, frontColor.A);
+        }
+
         public static Color ColorFromHtml(string withoutHash)
         {
             return ColorTranslator.FromHtml("#" + withoutHash);

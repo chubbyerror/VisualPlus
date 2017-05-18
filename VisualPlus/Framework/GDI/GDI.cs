@@ -159,21 +159,6 @@
             return imagePoint ? newImagePoint : newTextPoint;
         }
 
-        public static Color BlendColor(Color backgroundColor, Color frontColor, double blend)
-        {
-            double ratio = blend / 255d;
-            double invRatio = 1d - ratio;
-            var r = (int)(backgroundColor.R * invRatio + frontColor.R * ratio);
-            var g = (int)(backgroundColor.G * invRatio + frontColor.G * ratio);
-            var b = (int)(backgroundColor.B * invRatio + frontColor.B * ratio);
-            return Color.FromArgb(r, g, b);
-        }
-
-        public static Color BlendColor(Color backgroundColor, Color frontColor)
-        {
-            return BlendColor(backgroundColor, frontColor, frontColor.A);
-        }
-
         /// <summary>Creates a gradient brush.</summary>
         /// <param name="colors">The colors.</param>
         /// <param name="positions">The positions.</param>
