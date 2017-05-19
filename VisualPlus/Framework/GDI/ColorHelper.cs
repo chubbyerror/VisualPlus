@@ -9,6 +9,19 @@
 
     internal class ColorHelper
     {
+        #region Constructors
+
+        public enum Brightness
+        {
+            /// <summary>Darker.</summary>
+            Dark,
+
+            /// <summary>Lighter.</summary>
+            Light
+        }
+
+        #endregion
+
         #region Events
 
         public static double BlendColor(double foreColor, double backgroundColor, double alpha)
@@ -97,6 +110,74 @@
             }
 
             return Color.FromArgb(r, g, b);
+        }
+
+        /// <summary>Returns a brightness difference in color.</summary>
+        /// <param name="brightness">The color tint.</param>
+        /// <param name="c">The color.</param>
+        /// <param name="d">The byte.</param>
+        /// <returns>The new color.</returns>
+        public static Color GetColorTint(Brightness brightness, Color c, byte d)
+        {
+            Color newColor = new Color();
+            byte r;
+            byte g;
+            byte b;
+
+            switch (brightness)
+            {
+                case Brightness.Dark:
+                    {
+                        r = 0;
+                        g = 0;
+                        b = 0;
+
+                        if (c.R > d)
+                        {
+                            r = (byte)(c.R - d);
+                        }
+
+                        if (c.G > d)
+                        {
+                            g = (byte)(c.G - d);
+                        }
+
+                        if (c.B > d)
+                        {
+                            b = (byte)(c.B - d);
+                        }
+
+                        newColor = Color.FromArgb(r, g, b);
+                        break;
+                    }
+
+                case Brightness.Light:
+                    {
+                        r = 255;
+                        g = 255;
+                        b = 255;
+
+                        if (c.R + d < 255)
+                        {
+                            r = (byte)(c.R + d);
+                        }
+
+                        if (c.G + d < 255)
+                        {
+                            g = (byte)(c.G + d);
+                        }
+
+                        if (c.B + d < 255)
+                        {
+                            b = (byte)(c.B + d);
+                        }
+
+                        newColor = Color.FromArgb(r, g, b);
+                        break;
+                    }
+            }
+
+            return newColor;
         }
 
         /// <summary>
@@ -229,5 +310,46 @@
         }
 
         #endregion
+
+        public static Color StepColor(Color color, int inputAlpha)
+        {
+            if (inputAlpha == 100)
+            {
+                return color;
+            }
+
+            byte a = color.A;
+            byte r = color.R;
+            byte g = color.G;
+            byte b = color.B;
+            float background;
+
+            int alpha = Math.Min(inputAlpha, 200);
+            alpha = Math.Max(alpha, 0);
+            double doubleAlpha = (alpha - 100.0) / 100.0;
+
+            if (doubleAlpha > 100)
+            {
+                // Blend with white
+                background = 255.0F;
+
+                // 0 = transparent fg; 1 = opaque fg
+                doubleAlpha = 1.0F - doubleAlpha;
+            }
+            else
+            {
+                // Blend with black
+                background = 0.0F;
+
+                // 0 = transparent fg; 1 = opaque fg
+                doubleAlpha = 1.0F + doubleAlpha;
+            }
+
+            r = (byte)ColorHelper.BlendColor(r, background, doubleAlpha);
+            g = (byte)ColorHelper.BlendColor(g, background, doubleAlpha);
+            b = (byte)ColorHelper.BlendColor(b, background, doubleAlpha);
+
+            return Color.FromArgb(a, r, g, b);
+        }
     }
 }

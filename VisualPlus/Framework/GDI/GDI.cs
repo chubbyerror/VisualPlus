@@ -488,6 +488,33 @@
             return graphics;
         }
 
+        /// <summary>Checks whether the mouse is inside the bounds.</summary>
+        /// <param name="mousePoint">Mouse location.</param>
+        /// <param name="bounds">The rectangle.</param>
+        /// <returns>Returns value.</returns>
+        public static bool IsMouseInBounds(Point mousePoint, Rectangle bounds)
+        {
+            return bounds.Contains(mousePoint);
+        }
+
+        public static void DrawInsetEllipse(ref Graphics graphics, Rectangle bounds, Pen pen)
+        {
+            Pen lightPen = new Pen(ColorHelper.GetColorTint(ColorHelper.Brightness.Light, pen.Color, 50));
+            Pen darkPen = new Pen(ColorHelper.GetColorTint(ColorHelper.Brightness.Dark, pen.Color, 50));
+
+            for (int i = 0; i < pen.Width; i++)
+            {
+                Rectangle r1 = new Rectangle(bounds.X + i, bounds.Y + i, bounds.Width - i * 2, bounds.Height - i * 2);
+                graphics.DrawArc(darkPen, r1, -45, 180);
+                graphics.DrawArc(lightPen, r1, 135, 180);
+            }
+        }
+
+        public static float GetRadian(float value)
+        {
+            return (float)(value * Math.PI / 180);
+        }
+
         #endregion
     }
 }
