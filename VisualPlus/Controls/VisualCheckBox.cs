@@ -10,6 +10,7 @@
     using System.IO;
     using System.Windows.Forms;
 
+    using VisualPlus.Components.Symbols;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
@@ -46,9 +47,9 @@
         private Point checkBoxPoint = new Point(0, 0);
         private Rectangle checkBoxRectangle;
         private CheckBoxType checkBoxType = CheckBoxType.Check;
-        private string checkCharacter = "✔";
+        private string checkCharacter = Checkmark.CheckChar.ToString();
         private Font checkCharacterFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Bold);
-        private Image checkImage = Image.FromStream(new MemoryStream(Convert.FromBase64String(GetCheckMarkPNG())));
+        private Image checkImage = Checkmark.CheckImage;
         private Rectangle checkImageRectangle;
         private Size checkImageSize = new Size(19, 16);
 
@@ -75,9 +76,7 @@
         private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private float gradientAngle;
-        private LinearGradientBrush gradientBrush;
         private float gradientCheckAngle;
-        private LinearGradientBrush gradientCheckBrush;
         private float[] gradientCheckPosition = { 0, 1 };
         private float[] gradientPosition = { 0, 1 / 2f, 1 };
         private VFXManager rippleEffectsManager;
@@ -587,12 +586,6 @@
 
         #region Events
 
-        public static string GetCheckMarkPNG()
-        {
-            return
-                "iVBORw0KGgoAAAANSUhEUgAAABMAAAAQCAYAAAD0xERiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEySURBVDhPY/hPRUBdw/79+/efVHz77bf/X37+wRAn2bDff/7+91l+83/YmtsYBpJs2ITjz/8rTbrwP2Dlrf9XXn5FkSPJsD13P/y3nHsVbNjyy28w5Ik27NWXX//TNt8DG1S19zFWNRiGvfzy8//ccy9RxEB4wvFnYIMMZl7+//brLwx5EEYx7MP33/9dF18Ha1py8RVcHBR7mlMvgsVXX8X0Hgwz/P379z8yLtz5AKxJdcpFcBj9+v3nf/CqW2Cx5E13UdSiYwzDvv36/d9/BUSzzvRL/0t2PQSzQd57+vEHilp0jGEYCJ9+8hnuGhiee+4Vhjp0jNUwEN566/1/m/mQZJC/48H/zz9+YVWHjHEaBsKgwAZ59eH771jl0TFew0D48osvWMWxYYKGEY///gcAqiuA6kEmfEMAAAAASUVORK5CYII=";
-        }
-
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
@@ -682,7 +675,7 @@
             startCheckPoint = new Point(checkBoxRectangle.Width, 0);
             endCheckPoint = new Point(checkBoxRectangle.Width, checkBoxRectangle.Height);
 
-            gradientBrush = GDI.CreateGradientBrush(checkBoxColor, gradientPosition, gradientAngle, startPoint, endPoint);
+            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(checkBoxColor, gradientPosition, gradientAngle, startPoint, endPoint);
 
             // Draw checkbox background
             graphics.FillPath(gradientBrush, checkBoxPath);
@@ -714,7 +707,7 @@
                 }
             }
 
-            gradientCheckBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientCheckPosition, gradientCheckAngle, startCheckPoint, endCheckPoint);
+            LinearGradientBrush gradientCheckBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientCheckPosition, gradientCheckAngle, startCheckPoint, endCheckPoint);
             if (Checked)
             {
                 switch (checkBoxType)
@@ -775,13 +768,8 @@
         private void DrawCheckMark(Graphics graphics, Brush controlCheckTemp)
         {
             graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-
-            // Draw checkmark inside clip
             graphics.SetClip(checkBoxPath);
-
-            // Draw check mark
-            graphics.DrawString(checkCharacter, checkCharacterFont, controlCheckTemp, checkPoint);
-
+            Checkmark.DrawCheckMark(graphics, checkCharacterFont, controlCheckTemp, checkPoint, Checkmark.CheckChar);
             graphics.ResetClip();
             graphics.TextRenderingHint = textRendererHint;
         }
