@@ -22,56 +22,25 @@
     {
         #region Variables
 
-        private bool _drawDivInside;
-        private float _endAngle = 405;
         private Color _knobBackColor = Color.WhiteSmoke;
-        private int _LargeChange = 5;
-        private int _maximum = 25;
-
-        private int _minimum;
-        private int _mouseWheelBarPartitions = 10;
-
-        private Color _PointerColor = Settings.DefaultValue.Style.ProgressColor;
-
-        private int _scaleDivisions;
-        private int _scaleSubDivisions;
-        private bool _showLargeScale = true;
-
-        private bool _showSmallScale = true;
-        private int _SmallChange = 1;
-
-        private float _startAngle = 135;
-
-        private Color _tickColor = Color.DimGray;
-
-        private int _Value;
-
-        private Brush bKnobPoint;
-
+        private int _value;
         private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private int buttonDivisions = 30;
-
         private Container components = null;
         private ControlState controlState = ControlState.Normal;
-
         private float deltaAngle;
-
+        private bool drawDivInside;
         private float drawRatio;
-
-        private Graphics gOffScreen;
+        private float endAngle = 405;
+        private bool focused;
         private float gradientKnobAngle = 180;
         private float[] gradientKnobPosition = { 0, 1 };
         private float gradientKnobTopAngle;
         private float[] gradientKnobTopPosition = { 0, 1 };
-
         private float gradientScaleAngle;
         private float[] gradientScalePosition = { 0, 1 };
-
-        private bool isFocused;
-        private bool isKnobRotating;
-
         private Color[] knobColor =
             {
                 Color.LightGray,
@@ -79,13 +48,9 @@
             };
 
         private int knobDistance = 35;
-
         private Font knobFont;
-
         private Size knobSize = new Size(90, 90);
-
         private Size knobTickSize = new Size(86, 86);
-
         private Color[] knobTopColor =
             {
                 Color.White,
@@ -93,21 +58,31 @@
             };
 
         private Size knobTopSize = new Size(75, 75);
-
+        private int largeChange = 5;
         private Size lineSize = new Size(1, 1);
-
-        private Image OffScreenImage;
-        private Point pKnob;
-
+        private int maximum = 100;
+        private int minimum;
+        private int mouseWheelBarPartitions = 10;
+        private Graphics offGraphics;
+        private Image offScreenImage;
+        private Point knobPoint;
+        private Color pointerColor = Settings.DefaultValue.Style.ProgressColor;
         private PointerStyle pointerStyle = PointerStyle.Circle;
-        private Rectangle rKnob;
-
+        private Rectangle knobRectangle;
+        private bool rotating;
         private Color[] scaleColor =
             {
                 Color.LightGray,
                 Color.White
             };
 
+        private int scaleDivisions = 11;
+        private int scaleSubDivisions = 4;
+        private bool showLargeScale = true;
+        private bool showSmallScale = true;
+        private int smallChange = 1;
+        private float startAngle = 135;
+        private Color tickColor = Color.DimGray;
         private bool valueVisible = true;
 
         #endregion
@@ -121,13 +96,6 @@
                 true);
 
             UpdateStyles();
-
-            // This call is required by the Windows.Forms Form Designer.
-            new Pen(ColorHelper.GetColorTint(ColorHelper.Brightness.Dark, BackColor, 40))
-                {
-                    DashStyle = DashStyle.Dash,
-                    DashCap = DashCap.Flat
-                };
 
             InitializeComponent();
 
@@ -143,16 +111,8 @@
             // 450 = bottom again (maximum value for "end angle")
 
             // So the couple (90, 450) will give an entire circle and the couple (180, 360) will give half a circle.
-            _startAngle = 135;
-            _endAngle = 405;
-            deltaAngle = _endAngle - _startAngle;
-
-            _minimum = 0;
-            _maximum = 100;
-            _scaleDivisions = 11;
-            _scaleSubDivisions = 4;
-            _mouseWheelBarPartitions = 10;
-            setDimensions();
+            deltaAngle = endAngle - startAngle;
+            ConfigureDimensions();
         }
 
         public enum PointerStyle
@@ -244,12 +204,12 @@
         {
             get
             {
-                return _drawDivInside;
+                return drawDivInside;
             }
 
             set
             {
-                _drawDivInside = value;
+                drawDivInside = value;
                 Invalidate();
             }
         }
@@ -261,15 +221,15 @@
         {
             get
             {
-                return _endAngle;
+                return endAngle;
             }
 
             set
             {
-                if (value <= 450 && value > _startAngle)
+                if (value <= 450 && value > startAngle)
                 {
-                    _endAngle = value;
-                    deltaAngle = _endAngle - _startAngle;
+                    endAngle = value;
+                    deltaAngle = endAngle - startAngle;
                     Invalidate();
                 }
             }
@@ -383,7 +343,7 @@
             set
             {
                 _knobBackColor = value;
-                setDimensions();
+                ConfigureDimensions();
                 Invalidate();
             }
         }
@@ -506,12 +466,12 @@
         {
             get
             {
-                return _LargeChange;
+                return largeChange;
             }
 
             set
             {
-                _LargeChange = value;
+                largeChange = value;
                 Invalidate();
             }
         }
@@ -522,21 +482,21 @@
         {
             get
             {
-                return _maximum;
+                return maximum;
             }
 
             set
             {
-                if (value > _minimum)
+                if (value > minimum)
                 {
-                    _maximum = value;
+                    maximum = value;
 
-                    if (_scaleSubDivisions > 0 && _scaleDivisions > 0 && (_maximum - _minimum) / (_scaleSubDivisions * _scaleDivisions) <= 0)
+                    if (scaleSubDivisions > 0 && scaleDivisions > 0 && (maximum - minimum) / (scaleSubDivisions * scaleDivisions) <= 0)
                     {
-                        _showSmallScale = false;
+                        showSmallScale = false;
                     }
 
-                    setDimensions();
+                    ConfigureDimensions();
                     Invalidate();
                 }
             }
@@ -548,12 +508,12 @@
         {
             get
             {
-                return _minimum;
+                return minimum;
             }
 
             set
             {
-                _minimum = value;
+                minimum = value;
                 Invalidate();
             }
         }
@@ -565,14 +525,14 @@
         {
             get
             {
-                return _mouseWheelBarPartitions;
+                return mouseWheelBarPartitions;
             }
 
             set
             {
                 if (value > 0)
                 {
-                    _mouseWheelBarPartitions = value;
+                    mouseWheelBarPartitions = value;
                 }
                 else
                 {
@@ -587,12 +547,12 @@
         {
             get
             {
-                return _PointerColor;
+                return pointerColor;
             }
 
             set
             {
-                _PointerColor = value;
+                pointerColor = value;
                 Invalidate();
             }
         }
@@ -619,12 +579,12 @@
         {
             get
             {
-                return _scaleDivisions;
+                return scaleDivisions;
             }
 
             set
             {
-                _scaleDivisions = value;
+                scaleDivisions = value;
                 Invalidate();
             }
         }
@@ -635,14 +595,14 @@
         {
             get
             {
-                return _scaleSubDivisions;
+                return scaleSubDivisions;
             }
 
             set
             {
-                if (value > 0 && _scaleDivisions > 0 && (_maximum - _minimum) / (value * _scaleDivisions) > 0)
+                if (value > 0 && scaleDivisions > 0 && (maximum - minimum) / (value * scaleDivisions) > 0)
                 {
-                    _scaleSubDivisions = value;
+                    scaleSubDivisions = value;
                     Invalidate();
                 }
             }
@@ -654,15 +614,15 @@
         {
             get
             {
-                return _showLargeScale;
+                return showLargeScale;
             }
 
             set
             {
-                _showLargeScale = value;
+                showLargeScale = value;
 
                 // need to redraw
-                setDimensions();
+                ConfigureDimensions();
 
                 Invalidate();
             }
@@ -674,22 +634,22 @@
         {
             get
             {
-                return _showSmallScale;
+                return showSmallScale;
             }
 
             set
             {
                 if (value)
                 {
-                    if (_scaleDivisions > 0 && _scaleSubDivisions > 0 && (_maximum - _minimum) / (_scaleSubDivisions * _scaleDivisions) > 0)
+                    if (scaleDivisions > 0 && scaleSubDivisions > 0 && (maximum - minimum) / (scaleSubDivisions * scaleDivisions) > 0)
                     {
-                        _showSmallScale = value;
+                        showSmallScale = value;
                         Invalidate();
                     }
                 }
                 else
                 {
-                    _showSmallScale = value;
+                    showSmallScale = value;
 
                     // need to redraw 
                     Invalidate();
@@ -703,12 +663,12 @@
         {
             get
             {
-                return _SmallChange;
+                return smallChange;
             }
 
             set
             {
-                _SmallChange = value;
+                smallChange = value;
                 Invalidate();
             }
         }
@@ -720,15 +680,15 @@
         {
             get
             {
-                return _startAngle;
+                return startAngle;
             }
 
             set
             {
-                if (value >= 90 && value < _endAngle)
+                if (value >= 90 && value < endAngle)
                 {
-                    _startAngle = value;
-                    deltaAngle = _endAngle - StartAngle;
+                    startAngle = value;
+                    deltaAngle = endAngle - StartAngle;
                     Invalidate();
                 }
             }
@@ -740,12 +700,12 @@
         {
             get
             {
-                return _tickColor;
+                return tickColor;
             }
 
             set
             {
-                _tickColor = value;
+                tickColor = value;
                 Invalidate();
             }
         }
@@ -756,12 +716,12 @@
         {
             get
             {
-                return _Value;
+                return _value;
             }
 
             set
             {
-                _Value = value;
+                _value = value;
 
                 // need to redraw 
                 Invalidate();
@@ -821,25 +781,25 @@
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (isFocused)
+            if (focused)
             {
                 // --------------------------------------------------------
                 // Handles knob rotation with up,down,left and right keys 
                 // --------------------------------------------------------
                 if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Right)
                 {
-                    if (_Value < _maximum)
+                    if (_value < maximum)
                     {
-                        Value = _Value + 1;
+                        Value = _value + 1;
                     }
 
                     Refresh();
                 }
                 else if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Left)
                 {
-                    if (_Value > _minimum)
+                    if (_value > minimum)
                     {
-                        Value = _Value - 1;
+                        Value = _value - 1;
                     }
 
                     Refresh();
@@ -850,8 +810,8 @@
         protected override void OnLeave(EventArgs e)
         {
             // unselect the control (remove dotted border)
-            isFocused = false;
-            isKnobRotating = false;
+            focused = false;
+            rotating = false;
             Invalidate();
 
             base.OnLeave(new EventArgs());
@@ -859,20 +819,20 @@
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (GDI.IsMouseInBounds(e.Location, rKnob))
+            if (GDI.IsMouseInBounds(e.Location, knobRectangle))
             {
-                if (isFocused)
+                if (focused)
                 {
                     // was already selected
                     // Start Rotation of knob only if it was selected before        
-                    isKnobRotating = true;
+                    rotating = true;
                 }
                 else
                 {
                     // Was not selected before => select it
                     Focus();
-                    isFocused = true;
-                    isKnobRotating = false; // disallow rotation, must click again
+                    focused = true;
+                    rotating = false; // disallow rotation, must click again
 
                     // draw dotted border to show that it is selected
                     Invalidate();
@@ -899,29 +859,29 @@
             // --------------------------------------
             // Following Handles Knob Rotating     
             // --------------------------------------
-            if (e.Button == MouseButtons.Left && isKnobRotating)
+            if (e.Button == MouseButtons.Left && rotating)
             {
                 Cursor = Cursors.Hand;
                 Point p = new Point(e.X, e.Y);
-                int posVal = getValueFromPosition(p);
+                int posVal = GetValueFromPosition(p);
                 Value = posVal;
             }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (GDI.IsMouseInBounds(e.Location, rKnob))
+            if (GDI.IsMouseInBounds(e.Location, knobRectangle))
             {
-                if (isFocused && isKnobRotating)
+                if (focused && rotating)
                 {
                     // change value is allowed only only after 2nd click                   
-                    Value = getValueFromPosition(new Point(e.X, e.Y));
+                    Value = GetValueFromPosition(new Point(e.X, e.Y));
                 }
                 else
                 {
                     // 1st click = only focus
-                    isFocused = true;
-                    isKnobRotating = true;
+                    focused = true;
+                    rotating = true;
                 }
             }
 
@@ -932,11 +892,11 @@
         {
             base.OnMouseWheel(e);
 
-            if (isFocused && isKnobRotating && GDI.IsMouseInBounds(e.Location, rKnob))
+            if (focused && rotating && GDI.IsMouseInBounds(e.Location, knobRectangle))
             {
                 // the Delta value is always 120, as explained in MSDN
-                int v = e.Delta / 120 * (_maximum - _minimum) / _mouseWheelBarPartitions;
-                SetProperValue(Value + v);
+                int v = e.Delta / 120 * (maximum - minimum) / mouseWheelBarPartitions;
+                SetValue(Value + v);
 
                 // Avoid to send MouseWheel event to the parent container
                 ((HandledMouseEventArgs)e).Handled = true;
@@ -946,32 +906,20 @@
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = GDI.Initialize(e, CompositingMode.SourceOver, CompositingQuality.Default, InterpolationMode.Default, PixelOffsetMode.Default, SmoothingMode.HighQuality, TextRenderingHint.AntiAliasGridFit);
-            gOffScreen = graphics;
-            gOffScreen.Clear(BackColor);
+            offGraphics = graphics;
+            offGraphics.Clear(BackColor);
 
             DrawScale();
             DrawKnob();
             DrawKnobTop();
+            DrawPointer(offGraphics);
+            DrawDivisions(offGraphics, knobRectangle);
 
-            // Draw border of knob                         
-            // gOffScreen.DrawEllipse(new Pen(BackColor), rKnob);
-
-            // if control is focused 
-            if (isFocused)
-            {
-                // gOffScreen.DrawEllipse(DottedPen, rKnob);
-            }
-
-            // DrawPointer
-            DrawPointer(gOffScreen);
-
-            DrawDivisions(gOffScreen, rKnob);
-
-            graphics.DrawImage(OffScreenImage, 0, 0);
+            graphics.DrawImage(offScreenImage, 0, 0);
 
             if (valueVisible)
             {
-                string value = _Value.ToString("0");
+                string value = _value.ToString("0");
                 Size textAreaSize = GDI.GetTextSize(e.Graphics, value, Font);
                 graphics.DrawString(value, Font, new SolidBrush(ForeColor), Width / 2 - textAreaSize.Width / 2, Height / 2 - textAreaSize.Height / 2);
             }
@@ -982,27 +930,91 @@
             // Empty To avoid Flickring due do background Drawing.
         }
 
-        private bool DrawDivisions(Graphics graphics, RectangleF rc)
+        private void ConfigureDimensions()
+        {
+            int size = Width;
+            Height = size;
+
+            // Rectangle
+            float x, y, w, h;
+            x = 0;
+            y = 0;
+            w = Size.Width;
+            h = Size.Height;
+
+            // Calculate ratio
+            drawRatio = Math.Min(w, h) / 200;
+            if (drawRatio == 0.0)
+            {
+                drawRatio = 1;
+            }
+
+            if (showLargeScale)
+            {
+                float fSize = 6F * drawRatio;
+                if (fSize < 6)
+                {
+                    fSize = 6;
+                }
+
+                knobFont = new Font(Font.FontFamily, fSize);
+                double val = maximum;
+                string str = string.Format("{0,0:D}", (int)val);
+
+                Graphics Gr = CreateGraphics();
+                SizeF strsize = Gr.MeasureString(str, knobFont);
+                int strw = (int)strsize.Width + 4;
+                var strh = (int)strsize.Height;
+
+                // allow 10% gap on all side to determine size of knob    
+                // this.rKnob = new Rectangle((int)(size * 0.10), (int)(size * 0.15), (int)(size * 0.80), (int)(size * 0.80));
+                x = strw;
+
+                // y = x;
+                y = 2 * strh;
+                w = size - 2 * strw;
+                if (w <= 0)
+                {
+                    w = 1;
+                }
+
+                h = w;
+                knobRectangle = new Rectangle((int)x, (int)y, (int)w, (int)h);
+                Gr.Dispose();
+            }
+            else
+            {
+                // rKnob = new Rectangle(0, 0, Width, Height);
+            }
+
+            // Center of knob
+            knobPoint = new Point(knobRectangle.X + knobRectangle.Width / 2, knobRectangle.Y + knobRectangle.Height / 2);
+
+            offScreenImage = new Bitmap(Width, Height);
+            offGraphics = Graphics.FromImage(offScreenImage);
+        }
+
+        private bool DrawDivisions(Graphics graphics, RectangleF rectangleF)
         {
             if (this == null)
             {
                 return false;
             }
 
-            float cx = pKnob.X;
-            float cy = pKnob.Y;
+            float cx = knobPoint.X;
+            float cy = knobPoint.Y;
 
-            float w = rc.Width;
-            float h = rc.Height;
+            float w = rectangleF.Width;
+            float h = rectangleF.Height;
 
             float tx;
             float ty;
 
-            float incr = GDI.GetRadian((_endAngle - _startAngle) / ((_scaleDivisions - 1) * (_scaleSubDivisions + 1)));
-            float currentAngle = GDI.GetRadian(_startAngle);
+            float incr = GDI.GetRadian((endAngle - startAngle) / ((scaleDivisions - 1) * (scaleSubDivisions + 1)));
+            float currentAngle = GDI.GetRadian(startAngle);
 
-            float radius = rKnob.Width / 2;
-            float rulerValue = _minimum;
+            float radius = knobRectangle.Width / 2;
+            float rulerValue = minimum;
 
             Pen penL = new Pen(TickColor, 2 * drawRatio);
             Pen penS = new Pen(TickColor, 1 * drawRatio);
@@ -1013,9 +1025,9 @@
             PointF ptEnd = new PointF(0, 0);
             var n = 0;
 
-            if (_showLargeScale)
+            if (showLargeScale)
             {
-                for (; n < _scaleDivisions; n++)
+                for (; n < scaleDivisions; n++)
                 {
                     // draw divisions
                     ptStart.X = (float)(cx + radius * Math.Cos(currentAngle));
@@ -1039,7 +1051,7 @@
                     string str = string.Format("{0,0:D}", (int)val);
                     SizeF size = graphics.MeasureString(str, font);
 
-                    if (_drawDivInside)
+                    if (drawDivInside)
                     {
                         // graduations strings inside the knob
                         tx = (float)(cx + (radius - 11 * drawRatio) * Math.Cos(currentAngle));
@@ -1058,27 +1070,27 @@
                         tx - (float)(size.Width * 0.5),
                         ty - (float)(size.Height * 0.5));
 
-                    rulerValue += (_maximum - _minimum) / (_scaleDivisions - 1);
+                    rulerValue += (maximum - minimum) / (scaleDivisions - 1);
 
-                    if (n == _scaleDivisions - 1)
+                    if (n == scaleDivisions - 1)
                     {
                         font.Dispose();
                         break;
                     }
 
                     // Subdivisions
-                    if (_scaleDivisions <= 0)
+                    if (scaleDivisions <= 0)
                     {
                         currentAngle += incr;
                     }
                     else
                     {
-                        for (var j = 0; j <= _scaleSubDivisions; j++)
+                        for (var j = 0; j <= scaleSubDivisions; j++)
                         {
                             currentAngle += incr;
 
                             // if user want to display small graduations
-                            if (_showSmallScale)
+                            if (showSmallScale)
                             {
                                 ptStart.X = (float)(cx + radius * Math.Cos(currentAngle));
                                 ptStart.Y = (float)(cy + radius * Math.Sin(currentAngle));
@@ -1099,48 +1111,48 @@
 
         private void DrawKnob()
         {
-            Point knobPoint = new Point(rKnob.X + rKnob.Width / 2 - KnobSize.Width / 2, rKnob.Y + rKnob.Height / 2 - KnobSize.Height / 2);
+            Point knobPoint = new Point(this.knobRectangle.X + this.knobRectangle.Width / 2 - KnobSize.Width / 2, this.knobRectangle.Y + this.knobRectangle.Height / 2 - KnobSize.Height / 2);
             Rectangle knobRectangle = new Rectangle(knobPoint, KnobSize);
 
             Point startPoint = new Point(ClientRectangle.Width, 0);
             Point endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
 
             LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knobColor, gradientKnobPosition, gradientKnobAngle, startPoint, endPoint);
-            gOffScreen.FillEllipse(gradientBrush, knobRectangle);
+            offGraphics.FillEllipse(gradientBrush, knobRectangle);
 
             if (borderVisible)
             {
                 GraphicsPath borderPath = new GraphicsPath();
                 borderPath.AddEllipse(knobRectangle);
-                GDI.DrawBorder(gOffScreen, borderPath, borderThickness, borderColor);
+                GDI.DrawBorder(offGraphics, borderPath, borderThickness, borderColor);
             }
         }
 
         private void DrawKnobTop()
         {
-            Point knobTopPoint = new Point(rKnob.X + rKnob.Width / 2 - KnobTopSize.Width / 2, rKnob.Y + rKnob.Height / 2 - KnobTopSize.Height / 2);
+            Point knobTopPoint = new Point(knobRectangle.X + knobRectangle.Width / 2 - KnobTopSize.Width / 2, knobRectangle.Y + knobRectangle.Height / 2 - KnobTopSize.Height / 2);
             Rectangle knobTopRectangle = new Rectangle(knobTopPoint, KnobTopSize);
 
             Point startPoint = new Point(ClientRectangle.Width, 0);
             Point endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
 
             LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knobTopColor, gradientKnobTopPosition, gradientKnobTopAngle, startPoint, endPoint);
-            gOffScreen.FillEllipse(gradientBrush, knobTopRectangle);
+            offGraphics.FillEllipse(gradientBrush, knobTopRectangle);
 
             if (borderVisible)
             {
                 GraphicsPath borderPath = new GraphicsPath();
                 borderPath.AddEllipse(knobTopRectangle);
-                GDI.DrawBorder(gOffScreen, borderPath, borderThickness, borderColor);
+                GDI.DrawBorder(offGraphics, borderPath, borderThickness, borderColor);
             }
 
-            float cx = pKnob.X;
-            float cy = pKnob.Y;
+            float cx = knobPoint.X;
+            float cy = knobPoint.Y;
 
             float w = KnobTopSize.Width;
 
             // TODO: Adjust
-            float incr = GDI.GetRadian((_startAngle - _endAngle) / ((buttonDivisions - 1) * (_scaleSubDivisions + 1)));
+            float incr = GDI.GetRadian((startAngle - endAngle) / ((buttonDivisions - 1) * (scaleSubDivisions + 1)));
             float currentAngle = GDI.GetRadian(0);
 
             float radius = KnobTickSize.Width / 2;
@@ -1185,7 +1197,7 @@
                 }
                 else
                 {
-                    for (var j = 0; j <= _scaleSubDivisions; j++)
+                    for (var j = 0; j <= scaleSubDivisions; j++)
                     {
                         currentAngle += incr;
                     }
@@ -1201,20 +1213,20 @@
             {
                 if (pointerStyle == PointerStyle.Line)
                 {
-                    float radius = rKnob.Width / 2;
+                    float radius = knobRectangle.Width / 2;
 
                     int l = (int)radius / 2 + lineSize.Height;
                     int w = l / 4 + lineSize.Width;
-                    var pt = getKnobLine(l);
+                    var pt = GetKnobLine(l);
 
-                    graphics.DrawLine(new Pen(_PointerColor, w), pt[0], pt[1]);
+                    graphics.DrawLine(new Pen(pointerColor, w), pt[0], pt[1]);
                 }
                 else
                 {
                     int w;
                     int h;
 
-                    w = rKnob.Width / 10;
+                    w = knobRectangle.Width / 10;
                     if (w < 7)
                     {
                         w = 7;
@@ -1222,9 +1234,9 @@
 
                     h = w;
 
-                    Point Arrow = getKnobPosition(w);
+                    Point Arrow = GetKnobPosition(w);
                     Rectangle rPointer = new Rectangle(Arrow.X - w / 2, Arrow.Y - w / 2, w, h);
-                    graphics.FillEllipse(new SolidBrush(_PointerColor), rPointer);
+                    graphics.FillEllipse(new SolidBrush(pointerColor), rPointer);
                 }
             }
             catch (Exception ex)
@@ -1235,28 +1247,28 @@
 
         private void DrawScale()
         {
-            Size scaleSize = new Size(rKnob.Width, rKnob.Height);
-            Point scalePoint = new Point(rKnob.X, rKnob.Y);
+            Size scaleSize = new Size(knobRectangle.Width, knobRectangle.Height);
+            Point scalePoint = new Point(knobRectangle.X, knobRectangle.Y);
             Rectangle scaleRectangle = new Rectangle(scalePoint, scaleSize);
 
             Point startPoint = new Point(ClientRectangle.Width, 0);
             Point endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
 
             LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(scaleColor, gradientScalePosition, gradientScaleAngle, startPoint, endPoint);
-            gOffScreen.FillEllipse(gradientBrush, scaleRectangle);
+            offGraphics.FillEllipse(gradientBrush, scaleRectangle);
         }
 
-        private Point[] getKnobLine(int l)
+        private Point[] GetKnobLine(int l)
         {
             var pret = new Point[2];
 
-            float cx = pKnob.X;
-            float cy = pKnob.Y;
+            float cx = knobPoint.X;
+            float cy = knobPoint.Y;
 
-            float radius = rKnob.Width / 2;
+            float radius = knobRectangle.Width / 2;
 
-            float degree = deltaAngle * Value / (_maximum - _minimum);
-            degree = GDI.GetRadian(degree + _startAngle);
+            float degree = deltaAngle * Value / (maximum - minimum);
+            degree = GDI.GetRadian(degree + startAngle);
 
             Point Pos = new Point(0, 0);
 
@@ -1273,15 +1285,15 @@
             return pret;
         }
 
-        private Point getKnobPosition(int l)
+        private Point GetKnobPosition(int l)
         {
-            float cx = pKnob.X;
-            float cy = pKnob.Y;
+            float cx = knobPoint.X;
+            float cy = knobPoint.Y;
 
-            float radius = rKnob.Width / 2;
+            float radius = knobRectangle.Width / 2;
 
-            float degree = deltaAngle * Value / (_maximum - _minimum);
-            degree = GDI.GetRadian(degree + _startAngle);
+            float degree = deltaAngle * Value / (maximum - minimum);
+            degree = GDI.GetRadian(degree + startAngle);
 
             Point Pos = new Point(0, 0)
                 {
@@ -1292,37 +1304,37 @@
             return Pos;
         }
 
-        private int getValueFromPosition(Point p)
+        private int GetValueFromPosition(Point point)
         {
             float degree = 0;
             var v = 0;
 
-            if (p.X <= pKnob.X)
+            if (point.X <= knobPoint.X)
             {
-                degree = (pKnob.Y - p.Y) / (float)(pKnob.X - p.X);
+                degree = (knobPoint.Y - point.Y) / (float)(knobPoint.X - point.X);
                 degree = (float)Math.Atan(degree);
 
-                degree = degree * (float)(180 / Math.PI) + (180 - _startAngle);
+                degree = degree * (float)(180 / Math.PI) + (180 - startAngle);
             }
-            else if (p.X > pKnob.X)
+            else if (point.X > knobPoint.X)
             {
-                degree = (p.Y - pKnob.Y) / (float)(p.X - pKnob.X);
+                degree = (point.Y - knobPoint.Y) / (float)(point.X - knobPoint.X);
                 degree = (float)Math.Atan(degree);
 
-                degree = degree * (float)(180 / Math.PI) + 360 - _startAngle;
+                degree = degree * (float)(180 / Math.PI) + 360 - startAngle;
             }
 
             // round to the nearest value (when you click just before or after a graduation!)
-            v = (int)Math.Round(degree * (_maximum - _minimum) / deltaAngle);
+            v = (int)Math.Round(degree * (maximum - minimum) / deltaAngle);
 
-            if (v > _maximum)
+            if (v > maximum)
             {
-                v = _maximum;
+                v = maximum;
             }
 
-            if (v < _minimum)
+            if (v < minimum)
             {
-                v = _minimum;
+                v = minimum;
             }
 
             return v;
@@ -1337,7 +1349,7 @@
 
         private void KnobControl_Resize(object sender, EventArgs e)
         {
-            setDimensions();
+            ConfigureDimensions();
 
             // Refresh();
             Invalidate();
@@ -1351,83 +1363,19 @@
             }
         }
 
-        private void setDimensions()
+        private void SetValue(int value)
         {
-            int size = Width;
-            Height = size;
-
-            // Rectangle
-            float x, y, w, h;
-            x = 0;
-            y = 0;
-            w = Size.Width;
-            h = Size.Height;
-
-            // Calculate ratio
-            drawRatio = Math.Min(w, h) / 200;
-            if (drawRatio == 0.0)
+            if (value < minimum)
             {
-                drawRatio = 1;
+                Value = minimum;
             }
-
-            if (_showLargeScale)
+            else if (value > maximum)
             {
-                float fSize = 6F * drawRatio;
-                if (fSize < 6)
-                {
-                    fSize = 6;
-                }
-
-                knobFont = new Font(Font.FontFamily, fSize);
-                double val = _maximum;
-                string str = string.Format("{0,0:D}", (int)val);
-
-                Graphics Gr = CreateGraphics();
-                SizeF strsize = Gr.MeasureString(str, knobFont);
-                int strw = (int)strsize.Width + 4;
-                var strh = (int)strsize.Height;
-
-                // allow 10% gap on all side to determine size of knob    
-                // this.rKnob = new Rectangle((int)(size * 0.10), (int)(size * 0.15), (int)(size * 0.80), (int)(size * 0.80));
-                x = strw;
-
-                // y = x;
-                y = 2 * strh;
-                w = size - 2 * strw;
-                if (w <= 0)
-                {
-                    w = 1;
-                }
-
-                h = w;
-                rKnob = new Rectangle((int)x, (int)y, (int)w, (int)h);
-                Gr.Dispose();
+                Value = maximum;
             }
             else
             {
-                // rKnob = new Rectangle(0, 0, Width, Height);
-            }
-
-            // Center of knob
-            pKnob = new Point(rKnob.X + rKnob.Width / 2, rKnob.Y + rKnob.Height / 2);
-
-            OffScreenImage = new Bitmap(Width, Height);
-            gOffScreen = Graphics.FromImage(OffScreenImage);
-        }
-
-        private void SetProperValue(int val)
-        {
-            if (val < _minimum)
-            {
-                Value = _minimum;
-            }
-            else if (val > _maximum)
-            {
-                Value = _maximum;
-            }
-            else
-            {
-                Value = val;
+                Value = value;
             }
         }
 
