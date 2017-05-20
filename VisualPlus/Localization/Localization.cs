@@ -39,6 +39,7 @@
             public const string Icon = "The icon to be displayed.";
             public const string IconPosition = "The icon position.";
             public const string IconSize = "The icon size.";
+            public const string Image = "The image to display.";
             public const string MirrorColor = "The mirrored text color.";
             public const string NormalColor = "The controls normal color.";
             public const string Outline = "Draws a line around the elements.";
