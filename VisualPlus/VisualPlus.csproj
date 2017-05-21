@@ -90,6 +90,9 @@
     <Compile Include="Controls\VisualContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls\VisualLabel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -187,8 +190,11 @@
     <Folder Include="Components\Controls\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Icon.ico" />
+    <EmbeddedResource Include="Resources\Icon.ico" />
     <None Include="Resources\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
