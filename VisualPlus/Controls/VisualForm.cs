@@ -50,8 +50,6 @@
 
         private const int MONITOR_DEFAULTTONEAREST = 2;
 
-        private int STATUS_BAR_BUTTON_WIDTH = controlBarHeight;
-
         private const uint TPM_LEFTALIGN = 0x0000;
         private const uint TPM_RETURNCMD = 0x0100;
 
@@ -90,12 +88,12 @@
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private ButtonState buttonState = ButtonState.None;
-        private Color controlBoxItems = Settings.DefaultValue.Style.ForeColor(0);
+        private Color controlBoxItemColor = Settings.DefaultValue.Style.ForeColor(0);
         private ControlState controlState = ControlState.Normal;
         private int form_padding = 2;
-        private Color formTitle = Settings.DefaultValue.Style.ForeColor(0);
+        private Color headerBackColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private bool headerMouseDown;
-        private Color headerTitle = Settings.DefaultValue.Style.ButtonNormalColor;
+        private Color headerTextColor = Settings.DefaultValue.Style.ForeColor(0);
 
         private Image icon = Resources.Icon;
         private bool iconBorder;
@@ -109,6 +107,8 @@
         private Point previousLocation;
         private Size previousSize;
         private ResizeDirection resizeDir;
+
+        private int STATUS_BAR_BUTTON_WIDTH = controlBarHeight;
         private Rectangle statusBarBounds;
 
         private Size titleTextSize;
@@ -248,6 +248,54 @@
             set
             {
                 controlBarHeight = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color ControlBoxItemColor
+        {
+            get
+            {
+                return controlBoxItemColor;
+            }
+
+            set
+            {
+                controlBoxItemColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color HeaderBackColor
+        {
+            get
+            {
+                return headerBackColor;
+            }
+
+            set
+            {
+                headerBackColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color HeaderTextColor
+        {
+            get
+            {
+                return headerTextColor;
+            }
+
+            set
+            {
+                headerTextColor = value;
                 Invalidate();
             }
         }
@@ -455,7 +503,7 @@
             }
 
             // Title box
-            graphics.FillRectangle(new SolidBrush(headerTitle), statusBarBounds);
+            graphics.FillRectangle(new SolidBrush(headerBackColor), statusBarBounds);
 
             // Determine whether or not we even should be drawing the buttons.
             bool showMin = MinimizeBox && ControlBox;
@@ -494,7 +542,7 @@
                 graphics.FillRectangle(downBrush, xButtonBounds);
             }
 
-            using (Pen formButtonsPen = new Pen(controlBoxItems, 2))
+            using (Pen formButtonsPen = new Pen(ControlBoxItemColor, 2))
             {
                 // Minimize button.
                 if (showMin)
@@ -568,9 +616,9 @@
                     graphics.DrawImage(Icon, iconRectangle);
                 }
             }
-            
+
             // Form title
-            graphics.DrawString(Text, Font, new SolidBrush(formTitle), new Rectangle(5 + iconSize.Width + 5, statusBarBounds.X + statusBarBounds.Height / 2 - titleTextSize.Height / 2, Width, titleTextSize.Height), new StringFormat { LineAlignment = StringAlignment.Center });
+            graphics.DrawString(Text, Font, new SolidBrush(HeaderTextColor), new Rectangle(5 + iconSize.Width + 5, statusBarBounds.X + statusBarBounds.Height / 2 - titleTextSize.Height / 2, Width, titleTextSize.Height), new StringFormat { LineAlignment = StringAlignment.Center });
         }
 
         protected override void OnResize(EventArgs e)
