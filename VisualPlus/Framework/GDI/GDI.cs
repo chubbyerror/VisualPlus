@@ -65,17 +65,20 @@
         }
 
         /// <summary>Draws the text image relation.</summary>
+        /// <param name="graphics">The graphics.</param>
         /// <param name="relation">The relation type.</param>
         /// <param name="imageRectangle">The image rectangle.</param>
-        /// <param name="fontSize">The text size.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="font">The font.</param>
         /// <param name="outerBounds">The outer bounds.</param>
-        /// <param name="imagePoint">The image Point.</param>
-        /// <returns>The <see cref="Point" />.</returns>
-        public static Point ApplyTextImageRelation(TextImageRelation relation, Rectangle imageRectangle, SizeF fontSize, Rectangle outerBounds, bool imagePoint)
+        /// <param name="imagePoint">Return image point.</param>
+        /// <returns>The return point.</returns>
+        public static Point ApplyTextImageRelation(Graphics graphics, TextImageRelation relation, Rectangle imageRectangle, string text, Font font, Rectangle outerBounds, bool imagePoint)
         {
             Point newPosition = new Point(0, 0);
             Point newImagePoint = new Point(0, 0);
             Point newTextPoint = new Point(0, 0);
+            Size textSize = GetTextSize(graphics, text, font);
 
             switch (relation)
             {
@@ -90,8 +93,8 @@
                         newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
 
                         // Set text
-                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
-                        newTextPoint.Y = newPosition.Y - Convert.ToInt32(fontSize.Height) / 2;
+                        newTextPoint.X = newPosition.X - textSize.Width / 2;
+                        newTextPoint.Y = newPosition.Y - textSize.Height / 2;
                         break;
                     }
 
@@ -106,7 +109,7 @@
 
                         // Set text
                         newTextPoint.X = newImagePoint.X + imageRectangle.Width;
-                        newTextPoint.Y = newPosition.Y - (int)fontSize.Height / 2;
+                        newTextPoint.Y = newPosition.Y - textSize.Height / 2;
                         break;
                     }
 
@@ -117,10 +120,10 @@
 
                         // Set text
                         newTextPoint.X = newPosition.X + 4;
-                        newTextPoint.Y = newPosition.Y - (int)fontSize.Height / 2;
+                        newTextPoint.Y = newPosition.Y - textSize.Height / 2;
 
                         // Set image
-                        newImagePoint.X = newTextPoint.X + (int)fontSize.Width;
+                        newImagePoint.X = newTextPoint.X + textSize.Width;
                         newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
                         break;
                     }
@@ -135,7 +138,7 @@
                         newImagePoint.Y = newPosition.Y + 4;
 
                         // Set text
-                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.X = newPosition.X - textSize.Width / 2;
                         newTextPoint.Y = newImagePoint.Y + imageRectangle.Height;
                         break;
                     }
@@ -146,17 +149,24 @@
                         newPosition.X = outerBounds.Width / 2;
 
                         // Set text
-                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.X = newPosition.X - textSize.Width / 2;
                         newTextPoint.Y = newImagePoint.Y + 4;
 
                         // Set image
                         newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
-                        newImagePoint.Y = newPosition.Y + Convert.ToInt32(fontSize.Height) + 4;
+                        newImagePoint.Y = newPosition.Y + textSize.Height + 4;
                         break;
                     }
             }
 
-            return imagePoint ? newImagePoint : newTextPoint;
+            if (imagePoint)
+            {
+                return newImagePoint;
+            }
+            else
+            {
+                return newTextPoint;
+            }
         }
 
         /// <summary>Creates a gradient brush.</summary>
@@ -495,24 +505,6 @@
         public static bool IsMouseInBounds(Point mousePoint, Rectangle bounds)
         {
             return bounds.Contains(mousePoint);
-        }
-
-        public static void DrawInsetEllipse(ref Graphics graphics, Rectangle bounds, Pen pen)
-        {
-            Pen lightPen = new Pen(ColorHelper.GetColorTint(ColorHelper.Brightness.Light, pen.Color, 50));
-            Pen darkPen = new Pen(ColorHelper.GetColorTint(ColorHelper.Brightness.Dark, pen.Color, 50));
-
-            for (int i = 0; i < pen.Width; i++)
-            {
-                Rectangle r1 = new Rectangle(bounds.X + i, bounds.Y + i, bounds.Width - i * 2, bounds.Height - i * 2);
-                graphics.DrawArc(darkPen, r1, -45, 180);
-                graphics.DrawArc(lightPen, r1, 135, 180);
-            }
-        }
-
-        public static float GetRadian(float value)
-        {
-            return (float)(value * Math.PI / 180);
         }
 
         #endregion

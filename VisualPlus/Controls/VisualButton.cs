@@ -222,7 +222,6 @@
                     borderRounding = value;
                 }
 
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -240,7 +239,6 @@
             set
             {
                 borderShape = value;
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -359,11 +357,6 @@
             set
             {
                 icon = value;
-                if (AutoSize)
-                {
-                    Size = GetPreferredSize();
-                }
-
                 Invalidate();
             }
         }
@@ -396,7 +389,6 @@
             set
             {
                 iconSize = value;
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -496,7 +488,6 @@
             set
             {
                 textImageRelation = value;
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -603,7 +594,21 @@
 
             // Gets the font size rectangle.
             fontSize = graphics.MeasureString(Text, Font);
-            UpdateLocationPoints();
+
+            startPoint = new Point(ClientRectangle.Width, 0);
+            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
+
+            textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, false);
+            textboxRectangle.Location = textPoint;
+            iconPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, true);
+            iconRectangle = new Rectangle(iconPoint, iconSize);
+
+            iconGraphicsPath = new GraphicsPath();
+            iconGraphicsPath.AddRectangle(iconRectangle);
+            iconGraphicsPath.CloseAllFigures();
+
+            GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
 
             // Draw control state
             if (Enabled)
@@ -692,42 +697,6 @@
 
                 graphics.SmoothingMode = SmoothingMode.None;
             }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            UpdateLocationPoints();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
-        }
-
-        private Size GetPreferredSize()
-        {
-            return GetPreferredSize(new Size(0, 0));
-        }
-
-        private void UpdateLocationPoints()
-        {
-            startPoint = new Point(ClientRectangle.Width, 0);
-            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
-            textPoint = GDI.ApplyTextImageRelation(textImageRelation, iconRectangle, fontSize, ClientRectangle, false);
-            textboxRectangle.Location = textPoint;
-
-            iconPoint = GDI.ApplyTextImageRelation(textImageRelation, iconRectangle, fontSize, ClientRectangle, true);
-            iconRectangle = new Rectangle(iconPoint, iconSize);
-
-            iconGraphicsPath = new GraphicsPath();
-            iconGraphicsPath.AddRectangle(iconRectangle);
-            iconGraphicsPath.CloseAllFigures();
-
-            GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
         #endregion

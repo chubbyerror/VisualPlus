@@ -1010,8 +1010,8 @@
             float tx;
             float ty;
 
-            float incr = GDI.GetRadian((endAngle - startAngle) / ((scaleDivisions - 1) * (scaleSubDivisions + 1)));
-            float currentAngle = GDI.GetRadian(startAngle);
+            float incr = MathHelper.DegreeToRadian((endAngle - startAngle) / ((scaleDivisions - 1) * (scaleSubDivisions + 1)));
+            float currentAngle = MathHelper.DegreeToRadian(startAngle);
 
             float radius = knobRectangle.Width / 2;
             float rulerValue = minimum;
@@ -1152,8 +1152,8 @@
             float w = KnobTopSize.Width;
 
             // TODO: Adjust
-            float incr = GDI.GetRadian((startAngle - endAngle) / ((buttonDivisions - 1) * (scaleSubDivisions + 1)));
-            float currentAngle = GDI.GetRadian(0);
+            float incr = MathHelper.DegreeToRadian((startAngle - endAngle) / ((buttonDivisions - 1) * (scaleSubDivisions + 1)));
+            float currentAngle = MathHelper.DegreeToRadian(0);
 
             float radius = KnobTickSize.Width / 2;
 
@@ -1268,7 +1268,7 @@
             float radius = knobRectangle.Width / 2;
 
             float degree = deltaAngle * Value / (maximum - minimum);
-            degree = GDI.GetRadian(degree + startAngle);
+            degree = MathHelper.DegreeToRadian(degree + startAngle);
 
             Point Pos = new Point(0, 0);
 
@@ -1293,7 +1293,7 @@
             float radius = knobRectangle.Width / 2;
 
             float degree = deltaAngle * Value / (maximum - minimum);
-            degree = GDI.GetRadian(degree + startAngle);
+            degree = MathHelper.DegreeToRadian(degree + startAngle);
 
             Point Pos = new Point(0, 0)
                 {
