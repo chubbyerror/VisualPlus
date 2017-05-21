@@ -52,7 +52,7 @@
 
             MinimumSize = new Size(100, 100);
 
-            ForeColor = Settings.DefaultValue.Style.ForeColor(0);
+            ForeColor = Color.White;
             textVisible = true;
             BackColor = Color.Transparent;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
