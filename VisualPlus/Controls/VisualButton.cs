@@ -20,7 +20,7 @@
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(Button))]
     [Designer(VSDesignerBinding.VisualButton)]
-    [Description("The VisualButton")]
+    [Description("The Visual Button")]
     [DefaultEvent("Click")]
     public sealed class VisualButton : Button
     {
@@ -36,12 +36,16 @@
                 Settings.DefaultValue.Style.ControlDisabled
             };
 
+        private Gradient buttonDisabledGradient = new Gradient();
+
         private Color[] buttonHover =
             {
                 Settings.DefaultValue.Style.ButtonHoverColor,
                 ControlPaint.Light(Settings.DefaultValue.Style.ButtonHoverColor),
                 Settings.DefaultValue.Style.ButtonHoverColor
             };
+
+        private Gradient buttonHoverGradient = new Gradient();
 
         private Color[] buttonNormal =
             {
@@ -50,6 +54,8 @@
                 Settings.DefaultValue.Style.ButtonNormalColor
             };
 
+        private Gradient buttonNormalGradient = new Gradient();
+
         private Color[] buttonPressed =
             {
                 Settings.DefaultValue.Style.ButtonDownColor,
@@ -57,15 +63,14 @@
                 Settings.DefaultValue.Style.ButtonDownColor
             };
 
+        private Gradient buttonPressedGradient = new Gradient();
+
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
 
         private VFXManager effectsManager;
         private Point endPoint;
-        private SizeF fontSize;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-
-        private float gradientAngle;
 
         private LinearGradientBrush gradientBrush;
 
@@ -108,6 +113,18 @@
             BackColor = Color.Transparent;
 
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+
+            buttonNormalGradient.Colors = buttonNormal;
+            buttonNormalGradient.Positions = gradientPosition;
+
+            buttonHoverGradient.Colors = buttonHover;
+            buttonHoverGradient.Positions = gradientPosition;
+
+            buttonPressedGradient.Colors = buttonPressed;
+            buttonPressedGradient.Positions = gradientPosition;
+
+            buttonDisabledGradient.Colors = buttonDisabled;
+            buttonDisabledGradient.Positions = gradientPosition;
 
             // Setup effects animation
             effectsManager = new VFXManager(false)
@@ -170,66 +187,70 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
-        public Color[] DisabledColor
+        public Gradient ButtonDisabled
         {
             get
             {
-                return buttonDisabled;
+                return buttonDisabledGradient;
             }
 
             set
             {
-                buttonDisabled = value;
+                buttonDisabledGradient = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientAngle
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient ButtonHover
         {
             get
             {
-                return gradientAngle;
+                return buttonHoverGradient;
             }
 
             set
             {
-                gradientAngle = value;
+                buttonHoverGradient = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
+        public Gradient ButtonNormal
         {
             get
             {
-                return gradientPosition;
+                return buttonNormalGradient;
             }
 
             set
             {
-                gradientPosition = value;
+                buttonNormalGradient = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.HoverColor)]
-        public Color[] HoverColor
+        public Gradient ButtonPressed
         {
             get
             {
-                return buttonHover;
+                return buttonPressedGradient;
             }
 
             set
             {
-                buttonHover = value;
+                buttonPressedGradient = value;
                 Invalidate();
             }
         }
@@ -284,38 +305,6 @@
 
         [Browsable(false)]
         public Point MouseLocation { get; set; }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.NormalColor)]
-        public Color[] NormalColor
-        {
-            get
-            {
-                return buttonNormal;
-            }
-
-            set
-            {
-                buttonNormal = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.PressedColor)]
-        public Color[] PressedColor
-        {
-            get
-            {
-                return buttonPressed;
-            }
-
-            set
-            {
-                buttonPressed = value;
-                Invalidate();
-            }
-        }
 
         [Category(Localize.Category.Design)]
         [Description(Localize.Description.Style)]
@@ -482,7 +471,7 @@
             var controlTempColor = Enabled ? buttonNormal : buttonDisabled;
 
             // Gets the font size rectangle.
-            fontSize = graphics.MeasureString(Text, Font);
+            graphics.MeasureString(Text, Font);
 
             startPoint = new Point(ClientRectangle.Width, 0);
             endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
@@ -498,6 +487,9 @@
 
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
 
+            float angle;
+            float[] positions;
+
             // Draw control state
             if (Enabled)
             {
@@ -506,31 +498,45 @@
                 {
                     case ControlState.Normal:
                         {
-                            controlTempColor = buttonNormal;
+                            controlTempColor = buttonNormalGradient.Colors;
+                            angle = buttonNormalGradient.Angle;
+                            positions = buttonNormalGradient.Positions;
                             break;
                         }
 
                     case ControlState.Hover:
                         {
-                            controlTempColor = buttonHover;
+                            controlTempColor = buttonHoverGradient.Colors;
+                            angle = buttonHoverGradient.Angle;
+                            positions = buttonHoverGradient.Positions;
                             break;
                         }
 
                     case ControlState.Down:
                         {
-                            controlTempColor = buttonPressed;
+                            controlTempColor = buttonPressedGradient.Colors;
+                            angle = buttonPressedGradient.Angle;
+                            positions = buttonPressedGradient.Positions;
                             break;
                         }
 
                     default:
                         {
-                            controlTempColor = buttonNormal;
+                            controlTempColor = buttonNormalGradient.Colors;
+                            angle = buttonNormalGradient.Angle;
+                            positions = buttonNormalGradient.Positions;
                             break;
                         }
                 }
             }
+            else
+            {
+                controlTempColor = buttonDisabledGradient.Colors;
+                angle = buttonDisabledGradient.Angle;
+                positions = buttonDisabledGradient.Positions;
+            }
 
-            gradientBrush = GDI.CreateGradientBrush(controlTempColor, gradientPosition, gradientAngle, startPoint, endPoint);
+            gradientBrush = GDI.CreateGradientBrush(controlTempColor, positions, angle, startPoint, endPoint);
 
             // Draw button background
             graphics.FillPath(gradientBrush, controlGraphicsPath);
