@@ -64,18 +64,11 @@
             };
 
         private Gradient buttonPressedGradient = new Gradient();
-
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-
         private VFXManager effectsManager;
-        private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-
         private LinearGradientBrush gradientBrush;
-
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
-
         private VFXManager hoverEffectsManager;
         private Image icon;
         private bool iconBorder;
@@ -83,8 +76,6 @@
         private Point iconPoint = new Point(0, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-
-        private Point startPoint;
         private Rectangle textboxRectangle;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextImageRelation textImageRelation = TextImageRelation.Overlay;
@@ -113,6 +104,8 @@
             BackColor = Color.Transparent;
 
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+
+            float[] gradientPosition = { 0, 1 / 2f, 1 };
 
             buttonNormalGradient.Colors = buttonNormal;
             buttonNormalGradient.Positions = gradientPosition;
@@ -466,16 +459,6 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
-            // Set control state color
-            foreColor = Enabled ? foreColor : textDisabledColor;
-            var controlTempColor = Enabled ? buttonNormal : buttonDisabled;
-
-            // Gets the font size rectangle.
-            graphics.MeasureString(Text, Font);
-
-            startPoint = new Point(ClientRectangle.Width, 0);
-            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
             textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, false);
             textboxRectangle.Location = textPoint;
             iconPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, true);
@@ -487,44 +470,45 @@
 
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
 
-            float angle;
-            float[] positions;
+            foreColor = Enabled ? foreColor : textDisabledColor;
 
-            // Draw control state
+            Color[] controlTempColor;
+            float gradientAngle;
+            float[] gradientPositions;
+
             if (Enabled)
             {
-                // Button back color
                 switch (controlState)
                 {
                     case ControlState.Normal:
                         {
                             controlTempColor = buttonNormalGradient.Colors;
-                            angle = buttonNormalGradient.Angle;
-                            positions = buttonNormalGradient.Positions;
+                            gradientAngle = buttonNormalGradient.Angle;
+                            gradientPositions = buttonNormalGradient.Positions;
                             break;
                         }
 
                     case ControlState.Hover:
                         {
                             controlTempColor = buttonHoverGradient.Colors;
-                            angle = buttonHoverGradient.Angle;
-                            positions = buttonHoverGradient.Positions;
+                            gradientAngle = buttonHoverGradient.Angle;
+                            gradientPositions = buttonHoverGradient.Positions;
                             break;
                         }
 
                     case ControlState.Down:
                         {
                             controlTempColor = buttonPressedGradient.Colors;
-                            angle = buttonPressedGradient.Angle;
-                            positions = buttonPressedGradient.Positions;
+                            gradientAngle = buttonPressedGradient.Angle;
+                            gradientPositions = buttonPressedGradient.Positions;
                             break;
                         }
 
                     default:
                         {
                             controlTempColor = buttonNormalGradient.Colors;
-                            angle = buttonNormalGradient.Angle;
-                            positions = buttonNormalGradient.Positions;
+                            gradientAngle = buttonNormalGradient.Angle;
+                            gradientPositions = buttonNormalGradient.Positions;
                             break;
                         }
                 }
@@ -532,11 +516,12 @@
             else
             {
                 controlTempColor = buttonDisabledGradient.Colors;
-                angle = buttonDisabledGradient.Angle;
-                positions = buttonDisabledGradient.Positions;
+                gradientAngle = buttonDisabledGradient.Angle;
+                gradientPositions = buttonDisabledGradient.Positions;
             }
 
-            gradientBrush = GDI.CreateGradientBrush(controlTempColor, positions, angle, startPoint, endPoint);
+            var gradientPoints = new Point[2] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            gradientBrush = GDI.CreateGradientBrush(controlTempColor, gradientPoints, gradientAngle, gradientPositions);
 
             // Draw button background
             graphics.FillPath(gradientBrush, controlGraphicsPath);
