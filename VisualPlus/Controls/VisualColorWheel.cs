@@ -14,6 +14,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
@@ -336,12 +337,16 @@
         private static readonly object EventLargeChangeChanged = new object();
         private static readonly object EventSelectionSizeChanged = new object();
         private static readonly object EventSmallChangeChanged = new object();
+
         private readonly Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderSize = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+
+        private Border border = new Border();
+
+        // private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
+        // private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        // private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+        // private int borderSize = Settings.DefaultValue.BorderThickness;
+        // private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Brush brush;
         private PointF centerPoint;
         private Color color;
@@ -351,6 +356,7 @@
         private bool dragWheel;
         private bool drawFocusRectangle;
         private int largeChange;
+        private Border pickerBorder = new Border();
         private float radius;
         private int selectionSize;
         private int smallChange;
@@ -375,95 +381,27 @@
             // SelectionGlyph = CreateSelectionGlyph();
             MinimumSize = new Size(130, 130);
             Size = new Size(130, 130);
+
+            pickerBorder.HoverVisible = false;
         }
 
         #endregion
 
         #region Properties
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border Border
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
-        {
-            get
-            {
-                return borderHoverColor;
-            }
-
-            set
-            {
-                borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderSize
-        {
-            get
-            {
-                return borderSize;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderSize = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
+                border = value;
                 Invalidate();
             }
         }
@@ -587,6 +525,23 @@
 
                     OnLargeChangeChanged(EventArgs.Empty);
                 }
+            }
+        }
+
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Border Picker
+        {
+            get
+            {
+                return pickerBorder;
+            }
+
+            set
+            {
+                pickerBorder = value;
+                Invalidate();
             }
         }
 
@@ -818,17 +773,20 @@
                         hue += step;
                         break;
                     }
+
                 case Keys.Left:
                 case Keys.Down:
                     {
                         hue -= step;
                         break;
                     }
+
                 case Keys.PageUp:
                     {
                         hue += LargeChange;
                         break;
                     }
+
                 case Keys.PageDown:
                     {
                         hue -= LargeChange;
@@ -959,9 +917,9 @@
                 controlGraphicsPath.AddEllipse(new RectangleF(pointLocation, newSize));
 
                 // Setup border
-                if (borderVisible)
+                if (border.Visible)
                 {
-                    GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderSize, borderColor, borderHoverColor, borderHoverVisible);
+                    GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
                 }
 
                 // Draws the button
@@ -1086,9 +1044,9 @@
                 e.Graphics.FillPath(new SolidBrush(buttonColor), buttonGraphicsPath);
 
                 // Draw border
-                if (borderVisible)
+                if (pickerBorder.Visible)
                 {
-                    GDI.DrawBorderType(e.Graphics, controlState, buttonGraphicsPath, borderSize, borderColor, borderHoverColor, false);
+                    GDI.DrawBorderType(e.Graphics, controlState, buttonGraphicsPath, pickerBorder.Thickness, pickerBorder.Color, pickerBorder.HoverColor, pickerBorder.HoverVisible);
                 }
 
                 if (Focused && includeFocus)
