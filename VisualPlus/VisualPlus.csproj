@@ -110,6 +110,7 @@
     </Compile>
     <Compile Include="Enums\Direction.cs" />
     <Compile Include="Framework\ExceptionHandler.cs" />
+    <Compile Include="Framework\Structure\Border.cs" />
     <Compile Include="Framework\GDI\ColorHelper.cs" />
     <Compile Include="Framework\Extensions.cs" />
     <Compile Include="Framework\GDI\Gradient.cs" />

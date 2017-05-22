@@ -14,6 +14,7 @@
             public const string BarSpacing = "The progress bar/s spacing.";
             public const string ButtonImage = "Image on the button.";
             public const string ButtonSize = "Size of the button.";
+            public const string Border = "The border settings style.";
             public const string BorderColor = "The controls border color.";
             public const string BorderHoverColor = "The controls border hover color.";
             public const string BorderHoverVisible = "Indicates whether the hover border is visible.";
