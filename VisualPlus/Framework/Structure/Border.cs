@@ -166,7 +166,7 @@
 
             if (stringValue != null)
             {
-                return new ObjectWrapper(stringValue);
+                return new ObjectBorderWrapper(stringValue);
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -193,15 +193,15 @@
     }
 
     [TypeConverter(typeof(BorderConverter))]
-    public class ObjectWrapper
+    public class ObjectBorderWrapper
     {
         #region Constructors
 
-        public ObjectWrapper()
+        public ObjectBorderWrapper()
         {
         }
 
-        public ObjectWrapper(string value)
+        public ObjectBorderWrapper(string value)
         {
             Value = value;
         }
