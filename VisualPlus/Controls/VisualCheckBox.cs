@@ -14,29 +14,28 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual CheckBox.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(CheckBox))]
     [Designer(VSDesignerBinding.VisualCheckBox)]
+    [DefaultEvent("CheckedChanged")]
+    [Description("The Visual Checkbox")]
     public sealed class VisualCheckBox : CheckBox
     {
         #region Variables
 
         private const int Spacing = 2;
         private bool animation = true;
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+
+        private Border border = new Border();
+
         private Size boxSize = new Size(14, 14);
 
-        private Color[] checkBoxColor =
+        private Color[] boxColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3)),
                 Settings.DefaultValue.Style.BackgroundColor(3),
@@ -99,6 +98,8 @@
 
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Cursor = Cursors.Hand;
+
+            Size = new Size(140, 24);
 
             // Setup effects animation
             effectsManager = new VFXManager
@@ -164,127 +165,19 @@
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border BoxBorder
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
-        {
-            get
-            {
-                return borderHoverColor;
-            }
-
-            set
-            {
-                borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
-        public int BorderRounding
-        {
-            get
-            {
-                return borderRounding;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumCheckBoxBorderRounding, Settings.MaximumCheckBoxBorderRounding))
-                {
-                    borderRounding = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderShape)]
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
-        public BorderShape BorderShape
-        {
-            get
-            {
-                return borderShape;
-            }
-
-            set
-            {
-                borderShape = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
+                border = value;
                 Invalidate();
             }
         }
@@ -308,23 +201,23 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color[] CheckBoxColor
+        public Color[] BoxColor
         {
             get
             {
-                return checkBoxColor;
+                return boxColor;
             }
 
             set
             {
-                checkBoxColor = value;
+                boxColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.ComponentSize)]
-        public Size CheckBoxSize
+        public Size BoxSize
         {
             get
             {
@@ -666,8 +559,8 @@
             checkBoxRectangle = new Rectangle(checkBoxPoint, boxSize);
 
             checkRectangle = new Rectangle(checkPoint, checkMarkFillSize);
-            checkBoxPath = GDI.GetBorderShape(checkBoxRectangle, borderShape, borderRounding);
-            checkPath = GDI.GetBorderShape(checkRectangle, borderShape, 1);
+            checkBoxPath = GDI.GetBorderShape(checkBoxRectangle, border.Shape, border.Rounding);
+            checkPath = GDI.GetBorderShape(checkRectangle, border.Shape, 1);
 
             // Gradient points
             startPoint = new Point(checkBoxRectangle.Width, 0);
@@ -675,7 +568,7 @@
             startCheckPoint = new Point(checkBoxRectangle.Width, 0);
             endCheckPoint = new Point(checkBoxRectangle.Width, checkBoxRectangle.Height);
 
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(checkBoxColor, gradientPosition, gradientAngle, startPoint, endPoint);
+            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(boxColor, gradientPosition, gradientAngle, startPoint, endPoint);
 
             // Draw checkbox background
             graphics.FillPath(gradientBrush, checkBoxPath);
@@ -733,9 +626,9 @@
             }
 
             // Setup checkbox border
-            if (BorderVisible)
+            if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, checkBoxPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
+                GDI.DrawBorderType(graphics, controlState, checkBoxPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             // Draw string
