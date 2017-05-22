@@ -7,7 +7,6 @@
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Drawing.Text;
-    using System.IO;
     using System.Windows.Forms;
 
     using VisualPlus.Components.Symbols;
@@ -21,9 +20,10 @@
 
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(CheckBox))]
-    [Designer(VSDesignerBinding.VisualCheckBox)]
     [DefaultEvent("CheckedChanged")]
+    [DefaultProperty("Checked")]
     [Description("The Visual Checkbox")]
+    [Designer(VSDesignerBinding.VisualCheckBox)]
     public sealed class VisualCheckBox : CheckBox
     {
         #region Variables
@@ -33,14 +33,22 @@
 
         private Border border = new Border();
 
-        private Size boxSize = new Size(14, 14);
-
         private Color[] boxColor =
             {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3)),
                 Settings.DefaultValue.Style.BackgroundColor(3),
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3))
             };
+
+        private Color[] boxDisabledColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+                Settings.DefaultValue.Style.ControlDisabled
+            };
+
+        private Gradient boxDisabledGradient = new Gradient();
+        private Gradient boxGradient = new Gradient();
+
+        private Size boxSize = new Size(14, 14);
 
         private GraphicsPath checkBoxPath;
         private Point checkBoxPoint = new Point(0, 0);
@@ -48,6 +56,15 @@
         private CheckBoxType checkBoxType = CheckBoxType.Check;
         private string checkCharacter = Checkmark.CheckChar.ToString();
         private Font checkCharacterFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Bold);
+
+        private Color[] checkDisabledColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
+                Settings.DefaultValue.Style.TextDisabled
+            };
+
+        private Gradient checkDisabledGradient = new Gradient();
+        private Gradient checkGradient = new Gradient();
         private Image checkImage = Checkmark.CheckImage;
         private Rectangle checkImageRectangle;
         private Size checkImageSize = new Size(19, 16);
@@ -60,28 +77,14 @@
 
         private Size checkMarkFillSize = new Size(8, 8);
         private GraphicsPath checkPath;
-        private Point checkPoint = new Point(-1, 2);
+        private Point checkPoint = new Point(-1, 5);
         private Rectangle checkRectangle;
-
-        private Color[] controlDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled
-            };
 
         private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
-        private Point endCheckPoint;
-        private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private float gradientAngle;
-        private float gradientCheckAngle;
-        private float[] gradientCheckPosition = { 0, 1 };
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
-        private VFXManager rippleEffectsManager;
 
-        private Point startCheckPoint;
-        private Point startPoint;
+        private VFXManager rippleEffectsManager;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
@@ -100,6 +103,20 @@
             Cursor = Cursors.Hand;
 
             Size = new Size(140, 24);
+
+            float[] gradientPosition = { 0, 1 };
+
+            Box.Colors = boxColor;
+            Box.Positions = gradientPosition;
+
+            boxDisabledGradient.Colors = boxDisabledColor;
+            boxDisabledGradient.Positions = gradientPosition;
+
+            checkGradient.Colors = checkMarkColor;
+            checkGradient.Positions = gradientPosition;
+
+            checkDisabledGradient.Colors = checkDisabledColor;
+            checkDisabledGradient.Positions = gradientPosition;
 
             // Setup effects animation
             effectsManager = new VFXManager
@@ -165,6 +182,23 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient Box
+        {
+            get
+            {
+                return boxGradient;
+            }
+
+            set
+            {
+                boxGradient = value;
+                Invalidate();
+            }
+        }
+
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
@@ -178,6 +212,40 @@
             set
             {
                 border = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient BoxDisabled
+        {
+            get
+            {
+                return boxDisabledGradient;
+            }
+
+            set
+            {
+                boxDisabledGradient = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentSize)]
+        public Size BoxSize
+        {
+            get
+            {
+                return boxSize;
+            }
+
+            set
+            {
+                boxSize = value;
+                UpdateCheckPoint();
                 Invalidate();
             }
         }
@@ -200,39 +268,6 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] BoxColor
-        {
-            get
-            {
-                return boxColor;
-            }
-
-            set
-            {
-                boxColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentSize)]
-        public Size BoxSize
-        {
-            get
-            {
-                return boxSize;
-            }
-
-            set
-            {
-                boxSize = value;
-                UpdateCheckPoint();
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentFont)]
         public Font CheckCharacterFont
         {
@@ -244,6 +279,23 @@
             set
             {
                 checkCharacterFont = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient CheckDisabled
+        {
+            get
+            {
+                return checkDisabledGradient;
+            }
+
+            set
+            {
+                checkDisabledGradient = value;
                 Invalidate();
             }
         }
@@ -280,6 +332,23 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient CheckMark
+        {
+            get
+            {
+                return checkGradient;
+            }
+
+            set
+            {
+                checkGradient = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description("Checkmark character string")]
         public string CheckmarkCharacter
@@ -292,22 +361,6 @@
             set
             {
                 checkCharacter = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] CheckMarkColor
-        {
-            get
-            {
-                return checkMarkColor;
-            }
-
-            set
-            {
-                checkMarkColor = value;
                 Invalidate();
             }
         }
@@ -340,86 +393,6 @@
             set
             {
                 checkPoint = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
-        public Color[] ControlDisabledColor
-        {
-            get
-            {
-                return controlDisabledColor;
-            }
-
-            set
-            {
-                controlDisabledColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientAngle
-        {
-            get
-            {
-                return gradientAngle;
-            }
-
-            set
-            {
-                gradientAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientCheckAngle
-        {
-            get
-            {
-                return gradientCheckAngle;
-            }
-
-            set
-            {
-                gradientCheckAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientCheckPosition
-        {
-            get
-            {
-                return gradientCheckPosition;
-            }
-
-            set
-            {
-                gradientCheckPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
-        {
-            get
-            {
-                return gradientPosition;
-            }
-
-            set
-            {
-                gradientPosition = value;
                 Invalidate();
             }
         }
@@ -550,11 +523,21 @@
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
             graphics.TextRenderingHint = textRendererHint;
 
-            // Set control state color
             Color textColor = Enabled ? foreColor : textDisabledColor;
-            var controlCheckTemp = Enabled ? checkMarkColor : controlDisabledColor;
+            Gradient checkMark;
+            Gradient box;
 
-            // Update
+            if (Enabled)
+            {
+                box = boxGradient;
+                checkMark = checkGradient;
+            }
+            else
+            {
+                box = boxDisabledGradient;
+                checkMark = checkDisabledGradient;
+            }
+
             checkBoxPoint = new Point(0, ClientRectangle.Height / 2 - boxSize.Height / 2);
             checkBoxRectangle = new Rectangle(checkBoxPoint, boxSize);
 
@@ -562,16 +545,11 @@
             checkBoxPath = GDI.GetBorderShape(checkBoxRectangle, border.Shape, border.Rounding);
             checkPath = GDI.GetBorderShape(checkRectangle, border.Shape, 1);
 
-            // Gradient points
-            startPoint = new Point(checkBoxRectangle.Width, 0);
-            endPoint = new Point(checkBoxRectangle.Width, checkBoxRectangle.Height);
-            startCheckPoint = new Point(checkBoxRectangle.Width, 0);
-            endCheckPoint = new Point(checkBoxRectangle.Width, checkBoxRectangle.Height);
-
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(boxColor, gradientPosition, gradientAngle, startPoint, endPoint);
+            var boxGradientPoints = new Point[2] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            LinearGradientBrush boxGradientBrush = GDI.CreateGradientBrush(box.Colors, boxGradientPoints, box.Angle, box.Positions);
 
             // Draw checkbox background
-            graphics.FillPath(gradientBrush, checkBoxPath);
+            graphics.FillPath(boxGradientBrush, checkBoxPath);
 
             // draw ripple animation
             if (animation && rippleEffectsManager.IsAnimating())
@@ -600,20 +578,21 @@
                 }
             }
 
-            LinearGradientBrush gradientCheckBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientCheckPosition, gradientCheckAngle, startCheckPoint, endCheckPoint);
+            LinearGradientBrush checkGradientBrush = GDI.CreateGradientBrush(checkMark.Colors, boxGradientPoints, checkMark.Angle, checkMark.Positions);
+
             if (Checked)
             {
                 switch (checkBoxType)
                 {
                     case CheckBoxType.Check:
                         {
-                            DrawCheckMark(graphics, gradientCheckBrush);
+                            DrawCheckMark(graphics, checkGradientBrush);
                             break;
                         }
 
                     case CheckBoxType.Filled:
                         {
-                            graphics.FillPath(gradientCheckBrush, checkPath);
+                            graphics.FillPath(checkGradientBrush, checkPath);
                             break;
                         }
 
