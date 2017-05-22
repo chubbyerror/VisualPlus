@@ -14,8 +14,11 @@
 
     #endregion
 
-    /// <summary>The visual CircleProgressBar.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(ProgressBar))]
+    [DefaultEvent("Click")]
+    [DefaultProperty("Value")]
+    [Description("The Visual Circle ProgressBar")]
     [Designer(VSDesignerBinding.VisualCircleProgressBar)]
     public sealed class VisualCircleProgressBar : ProgressBar
     {
