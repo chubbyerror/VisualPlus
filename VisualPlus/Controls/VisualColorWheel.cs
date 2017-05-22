@@ -282,9 +282,11 @@
         }
     }
 
-    [DefaultProperty("Color")]
+    [ToolboxItem(true)]
+    [ToolboxBitmap(typeof(Button))]
     [DefaultEvent("ColorChanged")]
-    [Description("A color wheel component used can be used to pick a color.")]
+    [DefaultProperty("Color")]
+    [Description("The Visual Color Wheel")]
     public sealed class VisualColorWheel : Control, IColor
     {
         #region Variables
@@ -812,18 +814,26 @@
             {
                 case Keys.Right:
                 case Keys.Up:
-                    hue += step;
-                    break;
+                    {
+                        hue += step;
+                        break;
+                    }
                 case Keys.Left:
                 case Keys.Down:
-                    hue -= step;
-                    break;
+                    {
+                        hue -= step;
+                        break;
+                    }
                 case Keys.PageUp:
-                    hue += LargeChange;
-                    break;
+                    {
+                        hue += LargeChange;
+                        break;
+                    }
                 case Keys.PageDown:
-                    hue -= LargeChange;
-                    break;
+                    {
+                        hue -= LargeChange;
+                        break;
+                    }
             }
 
             if (hue >= 360)
@@ -921,9 +931,9 @@
 
             if (AllowPainting)
             {
-                OnPaintBackground(e); // Easiest way of supporting things like BackgroundImage, BackgroundImageLayout etc
+                OnPaintBackground(e);
 
-                // if the parent is using a transparent colorManager, it's likely to be something like a TabPage in a tab control
+                // If the parent is using a transparent colorManager, it's likely to be something like a TabPage in a tab control
                 // so we'll draw the parent background instead, to avoid having an ugly solid colorManager
                 if (BackgroundImage == null && Parent != null && (BackColor == Parent.BackColor || Parent.BackColor.A != 255))
                 {
