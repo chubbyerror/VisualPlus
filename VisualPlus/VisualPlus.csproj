@@ -113,7 +113,7 @@
     <Compile Include="Framework\Structure\Border.cs" />
     <Compile Include="Framework\GDI\ColorHelper.cs" />
     <Compile Include="Framework\Extensions.cs" />
-    <Compile Include="Framework\GDI\Gradient.cs" />
+    <Compile Include="Framework\Structure\Gradient.cs" />
     <Compile Include="Framework\GDI\VFX.cs" />
     <Compile Include="Framework\GDI\VFXManager.cs" />
     <Compile Include="Framework\MathHelper.cs" />

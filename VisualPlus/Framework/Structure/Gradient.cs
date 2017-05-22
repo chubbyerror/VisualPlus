@@ -1,11 +1,10 @@
-﻿namespace VisualPlus.Framework.GDI
+﻿namespace VisualPlus.Framework.Structure
 {
     #region Namespace
 
     using System;
     using System.ComponentModel;
     using System.Drawing;
-    using System.Drawing.Drawing2D;
     using System.Globalization;
 
     #endregion
