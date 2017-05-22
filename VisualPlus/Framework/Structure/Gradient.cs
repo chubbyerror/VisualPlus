@@ -26,7 +26,6 @@
                 Color.Blue
             };
 
-        private Point[] points = new Point[2];
         private float[] positions = { 0, 1 / 2f, 1 };
 
         #endregion
@@ -62,22 +61,6 @@
             set
             {
                 colors = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The gradient points.")]
-        public Point[] Points
-        {
-            get
-            {
-                return points;
-            }
-
-            set
-            {
-                points = value;
             }
         }
 
