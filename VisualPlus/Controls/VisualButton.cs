@@ -19,9 +19,10 @@
 
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(Button))]
-    [Designer(VSDesignerBinding.VisualButton)]
-    [Description("The Visual Button")]
     [DefaultEvent("Click")]
+    [DefaultProperty("Text")]
+    [Description("The Visual Button")]
+    [Designer(VSDesignerBinding.VisualButton)]
     public sealed class VisualButton : Button
     {
         #region Variables
