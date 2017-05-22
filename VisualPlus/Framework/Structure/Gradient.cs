@@ -12,12 +12,13 @@
     #endregion
 
     [TypeConverter(typeof(GradientConverter))]
-    [Description(Localize.Description.Border)]
+    [Description(Localize.Description.Gradient)]
     public class Gradient
     {
         #region Variables
 
         private float angle;
+
         private Color[] colors =
             {
                 Color.Red,
@@ -25,9 +26,8 @@
                 Color.Blue
             };
 
+        private Point[] points = new Point[2];
         private float[] positions = { 0, 1 / 2f, 1 };
-        private Point endPoint;
-        private Point startPoint;
 
         #endregion
 
@@ -62,6 +62,22 @@
             set
             {
                 colors = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description("The gradient points.")]
+        public Point[] Points
+        {
+            get
+            {
+                return points;
+            }
+
+            set
+            {
+                points = value;
             }
         }
 

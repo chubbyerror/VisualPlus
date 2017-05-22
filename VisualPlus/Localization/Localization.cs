@@ -33,6 +33,7 @@
             public const string Direction = "The flow of data.";
             public const string DropDownButton = "Applies the specified drop down button style.";
             public const string FocusVisible = "Sets input focus to the control";
+            public const string Gradient = "A range of position-dependant colors.";
             public const string GradientPosition = "The position of the gradient colors.";
             public const string HatchSize = "The hatch size.";
             public const string HatchStyle = "Applies the specified hatch style.";
