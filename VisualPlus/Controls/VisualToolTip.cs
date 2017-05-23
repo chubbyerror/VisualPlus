@@ -10,12 +10,16 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual ToolTip.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(ToolTip))]
+    [DefaultEvent("Popup")]
+    [DefaultProperty("Text")]
+    [Description("The Visual ToolTip")]
     [Designer(VSDesignerBinding.VisualToolTip)]
     public sealed class VisualToolTip : ToolTip
     {
@@ -30,15 +34,12 @@
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
             };
 
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private Point endPoint;
+        private Gradient backgroundGradient = new Gradient();
+
+        private Border border = new Border();
+
         private Font font = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private float gradientAngle;
-        private LinearGradientBrush gradientBrush;
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
         private Image icon;
         private bool iconBorder;
         private GraphicsPath iconGraphicsPath;
@@ -50,7 +51,6 @@
         private Rectangle separator;
         private int separatorThickness = 1;
         private int spacing = 2;
-        private Point startPoint;
         private string text;
         private Point textPoint;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
@@ -71,6 +71,11 @@
 
         public VisualToolTip()
         {
+            float[] gradientPosition = { 0, 1 / 2f, 1 };
+
+            backgroundGradient.Colors = backgroundColor;
+            backgroundGradient.Positions = gradientPosition;
+
             IsBalloon = false;
             OwnerDraw = true;
             Popup += VisualToolTip_Popup;
@@ -108,68 +113,35 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] BackgroundColor
+        public Gradient Background
         {
             get
             {
-                return backgroundColor;
+                return backgroundGradient;
             }
 
             set
             {
-                backgroundColor = value;
+                backgroundGradient = value;
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border Border
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
+                border = value;
             }
         }
 
@@ -185,36 +157,6 @@
             set
             {
                 font = value;
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientAngle
-        {
-            get
-            {
-                return gradientAngle;
-            }
-
-            set
-            {
-                gradientAngle = value;
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
-        {
-            get
-            {
-                return gradientPosition;
-            }
-
-            set
-            {
-                gradientPosition = value;
             }
         }
 
@@ -487,28 +429,22 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
-            startPoint = new Point(e.Bounds.Width, 0);
-            endPoint = new Point(e.Bounds.Width, e.Bounds.Height);
+            var gradientPoints = new[] { new Point { X = e.Bounds.Width, Y = 0 }, new Point { X = e.Bounds.Width, Y = e.Bounds.Height } };
 
-            gradientBrush = GDI.CreateGradientBrush(backgroundColor, gradientPosition, gradientAngle, startPoint, endPoint);
-
-            // Background
+            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
             graphics.FillRectangle(gradientBrush, e.Bounds);
 
-            // Create border
-            if (borderVisible)
+            if (border.Visible)
             {
-                Rectangle border = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1);
+                Rectangle boxRectangle = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1);
                 GraphicsPath borderPath = new GraphicsPath();
-                borderPath.AddRectangle(border);
-
-                // Draw border
-                graphics.DrawPath(new Pen(borderColor, borderThickness), borderPath);
+                borderPath.AddRectangle(boxRectangle);
+                graphics.DrawPath(new Pen(border.Color, border.Thickness), borderPath);
             }
 
-            // Draw the text shadow
-            if (textShadow && toolTipType == ToolTipType.Text || textShadow && toolTipType == ToolTipType.Default)
+            if ((textShadow && (toolTipType == ToolTipType.Text)) || (textShadow && (toolTipType == ToolTipType.Default)))
             {
+                // Draw shadow text
                 graphics.DrawString(text, new Font(Font, FontStyle.Regular), Brushes.Silver, new PointF(textPoint.X + 1, textPoint.Y + 1));
             }
 
@@ -533,7 +469,7 @@
                             // Draw icon border
                             if (iconBorder)
                             {
-                                graphics.DrawPath(new Pen(borderColor), iconGraphicsPath);
+                                graphics.DrawPath(new Pen(border.Color), iconGraphicsPath);
                             }
 
                             // Draw icon
@@ -553,7 +489,7 @@
                             // Draw icon border
                             if (iconBorder)
                             {
-                                graphics.DrawPath(new Pen(borderColor), iconGraphicsPath);
+                                graphics.DrawPath(new Pen(border.Color), iconGraphicsPath);
                             }
 
                             // Draw icon

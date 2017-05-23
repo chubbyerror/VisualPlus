@@ -13,34 +13,30 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual ComboBox.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(ComboBox))]
+    [DefaultEvent("SelectedIndexChanged")]
+    [DefaultProperty("Items")]
+    [Description("The Visual ComboBox")]
     [Designer(VSDesignerBinding.VisualComboBox)]
     public sealed class VisualComboBox : ComboBox
     {
         #region Variables
 
-        private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
-        private static ControlState controlState = ControlState.Normal;
+        private Border border = new Border();
+        private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
 
-        private Color[] backgroundColor =
+        private Color[] controlColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
                 Settings.DefaultValue.Style.BackgroundColor(0),
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
             };
-
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
 
         private Color[] controlDisabledColor =
             {
@@ -49,14 +45,14 @@
                 ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
             };
 
+        private Gradient controlDisabledGradient = new Gradient();
+        private Gradient controlGradient = new Gradient();
         private GraphicsPath controlGraphicsPath;
+        private ControlState controlState = ControlState.Normal;
         private DropDownButtons dropDownButton = DropDownButtons.Arrow;
         private bool dropDownButtonsVisible = Settings.DefaultValue.TextVisible;
-        private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private float gradientAngle;
-        private LinearGradientBrush gradientBrush;
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
+        private Border itemBorder = new Border();
         private Color menuItemHover = Settings.DefaultValue.Style.ItemHover(0);
         private Color menuItemNormal = Settings.DefaultValue.Style.BackgroundColor(0);
         private Color menuTextColor = Settings.DefaultValue.Style.ForeColor(0);
@@ -64,10 +60,8 @@
         private Color separatorShadowColor = Settings.DefaultValue.Style.ShadowColor;
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
         private int startIndex;
-        private Point startPoint;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-
         private Color waterMarkActiveColor = Color.Gray;
         private SolidBrush waterMarkBrush;
         private Color waterMarkColor = Color.LightGray;
@@ -88,18 +82,20 @@
 
             SetStyle((ControlStyles)139286, true);
             SetStyle(ControlStyles.Selectable, false);
-
             DrawMode = DrawMode.OwnerDrawFixed;
             DropDownStyle = ComboBoxStyle.DropDownList;
             Size = new Size(135, 26);
             ItemHeight = 20;
             UpdateStyles();
             DropDownHeight = 100;
-            UpdateLocationPoints();
             BackColor = Color.Transparent;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
-
-            // Sets some default values to the watermark properties
+            itemBorder.HoverVisible = false;
+            float[] gradientPosition = { 0, 1 / 2f, 1 };
+            controlGradient.Colors = controlColor;
+            controlGradient.Positions = gradientPosition;
+            controlDisabledGradient.Colors = controlDisabledColor;
+            controlDisabledGradient.Positions = gradientPosition;
             waterMarkFont = Font;
             waterMarkBrush = new SolidBrush(waterMarkActiveColor);
         }
@@ -117,145 +113,36 @@
 
         #region Properties
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] BackgroundColor
+        public Gradient Background
         {
             get
             {
-                return backgroundColor;
+                return controlGradient;
             }
 
             set
             {
-                backgroundColor = value;
+                controlGradient = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border Border
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
-        {
-            get
-            {
-                return borderHoverColor;
-            }
-
-            set
-            {
-                borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
-        public int BorderRounding
-        {
-            get
-            {
-                return borderRounding;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
-                {
-                    borderRounding = value;
-                }
-
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderShape)]
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
-        public BorderShape BorderShape
-        {
-            get
-            {
-                return borderShape;
-            }
-
-            set
-            {
-                borderShape = value;
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
+                border = value;
                 Invalidate();
             }
         }
@@ -276,34 +163,19 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
-        public Color[] ControlDisabledColor
+        public Gradient DisabledBackground
         {
             get
             {
-                return controlDisabledColor;
+                return controlDisabledGradient;
             }
 
             set
             {
-                controlDisabledColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
-        public Color[] DisabledColor
-        {
-            get
-            {
-                return controlDisabledColor;
-            }
-
-            set
-            {
-                controlDisabledColor = value;
+                controlDisabledGradient = value;
                 Invalidate();
             }
         }
@@ -341,34 +213,19 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientAngle
-        {
-            get
-            {
-                return gradientAngle;
-            }
-
-            set
-            {
-                gradientAngle = value;
-                Invalidate();
-            }
-        }
-
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
+        public Border Item
         {
             get
             {
-                return gradientPosition;
+                return itemBorder;
             }
 
             set
             {
-                gradientPosition = value;
+                itemBorder = value;
                 Invalidate();
             }
         }
@@ -629,27 +486,23 @@
 
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
-            // Draws the menu items
             e.Graphics.FillRectangle(
                 (e.State & DrawItemState.Selected) == DrawItemState.Selected
                     ? new SolidBrush(menuItemHover)
                     : new SolidBrush(menuItemNormal),
                 e.Bounds);
 
-            // Setup item
-            Size itemSize = new Size(e.Bounds.Width - borderThickness, e.Bounds.Height - borderThickness);
+            Size itemSize = new Size(e.Bounds.Width - itemBorder.Thickness, e.Bounds.Height - itemBorder.Thickness);
             Point itemPoint = new Point(e.Bounds.X, e.Bounds.Y);
             Rectangle itemBorderRectangle = new Rectangle(itemPoint, itemSize);
             GraphicsPath itemBorderPath = new GraphicsPath();
             itemBorderPath.AddRectangle(itemBorderRectangle);
 
-            // Draw item border
-            if (borderVisible)
+            if (itemBorder.Visible)
             {
-                GDI.DrawBorder(e.Graphics, itemBorderPath, borderThickness, borderColor);
+                GDI.DrawBorder(e.Graphics, itemBorderPath, itemBorder.Thickness, border.Color);
             }
 
-            // Draw item string
             if (e.Index != -1)
             {
                 e.Graphics.DrawString(GetItemText(Items[e.Index]), e.Font, new SolidBrush(menuTextColor), e.Bounds);
@@ -699,21 +552,19 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
-            UpdateLocationPoints();
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
 
-            // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            var controlCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
+            Gradient controlCheckTemp = Enabled ? controlGradient : controlDisabledGradient;
 
-            gradientBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientPosition, gradientAngle, startPoint, endPoint);
-
-            // Draw the background
-            graphics.FillPath(gradientBrush, controlGraphicsPath);
+            var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            LinearGradientBrush gradientBackgroundBrush = GDI.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
+            graphics.FillPath(gradientBackgroundBrush, controlGraphicsPath);
 
             // Create border
-            if (borderVisible)
+            if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             Rectangle buttonRectangle = new Rectangle(0, 0, 25, 25);
@@ -772,30 +623,9 @@
             }
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            UpdateLocationPoints();
-        }
-
         protected override void OnSelectionChangeCommitted(EventArgs e)
         {
             OnLostFocus(e);
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
-        }
-
-        private void UpdateLocationPoints()
-        {
-            startPoint = new Point(ClientRectangle.Width, 0);
-            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
-            // Update paths
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
         #endregion

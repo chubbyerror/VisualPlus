@@ -13,50 +13,43 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual GroupBox.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(GroupBox))]
+    [DefaultEvent("Enter")]
+    [DefaultProperty("Text")]
+    [Description("The Visual GroupBox")]
     [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public sealed partial class VisualGroupBox : GroupBox
+    public sealed class VisualGroupBox : GroupBox
     {
         #region Variables
 
-        private static BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Border border = new Border();
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-
-        private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private float gradientAngle;
-        private LinearGradientBrush gradientBrush;
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
-        private Point startPoint;
         private StringAlignment stringAlignment = StringAlignment.Center;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private Border titleBorder = new Border();
 
         private Color[] titleBoxColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0),
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+                Settings.DefaultValue.Style.BackgroundColor(0)
             };
 
         private int titleBoxHeight = 25;
-
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
         private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
+        private Gradient titleGradient = new Gradient();
+        private VerticalDirection vertDirection = VerticalDirection.Top;
 
         #endregion
 
@@ -75,6 +68,20 @@
             Padding = new Padding(5, 28, 5, 5);
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
+
+            float[] gradientPosition = { 0, 1 };
+
+            titleGradient.Colors = titleBoxColor;
+            titleGradient.Positions = gradientPosition;
+        }
+
+        public enum VerticalDirection
+        {
+            /// <summary>The bottom.</summary>
+            Bottom,
+
+            /// <summary>The top.</summary>
+            Top
         }
 
         #endregion
@@ -98,161 +105,35 @@
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border Border
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
+                border = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
-        {
-            get
-            {
-                return borderHoverColor;
-            }
-
-            set
-            {
-                borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
-        public int BorderRounding
+        [Description(Localize.Description.ComponentNoName)]
+        public VerticalDirection Direction
         {
             get
             {
-                return borderRounding;
+                return vertDirection;
             }
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
-                {
-                    borderRounding = value;
-                }
-
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderShape)]
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
-        public BorderShape BorderShape
-        {
-            get
-            {
-                return borderShape;
-            }
-
-            set
-            {
-                borderShape = value;
-                controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientAngle
-        {
-            get
-            {
-                return gradientAngle;
-            }
-
-            set
-            {
-                gradientAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
-        {
-            get
-            {
-                return gradientPosition;
-            }
-
-            set
-            {
-                gradientPosition = value;
+                vertDirection = value;
                 Invalidate();
             }
         }
@@ -321,18 +202,19 @@
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] TitleBoxColor
+        public Border TitleBorder
         {
             get
             {
-                return titleBoxColor;
+                return titleBorder;
             }
 
             set
             {
-                titleBoxColor = value;
+                titleBorder = value;
                 Invalidate();
             }
         }
@@ -367,6 +249,23 @@
             set
             {
                 titleBoxVisible = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient TitleGradient
+        {
+            get
+            {
+                return titleGradient;
+            }
+
+            set
+            {
+                titleGradient = value;
                 Invalidate();
             }
         }
@@ -408,43 +307,50 @@
             graphics.TextRenderingHint = textRendererHint;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
-            UpdateLocationPoints();
+            Point titlePoint;
 
-            // Set control state color
-            foreColor = Enabled ? foreColor : textDisabledColor;
-
-            // Draw the body of the BackgroundColor
-            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
-
-            // Setup group box border
-            if (borderVisible)
+            if (vertDirection == VerticalDirection.Top)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
+                titlePoint = new Point(0, 0);
+            }
+            else
+            {
+                titlePoint = new Point(0, Height - titleBoxHeight - 1);
             }
 
-            // Draw the title box
+            titleBoxRectangle = new Rectangle(titlePoint.X, titlePoint.Y, Width, titleBoxHeight);
+
+            titleBoxPath = GDI.GetBorderShape(titleBoxRectangle, titleBorder.Shape, titleBorder.Rounding);
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+
+            foreColor = Enabled ? foreColor : textDisabledColor;
+            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
+
+            if (border.Visible)
+            {
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+            }
+
             if (titleBoxVisible)
             {
-                gradientBrush = GDI.CreateGradientBrush(titleBoxColor, gradientPosition, gradientAngle, startPoint, endPoint);
+                var gradientPoints = new[] { new Point { X = titleBoxRectangle.Width, Y = 0 }, new Point { X = titleBoxRectangle.Width, Y = titleBoxRectangle.Height } };
+                LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(titleGradient.Colors, gradientPoints, titleGradient.Angle, titleGradient.Positions);
 
-                // Draw the background of the title box
                 graphics.FillPath(gradientBrush, titleBoxPath);
 
-                // Setup title boxborder
-                if (borderVisible)
+                if (titleBorder.Visible)
                 {
-                    if (controlState == ControlState.Hover && borderHoverVisible)
+                    if (controlState == ControlState.Hover && titleBorder.HoverVisible)
                     {
-                        GDI.DrawBorder(graphics, titleBoxPath, borderThickness, borderHoverColor);
+                        GDI.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.HoverColor);
                     }
                     else
                     {
-                        GDI.DrawBorder(graphics, titleBoxPath, borderThickness, borderColor);
+                        GDI.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.Color);
                     }
                 }
             }
 
-            // Draw the specified string from 'Text' property inside the title box
             StringFormat stringFormat = new StringFormat
                 {
                     Alignment = stringAlignment,
@@ -452,39 +358,6 @@
                 };
 
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            UpdateLocationPoints();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
-        }
-
-        private void UpdateLocationPoints()
-        {
-            titleBoxRectangle = new Rectangle(0, 0, Width - 1, titleBoxHeight);
-
-            // Determine type of border rounding to draw
-            if (borderShape == BorderShape.Rounded)
-            {
-                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, borderRounding);
-            }
-            else
-            {
-                titleBoxPath = GDI.DrawRoundedRectangle(titleBoxRectangle, 1);
-            }
-
-            // Update paths
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
-
-            startPoint = new Point(titleBoxRectangle.Width, 0);
-            endPoint = new Point(titleBoxRectangle.Width, titleBoxRectangle.Height);
         }
 
         #endregion

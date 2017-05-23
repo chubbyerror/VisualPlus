@@ -11,12 +11,16 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual Label.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(Label))]
+    [DefaultEvent("Click")]
+    [DefaultProperty("Text")]
+    [Description("The Visual Label")]
     [Designer(VSDesignerBinding.VisualLabel)]
     public sealed class VisualLabel : Label
     {
@@ -28,23 +32,17 @@
         private readonly Color[] textDisabledColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
-                Settings.DefaultValue.Style.TextDisabled,
-                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled)
+                Settings.DefaultValue.Style.TextDisabled
             };
 
         private bool autoSize;
-        private Point endPoint;
 
         private Color[] foreColor =
             {
                 Settings.DefaultValue.Style.ForeColor(0),
-                Settings.DefaultValue.Style.ForeColor(0),
                 Settings.DefaultValue.Style.ForeColor(0)
             };
 
-        private float gradientAngle;
-        private LinearGradientBrush gradientBrush;
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
         private Orientation orientation = Orientation.Horizontal;
         private bool outline;
         private Color outlineColor = Color.Red;
@@ -57,8 +55,9 @@
         private int shadowDirection = 315;
         private Point shadowLocation = new Point(0, 0);
         private int shadowOpacity = 100;
-        private Point startPoint;
         private Rectangle textBoxRectangle;
+        private Gradient textDisabledGradient = new Gradient();
+        private Gradient textGradient = new Gradient();
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
@@ -72,6 +71,14 @@
             UpdateStyles();
             BackColor = Color.Transparent;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+
+            float[] gradientPosition = { 0, 1 };
+
+            textGradient.Colors = foreColor;
+            textGradient.Positions = gradientPosition;
+
+            textDisabledGradient.Colors = textDisabledColor;
+            textDisabledGradient.Positions = gradientPosition;
         }
 
         #endregion
@@ -99,38 +106,6 @@
                 {
                     base.AutoSize = value;
                 }
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientAngle
-        {
-            get
-            {
-                return gradientAngle;
-            }
-
-            set
-            {
-                gradientAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
-        {
-            get
-            {
-                return gradientPosition;
-            }
-
-            set
-            {
-                gradientPosition = value;
-                Invalidate();
             }
         }
 
@@ -333,18 +308,36 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color[] TextColor
+        public Gradient TextColor
         {
             get
             {
-                return foreColor;
+                return textGradient;
             }
 
             set
             {
-                foreColor = value;
+                textGradient = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient TextDisabledColor
+        {
+            get
+            {
+                return textDisabledGradient;
+            }
+
+            set
+            {
+                textDisabledGradient = value;
                 Invalidate();
             }
         }
@@ -377,8 +370,7 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
-            // Set control color state
-            foreColor = Enabled ? foreColor : textDisabledColor;
+            Gradient foreGradient = Enabled ? textGradient : textDisabledGradient;
 
             if (reflection && orientation == Orientation.Vertical)
             {
@@ -389,11 +381,8 @@
                 textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
             }
 
-            startPoint = new Point(ClientRectangle.Width, 0);
-            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
-            // Create gradient text
-            gradientBrush = GDI.CreateGradientBrush(foreColor, gradientPosition, gradientAngle, startPoint, endPoint);
+            var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(foreGradient.Colors, gradientPoints, textGradient.Angle, textGradient.Positions);
 
             // Draw the text outline
             if (outline)

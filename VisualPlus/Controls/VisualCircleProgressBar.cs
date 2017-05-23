@@ -14,8 +14,11 @@
 
     #endregion
 
-    /// <summary>The visual CircleProgressBar.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(ProgressBar))]
+    [DefaultEvent("Click")]
+    [DefaultProperty("Value")]
+    [Description("The Visual Circle ProgressBar")]
     [Designer(VSDesignerBinding.VisualCircleProgressBar)]
     public sealed class VisualCircleProgressBar : ProgressBar
     {
@@ -52,7 +55,7 @@
 
             MinimumSize = new Size(100, 100);
 
-            ForeColor = Settings.DefaultValue.Style.ForeColor(0);
+            ForeColor = Color.White;
             textVisible = true;
             BackColor = Color.Transparent;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);

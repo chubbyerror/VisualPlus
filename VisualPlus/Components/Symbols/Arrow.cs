@@ -1,10 +1,14 @@
 ﻿namespace VisualPlus.Components.Symbols
 {
+    #region Namespace
+
     using System.Drawing;
+
+    #endregion
 
     public class Arrow
     {
-        #region ${0} Methods
+        #region Events
 
         /// <summary>Draws a arrow.</summary>
         /// <param name="graphics">Graphics controller.</param>
@@ -12,15 +16,15 @@
         /// <param name="rectangleSize">Arrow size.</param>
         /// <param name="color">The color.</param>
         /// <param name="fontSize">The font size.</param>
-        /// <param name="fontStyle">The font style.</param>
-        public static void DrawArrow(Graphics graphics, Point pointLocation, Size rectangleSize, Color color, float fontSize, FontStyle fontStyle = FontStyle.Regular)
+        public static void DrawArrow(Graphics graphics, Point pointLocation, Size rectangleSize, Color color, float fontSize)
         {
             // Create shape
             Rectangle shape = new Rectangle(pointLocation, rectangleSize);
 
+            // Draw arrow
             graphics.DrawString(
                 "6",
-                new Font("Marlett", fontSize, fontStyle),
+                new Font("Marlett", fontSize, FontStyle.Regular),
                 new SolidBrush(color),
                 shape,
                 new StringFormat

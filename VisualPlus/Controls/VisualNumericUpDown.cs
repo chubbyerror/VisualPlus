@@ -12,40 +12,31 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual NumericUpDown.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(NumericUpDown))]
+    [DefaultEvent("Click")]
+    [DefaultProperty("Text")]
+    [Description("The Visual NumericUpDown")]
     [Designer(VSDesignerBinding.VisualNumericUpDown)]
-    [Description("Displays a single numeric value that the user can increment and decrement by clicking up and down button on the control.")]
     public sealed class VisualNumericUpDown : Control
     {
-        #region Variables
-
-        protected static BorderShape borderShape = Settings.DefaultValue.BorderShape;
-
-        #endregion
-
         #region Variables
 
         private Color[] backgroundColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0),
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+                Settings.DefaultValue.Style.BackgroundColor(0)
             };
 
-        private Point backgroundEndPoint;
-        private Point backgroundStartPoint;
-
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Gradient backgroundDisabledGradient = new Gradient();
+        private Gradient backgroundGradient = new Gradient();
+        private Border border = new Border();
+        private Border buttonBorder = new Border();
 
         private Color[] buttonColor =
             {
@@ -54,29 +45,20 @@
                 Settings.DefaultValue.Style.ButtonNormalColor
             };
 
-        private Point buttonEndPoint;
-
+        private Gradient buttonGradient = new Gradient();
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
-        private Point buttonStartPoint;
         private int buttonWidth = 19;
 
         private Color[] controlDisabledColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled,
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
+                Settings.DefaultValue.Style.ControlDisabled
             };
 
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private float gradientBackroundAngle;
-        private LinearGradientBrush gradientBackroundBrush;
-        private float[] gradientBackroundPosition = { 0, 1 / 2f, 1 };
-        private float gradientButtonAngle;
-        private LinearGradientBrush gradientButtonBrush;
-        private float[] gradientButtonPosition = { 0, 1 / 2f, 1 };
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
@@ -104,167 +86,108 @@
             MinimumSize = new Size(62, 29);
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
+
+            buttonBorder.HoverVisible = false;
+            buttonBorder.Shape = BorderShape.Rectangle;
+
+            float[] backgroundGradientPosition = { 0, 1 };
+            float[] buttonGradientPosition = { 0, 1 / 2f, 1 };
+
+            buttonGradient.Colors = buttonColor;
+            buttonGradient.Positions = buttonGradientPosition;
+
+            backgroundGradient.Colors = backgroundColor;
+            backgroundGradient.Positions = backgroundGradientPosition;
+
+            backgroundDisabledGradient.Colors = controlDisabledColor;
+            backgroundDisabledGradient.Positions = backgroundGradientPosition;
         }
 
         #endregion
 
         #region Properties
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] BackgroundColor
+        public Gradient Background
         {
             get
             {
-                return backgroundColor;
+                return backgroundGradient;
             }
 
             set
             {
-                backgroundColor = value;
+                backgroundGradient = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Gradient BackgroundDisabled
         {
             get
             {
-                return borderColor;
+                return backgroundDisabledGradient;
             }
 
             set
             {
-                borderColor = value;
+                backgroundDisabledGradient = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
+        public Border Border
         {
             get
             {
-                return borderHoverColor;
+                return border;
             }
 
             set
             {
-                borderHoverColor = value;
+                border = value;
                 Invalidate();
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
-        public int BorderRounding
-        {
-            get
-            {
-                return borderRounding;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
-                {
-                    borderRounding = value;
-                }
-
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
-        public BorderShape BorderShape
+        public Gradient Button
         {
             get
             {
-                return borderShape;
+                return buttonGradient;
             }
 
             set
             {
-                borderShape = value;
-                UpdateLocationPoints();
+                buttonGradient = value;
                 Invalidate();
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
-                Invalidate();
-            }
-        }
-
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.NormalColor)]
-        public Color[] ButtonColor
+        public Border ButtonBorder
         {
             get
             {
-                return buttonColor;
+                return buttonBorder;
             }
 
             set
             {
-                buttonColor = value;
+                buttonBorder = value;
                 Invalidate();
             }
         }
@@ -282,86 +205,6 @@
             {
                 buttonWidth = value;
                 UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
-        public Color[] ControlDisabledColor
-        {
-            get
-            {
-                return controlDisabledColor;
-            }
-
-            set
-            {
-                controlDisabledColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientBackroundAngle
-        {
-            get
-            {
-                return gradientBackroundAngle;
-            }
-
-            set
-            {
-                gradientBackroundAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientBackroundPosition
-        {
-            get
-            {
-                return gradientBackroundPosition;
-            }
-
-            set
-            {
-                gradientBackroundPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientButtonAngle
-        {
-            get
-            {
-                return gradientButtonAngle;
-            }
-
-            set
-            {
-                gradientButtonAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientButtonPosition
-        {
-            get
-            {
-                return gradientButtonPosition;
-            }
-
-            set
-            {
-                gradientButtonPosition = value;
                 Invalidate();
             }
         }
@@ -633,26 +476,24 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            var controlBackroundCheckTemp = Enabled ? backgroundColor : controlDisabledColor;
-            var controlButtonCheckTemp = Enabled ? buttonColor : controlDisabledColor;
+
+            Gradient backgroundCheckTemp = Enabled ? backgroundGradient : backgroundDisabledGradient;
+            Gradient buttonCheckTemp = Enabled ? buttonGradient : backgroundDisabledGradient;
 
             graphics.SetClip(controlGraphicsPath);
 
-            // gradients
-            gradientBackroundBrush = GDI.CreateGradientBrush(controlBackroundCheckTemp, gradientBackroundPosition, gradientBackroundAngle, backgroundStartPoint, backgroundEndPoint);
-            gradientButtonBrush = GDI.CreateGradientBrush(controlButtonCheckTemp, gradientButtonPosition, gradientButtonAngle, buttonStartPoint, buttonEndPoint);
+            var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
 
-            // Draw background
-            graphics.FillPath(gradientBackroundBrush, controlGraphicsPath);
+            LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundCheckTemp.Colors, gradientPoints, backgroundCheckTemp.Angle, backgroundCheckTemp.Positions);
+            graphics.FillPath(backgroundGradientBrush, controlGraphicsPath);
 
-            // Buttons background
-            graphics.FillPath(gradientButtonBrush, buttonPath);
+            LinearGradientBrush buttonGradientBrush = GDI.CreateGradientBrush(buttonCheckTemp.Colors, gradientPoints, buttonCheckTemp.Angle, buttonCheckTemp.Positions);
+            graphics.FillPath(buttonGradientBrush, buttonPath);
 
             // Setup buttons border
-            if (borderVisible)
+            if (buttonBorder.Visible)
             {
-                // Draw buttons border
-                GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
+                GDI.DrawBorderType(graphics, controlState, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
             }
 
             graphics.ResetClip();
@@ -665,9 +506,9 @@
             graphics.DrawLine(new Pen(Settings.DefaultValue.Style.BorderColor(0)), buttonRectangle.X, buttonRectangle.Y + buttonRectangle.Height / 2, buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + buttonRectangle.Height / 2);
 
             // Draw control border
-            if (borderVisible)
+            if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             // Draw value string
@@ -696,13 +537,7 @@
 
         private void UpdateLocationPoints()
         {
-            backgroundStartPoint = new Point(ClientRectangle.Width, 0);
-            backgroundEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
-            buttonStartPoint = new Point(ClientRectangle.Width, 0);
-            buttonEndPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
             buttonPath = new GraphicsPath();

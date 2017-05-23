@@ -14,18 +14,16 @@
 
     #endregion
 
-    /// <summary>The visual ListBox.</summary>
-    [ToolboxBitmap(typeof(ListBox))]
+    [ToolboxItem(true)]
+    [ToolboxBitmap(typeof(Button))]
+    [DefaultEvent("SelectedIndexChanged")]
+    [DefaultProperty("Items")]
+    [Description("The Visual ListBox")]
     [Designer(VSDesignerBinding.VisualListBox)]
     public sealed class VisualListBox : ListBox
     {
         #region Variables
 
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Color itemBackground = Settings.DefaultValue.Style.BackgroundColor(0);
         private Color itemBackground2 = Settings.DefaultValue.Style.BorderColor(0);
@@ -59,93 +57,6 @@
         #endregion
 
         #region Properties
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
-        {
-            get
-            {
-                return borderColor;
-            }
-
-            set
-            {
-                borderColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
-        {
-            get
-            {
-                return borderHoverColor;
-            }
-
-            set
-            {
-                borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
-                Invalidate();
-            }
-        }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]

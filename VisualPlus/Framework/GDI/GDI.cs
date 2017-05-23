@@ -65,17 +65,20 @@
         }
 
         /// <summary>Draws the text image relation.</summary>
+        /// <param name="graphics">The graphics.</param>
         /// <param name="relation">The relation type.</param>
         /// <param name="imageRectangle">The image rectangle.</param>
-        /// <param name="fontSize">The text size.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="font">The font.</param>
         /// <param name="outerBounds">The outer bounds.</param>
-        /// <param name="imagePoint">The image Point.</param>
-        /// <returns>The <see cref="Point" />.</returns>
-        public static Point ApplyTextImageRelation(TextImageRelation relation, Rectangle imageRectangle, SizeF fontSize, Rectangle outerBounds, bool imagePoint)
+        /// <param name="imagePoint">Return image point.</param>
+        /// <returns>The return point.</returns>
+        public static Point ApplyTextImageRelation(Graphics graphics, TextImageRelation relation, Rectangle imageRectangle, string text, Font font, Rectangle outerBounds, bool imagePoint)
         {
             Point newPosition = new Point(0, 0);
             Point newImagePoint = new Point(0, 0);
             Point newTextPoint = new Point(0, 0);
+            Size textSize = GetTextSize(graphics, text, font);
 
             switch (relation)
             {
@@ -90,8 +93,8 @@
                         newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
 
                         // Set text
-                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
-                        newTextPoint.Y = newPosition.Y - Convert.ToInt32(fontSize.Height) / 2;
+                        newTextPoint.X = newPosition.X - textSize.Width / 2;
+                        newTextPoint.Y = newPosition.Y - textSize.Height / 2;
                         break;
                     }
 
@@ -106,7 +109,7 @@
 
                         // Set text
                         newTextPoint.X = newImagePoint.X + imageRectangle.Width;
-                        newTextPoint.Y = newPosition.Y - (int)fontSize.Height / 2;
+                        newTextPoint.Y = newPosition.Y - textSize.Height / 2;
                         break;
                     }
 
@@ -117,10 +120,10 @@
 
                         // Set text
                         newTextPoint.X = newPosition.X + 4;
-                        newTextPoint.Y = newPosition.Y - (int)fontSize.Height / 2;
+                        newTextPoint.Y = newPosition.Y - textSize.Height / 2;
 
                         // Set image
-                        newImagePoint.X = newTextPoint.X + (int)fontSize.Width;
+                        newImagePoint.X = newTextPoint.X + textSize.Width;
                         newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
                         break;
                     }
@@ -135,7 +138,7 @@
                         newImagePoint.Y = newPosition.Y + 4;
 
                         // Set text
-                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.X = newPosition.X - textSize.Width / 2;
                         newTextPoint.Y = newImagePoint.Y + imageRectangle.Height;
                         break;
                     }
@@ -146,44 +149,35 @@
                         newPosition.X = outerBounds.Width / 2;
 
                         // Set text
-                        newTextPoint.X = newPosition.X - Convert.ToInt32(fontSize.Width) / 2;
+                        newTextPoint.X = newPosition.X - textSize.Width / 2;
                         newTextPoint.Y = newImagePoint.Y + 4;
 
                         // Set image
                         newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
-                        newImagePoint.Y = newPosition.Y + Convert.ToInt32(fontSize.Height) + 4;
+                        newImagePoint.Y = newPosition.Y + textSize.Height + 4;
                         break;
                     }
             }
 
-            return imagePoint ? newImagePoint : newTextPoint;
-        }
-
-        public static Color BlendColor(Color backgroundColor, Color frontColor, double blend)
-        {
-            double ratio = blend / 255d;
-            double invRatio = 1d - ratio;
-            var r = (int)(backgroundColor.R * invRatio + frontColor.R * ratio);
-            var g = (int)(backgroundColor.G * invRatio + frontColor.G * ratio);
-            var b = (int)(backgroundColor.B * invRatio + frontColor.B * ratio);
-            return Color.FromArgb(r, g, b);
-        }
-
-        public static Color BlendColor(Color backgroundColor, Color frontColor)
-        {
-            return BlendColor(backgroundColor, frontColor, frontColor.A);
+            if (imagePoint)
+            {
+                return newImagePoint;
+            }
+            else
+            {
+                return newTextPoint;
+            }
         }
 
         /// <summary>Creates a gradient brush.</summary>
         /// <param name="colors">The colors.</param>
-        /// <param name="positions">The positions.</param>
+        /// <param name="points">The points.</param>
         /// <param name="angle">The angle.</param>
-        /// <param name="startPoint">Start position.</param>
-        /// <param name="endPoint">End position.</param>
-        /// <returns>The gradient brush.</returns>
-        public static LinearGradientBrush CreateGradientBrush(Color[] colors, float[] positions, float angle, Point startPoint, Point endPoint)
+        /// <param name="positions">The positions.</param>
+        /// <returns>Returns a custom gradient brush.</returns>
+        public static LinearGradientBrush CreateGradientBrush(Color[] colors, Point[] points, float angle, float[] positions)
         {
-            LinearGradientBrush linearGradientBrush = new LinearGradientBrush(startPoint, endPoint, Color.Black, Color.Black);
+            LinearGradientBrush linearGradientBrush = new LinearGradientBrush(points[0], points[1], Color.Black, Color.Black);
 
             ColorBlend colorBlend = new ColorBlend
                 {
@@ -480,6 +474,36 @@
             Size textSize = new Size(width, height);
 
             return textSize;
+        }
+
+        /// <summary>Initialize the graphics processor.</summary>
+        /// <param name="e">Paint event.</param>
+        /// <param name="compositingMode">Compositing mode.</param>
+        /// <param name="compositingQuality">Compositing quality.</param>
+        /// <param name="interpolationMode">Interpolation mode.</param>
+        /// <param name="pixelOffsetMode">Pixel offset mode.</param>
+        /// <param name="smoothingMode">Smoothing mode.</param>
+        /// <param name="textRenderingHint">Text rendering hint.</param>
+        /// <returns>Processed graphics.</returns>
+        public static Graphics Initialize(PaintEventArgs e, CompositingMode compositingMode, CompositingQuality compositingQuality, InterpolationMode interpolationMode, PixelOffsetMode pixelOffsetMode, SmoothingMode smoothingMode, TextRenderingHint textRenderingHint)
+        {
+            Graphics graphics = e.Graphics;
+            graphics.CompositingMode = compositingMode;
+            graphics.CompositingQuality = compositingQuality;
+            graphics.InterpolationMode = interpolationMode;
+            graphics.PixelOffsetMode = pixelOffsetMode;
+            graphics.SmoothingMode = smoothingMode;
+            graphics.TextRenderingHint = textRenderingHint;
+            return graphics;
+        }
+
+        /// <summary>Checks whether the mouse is inside the bounds.</summary>
+        /// <param name="mousePoint">Mouse location.</param>
+        /// <param name="bounds">The rectangle.</param>
+        /// <returns>Returns value.</returns>
+        public static bool IsMouseInBounds(Point mousePoint, Rectangle bounds)
+        {
+            return bounds.Contains(mousePoint);
         }
 
         #endregion

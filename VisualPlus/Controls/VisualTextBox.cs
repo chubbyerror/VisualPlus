@@ -12,13 +12,17 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
     using VisualPlus.Properties;
 
     #endregion
 
-    /// <summary>The visual TextBox.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(TextBox))]
+    [DefaultEvent("TextChanged")]
+    [DefaultProperty("Text")]
+    [Description("The Visual TextBox")]
     [Designer(VSDesignerBinding.VisualTextBox)]
     public sealed class VisualTextBox : TextBox
     {
@@ -30,19 +34,10 @@
 
         #region Variables
 
-        protected BorderShape borderShape = Settings.DefaultValue.BorderShape;
-
-        #endregion
-
-        #region Variables
-
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+
+        private Border border = new Border();
+        private Border buttonBorder = new Border();
         private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private Image buttonImage = Resources.search;
         private GraphicsPath buttonPath;
@@ -124,129 +119,36 @@
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border Border
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
+                border = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
+        public Border ButtonBorder
         {
             get
             {
-                return borderHoverColor;
+                return buttonBorder;
             }
 
             set
             {
-                borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
-        public int BorderRounding
-        {
-            get
-            {
-                return borderRounding;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
-                {
-                    borderRounding = value;
-                }
-
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderShape)]
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
-        public BorderShape BorderShape
-        {
-            get
-            {
-                return borderShape;
-            }
-
-            set
-            {
-                borderShape = value;
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
+                buttonBorder = value;
                 Invalidate();
             }
         }
@@ -587,7 +489,7 @@
                     // Determine the button middle separator by checking for the Y position.
                     if (yValue > buttonRectangle.Y && yValue < Height)
                     {
-                        ButtonClicked.Invoke();
+                        ButtonClicked?.Invoke();
                     }
                 }
             }
@@ -650,16 +552,12 @@
                 Rectangle imageRectangle = new Rectangle(imagePoint, imageSize);
 
                 graphics.SetClip(buttonPath);
-
-                // Draw the image
                 graphics.DrawImage(buttonImage, imageRectangle);
-
                 graphics.SetClip(controlGraphicsPath);
 
-                // Button border
-                if (borderVisible)
+                if (buttonBorder.Visible)
                 {
-                    GDI.DrawBorder(graphics, buttonPath, 1, Settings.DefaultValue.Style.BorderColor(0));
+                    GDI.DrawBorderType(graphics, controlState, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
                 }
 
                 TextBoxObject.Width = buttonRectangle.X - 10;
@@ -672,15 +570,15 @@
             graphics.ResetClip();
 
             // Draw border
-            if (borderVisible)
+            if (border.Visible)
             {
-                if (controlState == ControlState.Hover && borderHoverVisible)
+                if (controlState == ControlState.Hover && border.HoverVisible)
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderThickness, borderHoverColor);
+                    GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
                 }
                 else
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, borderThickness, borderColor);
+                    GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.Color);
                 }
             }
 
@@ -787,7 +685,7 @@
                 Height = textboxHeight;
             }
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
             buttonPath = new GraphicsPath();

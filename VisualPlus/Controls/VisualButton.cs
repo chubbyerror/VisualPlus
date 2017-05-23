@@ -12,25 +12,23 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual Button.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(Button))]
+    [DefaultEvent("Click")]
+    [DefaultProperty("Text")]
+    [Description("The Visual Button")]
     [Designer(VSDesignerBinding.VisualButton)]
     public sealed class VisualButton : Button
     {
         #region Variables
 
         private bool animation = true;
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Border border = new Border();
 
         private Color[] buttonDisabled =
             {
@@ -39,12 +37,16 @@
                 Settings.DefaultValue.Style.ControlDisabled
             };
 
+        private Gradient buttonDisabledGradient = new Gradient();
+
         private Color[] buttonHover =
             {
                 Settings.DefaultValue.Style.ButtonHoverColor,
                 ControlPaint.Light(Settings.DefaultValue.Style.ButtonHoverColor),
                 Settings.DefaultValue.Style.ButtonHoverColor
             };
+
+        private Gradient buttonHoverGradient = new Gradient();
 
         private Color[] buttonNormal =
             {
@@ -53,6 +55,8 @@
                 Settings.DefaultValue.Style.ButtonNormalColor
             };
 
+        private Gradient buttonNormalGradient = new Gradient();
+
         private Color[] buttonPressed =
             {
                 Settings.DefaultValue.Style.ButtonDownColor,
@@ -60,20 +64,12 @@
                 Settings.DefaultValue.Style.ButtonDownColor
             };
 
+        private Gradient buttonPressedGradient = new Gradient();
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-
         private VFXManager effectsManager;
-        private Point endPoint;
-        private SizeF fontSize;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-
-        private float gradientAngle;
-
         private LinearGradientBrush gradientBrush;
-
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
-
         private VFXManager hoverEffectsManager;
         private Image icon;
         private bool iconBorder;
@@ -81,8 +77,6 @@
         private Point iconPoint = new Point(0, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-
-        private Point startPoint;
         private Rectangle textboxRectangle;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextImageRelation textImageRelation = TextImageRelation.Overlay;
@@ -111,6 +105,20 @@
             BackColor = Color.Transparent;
 
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+
+            float[] gradientPosition = { 0, 1 / 2f, 1 };
+
+            buttonNormalGradient.Colors = buttonNormal;
+            buttonNormalGradient.Positions = gradientPosition;
+
+            buttonHoverGradient.Colors = buttonHover;
+            buttonHoverGradient.Positions = gradientPosition;
+
+            buttonPressedGradient.Colors = buttonPressed;
+            buttonPressedGradient.Positions = gradientPosition;
+
+            buttonDisabledGradient.Colors = buttonDisabled;
+            buttonDisabledGradient.Positions = gradientPosition;
 
             // Setup effects animation
             effectsManager = new VFXManager(false)
@@ -156,193 +164,87 @@
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border Border
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
+                border = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
+        public Gradient ButtonDisabled
         {
             get
             {
-                return borderHoverColor;
+                return buttonDisabledGradient;
             }
 
             set
             {
-                borderHoverColor = value;
+                buttonDisabledGradient = value;
                 Invalidate();
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
-        public int BorderRounding
-        {
-            get
-            {
-                return borderRounding;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
-                {
-                    borderRounding = value;
-                }
-
-                UpdateLocationPoints();
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderShape)]
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
-        public BorderShape BorderShape
+        public Gradient ButtonHover
         {
             get
             {
-                return borderShape;
+                return buttonHoverGradient;
             }
 
             set
             {
-                borderShape = value;
-                UpdateLocationPoints();
+                buttonHoverGradient = value;
                 Invalidate();
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
-                Invalidate();
-            }
-        }
-
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
-        public Color[] DisabledColor
+        public Gradient ButtonNormal
         {
             get
             {
-                return buttonDisabled;
+                return buttonNormalGradient;
             }
 
             set
             {
-                buttonDisabled = value;
+                buttonNormalGradient = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientAngle
-        {
-            get
-            {
-                return gradientAngle;
-            }
-
-            set
-            {
-                gradientAngle = value;
-                Invalidate();
-            }
-        }
-
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
+        public Gradient ButtonPressed
         {
             get
             {
-                return gradientPosition;
+                return buttonPressedGradient;
             }
 
             set
             {
-                gradientPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.HoverColor)]
-        public Color[] HoverColor
-        {
-            get
-            {
-                return buttonHover;
-            }
-
-            set
-            {
-                buttonHover = value;
+                buttonPressedGradient = value;
                 Invalidate();
             }
         }
@@ -359,11 +261,6 @@
             set
             {
                 icon = value;
-                if (AutoSize)
-                {
-                    Size = GetPreferredSize();
-                }
-
                 Invalidate();
             }
         }
@@ -396,45 +293,12 @@
             set
             {
                 iconSize = value;
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
 
         [Browsable(false)]
         public Point MouseLocation { get; set; }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.NormalColor)]
-        public Color[] NormalColor
-        {
-            get
-            {
-                return buttonNormal;
-            }
-
-            set
-            {
-                buttonNormal = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.PressedColor)]
-        public Color[] PressedColor
-        {
-            get
-            {
-                return buttonPressed;
-            }
-
-            set
-            {
-                buttonPressed = value;
-                Invalidate();
-            }
-        }
 
         [Category(Localize.Category.Design)]
         [Description(Localize.Description.Style)]
@@ -496,7 +360,6 @@
             set
             {
                 textImageRelation = value;
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -597,55 +460,77 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
-            // Set control state color
+            textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, false);
+            textboxRectangle.Location = textPoint;
+            iconPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, true);
+            iconRectangle = new Rectangle(iconPoint, iconSize);
+
+            iconGraphicsPath = new GraphicsPath();
+            iconGraphicsPath.AddRectangle(iconRectangle);
+            iconGraphicsPath.CloseAllFigures();
+
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+
             foreColor = Enabled ? foreColor : textDisabledColor;
-            var controlTempColor = Enabled ? buttonNormal : buttonDisabled;
 
-            // Gets the font size rectangle.
-            fontSize = graphics.MeasureString(Text, Font);
-            UpdateLocationPoints();
+            Color[] controlTempColor;
+            float gradientAngle;
+            float[] gradientPositions;
 
-            // Draw control state
             if (Enabled)
             {
-                // Button back color
                 switch (controlState)
                 {
                     case ControlState.Normal:
                         {
-                            controlTempColor = buttonNormal;
+                            controlTempColor = buttonNormalGradient.Colors;
+                            gradientAngle = buttonNormalGradient.Angle;
+                            gradientPositions = buttonNormalGradient.Positions;
                             break;
                         }
 
                     case ControlState.Hover:
                         {
-                            controlTempColor = buttonHover;
+                            controlTempColor = buttonHoverGradient.Colors;
+                            gradientAngle = buttonHoverGradient.Angle;
+                            gradientPositions = buttonHoverGradient.Positions;
                             break;
                         }
 
                     case ControlState.Down:
                         {
-                            controlTempColor = buttonPressed;
+                            controlTempColor = buttonPressedGradient.Colors;
+                            gradientAngle = buttonPressedGradient.Angle;
+                            gradientPositions = buttonPressedGradient.Positions;
                             break;
                         }
 
                     default:
                         {
-                            controlTempColor = buttonNormal;
+                            controlTempColor = buttonNormalGradient.Colors;
+                            gradientAngle = buttonNormalGradient.Angle;
+                            gradientPositions = buttonNormalGradient.Positions;
                             break;
                         }
                 }
             }
+            else
+            {
+                controlTempColor = buttonDisabledGradient.Colors;
+                gradientAngle = buttonDisabledGradient.Angle;
+                gradientPositions = buttonDisabledGradient.Positions;
+            }
 
-            gradientBrush = GDI.CreateGradientBrush(controlTempColor, gradientPosition, gradientAngle, startPoint, endPoint);
+            var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            gradientBrush = GDI.CreateGradientBrush(controlTempColor, gradientPoints, gradientAngle, gradientPositions);
 
             // Draw button background
             graphics.FillPath(gradientBrush, controlGraphicsPath);
 
             // Setup button border
-            if (borderVisible)
+            if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             if (string.IsNullOrEmpty(Text))
@@ -663,7 +548,7 @@
                 // Draw icon border
                 if (iconBorder)
                 {
-                    graphics.DrawPath(new Pen(borderColor), iconGraphicsPath);
+                    graphics.DrawPath(new Pen(border.Color), iconGraphicsPath);
                 }
 
                 // Draw icon
@@ -692,42 +577,6 @@
 
                 graphics.SmoothingMode = SmoothingMode.None;
             }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            UpdateLocationPoints();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
-        }
-
-        private Size GetPreferredSize()
-        {
-            return GetPreferredSize(new Size(0, 0));
-        }
-
-        private void UpdateLocationPoints()
-        {
-            startPoint = new Point(ClientRectangle.Width, 0);
-            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
-            textPoint = GDI.ApplyTextImageRelation(textImageRelation, iconRectangle, fontSize, ClientRectangle, false);
-            textboxRectangle.Location = textPoint;
-
-            iconPoint = GDI.ApplyTextImageRelation(textImageRelation, iconRectangle, fontSize, ClientRectangle, true);
-            iconRectangle = new Rectangle(iconPoint, iconSize);
-
-            iconGraphicsPath = new GraphicsPath();
-            iconGraphicsPath.AddRectangle(iconRectangle);
-            iconGraphicsPath.CloseAllFigures();
-
-            GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, borderShape, borderRounding);
         }
 
         #endregion

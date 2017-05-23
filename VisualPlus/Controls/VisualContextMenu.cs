@@ -9,12 +9,18 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(ContextMenuStrip))]
+    [DefaultEvent("Opening")]
+    [DefaultProperty("Items")]
+    [Description("The Visual Context Menu Strip")]
     public sealed class VisualContextMenuStrip : ContextMenuStrip
     {
         #region Variables
@@ -23,9 +29,7 @@
         private static Color arrowDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
         private static bool arrowVisible = Settings.DefaultValue.TextVisible;
         private static Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
-        private static Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private static int borderSize = Settings.DefaultValue.BorderThickness;
-        private static bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private static Border border = new Border();
         private static Font contextMenuFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private static Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private static Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
@@ -41,6 +45,9 @@
             Renderer = new VisualToolStripRender();
             BackColor = backgroundColor;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+
+            border.HoverVisible = false;
+            border.Shape = BorderShape.Rectangle;
         }
 
         public delegate void ClickedEventHandler(object sender);
@@ -114,56 +121,19 @@
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border Border
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderSize
-        {
-            get
-            {
-                return borderSize;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderSize = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
+                border = value;
                 Invalidate();
             }
         }
@@ -343,14 +313,14 @@
             {
                 e.Graphics.InterpolationMode = InterpolationMode.High;
                 e.Graphics.Clear(Settings.DefaultValue.Style.BackgroundColor(0));
-                Rectangle R = new Rectangle(0, e.Item.ContentRectangle.Y - 2, e.Item.ContentRectangle.Width + 4, e.Item.ContentRectangle.Height + 3);
-                e.Graphics.FillRectangle(e.Item.Selected && e.Item.Enabled ? new SolidBrush(Color.FromArgb(130, backgroundColor)) : new SolidBrush(backgroundColor), R);
+                Rectangle menuItemRectangle = new Rectangle(0, e.Item.ContentRectangle.Y - 2, e.Item.ContentRectangle.Width + 4, e.Item.ContentRectangle.Height + 3);
+                e.Graphics.FillRectangle(e.Item.Selected && e.Item.Enabled ? new SolidBrush(Color.FromArgb(130, backgroundColor)) : new SolidBrush(backgroundColor), menuItemRectangle);
             }
 
             protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                e.Graphics.DrawLine(new Pen(Color.FromArgb(200, borderColor), borderSize), new Point(e.Item.Bounds.Left, e.Item.Bounds.Height / 2), new Point(e.Item.Bounds.Right - 5, e.Item.Bounds.Height / 2));
+                e.Graphics.DrawLine(new Pen(Color.FromArgb(200, border.Color), border.Thickness), new Point(e.Item.Bounds.Left, e.Item.Bounds.Height / 2), new Point(e.Item.Bounds.Right - 5, e.Item.Bounds.Height / 2));
             }
 
             protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
@@ -363,18 +333,18 @@
 
             protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
             {
-                if (borderVisible)
+                if (border.Visible)
                 {
                     e.Graphics.InterpolationMode = InterpolationMode.High;
                     e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-                    Rectangle hoverBorder = new Rectangle(e.AffectedBounds.X, e.AffectedBounds.Y, e.AffectedBounds.Width, e.AffectedBounds.Height - 1);
+                    Rectangle borderRectangle = new Rectangle(e.AffectedBounds.X, e.AffectedBounds.Y, e.AffectedBounds.Width - border.Thickness, e.AffectedBounds.Height - border.Thickness);
                     GraphicsPath borderPath = new GraphicsPath();
-                    borderPath.AddRectangle(hoverBorder);
+                    borderPath.AddRectangle(borderRectangle);
                     borderPath.CloseAllFigures();
 
                     e.Graphics.SetClip(borderPath);
-                    e.Graphics.DrawPath(new Pen(borderColor), borderPath);
+                    e.Graphics.DrawPath(new Pen(border.Color), borderPath);
                     e.Graphics.ResetClip();
                 }
             }

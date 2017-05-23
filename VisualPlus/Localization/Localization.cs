@@ -14,6 +14,7 @@
             public const string BarSpacing = "The progress bar/s spacing.";
             public const string ButtonImage = "Image on the button.";
             public const string ButtonSize = "Size of the button.";
+            public const string Border = "The border settings style.";
             public const string BorderColor = "The controls border color.";
             public const string BorderHoverColor = "The controls border hover color.";
             public const string BorderHoverVisible = "Indicates whether the hover border is visible.";
@@ -29,8 +30,10 @@
             public const string ComponentSize = "The size of the component in pixels.";
             public const string ComponentVisible = "Indicates whether the component is visible.";
             public const string ControlDisabled = "The disabled color for the control.";
+            public const string Direction = "The flow of data.";
             public const string DropDownButton = "Applies the specified drop down button style.";
             public const string FocusVisible = "Sets input focus to the control";
+            public const string Gradient = "A range of position-dependant colors.";
             public const string GradientPosition = "The position of the gradient colors.";
             public const string HatchSize = "The hatch size.";
             public const string HatchStyle = "Applies the specified hatch style.";
@@ -38,6 +41,7 @@
             public const string Icon = "The icon to be displayed.";
             public const string IconPosition = "The icon position.";
             public const string IconSize = "The icon size.";
+            public const string Image = "The image to display.";
             public const string MirrorColor = "The mirrored text color.";
             public const string NormalColor = "The controls normal color.";
             public const string Outline = "Draws a line around the elements.";
