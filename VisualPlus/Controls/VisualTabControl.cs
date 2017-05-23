@@ -14,13 +14,16 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual TabControl.</summary>
-    // [Designer(StylesManager.BindedDesignerControls.VisualTab)]
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(TabControl))]
+    [DefaultEvent("SelectedIndexChanged")]
+    [DefaultProperty("TabPages")]
+    [Description("The Visual TabControl")]
     public sealed class VisualTabControl : TabControl
     {
         #region Variables
@@ -30,30 +33,14 @@
         private int arrowSpacing = 10;
         private int arrowThickness = 5;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Border border = new Border();
         private ControlState controlState = ControlState.Normal;
-        private float gradientHoverAngle;
-        private LinearGradientBrush gradientHoverBrush;
-        private float[] gradientHoverPosition = { 0, 1 };
-        private float gradientNormalAngle;
-        private LinearGradientBrush gradientNormalBrush;
-        private float[] gradientNormalPosition = { 0, 1 };
-        private float gradientSelectedAngle;
-        private LinearGradientBrush gradientSelectedBrush;
-        private float[] gradientSelectedPosition = { 0, 1 };
-        private Point hoverEndPoint;
-        private Point hoverStartPoint;
+        private Gradient hover = new Gradient();
         private Size itemSize = new Size(100, 25);
         private StringAlignment lineAlignment = StringAlignment.Near;
         private Point mouseLocation;
-        private Point normalEndPoint;
-        private Point normalStartPoint;
-        private Point selectedEndPoint;
-        private Point selectedStartPoint;
+        private Gradient normal = new Gradient();
+        private Gradient selected = new Gradient();
         private TabAlignment selectorAlignment = TabAlignment.Top;
         private TabAlignment selectorAlignment2 = TabAlignment.Bottom;
         private int selectorThickness = 4;
@@ -112,6 +99,17 @@
             LineAlignment = StringAlignment.Center;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             ItemSize = itemSize;
+
+            float[] gradientPosition = { 0, 1 };
+
+            normal.Colors = tabNormal;
+            normal.Positions = gradientPosition;
+
+            hover.Colors = tabHover;
+            hover.Positions = gradientPosition;
+
+            selected.Colors = tabSelected;
+            selected.Positions = gradientPosition;
 
             foreach (TabPage page in TabPages)
             {
@@ -238,185 +236,36 @@
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border Border
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
+                border = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
+        public Gradient HoverGradient
         {
             get
             {
-                return borderHoverColor;
+                return hover;
             }
 
             set
             {
-                borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientHoverAngle
-        {
-            get
-            {
-                return gradientHoverAngle;
-            }
-
-            set
-            {
-                gradientHoverAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientHoverPosition
-        {
-            get
-            {
-                return gradientHoverPosition;
-            }
-
-            set
-            {
-                gradientHoverPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientNormalAngle
-        {
-            get
-            {
-                return gradientNormalAngle;
-            }
-
-            set
-            {
-                gradientNormalAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientNormalPosition
-        {
-            get
-            {
-                return gradientNormalPosition;
-            }
-
-            set
-            {
-                gradientNormalPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientSelectedAngle
-        {
-            get
-            {
-                return gradientSelectedAngle;
-            }
-
-            set
-            {
-                gradientSelectedAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientSelectedPosition
-        {
-            get
-            {
-                return gradientSelectedPosition;
-            }
-
-            set
-            {
-                gradientSelectedPosition = value;
+                hover = value;
                 Invalidate();
             }
         }
@@ -449,6 +298,40 @@
             set
             {
                 lineAlignment = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient NormalGradient
+        {
+            get
+            {
+                return normal;
+            }
+
+            set
+            {
+                normal = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient SelectedGradient
+        {
+            get
+            {
+                return selected;
+            }
+
+            set
+            {
+                selected = value;
                 Invalidate();
             }
         }
@@ -599,22 +482,6 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color[] TabHover
-        {
-            get
-            {
-                return tabHover;
-            }
-
-            set
-            {
-                tabHover = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
         public Color TabMenu
         {
             get
@@ -625,38 +492,6 @@
             set
             {
                 tabMenu = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] TabNormal
-        {
-            get
-            {
-                return tabNormal;
-            }
-
-            set
-            {
-                tabNormal = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] TabSelected
-        {
-            get
-            {
-                return tabSelected;
-            }
-
-            set
-            {
-                tabSelected = value;
                 Invalidate();
             }
         }
@@ -819,7 +654,12 @@
             for (var tabIndex = 0; tabIndex <= TabCount - 1; tabIndex++)
             {
                 ConfigureAlignmentStyle(tabIndex);
-                ConfigureGradientPoints(tabIndex);
+
+                var gradientPoints = new[] { new Point { X = GetTabRect(tabIndex).Width, Y = 0 }, new Point { X = GetTabRect(tabIndex).Width, Y = GetTabRect(tabIndex).Height } };
+
+                LinearGradientBrush normalBrush = GDI.CreateGradientBrush(normal.Colors, gradientPoints, normal.Angle, normal.Positions);
+                LinearGradientBrush hoverBrush = GDI.CreateGradientBrush(hover.Colors, gradientPoints, hover.Angle, hover.Positions);
+                LinearGradientBrush selectedBrush = GDI.CreateGradientBrush(selected.Colors, gradientPoints, selected.Angle, selected.Positions);
 
                 // Draws the TabSelector
                 Rectangle selectorRectangle = GDI.ApplyAnchor(selectorAlignment, GetTabRect(tabIndex), selectorThickness);
@@ -834,7 +674,7 @@
                 if (tabIndex == SelectedIndex)
                 {
                     // Draw selected tab
-                    graphics.FillRectangle(gradientSelectedBrush, tabRectangle);
+                    graphics.FillRectangle(selectedBrush, tabRectangle);
 
                     // Draw tab selector
                     if (selectorVisible)
@@ -848,11 +688,11 @@
                     }
 
                     // Draw border
-                    if (borderVisible)
+                    if (border.Visible)
                     {
                         GraphicsPath borderPath = new GraphicsPath();
                         borderPath.AddRectangle(tabRectangle);
-                        GDI.DrawBorderType(graphics, controlState, borderPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
+                        GDI.DrawBorderType(graphics, controlState, borderPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
                     }
 
                     if (arrowSelectorVisible)
@@ -877,14 +717,14 @@
                 else
                 {
                     // Draw other TabPages
-                    graphics.FillRectangle(gradientNormalBrush, tabRectangle);
+                    graphics.FillRectangle(normalBrush, tabRectangle);
 
                     if (controlState == ControlState.Hover && tabRectangle.Contains(mouseLocation))
                     {
                         Cursor = Cursors.Hand;
 
                         // Draw hover background
-                        graphics.FillRectangle(gradientHoverBrush, tabRectangle);
+                        graphics.FillRectangle(hoverBrush, tabRectangle);
 
                         // Draw tab selector
                         if (selectorVisible)
@@ -897,11 +737,11 @@
                             graphics.FillRectangle(new SolidBrush(tabSelector), selectorRectangle2);
                         }
 
-                        if (borderVisible)
+                        if (border.Visible)
                         {
                             GraphicsPath borderPath = new GraphicsPath();
                             borderPath.AddRectangle(tabRectangle);
-                            GDI.DrawBorderType(graphics, controlState, borderPath, borderThickness, borderColor, borderHoverColor, borderHoverVisible);
+                            GDI.DrawBorderType(graphics, controlState, borderPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
                         }
                     }
 
@@ -951,22 +791,6 @@
 
                 textRectangle = new Rectangle(tabRectangle.Left, tabRectangle.Top, tabRectangle.Width, tabRectangle.Height);
             }
-        }
-
-        private void ConfigureGradientPoints(int tabIndex)
-        {
-            selectedStartPoint = new Point(GetTabRect(tabIndex).Width, 0);
-            selectedEndPoint = new Point(GetTabRect(tabIndex).Width, GetTabRect(tabIndex).Height);
-
-            normalStartPoint = new Point(GetTabRect(tabIndex).Width, 0);
-            normalEndPoint = new Point(GetTabRect(tabIndex).Width, GetTabRect(tabIndex).Height);
-
-            hoverStartPoint = new Point(GetTabRect(tabIndex).Width, 0);
-            hoverEndPoint = new Point(GetTabRect(tabIndex).Width, GetTabRect(tabIndex).Height);
-
-            gradientSelectedBrush = GDI.CreateGradientBrush(tabSelected, gradientSelectedPosition, gradientSelectedAngle, selectedStartPoint, selectedEndPoint);
-            gradientNormalBrush = GDI.CreateGradientBrush(tabNormal, gradientNormalPosition, gradientNormalAngle, normalStartPoint, normalEndPoint);
-            gradientHoverBrush = GDI.CreateGradientBrush(tabHover, gradientHoverPosition, gradientHoverAngle, hoverStartPoint, hoverEndPoint);
         }
 
         private void DrawSelectionArrow(PaintEventArgs e, Rectangle selectedRectangle)
