@@ -171,30 +171,6 @@
 
         /// <summary>Creates a gradient brush.</summary>
         /// <param name="colors">The colors.</param>
-        /// <param name="positions">The positions.</param>
-        /// <param name="angle">The angle.</param>
-        /// <param name="startPoint">Start position.</param>
-        /// <param name="endPoint">End position.</param>
-        /// <returns>The gradient brush.</returns>
-        public static LinearGradientBrush CreateGradientBrush(Color[] colors, float[] positions, float angle, Point startPoint, Point endPoint)
-        {
-            LinearGradientBrush linearGradientBrush = new LinearGradientBrush(startPoint, endPoint, Color.Black, Color.Black);
-
-            ColorBlend colorBlend = new ColorBlend
-                {
-                    Positions = positions,
-                    Colors = colors
-                };
-
-            // Define brush color blend
-            linearGradientBrush.InterpolationColors = colorBlend;
-            linearGradientBrush.RotateTransform(angle);
-
-            return linearGradientBrush;
-        }
-
-        /// <summary>Creates a gradient brush.</summary>
-        /// <param name="colors">The colors.</param>
         /// <param name="points">The points.</param>
         /// <param name="angle">The angle.</param>
         /// <param name="positions">The positions.</param>
