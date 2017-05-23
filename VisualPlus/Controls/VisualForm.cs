@@ -15,6 +15,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
     using VisualPlus.Properties;
 
@@ -83,11 +84,9 @@
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
 
         private Rectangle actionBarBounds;
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+
+        private Border border = new Border();
+
         private ButtonState buttonState = ButtonState.None;
         private Color controlBoxItemColor = Settings.DefaultValue.Style.ForeColor(0);
         private ControlState controlState = ControlState.Normal;
@@ -162,77 +161,19 @@
 
         #region Properties
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border Border
         {
             get
             {
-                return borderColor;
+                return border;
             }
 
             set
             {
-                borderColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
-        public int BorderRounding
-        {
-            get
-            {
-                return borderRounding;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
-                {
-                    borderRounding = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
+                border = value;
                 Invalidate();
             }
         }
@@ -429,27 +370,27 @@
                 // True if the mouse is hovering over a child control
                 bool isChildUnderMouse = GetChildAtPoint(e.Location) != null;
 
-                if (e.Location.X < borderThickness && e.Location.Y > Height - borderThickness && !isChildUnderMouse && !maximized)
+                if (e.Location.X < border.Thickness && e.Location.Y > Height - border.Thickness && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.BottomLeft;
                     Cursor = Cursors.SizeNESW;
                 }
-                else if (e.Location.X < borderThickness && !isChildUnderMouse && !maximized)
+                else if (e.Location.X < border.Thickness && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.Left;
                     Cursor = Cursors.SizeWE;
                 }
-                else if (e.Location.X > Width - borderThickness && e.Location.Y > Height - borderThickness && !isChildUnderMouse && !maximized)
+                else if (e.Location.X > Width - border.Thickness && e.Location.Y > Height - border.Thickness && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.BottomRight;
                     Cursor = Cursors.SizeNWSE;
                 }
-                else if (e.Location.X > Width - borderThickness && !isChildUnderMouse && !maximized)
+                else if (e.Location.X > Width - border.Thickness && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.Right;
                     Cursor = Cursors.SizeWE;
                 }
-                else if (e.Location.Y > Height - borderThickness && !isChildUnderMouse && !maximized)
+                else if (e.Location.Y > Height - border.Thickness && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.Bottom;
                     Cursor = Cursors.SizeNS;
@@ -493,9 +434,9 @@
             // g.FillRectangle(new SolidBrush(Color.Blue), _actionBarBounds);
 
             // Draw border
-            if (borderVisible)
+            if (border.Visible)
             {
-                using (Pen borderPen = new Pen(borderColor, borderThickness))
+                using (Pen borderPen = new Pen(border.Color, border.Thickness))
                 {
                     graphics.DrawLine(borderPen, new Point(0, actionBarBounds.Bottom), new Point(0, Height - 2));
                     graphics.DrawLine(borderPen, new Point(Width - 1, actionBarBounds.Bottom), new Point(Width - 1, Height - 2));
@@ -556,8 +497,7 @@
                         x + (int)(minButtonBounds.Width * 0.33),
                         y + (int)(minButtonBounds.Height * 0.66),
                         x + (int)(minButtonBounds.Width * 0.66),
-                        y + (int)(minButtonBounds.Height * 0.66)
-                    );
+                        y + (int)(minButtonBounds.Height * 0.66));
                 }
 
                 // Maximize button
@@ -568,8 +508,7 @@
                         maxButtonBounds.X + (int)(maxButtonBounds.Width * 0.33),
                         maxButtonBounds.Y + (int)(maxButtonBounds.Height * 0.36),
                         (int)(maxButtonBounds.Width * 0.39),
-                        (int)(maxButtonBounds.Height * 0.31)
-                    );
+                        (int)(maxButtonBounds.Height * 0.31));
                 }
 
                 // Close button
@@ -580,8 +519,7 @@
                         xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
                         xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
                         xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66)
-                    );
+                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
 
                     graphics.DrawLine(
                         formButtonsPen,
@@ -610,7 +548,7 @@
                     // Draw icon border
                     if (iconBorder)
                     {
-                        graphics.DrawPath(new Pen(borderColor), iconGraphicsPath);
+                        graphics.DrawPath(new Pen(border.Color), iconGraphicsPath);
                     }
 
                     // Draw icon
