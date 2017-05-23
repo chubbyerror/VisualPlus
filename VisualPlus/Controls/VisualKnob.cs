@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
@@ -22,11 +23,7 @@
     {
         #region Variables
 
-        private Color _knobBackColor = Color.WhiteSmoke;
         private int _value;
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private int buttonDivisions = 30;
         private Container components = null;
         private ControlState controlState = ControlState.Normal;
@@ -35,12 +32,10 @@
         private float drawRatio;
         private float endAngle = 405;
         private bool focused;
-        private float gradientKnobAngle = 180;
-        private float[] gradientKnobPosition = { 0, 1 };
-        private float gradientKnobTopAngle;
-        private float[] gradientKnobTopPosition = { 0, 1 };
-        private float gradientScaleAngle;
-        private float[] gradientScalePosition = { 0, 1 };
+        private Point[] gradientPoints;
+        private Gradient knob = new Gradient();
+        private Border knobBorder = new Border();
+
         private Color[] knobColor =
             {
                 Color.LightGray,
@@ -49,8 +44,13 @@
 
         private int knobDistance = 35;
         private Font knobFont;
+        private Point knobPoint;
+        private Rectangle knobRectangle;
         private Size knobSize = new Size(90, 90);
         private Size knobTickSize = new Size(86, 86);
+        private Gradient knobTop = new Gradient();
+        private Border knobTopBorder = new Border();
+
         private Color[] knobTopColor =
             {
                 Color.White,
@@ -65,11 +65,11 @@
         private int mouseWheelBarPartitions = 10;
         private Graphics offGraphics;
         private Image offScreenImage;
-        private Point knobPoint;
         private Color pointerColor = Settings.DefaultValue.Style.ProgressColor;
         private PointerStyle pointerStyle = PointerStyle.Circle;
-        private Rectangle knobRectangle;
         private bool rotating;
+        private Gradient scale = new Gradient();
+
         private Color[] scaleColor =
             {
                 Color.LightGray,
@@ -97,10 +97,23 @@
 
             UpdateStyles();
 
-            InitializeComponent();
-
             knobFont = Font;
             ForeColor = Color.DimGray;
+            knobTopBorder.HoverVisible = false;
+
+            float[] gradientPosition = { 0, 1 };
+
+            knob.Angle = 180;
+            knob.Colors = knobColor;
+            knob.Positions = gradientPosition;
+
+            knobTop.Colors = knobTopColor;
+            knobTop.Positions = gradientPosition;
+
+            scale.Colors = scaleColor;
+            scale.Positions = gradientPosition;
+
+            InitializeComponent();
 
             // "start angle" and "end angle" possible values:
 
@@ -127,60 +140,6 @@
         #endregion
 
         #region Properties
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
-        {
-            get
-            {
-                return borderColor;
-            }
-
-            set
-            {
-                borderColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
-                Invalidate();
-            }
-        }
 
         // [Description("Set the number of intervals between minimum and maximum")]
         // [Category(Localize.Category.Behavior)]
@@ -235,131 +194,36 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientKnobAngle
-        {
-            get
-            {
-                return gradientKnobAngle;
-            }
-
-            set
-            {
-                gradientKnobAngle = value;
-                Invalidate();
-            }
-        }
-
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientKnobPosition
+        public Gradient Knob
         {
             get
             {
-                return gradientKnobPosition;
+                return knob;
             }
 
             set
             {
-                gradientKnobPosition = value;
+                knob = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientKnobTopAngle
-        {
-            get
-            {
-                return gradientKnobTopAngle;
-            }
-
-            set
-            {
-                gradientKnobTopAngle = value;
-                Invalidate();
-            }
-        }
-
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientKnobTopPosition
+        public Border KnobBorder
         {
             get
             {
-                return gradientKnobTopPosition;
+                return knobBorder;
             }
 
             set
             {
-                gradientKnobTopPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientScaleAngle
-        {
-            get
-            {
-                return gradientScaleAngle;
-            }
-
-            set
-            {
-                gradientScaleAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientScalePosition
-        {
-            get
-            {
-                return gradientScalePosition;
-            }
-
-            set
-            {
-                gradientScalePosition = value;
-                Invalidate();
-            }
-        }
-
-        [Description(Localize.Description.ComponentColor)]
-        [Category(Localize.Category.Appearance)]
-        public Color knobBackColor
-        {
-            get
-            {
-                return _knobBackColor;
-            }
-
-            set
-            {
-                _knobBackColor = value;
-                ConfigureDimensions();
-                Invalidate();
-            }
-        }
-
-        [Description(Localize.Description.ComponentColor)]
-        [Category(Localize.Category.Appearance)]
-        public Color[] KnobColor
-        {
-            get
-            {
-                return knobColor;
-            }
-
-            set
-            {
-                knobColor = value;
+                knobBorder = value;
                 Invalidate();
             }
         }
@@ -428,18 +292,36 @@
             }
         }
 
-        [Description(Localize.Description.ComponentColor)]
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        public Color[] KnobTopColor
+        public Gradient KnobTop
         {
             get
             {
-                return knobTopColor;
+                return knobTop;
             }
 
             set
             {
-                knobTopColor = value;
+                knobTop = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Border KnobTopBorder
+        {
+            get
+            {
+                return knobTopBorder;
+            }
+
+            set
+            {
+                knobTopBorder = value;
                 Invalidate();
             }
         }
@@ -557,18 +439,19 @@
             }
         }
 
-        [Description(Localize.Description.ComponentColor)]
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        public Color[] ScaleColor
+        public Gradient Scale
         {
             get
             {
-                return scaleColor;
+                return scale;
             }
 
             set
             {
-                scaleColor = value;
+                scale = value;
                 Invalidate();
             }
         }
@@ -909,6 +792,8 @@
             offGraphics = graphics;
             offGraphics.Clear(BackColor);
 
+            gradientPoints = new Point[2] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+
             DrawScale();
             DrawKnob();
             DrawKnobTop();
@@ -1114,17 +999,14 @@
             Point knobPoint = new Point(this.knobRectangle.X + this.knobRectangle.Width / 2 - KnobSize.Width / 2, this.knobRectangle.Y + this.knobRectangle.Height / 2 - KnobSize.Height / 2);
             Rectangle knobRectangle = new Rectangle(knobPoint, KnobSize);
 
-            Point startPoint = new Point(ClientRectangle.Width, 0);
-            Point endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knobColor, gradientKnobPosition, gradientKnobAngle, startPoint, endPoint);
+            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knob.Colors, gradientPoints, knob.Angle, knob.Positions);
             offGraphics.FillEllipse(gradientBrush, knobRectangle);
 
-            if (borderVisible)
+            if (knobBorder.Visible)
             {
                 GraphicsPath borderPath = new GraphicsPath();
                 borderPath.AddEllipse(knobRectangle);
-                GDI.DrawBorder(offGraphics, borderPath, borderThickness, borderColor);
+                GDI.DrawBorderType(offGraphics, controlState, borderPath, knobBorder.Thickness, knobBorder.Color, knobBorder.HoverColor, knobBorder.Visible);
             }
         }
 
@@ -1133,17 +1015,14 @@
             Point knobTopPoint = new Point(knobRectangle.X + knobRectangle.Width / 2 - KnobTopSize.Width / 2, knobRectangle.Y + knobRectangle.Height / 2 - KnobTopSize.Height / 2);
             Rectangle knobTopRectangle = new Rectangle(knobTopPoint, KnobTopSize);
 
-            Point startPoint = new Point(ClientRectangle.Width, 0);
-            Point endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knobTopColor, gradientKnobTopPosition, gradientKnobTopAngle, startPoint, endPoint);
+            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knobTop.Colors, gradientPoints, knobTop.Angle, knobTop.Positions);
             offGraphics.FillEllipse(gradientBrush, knobTopRectangle);
 
-            if (borderVisible)
+            if (knobTopBorder.Visible)
             {
                 GraphicsPath borderPath = new GraphicsPath();
                 borderPath.AddEllipse(knobTopRectangle);
-                GDI.DrawBorder(offGraphics, borderPath, borderThickness, borderColor);
+                GDI.DrawBorderType(offGraphics, controlState, borderPath, knobTopBorder.Thickness, knobTopBorder.Color, knobTopBorder.HoverColor, knobTopBorder.HoverVisible);
             }
 
             float cx = knobPoint.X;
@@ -1251,10 +1130,7 @@
             Point scalePoint = new Point(knobRectangle.X, knobRectangle.Y);
             Rectangle scaleRectangle = new Rectangle(scalePoint, scaleSize);
 
-            Point startPoint = new Point(ClientRectangle.Width, 0);
-            Point endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
-
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(scaleColor, gradientScalePosition, gradientScaleAngle, startPoint, endPoint);
+            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(scale.Colors, gradientPoints, scale.Angle, scale.Positions);
             offGraphics.FillEllipse(gradientBrush, scaleRectangle);
         }
 
