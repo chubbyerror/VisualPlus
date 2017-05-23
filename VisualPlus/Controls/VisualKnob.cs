@@ -19,6 +19,11 @@
 
     public delegate void ValueChangedEventHandler(object Sender);
 
+    [ToolboxItem(true)]
+    [ToolboxBitmap(typeof(Control))]
+    [DefaultEvent("Click")]
+    [DefaultProperty("Value")]
+    [Description("The Visual Knob")]
     public sealed class VisualKnob : UserControl
     {
         #region Variables
