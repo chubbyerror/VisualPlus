@@ -20,7 +20,9 @@
 
     #endregion
 
+    [ToolboxItem(false)]
     [ToolboxBitmap(typeof(Form))]
+    [Description("The Visual Form")]
     public class VisualForm : Form
     {
         #region Variables
@@ -38,7 +40,6 @@
 
         #region Variables
 
-        private const int ACTION_BAR_HEIGHT = 40;
         private const int HTBOTTOM = 15;
         private const int HTBOTTOMLEFT = 16;
         private const int HTBOTTOMRIGHT = 17;
