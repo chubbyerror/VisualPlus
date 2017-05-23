@@ -545,7 +545,7 @@
             checkBoxPath = GDI.GetBorderShape(checkBoxRectangle, border.Shape, border.Rounding);
             checkPath = GDI.GetBorderShape(checkRectangle, border.Shape, 1);
 
-            var boxGradientPoints = new Point[2] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            var boxGradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
             LinearGradientBrush boxGradientBrush = GDI.CreateGradientBrush(box.Colors, boxGradientPoints, box.Angle, box.Positions);
 
             // Draw checkbox background

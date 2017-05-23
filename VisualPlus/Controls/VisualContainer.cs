@@ -10,9 +10,8 @@
 
     #endregion
 
-    /// <summary>The visual container.</summary>
-    [Description("The visual container.")]
     [ToolboxItem(false)]
+    [Description("The Visual Container")]
     public sealed partial class VisualContainer : ToolStripDropDown
     {
         #region Variables

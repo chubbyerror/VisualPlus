@@ -797,7 +797,7 @@
             offGraphics = graphics;
             offGraphics.Clear(BackColor);
 
-            gradientPoints = new Point[2] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
 
             DrawScale();
             DrawKnob();

@@ -29,7 +29,6 @@
         #region Variables
 
         private Border border = new Border();
-
         private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
 
         private Color[] controlColor =
@@ -47,11 +46,8 @@
             };
 
         private Gradient controlDisabledGradient = new Gradient();
-
         private Gradient controlGradient = new Gradient();
-
         private GraphicsPath controlGraphicsPath;
-
         private ControlState controlState = ControlState.Normal;
         private DropDownButtons dropDownButton = DropDownButtons.Arrow;
         private bool dropDownButtonsVisible = Settings.DefaultValue.TextVisible;
@@ -86,7 +82,6 @@
 
             SetStyle((ControlStyles)139286, true);
             SetStyle(ControlStyles.Selectable, false);
-
             DrawMode = DrawMode.OwnerDrawFixed;
             DropDownStyle = ComboBoxStyle.DropDownList;
             Size = new Size(135, 26);
@@ -95,18 +90,12 @@
             DropDownHeight = 100;
             BackColor = Color.Transparent;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
-
             itemBorder.HoverVisible = false;
-
             float[] gradientPosition = { 0, 1 / 2f, 1 };
-
             controlGradient.Colors = controlColor;
             controlGradient.Positions = gradientPosition;
-
             controlDisabledGradient.Colors = controlDisabledColor;
             controlDisabledGradient.Positions = gradientPosition;
-
-            // Sets some default values to the watermark properties
             waterMarkFont = Font;
             waterMarkBrush = new SolidBrush(waterMarkActiveColor);
         }
@@ -568,7 +557,7 @@
             foreColor = Enabled ? foreColor : textDisabledColor;
             Gradient controlCheckTemp = Enabled ? controlGradient : controlDisabledGradient;
 
-            var gradientPoints = new Point[2] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
             LinearGradientBrush gradientBackgroundBrush = GDI.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
             graphics.FillPath(gradientBackgroundBrush, controlGraphicsPath);
 

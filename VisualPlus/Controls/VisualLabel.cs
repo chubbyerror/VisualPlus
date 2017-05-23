@@ -381,7 +381,7 @@
                 textBoxRectangle = new Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height);
             }
 
-            var gradientPoints = new Point[2] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
             LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(foreGradient.Colors, gradientPoints, textGradient.Angle, textGradient.Positions);
 
             // Draw the text outline
