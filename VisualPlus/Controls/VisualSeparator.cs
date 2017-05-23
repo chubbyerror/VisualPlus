@@ -10,23 +10,20 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual separator.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(Control))]
+    [DefaultEvent("Click")]
+    [DefaultProperty("Enabled")]
+    [Description("The Visual Separator")]
     [Designer(VSDesignerBinding.VisualSeparator)]
     public sealed class VisualSeparator : Control
     {
         #region Variables
-
-        private Point endPoint;
-        private float gradientAngle = 90;
-        private LinearGradientBrush gradientBrush;
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
-        private LinearGradientBrush gradientShadowBrush;
-        private float[] gradientShadowPosition = { 0, 1 / 2f, 1 };
 
         private Color[] lineColor =
             {
@@ -34,6 +31,8 @@
                 Settings.DefaultValue.Style.LineColor,
                 ControlPaint.Light(Settings.DefaultValue.Style.LineColor)
             };
+
+        private Gradient lineGradient = new Gradient();
 
         private Rectangle lineRectangle;
         private Orientation separatorOrientation = Orientation.Horizontal;
@@ -45,9 +44,10 @@
                 ControlPaint.Light(Settings.DefaultValue.Style.ShadowColor)
             };
 
+        private Gradient shadowGradient = new Gradient();
+
         private Rectangle shadowRectangle;
         private bool shadowVisible;
-        private Point startPoint;
 
         #endregion
 
@@ -63,72 +63,36 @@
             BackColor = Color.Transparent;
 
             UpdateStyles();
+
+            float[] gradientPosition = { 0, 1 / 2f, 1 };
+            float angle = 90;
+
+            lineGradient.Angle = angle;
+            lineGradient.Colors = lineColor;
+            lineGradient.Positions = gradientPosition;
+
+            shadowGradient.Angle = angle;
+            shadowGradient.Colors = shadowColor;
+            shadowGradient.Positions = gradientPosition;
         }
 
         #endregion
 
         #region Properties
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientAngle
-        {
-            get
-            {
-                return gradientAngle;
-            }
-
-            set
-            {
-                gradientAngle = value;
-                Invalidate();
-            }
-        }
-
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
+        public Gradient Line
         {
             get
             {
-                return gradientPosition;
+                return lineGradient;
             }
 
             set
             {
-                gradientPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientShadowPosition
-        {
-            get
-            {
-                return gradientShadowPosition;
-            }
-
-            set
-            {
-                gradientShadowPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] LineColor
-        {
-            get
-            {
-                return lineColor;
-            }
-
-            set
-            {
-                lineColor = value;
+                lineGradient = value;
                 Invalidate();
             }
         }
@@ -170,18 +134,19 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] ShadowColor
+        public Gradient Shadow
         {
             get
             {
-                return shadowColor;
+                return shadowGradient;
             }
 
             set
             {
-                shadowColor = value;
+                shadowGradient = value;
                 Invalidate();
             }
         }
@@ -217,8 +182,8 @@
             Size lineSize = new Size();
             Point shadowPosition = new Point();
             Size shadowSize = new Size();
+            Point[] gradientPoints = { };
 
-            // Get the line position and size
             switch (separatorOrientation)
             {
                 case Orientation.Horizontal:
@@ -228,6 +193,8 @@
 
                         shadowPosition = new Point(0, 2);
                         shadowSize = new Size(Width, 2);
+
+                        gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Width } };
                         break;
                     }
 
@@ -238,32 +205,22 @@
 
                         shadowPosition = new Point(2, 0);
                         shadowSize = new Size(2, Height);
+
+                        gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
                         break;
                     }
             }
 
-            // Create line rectangle
             lineRectangle = new Rectangle(linePosition, lineSize);
 
-            startPoint = new Point(ClientRectangle.Width, 0);
-            endPoint = new Point(ClientRectangle.Width, ClientRectangle.Width);
-
-            // Create line brush
-            gradientBrush = GDI.CreateGradientBrush(lineColor, gradientPosition, gradientAngle, startPoint, endPoint);
-
-            // Draw line
-            graphics.DrawRectangle(new Pen(gradientBrush), lineRectangle);
+            LinearGradientBrush lineBrush = GDI.CreateGradientBrush(lineGradient.Colors, gradientPoints, lineGradient.Angle, lineGradient.Positions);
+            graphics.DrawRectangle(new Pen(lineBrush), lineRectangle);
 
             if (shadowVisible)
             {
-                // Create shadow rectangle
                 shadowRectangle = new Rectangle(shadowPosition, shadowSize);
-
-                // Create shadow brush
-                gradientShadowBrush = GDI.CreateGradientBrush(shadowColor, gradientShadowPosition, gradientAngle, startPoint, endPoint);
-
-                // Draw shadow
-                graphics.DrawRectangle(new Pen(gradientShadowBrush), shadowRectangle);
+                LinearGradientBrush shadowBrush = GDI.CreateGradientBrush(lineGradient.Colors, gradientPoints, lineGradient.Angle, lineGradient.Positions);
+                graphics.DrawRectangle(new Pen(shadowBrush), shadowRectangle);
             }
         }
 
