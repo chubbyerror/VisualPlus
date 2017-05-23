@@ -74,6 +74,22 @@
 
         #region Properties
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color Background
+        {
+            get
+            {
+                return backgroundColor;
+            }
+
+            set
+            {
+                backgroundColor = value;
+                Invalidate();
+            }
+        }
+
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
