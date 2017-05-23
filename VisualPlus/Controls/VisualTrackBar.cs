@@ -12,13 +12,16 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual TrackBar.</summary>
-    [DefaultEvent("ValueChanged")]
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(TrackBar))]
+    [DefaultEvent("ValueChanged")]
+    [DefaultProperty("Value")]
+    [Description("The Visual TrackBar")]
     [Designer(VSDesignerBinding.VisualTrackBar)]
     public sealed class VisualTrackBar : TrackBar
     {
@@ -35,8 +38,7 @@
         private static Color[] progressColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor),
-                Settings.DefaultValue.Style.ProgressColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor)
+                Settings.DefaultValue.Style.ProgressColor
             };
 
         private static Rectangle trackerRectangle = Rectangle.Empty;
@@ -44,27 +46,22 @@
         private Color[] backgroundColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0),
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+                Settings.DefaultValue.Style.BackgroundColor(0)
             };
 
-        private int barThickness = 10;
+        private Gradient backgroundGradient = new Gradient();
 
+        private int barThickness = 10;
         private int barTickSpacing = 8;
-        private Color borderColor = Settings.DefaultValue.Style.BorderColor(0);
-        private Color borderHoverColor = Settings.DefaultValue.Style.BorderColor(1);
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
-        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
+        private Border buttonBorder = new Border();
 
         private Color[] buttonColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
-                Settings.DefaultValue.Style.ButtonNormalColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor)
+                Settings.DefaultValue.Style.ButtonNormalColor
             };
+
+        private Gradient buttonGradient = new Gradient();
 
         private GraphicsPath buttonPath = new GraphicsPath();
         private Rectangle buttonRectangle;
@@ -72,29 +69,21 @@
         private Color buttonTextColor = Settings.DefaultValue.Style.ForeColor(0);
         private bool buttonVisible = true;
 
-        private Color[] controlDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled,
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
-            };
-
         private ControlState controlState = ControlState.Normal;
         private int currentUsedPos;
+
+        private Color[] disabledColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+                Settings.DefaultValue.Style.ControlDisabled
+            };
+
         private ValueDivisor dividedValue = ValueDivisor.By1;
-        private Point endButtonPoint;
-        private Point endPoint;
-        private Point endProgressPoint;
+
         private int fillingValue = 25;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private float gradientBackgroundAngle = 90;
-        private float[] gradientBackgroundPosition = { 0, 1 / 2f, 1 };
-        private LinearGradientBrush gradientBrush;
-        private float gradientButtonAngle;
-        private float[] gradientPosition = { 0, 1 / 2f, 1 };
-        private float gradientProgressAngle = 90;
-        private LinearGradientBrush gradientProgressBrush;
-        private float[] gradientProgressPosition = { 0, 1 / 2f, 1 };
+
+        private Point[] gradientPoints;
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
@@ -106,11 +95,9 @@
         private float mouseStartPos = -1;
         private string prefix;
         private bool progressFilling;
+        private Gradient progressGradient = new Gradient();
         private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
-        private Point startButtonPoint;
-        private Point startPoint;
-        private Point startProgressPoint;
         private string suffix;
         private Size textAreaSize;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
@@ -118,6 +105,8 @@
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color tickColor = Settings.DefaultValue.Style.LineColor;
         private int tickHeight = 4;
+        private Border trackBarBorder = new Border();
+        private Gradient trackBarDisabledGradient = new Gradient();
         private GraphicsPath trackBarPath;
         private Rectangle trackBarRectangle;
         private bool valueTicksVisible = Settings.DefaultValue.TextVisible;
@@ -142,6 +131,24 @@
             AutoSize = false;
             Size = new Size(200, 50);
             MinimumSize = new Size(200, 50);
+
+            float[] gradientPositions = { 0, 1 };
+            float angle = 90;
+
+            backgroundGradient.Angle = angle;
+            backgroundGradient.Colors = backgroundColor;
+            backgroundGradient.Positions = gradientPositions;
+
+            trackBarDisabledGradient.Angle = angle;
+            trackBarDisabledGradient.Colors = disabledColor;
+            trackBarDisabledGradient.Positions = gradientPositions;
+
+            progressGradient.Angle = angle;
+            progressGradient.Colors = progressColor;
+            progressGradient.Positions = gradientPositions;
+
+            buttonGradient.Colors = buttonColor;
+            buttonGradient.Positions = gradientPositions;
         }
 
         public enum ValueDivisor
@@ -163,18 +170,19 @@
 
         #region Properties
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] BackgroundColor
+        public Gradient Background
         {
             get
             {
-                return backgroundColor;
+                return backgroundGradient;
             }
 
             set
             {
-                backgroundColor = value;
+                backgroundGradient = value;
                 Invalidate();
             }
         }
@@ -211,143 +219,36 @@
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderColor)]
-        public Color BorderColor
+        public Border ButtonBorder
         {
             get
             {
-                return borderColor;
+                return buttonBorder;
             }
 
             set
             {
-                borderColor = value;
+                buttonBorder = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderHoverColor)]
-        public Color BorderHoverColor
+        public Gradient ButtonGradient
         {
             get
             {
-                return borderHoverColor;
+                return buttonGradient;
             }
 
             set
             {
-                borderHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
-        public bool BorderHoverVisible
-        {
-            get
-            {
-                return borderHoverVisible;
-            }
-
-            set
-            {
-                borderHoverVisible = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
-        public int BorderRounding
-        {
-            get
-            {
-                return borderRounding;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
-                {
-                    borderRounding = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderShape)]
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
-        public BorderShape BorderShape
-        {
-            get
-            {
-                return borderShape;
-            }
-
-            set
-            {
-                borderShape = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] ButtonColor
-        {
-            get
-            {
-                return buttonColor;
-            }
-
-            set
-            {
-                buttonColor = value;
+                buttonGradient = value;
                 Invalidate();
             }
         }
@@ -401,18 +302,19 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
-        public Color[] ControlDisabledColor
+        public Gradient Disabled
         {
             get
             {
-                return controlDisabledColor;
+                return trackBarDisabledGradient;
             }
 
             set
             {
-                controlDisabledColor = value;
+                trackBarDisabledGradient = value;
                 Invalidate();
             }
         }
@@ -429,102 +331,6 @@
             set
             {
                 fillingValue = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientBackgroundAngle
-        {
-            get
-            {
-                return gradientBackgroundAngle;
-            }
-
-            set
-            {
-                gradientBackgroundAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientBackgroundPosition
-        {
-            get
-            {
-                return gradientBackgroundPosition;
-            }
-
-            set
-            {
-                gradientBackgroundPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientButtonAngle
-        {
-            get
-            {
-                return gradientButtonAngle;
-            }
-
-            set
-            {
-                gradientButtonAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientPosition
-        {
-            get
-            {
-                return gradientPosition;
-            }
-
-            set
-            {
-                gradientPosition = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Angle)]
-        public float GradientProgressAngle
-        {
-            get
-            {
-                return gradientProgressAngle;
-            }
-
-            set
-            {
-                gradientProgressAngle = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.GradientPosition)]
-        public float[] GradientProgressPosition
-        {
-            get
-            {
-                return gradientProgressPosition;
-            }
-
-            set
-            {
-                gradientProgressPosition = value;
                 Invalidate();
             }
         }
@@ -693,18 +499,19 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] ProgressColor
+        public Gradient Progress
         {
             get
             {
-                return progressColor;
+                return progressGradient;
             }
 
             set
             {
-                progressColor = value;
+                progressGradient = value;
                 Invalidate();
             }
         }
@@ -867,6 +674,23 @@
             set
             {
                 tickHeight = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Border TrackBar
+        {
+            get
+            {
+                return trackBarBorder;
+            }
+
+            set
+            {
+                trackBarBorder = value;
                 Invalidate();
             }
         }
@@ -1104,7 +928,7 @@
                     {
                         case Orientation.Horizontal:
                             {
-                                if (currentPoint.X + buttonSize.Width - mouseStartPos >= Width - indentWidth)
+                                if ((currentPoint.X + buttonSize.Width) - mouseStartPos >= Width - indentWidth)
                                 {
                                     offsetValue = Maximum - Minimum;
                                 }
@@ -1114,7 +938,7 @@
                                 }
                                 else
                                 {
-                                    offsetValue = (int)((currentPoint.X - mouseStartPos - indentWidth) * (Maximum - Minimum) / (Width - 2 * indentWidth - buttonSize.Width) + 0.5);
+                                    offsetValue = (int)((((currentPoint.X - mouseStartPos - indentWidth) * (Maximum - Minimum)) / (Width - (2 * indentWidth) - buttonSize.Width)) + 0.5);
                                 }
 
                                 break;
@@ -1132,7 +956,7 @@
                                 }
                                 else
                                 {
-                                    offsetValue = (int)(((Height - currentPoint.Y + buttonSize.Height) / 2 - mouseStartPos - indentHeight) * (Maximum - Minimum) / (Height - 2 * indentHeight) + 0.5);
+                                    offsetValue = (int)(((((((Height - currentPoint.Y) + buttonSize.Height) / 2) - mouseStartPos - indentHeight) * (Maximum - Minimum)) / (Height - (2 * indentHeight))) + 0.5);
                                 }
 
                                 break;
@@ -1206,7 +1030,7 @@
                 Point progressValueLocation = new Point();
                 if (buttonVisible)
                 {
-                    progressValueLocation = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - formattedProgressValue.Width / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - formattedProgressValue.Height / 2);
+                    progressValueLocation = new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - (formattedProgressValue.Width / 2), (buttonRectangle.Y + (buttonRectangle.Height / 2)) - (formattedProgressValue.Height / 2));
                 }
                 else
                 {
@@ -1214,7 +1038,7 @@
                     {
                         case Orientation.Horizontal:
                             {
-                                progressValueLocation = new Point(trackerRectangle.X, trackBarRectangle.Y + trackBarRectangle.Height / 2 - formattedProgressValue.Height / 2);
+                                progressValueLocation = new Point(trackerRectangle.X, (trackBarRectangle.Y + (trackBarRectangle.Height / 2)) - (formattedProgressValue.Height / 2));
                                 break;
                             }
 
@@ -1261,7 +1085,7 @@
             // Specified WM_SYSKEYDOWN enumeration value.
             const int WM_SYSKEYDOWN = 0x0104;
 
-            if (msg.Msg == WM_KEYDOWN || msg.Msg == WM_SYSKEYDOWN)
+            if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_SYSKEYDOWN))
             {
                 switch (keyData)
                 {
@@ -1327,6 +1151,8 @@
             // Draw tick by orientation
             if (orientation == Orientation.Horizontal)
             {
+                gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Width } };
+
                 // Start location
                 currentUsedPos = indentHeight;
 
@@ -1350,7 +1176,7 @@
                             if (buttonVisible)
                             {
                                 trackBarLocation = new Point(0, indentHeight + textAreaSize.Height + tickHeight + barTickSpacing);
-                                Size = new Size(ClientRectangle.Width, indentHeight + textAreaSize.Height + tickHeight + barTickSpacing + barThickness + buttonSize.Height / 2);
+                                Size = new Size(ClientRectangle.Width, indentHeight + textAreaSize.Height + tickHeight + barTickSpacing + barThickness + (buttonSize.Height / 2));
                             }
                             else
                             {
@@ -1365,8 +1191,8 @@
                         {
                             if (buttonVisible)
                             {
-                                trackBarLocation = new Point(0, indentHeight + buttonSize.Height / 2);
-                                Size = new Size(ClientRectangle.Width, indentHeight + barThickness + barTickSpacing + tickHeight + textAreaSize.Height + textAreaSize.Height / 2);
+                                trackBarLocation = new Point(0, indentHeight + (buttonSize.Height / 2));
+                                Size = new Size(ClientRectangle.Width, indentHeight + barThickness + barTickSpacing + tickHeight + textAreaSize.Height + (textAreaSize.Height / 2));
                             }
                             else
                             {
@@ -1381,7 +1207,7 @@
                         {
                             if (buttonVisible)
                             {
-                                trackBarLocation = new Point(0, indentHeight + buttonSize.Height / 2);
+                                trackBarLocation = new Point(0, indentHeight + (buttonSize.Height / 2));
                                 Size = new Size(ClientRectangle.Width, indentHeight + barThickness + buttonSize.Height);
                             }
                             else
@@ -1395,7 +1221,7 @@
 
                     case TickStyle.Both:
                         {
-                            int totalHeight = indentHeight + textAreaSize.Height + tickHeight + barTickSpacing + barThickness + barTickSpacing + tickHeight + textAreaSize.Height + textAreaSize.Height / 2;
+                            int totalHeight = indentHeight + textAreaSize.Height + tickHeight + barTickSpacing + barThickness + barTickSpacing + tickHeight + textAreaSize.Height + (textAreaSize.Height / 2);
 
                             trackBarLocation = new Point(0, indentHeight + textAreaSize.Height + tickHeight + barTickSpacing);
                             Size = new Size(ClientRectangle.Width, totalHeight);
@@ -1435,6 +1261,8 @@
             }
             else
             {
+                gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+
                 // Start location
                 currentUsedPos = indentWidth;
 
@@ -1458,7 +1286,7 @@
                             if (buttonVisible)
                             {
                                 trackBarLocation = new Point(indentWidth + textAreaSize.Width + tickHeight + barTickSpacing, 0);
-                                Size = new Size(indentWidth + textAreaSize.Width + tickHeight + barTickSpacing + barThickness + buttonSize.Width / 2, ClientRectangle.Height);
+                                Size = new Size(indentWidth + textAreaSize.Width + tickHeight + barTickSpacing + barThickness + (buttonSize.Width / 2), ClientRectangle.Height);
                             }
                             else
                             {
@@ -1473,8 +1301,8 @@
                         {
                             if (buttonVisible)
                             {
-                                trackBarLocation = new Point(indentWidth + buttonSize.Width / 2, 0);
-                                Size = new Size(indentWidth + barThickness + barTickSpacing + tickHeight + textAreaSize.Width + buttonSize.Width / 2, ClientRectangle.Height);
+                                trackBarLocation = new Point(indentWidth + (buttonSize.Width / 2), 0);
+                                Size = new Size(indentWidth + barThickness + barTickSpacing + tickHeight + textAreaSize.Width + (buttonSize.Width / 2), ClientRectangle.Height);
                             }
                             else
                             {
@@ -1489,7 +1317,7 @@
                         {
                             if (buttonVisible)
                             {
-                                trackBarLocation = new Point(indentWidth + buttonSize.Width / 2, indentHeight);
+                                trackBarLocation = new Point(indentWidth + (buttonSize.Width / 2), indentHeight);
                                 Size = new Size(indentWidth + barThickness + buttonSize.Width, ClientRectangle.Height);
                             }
                             else
@@ -1548,46 +1376,29 @@
         /// <param name="barRectangle">Bar rectangle.</param>
         private void DrawBar(Graphics graphics, Rectangle barRectangle)
         {
-            // Define TrackBar line properties
             Point trackLocation;
             Size trackSize;
 
-            // Determine track size by orientation
             if (Orientation == Orientation.Horizontal)
             {
                 trackLocation = new Point(indentWidth + barRectangle.Left, indentHeight + barRectangle.Top);
                 trackSize = new Size(barRectangle.Width, barRectangle.Height);
-
-                // Gradient track bar positions
-                startPoint = new Point(ClientRectangle.Width, 0);
-                endPoint = new Point(ClientRectangle.Width, ClientRectangle.Width);
             }
             else
             {
                 trackLocation = new Point(indentWidth + barRectangle.Left, indentHeight + barRectangle.Top);
                 trackSize = new Size(barRectangle.Width, barRectangle.Height);
-
-                // Gradient track bar positions
-                startPoint = new Point(ClientRectangle.Width, 0);
-                endPoint = new Point(ClientRectangle.Width, ClientRectangle.Height);
             }
 
-            // New track bar line
             trackBarRectangle = new Rectangle(trackLocation, trackSize);
+            trackBarPath = GDI.GetBorderShape(trackBarRectangle, trackBarBorder.Shape, trackBarBorder.Rounding);
 
-            // Get track bar shape
-            trackBarPath = GDI.GetBorderShape(trackBarRectangle, borderShape, borderRounding);
+            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+            graphics.FillPath(gradientBrush, trackBarPath);
 
-            // Get gradient track bar brush
-            LinearGradientBrush gradientTrackBarBrush = GDI.CreateGradientBrush(backgroundColor, gradientBackgroundPosition, GradientBackgroundAngle, startPoint, endPoint);
-
-            // Fill trackBar background
-            graphics.FillPath(gradientTrackBarBrush, trackBarPath);
-
-            // Track bar line border
-            if (borderVisible)
+            if (trackBarBorder.Visible)
             {
-                GDI.DrawBorder(graphics, trackBarPath, borderThickness, borderColor);
+                GDI.DrawBorderType(graphics, controlState, trackBarPath, trackBarBorder.Thickness, trackBarBorder.Color, trackBarBorder.HoverColor, trackBarBorder.HoverVisible);
             }
         }
 
@@ -1599,20 +1410,20 @@
             graphics.ResetClip();
 
             // Setup button colors
-            var controlCheckTemp = Enabled ? buttonColor : controlDisabledColor;
+            Gradient controlCheckTemp = Enabled ? buttonGradient : trackBarDisabledGradient;
 
             // Determine button location by orientation
             switch (Orientation)
             {
                 case Orientation.Horizontal:
                     {
-                        buttonLocation = new Point(trackerRectangle.X, trackBarRectangle.Top + barThickness / 2 - buttonSize.Height / 2);
+                        buttonLocation = new Point(trackerRectangle.X, (trackBarRectangle.Top + (barThickness / 2)) - (buttonSize.Height / 2));
                         break;
                     }
 
                 case Orientation.Vertical:
                     {
-                        buttonLocation = new Point(trackBarRectangle.Left + barThickness / 2 - buttonSize.Width / 2, trackerRectangle.Y);
+                        buttonLocation = new Point((trackBarRectangle.Left + (barThickness / 2)) - (buttonSize.Width / 2), trackerRectangle.Y);
                         break;
                     }
             }
@@ -1621,21 +1432,14 @@
 
             if (buttonVisible)
             {
-                // Button gradient positions
-                startButtonPoint = new Point(buttonRectangle.Width, 0);
-                endButtonPoint = new Point(buttonRectangle.Width, buttonRectangle.Height);
-
-                // Get button shape
-                buttonPath = GDI.GetBorderShape(buttonRectangle, borderShape, borderRounding);
-
-                // Get gradient button brush
-                gradientBrush = GDI.CreateGradientBrush(controlCheckTemp, gradientPosition, gradientButtonAngle, startButtonPoint, endButtonPoint);
-
-                // Draw button background
+                LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
+                buttonPath = GDI.GetBorderShape(buttonRectangle, buttonBorder.Shape, buttonBorder.Rounding);
                 graphics.FillPath(gradientBrush, buttonPath);
 
-                // Draw button border
-                GDI.DrawBorderType(graphics, controlState, buttonPath, borderThickness, borderColor, borderHoverColor, borderVisible);
+                if (buttonBorder.Visible)
+                {
+                    GDI.DrawBorderType(graphics, controlState, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
+                }
             }
         }
 
@@ -1656,65 +1460,58 @@
                 case Orientation.Horizontal:
                     {
                         // Draws the progress to the middle of the button
-                        barProgress = buttonRectangle.X + buttonRectangle.Width / 2;
+                        barProgress = buttonRectangle.X + (buttonRectangle.Width / 2);
 
                         progressLocation = new Point(0, 0);
                         progressSize = new Size(barProgress, Height);
 
-                        if (Value == Minimum && progressFilling)
+                        if ((Value == Minimum) && progressFilling)
                         {
                             progressLocation = new Point(barProgress, Height);
                         }
 
-                        if (Value == Maximum && progressFilling)
+                        if ((Value == Maximum) && progressFilling)
                         {
                             progressSize = new Size(barProgress + fillingValue, Height);
                         }
 
                         progressRectangle = new Rectangle(progressLocation, progressSize);
-                        progressPath = GDI.GetBorderShape(progressRectangle, borderShape, borderRounding);
+                        progressPath = GDI.GetBorderShape(progressRectangle, trackBarBorder.Shape, trackBarBorder.Rounding);
                     }
 
                     break;
                 case Orientation.Vertical:
                     {
                         // Draws the progress to the middle of the button
-                        barProgress = buttonRectangle.Y + buttonRectangle.Height / 2;
+                        barProgress = buttonRectangle.Y + (buttonRectangle.Height / 2);
 
                         progressLocation = new Point(0, barProgress);
 
-                        if (Value == Minimum && progressFilling)
+                        if ((Value == Minimum) && progressFilling)
                         {
                             progressLocation = new Point(0, barProgress + fillingValue);
                         }
 
-                        if (Value == Maximum && progressFilling)
+                        if ((Value == Maximum) && progressFilling)
                         {
                             progressLocation = new Point(0, barProgress - fillingValue);
                         }
 
                         progressSize = new Size(Width, Height + textAreaSize.Height);
                         progressRectangle = new Rectangle(progressLocation, progressSize);
-                        progressPath = GDI.GetBorderShape(progressRectangle, borderShape, borderRounding);
+                        progressPath = GDI.GetBorderShape(progressRectangle, trackBarBorder.Shape, trackBarBorder.Rounding);
                     }
 
                     break;
             }
 
-            // Clip to the track bar
             graphics.SetClip(trackBarPath);
 
-            startProgressPoint = new Point(ClientRectangle.Width, 0);
-            endProgressPoint = new Point(ClientRectangle.Width, ClientRectangle.Width);
-
-            // Progress
             if (barProgress > 1)
             {
-                // Draw progress
-                gradientProgressBrush = GDI.CreateGradientBrush(progressColor, gradientProgressPosition, gradientProgressAngle, startProgressPoint, endProgressPoint);
-                graphics.FillPath(gradientProgressBrush, progressPath);
+                LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+                graphics.FillPath(gradientBrush, progressPath);
 
-                // Draw hatch
                 if (hatchVisible)
                 {
                     HatchBrush hatchBrush = new HatchBrush(hatchStyle, hatchForeColor, hatchBackColor);
@@ -1730,11 +1527,7 @@
             }
         }
 
-        /// <summary>Configures horizontal style.</summary>
-        /// <param name="graphics">Graphics input.</param>
-        /// <param name="workingRectangle">Working barRectangle.</param>
-        /// <param name="line">Line</param>
-        private void HorizontalStyle(Graphics graphics, Rectangle workingRectangle, bool line)
+        private void HorizontalStyle(Graphics graphics, Rectangle rectangle, bool line)
         {
             Rectangle tickRectangle;
             currentUsedPos = indentHeight;
@@ -1744,11 +1537,11 @@
 
             if (line)
             {
-                if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
+                if ((TickStyle == TickStyle.TopLeft) || (TickStyle == TickStyle.Both))
                 {
                     // Retrieve tick barRectangle
-                    location = new Point(workingRectangle.Left, currentUsedPos + textAreaSize.Height);
-                    size = new Size(workingRectangle.Width, tickHeight);
+                    location = new Point(rectangle.Left, currentUsedPos + textAreaSize.Height);
+                    size = new Size(rectangle.Width, tickHeight);
                     tickRectangle = new Rectangle(location, size);
 
                     // Enlarge tick barRectangle
@@ -1761,11 +1554,11 @@
                     GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, orientation);
                 }
 
-                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
+                if ((TickStyle == TickStyle.BottomRight) || (TickStyle == TickStyle.Both))
                 {
                     // Retrieve tick barRectangle
-                    location = new Point(workingRectangle.Left, trackBarRectangle.Bottom + barTickSpacing);
-                    size = new Size(workingRectangle.Width, tickHeight);
+                    location = new Point(rectangle.Left, trackBarRectangle.Bottom + barTickSpacing);
+                    size = new Size(rectangle.Width, tickHeight);
                     tickRectangle = new Rectangle(location, size);
 
                     // Enlarge tick barRectangle
@@ -1780,11 +1573,11 @@
             }
             else
             {
-                if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
+                if ((TickStyle == TickStyle.TopLeft) || (TickStyle == TickStyle.Both))
                 {
                     // Retrieve text barRectangle
-                    location = new Point(workingRectangle.Left, currentUsedPos);
-                    size = new Size(workingRectangle.Width, textAreaSize.Height);
+                    location = new Point(rectangle.Left, currentUsedPos);
+                    size = new Size(rectangle.Width, textAreaSize.Height);
                     tickRectangle = new Rectangle(location, size);
 
                     // Enlarge text barRectangle
@@ -1797,11 +1590,11 @@
                     GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, orientation);
                 }
 
-                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
+                if ((TickStyle == TickStyle.BottomRight) || (TickStyle == TickStyle.Both))
                 {
                     // Retrieve text barRectangle
-                    location = new Point(workingRectangle.Left, trackBarRectangle.Y + trackBarRectangle.Height + borderRounding + barTickSpacing + tickHeight + currentUsedPos);
-                    size = new Size(workingRectangle.Width, tickHeight);
+                    location = new Point(rectangle.Left, trackBarRectangle.Y + trackBarRectangle.Height + trackBarBorder.Rounding + barTickSpacing + tickHeight + currentUsedPos);
+                    size = new Size(rectangle.Width, tickHeight);
                     tickRectangle = new Rectangle(location, size);
 
                     // Enlarge text barRectangle
@@ -1816,9 +1609,6 @@
             }
         }
 
-        /// <summary>Retrieves the trackers current position.</summary>
-        /// <param name="workingRect">Working Rectangle.</param>
-        /// <returns>Tracker position.</returns>
         private int RetrieveTrackerPosition(Rectangle workingRect)
         {
             var currentTrackerPos = 0;
@@ -1831,7 +1621,7 @@
                 }
                 else
                 {
-                    currentTrackerPos = (workingRect.Width - buttonSize.Width) * (Value - Minimum) / (Maximum - Minimum) + workingRect.Left;
+                    currentTrackerPos = (((workingRect.Width - buttonSize.Width) * (Value - Minimum)) / (Maximum - Minimum)) + workingRect.Left;
                 }
             }
             else if (Orientation == Orientation.Vertical)
@@ -1842,18 +1632,14 @@
                 }
                 else
                 {
-                    currentTrackerPos = (workingRect.Height - buttonSize.Height) * (Value - Minimum) / (Maximum - Minimum);
+                    currentTrackerPos = ((workingRect.Height - buttonSize.Height) * (Value - Minimum)) / (Maximum - Minimum);
                 }
             }
 
             return currentTrackerPos;
         }
 
-        /// <summary>Configures vertical style.</summary>
-        /// <param name="graphics">Graphics input.</param>
-        /// <param name="workingRectangle">Working barRectangle.</param>
-        /// <param name="line">Line.</param>
-        private void VerticalStyle(Graphics graphics, Rectangle workingRectangle, bool line)
+        private void VerticalStyle(Graphics graphics, Rectangle rectangle, bool line)
         {
             Rectangle tickRectangle;
             currentUsedPos = indentWidth;
@@ -1863,7 +1649,7 @@
 
             if (line)
             {
-                if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
+                if ((TickStyle == TickStyle.TopLeft) || (TickStyle == TickStyle.Both))
                 {
                     // Retrieve tick barRectangle
                     location = new Point(currentUsedPos + textAreaSize.Width, textAreaSize.Height / 2);
@@ -1880,10 +1666,10 @@
                     GDI.DrawTickLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, tickColor, orientation);
                 }
 
-                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
+                if ((TickStyle == TickStyle.BottomRight) || (TickStyle == TickStyle.Both))
                 {
                     // Retrieve tick barRectangle
-                    location = new Point(trackBarRectangle.Right + barTickSpacing, workingRectangle.Top + textAreaSize.Height / 2);
+                    location = new Point(trackBarRectangle.Right + barTickSpacing, rectangle.Top + (textAreaSize.Height / 2));
                     size = new Size(tickHeight, trackBarRectangle.Height - textAreaSize.Height);
                     tickRectangle = new Rectangle(location, size);
 
@@ -1899,7 +1685,7 @@
             }
             else
             {
-                if (TickStyle == TickStyle.TopLeft || TickStyle == TickStyle.Both)
+                if ((TickStyle == TickStyle.TopLeft) || (TickStyle == TickStyle.Both))
                 {
                     // Retrieve text barRectangle
                     location = new Point(currentUsedPos, textAreaSize.Height / 2);
@@ -1916,11 +1702,11 @@
                     GDI.DrawTickTextLine(graphics, tickRectangle, TickFrequency, Minimum, Maximum, foreColor, textFont, orientation);
                 }
 
-                if (TickStyle == TickStyle.BottomRight || TickStyle == TickStyle.Both)
+                if ((TickStyle == TickStyle.BottomRight) || (TickStyle == TickStyle.Both))
                 {
                     // Retrieve text barRectangle
-                    location = new Point(trackBarRectangle.Right + barTickSpacing + tickHeight, workingRectangle.Top + textAreaSize.Height / 2);
-                    size = new Size(textAreaSize.Width, workingRectangle.Height - textAreaSize.Height);
+                    location = new Point(trackBarRectangle.Right + barTickSpacing + tickHeight, rectangle.Top + (textAreaSize.Height / 2));
+                    size = new Size(textAreaSize.Width, rectangle.Height - textAreaSize.Height);
                     tickRectangle = new Rectangle(location, size);
 
                     // Enlarge text barRectangle
