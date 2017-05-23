@@ -14,23 +14,24 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
     #endregion
 
-    /// <summary>The visual ListView.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(ListView))]
-
-    // [ToolboxBitmap(typeof(ListView)), Designer(VSDesignerBinding.VisualListView)]
+    [DefaultEvent("SelectedIndexChanged")]
+    [DefaultProperty("Items")]
+    [Description("The Visual ListView")]
+    //  [Designer(VSDesignerBinding.VisualListView)]
     public sealed class VisualListView : ListView
     {
         #region Variables
 
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible;
-        private Color columnBorder = Settings.DefaultValue.Style.BorderColor(0);
+        private Border columnBorder = new Border();
         private Color columnHeaderBackground = Settings.DefaultValue.Style.BackgroundColor(3);
-        private ControlState controlState = ControlState.Normal;
+        private ControlState controlState;
         private bool drawFocusRectangle;
         private bool drawStandardHeader;
         private Font headerFont = new Font("Helvetica", 10, FontStyle.Regular);
@@ -69,11 +70,12 @@
 
             UpdateStyles();
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
-            // Fix for hovers, by default it doesn't redraw
-            // TODO: should only redraw when the hovered line changed, this to reduce unnecessary redraws
             MouseLocation = new Point(-1, -1);
-
             controlState = ControlState.Normal;
+
+            columnBorder.Shape = BorderShape.Rectangle;
+            columnBorder.HoverVisible = false;
+
             MouseEnter += delegate
                 {
                     controlState = ControlState.Hover;
@@ -110,44 +112,6 @@
 
         #region Properties
 
-        [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
-        public int BorderThickness
-        {
-            get
-            {
-                return borderThickness;
-            }
-
-            set
-            {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    borderThickness = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool BorderVisible
-        {
-            get
-            {
-                return borderVisible;
-            }
-
-            set
-            {
-                borderVisible = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color ColumnBackground
@@ -160,6 +124,23 @@
             set
             {
                 columnHeaderBackground = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Border ColumnBorder
+        {
+            get
+            {
+                return columnBorder;
+            }
+
+            set
+            {
+                columnBorder = value;
                 Invalidate();
             }
         }
@@ -340,10 +321,10 @@
                 e.Graphics.FillRectangle(new SolidBrush(columnHeaderBackground), columnHeaderRectangle);
             }
 
-            if (borderVisible)
+            if (columnBorder.Visible)
             {
-                // Draw column header border
-                GDI.DrawBorder(graphics, columnHeaderPath, borderThickness, columnBorder);
+                GDI.DrawBorder(graphics, columnHeaderPath, columnBorder.Thickness, columnBorder.Color);
+                GDI.DrawBorderType(graphics, controlState, columnHeaderPath, columnBorder.Thickness, columnBorder.Color, columnBorder.HoverColor, columnBorder.HoverVisible);
             }
 
             StringFormat stringFormat = new StringFormat
@@ -458,13 +439,6 @@
             }
         }
 
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-            controlState = ControlState.Down;
-            Invalidate();
-        }
-
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
@@ -476,13 +450,6 @@
         {
             base.OnMouseLeave(e);
             controlState = ControlState.Normal;
-            Invalidate();
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-            controlState = ControlState.Hover;
             Invalidate();
         }
 
