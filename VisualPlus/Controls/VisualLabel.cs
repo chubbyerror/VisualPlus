@@ -56,7 +56,7 @@
         private Point shadowLocation = new Point(0, 0);
         private int shadowOpacity = 100;
         private Rectangle textBoxRectangle;
-
+        private Gradient textDisabledGradient = new Gradient();
         private Gradient textGradient = new Gradient();
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
@@ -76,6 +76,9 @@
 
             textGradient.Colors = foreColor;
             textGradient.Positions = gradientPosition;
+
+            textDisabledGradient.Colors = textDisabledColor;
+            textDisabledGradient.Positions = gradientPosition;
         }
 
         #endregion
@@ -322,6 +325,23 @@
             }
         }
 
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient TextDisabledColor
+        {
+            get
+            {
+                return textDisabledGradient;
+            }
+
+            set
+            {
+                textDisabledGradient = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
@@ -350,8 +370,7 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
-            // Set control color state
-            foreColor = Enabled ? foreColor : textDisabledColor;
+            Gradient foreGradient = Enabled ? textGradient : textDisabledGradient;
 
             if (reflection && orientation == Orientation.Vertical)
             {
@@ -363,7 +382,7 @@
             }
 
             var gradientPoints = new Point[2] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(textGradient.Colors, gradientPoints, textGradient.Angle, textGradient.Positions);
+            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(foreGradient.Colors, gradientPoints, textGradient.Angle, textGradient.Positions);
 
             // Draw the text outline
             if (outline)
