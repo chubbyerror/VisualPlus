@@ -447,7 +447,7 @@
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        public Gradient Scale
+        public Gradient ScaleGradient
         {
             get
             {
