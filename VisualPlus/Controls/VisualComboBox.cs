@@ -60,6 +60,8 @@
         private Color separatorShadowColor = Settings.DefaultValue.Style.ShadowColor;
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
         private int startIndex;
+
+        private StringAlignment textAlignment = StringAlignment.Center;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color waterMarkActiveColor = Color.Gray;
@@ -353,6 +355,22 @@
         }
 
         [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Alignment)]
+        public StringAlignment TextAlignment
+        {
+            get
+            {
+                return textAlignment;
+            }
+
+            set
+            {
+                textAlignment = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.TextColor)]
         public Color TextColor
         {
@@ -555,7 +573,19 @@
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
-            Gradient controlCheckTemp = Enabled ? controlGradient : controlDisabledGradient;
+            Gradient controlCheckTemp;
+            if (Enabled)
+            {
+                controlCheckTemp = controlGradient;
+
+                if (controlState == ControlState.Hover)
+                {
+                }
+            }
+            else
+            {
+                controlCheckTemp = controlDisabledGradient;
+            }
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
             LinearGradientBrush gradientBackgroundBrush = GDI.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
@@ -605,14 +635,18 @@
                 graphics.DrawLine(new Pen(separatorShadowColor), buttonRectangle.X - 1, 4, buttonRectangle.X - 1, Height - 5);
             }
 
-            // Draw string
             Rectangle textBoxRectangle = new Rectangle(3, 0, Width - 20, Height);
 
             StringFormat stringFormat = new StringFormat
                 {
-                    // Alignment = StringAlignment.Center,
+                    Alignment = textAlignment,
                     LineAlignment = StringAlignment.Center
                 };
+
+            if (textAlignment == StringAlignment.Far)
+            {
+                textBoxRectangle.Width -= buttonRectangle.Width;
+            }
 
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
 
