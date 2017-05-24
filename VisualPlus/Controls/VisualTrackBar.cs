@@ -53,6 +53,8 @@
 
         private int barThickness = 10;
         private int barTickSpacing = 8;
+
+        private bool buttonAutoSize = true;
         private Border buttonBorder = new Border();
 
         private Color[] buttonColor =
@@ -215,6 +217,23 @@
             set
             {
                 barTickSpacing = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(true)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.AutoSize)]
+        public bool ButtonAutoSize
+        {
+            get
+            {
+                return buttonAutoSize;
+            }
+
+            set
+            {
+                buttonAutoSize = value;
                 Invalidate();
             }
         }
@@ -1015,16 +1034,15 @@
                 DrawProgress(graphics);
             }
 
+            Size formattedProgressValue = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
+
             // Step 3 - Draw the Tracker
-            DrawButton(graphics);
+            DrawButton(graphics, formattedProgressValue);
 
             // Step 4 - Draw progress value
             if (progressValueVisible)
             {
                 string value = GetFormattedProgressValue();
-
-                // Size
-                Size formattedProgressValue = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
 
                 // Position
                 Point progressValueLocation = new Point();
@@ -1404,7 +1422,7 @@
 
         /// <summary>Draws the button.</summary>
         /// <param name="graphics">Graphics input.</param>
-        private void DrawButton(Graphics graphics)
+        private void DrawButton(Graphics graphics, Size progressValue)
         {
             Point buttonLocation = new Point();
             graphics.ResetClip();
@@ -1418,12 +1436,30 @@
                 case Orientation.Horizontal:
                     {
                         buttonLocation = new Point(trackerRectangle.X, (trackBarRectangle.Top + (barThickness / 2)) - (buttonSize.Height / 2));
+
+                        if (buttonAutoSize)
+                        {
+                            buttonSize = new Size(progressValue.Width, buttonSize.Height);
+                        }
+                        else
+                        {
+                            buttonSize = new Size(buttonSize.Width, buttonSize.Height);
+                        }
                         break;
                     }
 
                 case Orientation.Vertical:
                     {
                         buttonLocation = new Point((trackBarRectangle.Left + (barThickness / 2)) - (buttonSize.Width / 2), trackerRectangle.Y);
+
+                        if (buttonAutoSize)
+                        {
+                            buttonSize = new Size(buttonSize.Width, progressValue.Height);
+                        }
+                        else
+                        {
+                            buttonSize = new Size(buttonSize.Width, buttonSize.Height);
+                        }
                         break;
                     }
             }
@@ -1545,7 +1581,9 @@
                     tickRectangle = new Rectangle(location, size);
 
                     // Enlarge tick barRectangle
-                    tickRectangle.Inflate(-buttonSize.Width / 2, 0);
+                    // tickRectangle.Inflate(-buttonSize.Width / 2, 0);
+
+                    // tickRectangle.Inflate(-buttonSize.Width / 2, 0);
 
                     // Move next tick area
                     currentUsedPos += tickHeight;
