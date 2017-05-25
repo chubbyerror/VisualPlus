@@ -33,7 +33,7 @@
         private int arrowSpacing = 10;
         private int arrowThickness = 5;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
-        private Border itemBorder = new Border();
+        private Border tabPageBorder = new Border();
         private ControlState controlState = ControlState.Normal;
         private Gradient hover = new Gradient();
         private Size itemSize = new Size(100, 25);
@@ -239,16 +239,16 @@
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        public Border ItemBorder
+        public Border TabPageBorder
         {
             get
             {
-                return itemBorder;
+                return tabPageBorder;
             }
 
             set
             {
-                itemBorder = value;
+                tabPageBorder = value;
                 Invalidate();
             }
         }
@@ -687,11 +687,11 @@
                         graphics.FillRectangle(new SolidBrush(tabSelector), selectorRectangle2);
                     }
 
-                    if (itemBorder.Visible)
+                    if (tabPageBorder.Visible)
                     {
                         GraphicsPath borderPath = new GraphicsPath();
                         borderPath.AddRectangle(tabPageRectangle);
-                        GDI.DrawBorderType(graphics, controlState, borderPath, itemBorder.Thickness, itemBorder.Color, itemBorder.HoverColor, itemBorder.HoverVisible);
+                        GDI.DrawBorderType(graphics, controlState, borderPath, tabPageBorder.Thickness, tabPageBorder.Color, tabPageBorder.HoverColor, tabPageBorder.HoverVisible);
                     }
 
                     if (arrowSelectorVisible)
@@ -736,11 +736,11 @@
                             graphics.FillRectangle(new SolidBrush(tabSelector), selectorRectangle2);
                         }
 
-                        if (itemBorder.Visible)
+                        if (tabPageBorder.Visible)
                         {
                             GraphicsPath borderPath = new GraphicsPath();
                             borderPath.AddRectangle(tabPageRectangle);
-                            GDI.DrawBorderType(graphics, controlState, borderPath, itemBorder.Thickness, itemBorder.Color, itemBorder.HoverColor, itemBorder.HoverVisible);
+                            GDI.DrawBorderType(graphics, controlState, borderPath, tabPageBorder.Thickness, tabPageBorder.Color, tabPageBorder.HoverColor, tabPageBorder.HoverVisible);
                         }
                     }
 
