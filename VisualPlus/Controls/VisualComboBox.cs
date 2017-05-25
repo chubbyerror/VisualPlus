@@ -655,14 +655,7 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            if (textAlignment == StringAlignment.Far)
-            {
-                textBoxRectangle.Width -= buttonRectangle.Width;
-            }
-            else if (textAlignment == StringAlignment.Near)
-            {
-                textBoxRectangle.X += buttonWidth;
-            }
+            ConfigureDirection(textBoxRectangle, buttonRectangle);
 
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
 
@@ -675,6 +668,33 @@
         protected override void OnSelectionChangeCommitted(EventArgs e)
         {
             OnLostFocus(e);
+        }
+
+        private void ConfigureDirection(Rectangle textBoxRectangle, Rectangle buttonRectangle)
+        {
+            if (buttonDirection == Direction.Right)
+            {
+                if (textAlignment == StringAlignment.Far)
+                {
+                    textBoxRectangle.Width -= buttonRectangle.Width;
+                }
+                else if (textAlignment == StringAlignment.Near)
+                {
+                    textBoxRectangle.X = 0;
+                }
+            }
+            else
+            {
+                if (textAlignment == StringAlignment.Far)
+                {
+                    textBoxRectangle.Width -= buttonRectangle.Width;
+                    textBoxRectangle.X = Width - textBoxRectangle.Width;
+                }
+                else if (textAlignment == StringAlignment.Near)
+                {
+                    textBoxRectangle.X = buttonWidth;
+                }
+            }
         }
 
         private void DrawButton(Graphics graphics, Rectangle buttonRectangle)
