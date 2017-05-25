@@ -27,12 +27,6 @@
     {
         #region Variables
 
-        public bool Expanded = true;
-
-        #endregion
-
-        #region Variables
-
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
         private Border border = new Border();
         private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
@@ -43,6 +37,7 @@
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private bool expandButtonVisible = true;
+        private bool expanded = true;
         private Size originalSize;
         private int xValue;
         private int yValue;
@@ -68,7 +63,7 @@
             originalSize = ClientRectangle.Size;
         }
 
-        public delegate void ButtonClickedEventHandler();
+        public delegate void ExpanderClickedEventHandler();
 
         #endregion
 
@@ -187,11 +182,29 @@
             }
         }
 
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool Expanded
+        {
+            get
+            {
+                return expanded;
+            }
+
+            set
+            {
+                expanded = value;
+                ExpanderClicked?.Invoke();
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region Events
 
-        public event ButtonClickedEventHandler ButtonClicked;
+        [Description("Occours when the expander was clicked.")]
+        public event ExpanderClickedEventHandler ExpanderClicked;
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
@@ -226,7 +239,7 @@
                                 Expand(true);
                             }
 
-                            ButtonClicked?.Invoke();
+                            ExpanderClicked?.Invoke();
                         }
                     }
                     else
@@ -251,7 +264,7 @@
                                 Expand(true);
                             }
 
-                            ButtonClicked?.Invoke();
+                            ExpanderClicked?.Invoke();
                         }
                     }
                     else
@@ -331,9 +344,10 @@
                 GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
-            if (ExpandButtonVisible)
+            if (expandButtonVisible)
             {
                 DrawExpanderArrow(e);
+                Expand(expanded);
             }
         }
 
@@ -354,7 +368,7 @@
             var points = new Point[3];
             if (buttonDirection == Direction.Left)
             {
-                if (Expanded)
+                if (expanded)
                 {
                     points[0].X = buttonRectangle.X + ButtonSize.Width / 2;
                     points[0].Y = buttonRectangle.Y;
@@ -379,7 +393,7 @@
             }
             else
             {
-                if (Expanded)
+                if (expanded)
                 {
                     points[0].X = Width - buttonRectangle.X - ButtonSize.Width / 2;
                     points[0].Y = buttonRectangle.Y;
@@ -413,13 +427,12 @@
             if (contract)
             {
                 height = originalSize.Height;
-                Expanded = true;
+                expanded = true;
             }
             else
             {
                 height = buttonRectangle.X + buttonRectangle.Height + ButtonSpacing;
-
-                Expanded = false;
+                expanded = false;
             }
 
             Size = new Size(ClientRectangle.Width, height);
