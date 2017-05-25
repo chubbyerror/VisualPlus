@@ -30,12 +30,15 @@
 
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
         private Border border = new Border();
-        private GraphicsPath controlGraphicsPath;
+        private GraphicsPath borderGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+
+        private GroupBoxStyle groupBoxStyle = GroupBoxStyle.Default;
         private StringAlignment stringAlignment = StringAlignment.Center;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private TitleAlignments titleAlign = TitleAlignments.Top;
         private Border titleBorder = new Border();
 
         private Color[] titleBoxColor =
@@ -49,7 +52,6 @@
         private Rectangle titleBoxRectangle;
         private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
         private Gradient titleGradient = new Gradient();
-        private VerticalDirection vertDirection = VerticalDirection.Top;
 
         #endregion
 
@@ -75,7 +77,16 @@
             titleGradient.Positions = gradientPosition;
         }
 
-        public enum VerticalDirection
+        public enum GroupBoxStyle
+        {
+            /// <summary>The default.</summary>
+            Default,
+
+            /// <summary>The classic.</summary>
+            Classic
+        }
+
+        public enum TitleAlignments
         {
             /// <summary>The bottom.</summary>
             Bottom,
@@ -122,25 +133,25 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentNoName)]
-        public VerticalDirection Direction
+        [Category(Localize.Category.Appearance)]
+        [Description("The group box type.")]
+        public GroupBoxStyle BoxStyle
         {
             get
             {
-                return vertDirection;
+                return groupBoxStyle;
             }
 
             set
             {
-                vertDirection = value;
+                groupBoxStyle = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.StringAlignment)]
-        public StringAlignment StringAlignment
+        public StringAlignment TextAlignment
         {
             get
             {
@@ -198,6 +209,22 @@
             set
             {
                 textRendererHint = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentNoName)]
+        public TitleAlignments TitleAlignment
+        {
+            get
+            {
+                return titleAlign;
+            }
+
+            set
+            {
+                titleAlign = value;
                 Invalidate();
             }
         }
@@ -307,28 +334,22 @@
             graphics.TextRenderingHint = textRendererHint;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
-            Point titlePoint;
+            Size textArea = GDI.GetTextSize(graphics, Text, Font);
 
-            if (vertDirection == VerticalDirection.Top)
-            {
-                titlePoint = new Point(0, 0);
-            }
-            else
-            {
-                titlePoint = new Point(0, Height - titleBoxHeight - 1);
-            }
+            Rectangle group = ConfigureStyleBox(textArea);
+            Rectangle title = ConfigureStyleTitleBox(textArea);
 
-            titleBoxRectangle = new Rectangle(titlePoint.X, titlePoint.Y, Width, titleBoxHeight);
-
+            titleBoxRectangle = new Rectangle(title.X, title.Y, title.Width, title.Height);
             titleBoxPath = GDI.GetBorderShape(titleBoxRectangle, titleBorder.Shape, titleBorder.Rounding);
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+
+            borderGraphicsPath = GDI.GetBorderShape(group, border.Shape, border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
-            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(backgroundColor), borderGraphicsPath);
 
             if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                GDI.DrawBorderType(graphics, controlState, borderGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             if (titleBoxVisible)
@@ -340,7 +361,7 @@
 
                 if (titleBorder.Visible)
                 {
-                    if (controlState == ControlState.Hover && titleBorder.HoverVisible)
+                    if ((controlState == ControlState.Hover) && titleBorder.HoverVisible)
                     {
                         GDI.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.HoverColor);
                     }
@@ -351,13 +372,122 @@
                 }
             }
 
-            StringFormat stringFormat = new StringFormat
-                {
-                    Alignment = stringAlignment,
-                    LineAlignment = StringAlignment.Center
-                };
+            if (groupBoxStyle == GroupBoxStyle.Classic)
+            {
+                graphics.FillRectangle(new SolidBrush(backgroundColor), titleBoxRectangle);
+                graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle);
+            }
+            else
+            {
+                StringFormat stringFormat = new StringFormat
+                    {
+                        Alignment = stringAlignment,
+                        LineAlignment = StringAlignment.Center
+                    };
 
-            graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
+                graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
+            }
+        }
+
+        private Rectangle ConfigureStyleBox(Size textArea)
+        {
+            Size groupBoxSize = new Size(Width, Height);
+            Point groupBoxPoint = new Point(0, 0);
+
+            switch (groupBoxStyle)
+            {
+                case GroupBoxStyle.Default:
+                    {
+                        break;
+                    }
+
+                case GroupBoxStyle.Classic:
+                    {
+                        if (titleAlign == TitleAlignments.Top)
+                        {
+                            groupBoxPoint = new Point(0, textArea.Height / 2);
+                            groupBoxSize = new Size(Width, Height - (textArea.Height / 2));
+                        }
+                        else
+                        {
+                            groupBoxPoint = new Point(0, 0);
+                            groupBoxSize = new Size(Width, Height - (textArea.Height / 2));
+                        }
+
+                        break;
+                    }
+            }
+
+            Rectangle groupBoxRectangle = new Rectangle(groupBoxPoint, groupBoxSize);
+
+            return groupBoxRectangle;
+        }
+
+        private Rectangle ConfigureStyleTitleBox(Size textArea)
+        {
+            Size titleSize = new Size(Width, titleBoxHeight);
+            Point titlePoint = new Point(0, 0);
+
+            switch (groupBoxStyle)
+            {
+                case GroupBoxStyle.Default:
+                    {
+                        // Declare Y
+                        if (titleAlign == TitleAlignments.Top)
+                        {
+                            titlePoint = new Point(titlePoint.X, 0);
+                        }
+                        else
+                        {
+                            titlePoint = new Point(titlePoint.X, Height - titleBoxHeight);
+                        }
+
+                        break;
+                    }
+
+                case GroupBoxStyle.Classic:
+                    {
+                        titleBoxVisible = false;
+                        var spacing = 5;
+
+                        if (titleAlign == TitleAlignments.Top)
+                        {
+                            titlePoint = new Point(titlePoint.X, 0);
+                        }
+                        else
+                        {
+                            titlePoint = new Point(titlePoint.X, Height - textArea.Height);
+                        }
+
+                        titleSize = new Size(textArea.Width, textArea.Height);
+
+                        switch (stringAlignment)
+                        {
+                            case StringAlignment.Near:
+                                {
+                                    titlePoint.X += 5;
+                                    break;
+                                }
+
+                            case StringAlignment.Center:
+                                {
+                                    titlePoint.X = (Width / 2) - (textArea.Width / 2);
+                                    break;
+                                }
+
+                            case StringAlignment.Far:
+                                {
+                                    titlePoint.X = Width - textArea.Width - spacing;
+                                    break;
+                                }
+                        }
+
+                        break;
+                    }
+            }
+
+            Rectangle titleRectangle = new Rectangle(titlePoint, titleSize);
+            return titleRectangle;
         }
 
         #endregion
