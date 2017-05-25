@@ -459,7 +459,8 @@
                             titlePoint = new Point(titlePoint.X, Height - textArea.Height);
                         }
 
-                        titleSize = new Size(textArea.Width, textArea.Height);
+                        // +1 extra whitespace in case of FontStyle=Bold
+                        titleSize = new Size(textArea.Width + 1, textArea.Height);
 
                         switch (stringAlignment)
                         {
