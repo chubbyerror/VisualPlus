@@ -284,7 +284,7 @@
     }
 
     [ToolboxItem(true)]
-    [ToolboxBitmap(typeof(Button))]
+    [ToolboxBitmap(typeof(Control))]
     [DefaultEvent("ColorChanged")]
     [DefaultProperty("Color")]
     [Description("The Visual Color Wheel")]
