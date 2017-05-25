@@ -132,7 +132,7 @@
             UpdateStyles();
             AutoSize = false;
             Size = new Size(200, 50);
-            MinimumSize = new Size(200, 50);
+            MinimumSize = new Size(0, 0);
 
             float[] gradientPositions = { 0, 1 };
             float angle = 90;
