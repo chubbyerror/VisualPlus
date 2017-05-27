@@ -81,9 +81,6 @@
     <Compile Include="Controls\VisualCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualColorWheel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\VisualContainer.cs">
       <SubType>Component</SubType>
     </Compile>
