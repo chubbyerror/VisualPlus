@@ -265,16 +265,12 @@
         }
     }
 
-    internal interface IColor
-    {
-    }
-
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(Control))]
     [DefaultEvent("ColorChanged")]
     [DefaultProperty("Color")]
     [Description("The Visual ColorPicker")]
-    public sealed class VisualColorPicker : Control, IColor
+    public sealed class VisualColorPicker : Control
     {
         #region Variables
 
@@ -286,7 +282,7 @@
         private static readonly object EventSmallChangeChanged = new object();
         private readonly Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private LinearGradientBrush _blackBottomGradient;
-        private float _boxSizeRatio = 0.15f; // In percent
+        private float _boxSizeRatio = 0.15f;
         private Bitmap _canvas;
         private bool _fullColorSpectrum = true;
         private Graphics _graphicsBuffer;
@@ -294,7 +290,6 @@
         private LinearGradientBrush _spectrumGradient;
         private LinearGradientBrush _whiteTopGradient;
         private Border border = new Border();
-
         private Brush brush;
         private PointF centerPoint;
         private Color color;
@@ -302,22 +297,15 @@
         private int colorStep;
         private ControlState controlState = ControlState.Normal;
         private bool drag;
-
         private bool drawFocusRectangle;
-
         private int largeChange;
-
         private Point mousePosition;
-
         private Border pickerBorder = new Border();
-
         private bool pickerVisible = true;
-
         private PickerType pickType = PickerType.Rectangle;
         private float radius;
         private int selectionSize;
         private int smallChange;
-        private int updates;
 
         #endregion
 
@@ -596,14 +584,6 @@
             }
         }
 
-        private bool AllowPainting
-        {
-            get
-            {
-                return updates == 0;
-            }
-        }
-
         private Color[] Colors { get; set; }
 
         private bool LockUpdates { get; set; }
@@ -661,7 +641,6 @@
                         {
                             drag = true;
                             SetColor(e.Location);
-
                             Cursor = Cursors.Hand;
                         }
 
@@ -674,10 +653,49 @@
                         {
                             drag = true;
                             SetColor(e.Location);
-
                             Cursor = Cursors.Hand;
                         }
 
+                        break;
+                    }
+            }
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            controlState = ControlState.Hover;
+
+            switch (pickType)
+            {
+                case PickerType.Rectangle:
+                    {
+                        break;
+                    }
+
+                case PickerType.Wheel:
+                    {
+                        Invalidate();
+                        break;
+                    }
+            }
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            controlState = ControlState.Normal;
+
+            switch (pickType)
+            {
+                case PickerType.Rectangle:
+                    {
+                        break;
+                    }
+
+                case PickerType.Wheel:
+                    {
+                        Invalidate();
                         break;
                     }
             }
@@ -725,58 +743,60 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
+            GraphicsPath controlGraphicsPath = new GraphicsPath();
 
             switch (pickType)
             {
                 case PickerType.Rectangle:
                     {
+                        border.HoverVisible = false;
+
                         _graphicsBuffer.FillRectangle(_spectrumGradient, ClientRectangle);
                         _graphicsBuffer.FillRectangle(_blackBottomGradient, 0, (Height * 0.7f) + 1, Width, Height * 0.3f);
                         _graphicsBuffer.FillRectangle(_whiteTopGradient, 0, 0, Width, Height * 0.3f);
                         e.Graphics.DrawImageUnscaled(_canvas, Point.Empty);
+
+                        controlGraphicsPath = new GraphicsPath();
+                        controlGraphicsPath.AddRectangle(new RectangleF(ClientRectangle.Location, new Size(Width - 1, Height - 1)));
                         break;
                     }
 
                 case PickerType.Wheel:
                     {
-                        if (AllowPainting)
+                        OnPaintBackground(e);
+
+                        // If the parent is using a transparent colorManager, it's likely to be something like a TabPage in a tab control
+                        // so we'll draw the parent background instead, to avoid having an ugly solid colorManager
+                        if ((BackgroundImage == null) && (Parent != null) && ((BackColor == Parent.BackColor) || (Parent.BackColor.A != 255)))
                         {
-                            OnPaintBackground(e);
-
-                            // If the parent is using a transparent colorManager, it's likely to be something like a TabPage in a tab control
-                            // so we'll draw the parent background instead, to avoid having an ugly solid colorManager
-                            if ((BackgroundImage == null) && (Parent != null) && ((BackColor == Parent.BackColor) || (Parent.BackColor.A != 255)))
-                            {
-                                ButtonRenderer.DrawParentBackground(e.Graphics, DisplayRectangle, this);
-                            }
-
-                            if (brush != null)
-                            {
-                                e.Graphics.FillPie(brush, ClientRectangle, 0, 360);
-                            }
-
-                            // Smooth out the edge of the wheel.
-                            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                            using (Pen pen = new Pen(BackColor, 2))
-                            {
-                                e.Graphics.DrawEllipse(pen, new RectangleF(centerPoint.X - radius, centerPoint.Y - radius, radius * 2, radius * 2));
-                            }
-
-                            Point pointLocation = new Point(Convert.ToInt32(centerPoint.X - radius), Convert.ToInt32(centerPoint.Y - radius));
-                            Size newSize = new Size(Convert.ToInt32(radius * 2), Convert.ToInt32(radius * 2));
-
-                            GraphicsPath controlGraphicsPath = new GraphicsPath();
-                            controlGraphicsPath.AddEllipse(new RectangleF(pointLocation, newSize));
-
-                            // Setup border
-                            if (border.Visible)
-                            {
-                                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-                            }
+                            ButtonRenderer.DrawParentBackground(e.Graphics, DisplayRectangle, this);
                         }
+
+                        if (brush != null)
+                        {
+                            e.Graphics.FillPie(brush, ClientRectangle, 0, 360);
+                        }
+
+                        // Smooth out the edge of the wheel.
+                        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                        using (Pen pen = new Pen(BackColor, 2))
+                        {
+                            e.Graphics.DrawEllipse(pen, new RectangleF(centerPoint.X - radius, centerPoint.Y - radius, radius * 2, radius * 2));
+                        }
+
+                        Point pointLocation = new Point(Convert.ToInt32(centerPoint.X - radius), Convert.ToInt32(centerPoint.Y - radius));
+                        Size newSize = new Size(Convert.ToInt32(radius * 2), Convert.ToInt32(radius * 2));
+
+                        controlGraphicsPath = new GraphicsPath();
+                        controlGraphicsPath.AddEllipse(new RectangleF(pointLocation, newSize));
 
                         break;
                     }
+            }
+
+            if (border.Visible)
+            {
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             // Draws the button
