@@ -4,11 +4,19 @@
 
     using System;
     using System.Drawing;
+    using System.Drawing.Imaging;
+    using System.Runtime.InteropServices;
 
     #endregion
 
     internal class ColorHelper
     {
+        #region Variables
+
+        private static Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
+
+        #endregion
+
         #region Constructors
 
         public enum Brightness
@@ -23,6 +31,9 @@
         #endregion
 
         #region Events
+
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
 
         public static double BlendColor(double foreColor, double backgroundColor, double alpha)
         {
@@ -110,6 +121,35 @@
             }
 
             return Color.FromArgb(r, g, b);
+        }
+
+        /// <summary>Gets the color under the mouse.</summary>
+        /// <returns>The color.</returns>
+        public static Color CurrentPointerColor()
+        {
+            Point cursor = new Point();
+            GDI.GetCursorPos(ref cursor);
+            return GetColorFromPosition(cursor);
+        }
+
+        /// <summary>Get the color from position.</summary>
+        /// <param name="location">Cursor position.</param>
+        /// <returns>The color.</returns>
+        public static Color GetColorFromPosition(Point location)
+        {
+            using (Graphics graphicsDestination = Graphics.FromImage(screenPixel))
+            {
+                using (Graphics graphicsSource = Graphics.FromHwnd(IntPtr.Zero))
+                {
+                    IntPtr handleContextSource = graphicsSource.GetHdc();
+                    IntPtr handleContextDestination = graphicsDestination.GetHdc();
+                    int retrieval = BitBlt(handleContextDestination, 0, 0, 1, 1, handleContextSource, location.X, location.Y, (int)CopyPixelOperation.SourceCopy);
+                    graphicsDestination.ReleaseHdc();
+                    graphicsSource.ReleaseHdc();
+                }
+            }
+
+            return screenPixel.GetPixel(0, 0);
         }
 
         /// <summary>Returns a brightness difference in color.</summary>
@@ -288,29 +328,6 @@
             return OpacityMix(CreateColorFromRGB(r3, g3, b3), baseColor, opacity);
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="ibase"></param>
-        /// <param name="blend"></param>
-        /// <returns></returns>
-        private static int SoftLightMath(int ibase, int blend)
-        {
-            float dbase;
-            float dblend;
-            dbase = (float)ibase / 255;
-            dblend = (float)blend / 255;
-            if (dblend < 0.5)
-            {
-                return (int)((2 * dbase * dblend + Math.Pow(dbase, 2) * (1 - 2 * dblend)) * 255);
-            }
-            else
-            {
-                return (int)((Math.Sqrt(dbase) * (2 * dblend - 1) + 2 * dbase * (1 - dblend)) * 255);
-            }
-        }
-
-        #endregion
-
         public static Color StepColor(Color color, int inputAlpha)
         {
             if (inputAlpha == 100)
@@ -345,11 +362,34 @@
                 doubleAlpha = 1.0F + doubleAlpha;
             }
 
-            r = (byte)ColorHelper.BlendColor(r, background, doubleAlpha);
-            g = (byte)ColorHelper.BlendColor(g, background, doubleAlpha);
-            b = (byte)ColorHelper.BlendColor(b, background, doubleAlpha);
+            r = (byte)BlendColor(r, background, doubleAlpha);
+            g = (byte)BlendColor(g, background, doubleAlpha);
+            b = (byte)BlendColor(b, background, doubleAlpha);
 
             return Color.FromArgb(a, r, g, b);
         }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="ibase"></param>
+        /// <param name="blend"></param>
+        /// <returns></returns>
+        private static int SoftLightMath(int ibase, int blend)
+        {
+            float dbase;
+            float dblend;
+            dbase = (float)ibase / 255;
+            dblend = (float)blend / 255;
+            if (dblend < 0.5)
+            {
+                return (int)((2 * dbase * dblend + Math.Pow(dbase, 2) * (1 - 2 * dblend)) * 255);
+            }
+            else
+            {
+                return (int)((Math.Sqrt(dbase) * (2 * dblend - 1) + 2 * dbase * (1 - dblend)) * 255);
+            }
+        }
+
+        #endregion
     }
 }
