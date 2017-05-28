@@ -28,29 +28,26 @@
     {
         #region Variables
 
-        private Border border = new Border();
-        private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
-
-        private Direction buttonDirection = Direction.Right;
-        private DropDownButtons buttonStyles = DropDownButtons.Arrow;
-        private bool buttonVisible = Settings.DefaultValue.TextVisible;
-
-        private int buttonWidth = 30;
-
-        private Color[] controlColor =
+        private readonly Color[] controlColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
                 Settings.DefaultValue.Style.BackgroundColor(0),
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
             };
 
-        private Color[] controlDisabledColor =
+        private readonly Color[] controlDisabledColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
                 Settings.DefaultValue.Style.ControlDisabled,
                 ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
             };
 
+        private Border border = new Border();
+        private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
+        private Direction buttonDirection = Direction.Right;
+        private DropDownButtons buttonStyles = DropDownButtons.Arrow;
+        private bool buttonVisible = Settings.DefaultValue.TextVisible;
+        private int buttonWidth = 30;
         private Gradient controlDisabledGradient = new Gradient();
         private Gradient controlGradient = new Gradient();
         private GraphicsPath controlGraphicsPath;
@@ -71,8 +68,8 @@
         private SolidBrush waterMarkBrush;
         private Color waterMarkColor = Color.LightGray;
         private Font waterMarkFont;
-        private string waterMarkText = "Custom text...";
-        private bool watermarkVisible;
+        private string waterMarkText = Settings.DefaultValue.WatermarkText;
+        private bool watermarkVisible = Settings.DefaultValue.WatermarkVisible;
 
         #endregion
 

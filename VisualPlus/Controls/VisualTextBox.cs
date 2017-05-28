@@ -35,7 +35,6 @@
         #region Variables
 
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
-
         private Border border = new Border();
         private Border buttonBorder = new Border();
         private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
@@ -57,8 +56,8 @@
         private Color waterMarkColor;
         private Panel waterMarkContainer;
         private Font waterMarkFont;
-        private string waterMarkText = "Custom text...";
-        private bool watermarkVisible;
+        private string waterMarkText = Settings.DefaultValue.WatermarkText;
+        private bool watermarkVisible = Settings.DefaultValue.WatermarkVisible;
         private int xValue;
         private int yValue;
 
