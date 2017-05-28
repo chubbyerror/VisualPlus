@@ -6,7 +6,6 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
-    using System.Drawing.Text;
     using System.Globalization;
     using System.IO;
 
@@ -242,36 +241,27 @@
         /// <param name="font">The font.</param>
         /// <param name="linearGradientBrush">The linear gradient brush.</param>
         /// <param name="location">The location.</param>
-        public static void DrawCheckChar(Graphics graphics, char checkMark, Font font, LinearGradientBrush linearGradientBrush, PointF location)
+        public static void DrawCharacter(Graphics graphics, char checkMark, Font font, LinearGradientBrush linearGradientBrush, PointF location)
         {
-            graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
             graphics.DrawString(checkMark.ToString(), font, linearGradientBrush, location);
+        }
+
+        /// <summary>Draws the checkmark shape.</summary>
+        /// <param name="graphics">The graphics.</param>
+        /// <param name="linearGradientBrush">The linear Gradient Brush.</param>
+        /// <param name="graphicsPath">The graphics Path.</param>
+        public static void DrawShape(Graphics graphics, LinearGradientBrush linearGradientBrush, GraphicsPath graphicsPath)
+        {
+            graphics.FillPath(linearGradientBrush, graphicsPath);
         }
 
         /// <summary>Draws the checkmark image.</summary>
         /// <param name="graphics">The graphics.</param>
         /// <param name="image">The image.</param>
         /// <param name="imageRectangle">The image rectangle.</param>
-        public static void DrawCheckImage(Graphics graphics, Image image, Rectangle imageRectangle)
+        public static void DrawImage(Graphics graphics, Image image, Rectangle imageRectangle)
         {
             graphics.DrawImage(image, imageRectangle);
-        }
-
-        /// <summary>Draws a checkmark.</summary>
-        /// <param name="graphics">Graphics processor.</param>
-        /// <param name="font">The font.</param>
-        /// <param name="color">The color.</param>
-        /// <param name="point">The location.</param>
-        /// <param name="checkMark">The character.</param>
-        public static void DrawCheckMark(Graphics graphics, Font font, Brush color, PointF point, char checkMark)
-        {
-            graphics.DrawString(checkMark.ToString(), font, color, point);
-        }
-
-        /// <summary>Draws the checkmark shape.</summary>
-        /// <param name="graphics">The graphics.</param>
-        public static void DrawCheckShape(Graphics graphics)
-        {
         }
 
         public static string GetBase64CheckImage()
