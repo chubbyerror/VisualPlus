@@ -29,61 +29,53 @@
         #region Variables
 
         private const int Spacing = 2;
-        private bool animation = true;
 
-        private Border border = new Border();
-
-        private Color[] boxColor =
+        private readonly Color[] boxColor =
             {
                 Settings.DefaultValue.Style.BackgroundColor(3),
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3))
             };
 
-        private Color[] boxDisabledColor =
+        private readonly Color[] boxDisabledColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
                 Settings.DefaultValue.Style.ControlDisabled
             };
 
+        private readonly Color[] checkDisabledColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
+                Settings.DefaultValue.Style.TextDisabled
+            };
+
+        private readonly Color[] checkMarkColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
+                Settings.DefaultValue.Style.StyleColor
+            };
+
+        private bool animation = true;
+        private Border border = new Border();
         private Gradient boxDisabledGradient = new Gradient();
         private Gradient boxGradient = new Gradient();
-
         private Size boxSize = new Size(14, 14);
-
         private GraphicsPath checkBoxPath;
         private Point checkBoxPoint = new Point(0, 0);
         private Rectangle checkBoxRectangle;
         private CheckBoxType checkBoxType = CheckBoxType.Check;
         private string checkCharacter = Checkmark.CheckChar.ToString();
         private Font checkCharacterFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Bold);
-
-        private Color[] checkDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
-                Settings.DefaultValue.Style.TextDisabled
-            };
-
         private Gradient checkDisabledGradient = new Gradient();
         private Gradient checkGradient = new Gradient();
         private Image checkImage = Checkmark.CheckImage;
         private Rectangle checkImageRectangle;
         private Size checkImageSize = new Size(19, 16);
-
-        private Color[] checkMarkColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
-                Settings.DefaultValue.Style.StyleColor
-            };
-
         private Size checkMarkFillSize = new Size(8, 8);
         private GraphicsPath checkPath;
         private Point checkPoint = new Point(-1, 5);
         private Rectangle checkRectangle;
-
         private ControlState controlState = ControlState.Normal;
-        private VFXManager effectsManager;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-
         private VFXManager rippleEffectsManager;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
@@ -119,7 +111,7 @@
             checkDisabledGradient.Positions = gradientPosition;
 
             // Setup effects animation
-            effectsManager = new VFXManager
+            VFXManager effectsManager = new VFXManager
                 {
                     Increment = 0.05,
                     EffectType = EffectType.EaseInOut
@@ -475,7 +467,7 @@
                 {
                     controlState = ControlState.Down;
 
-                    if (animation && args.Button == MouseButtons.Left && IsMouseInCheckArea())
+                    if (animation && (args.Button == MouseButtons.Left) && IsMouseInCheckArea())
                     {
                         rippleEffectsManager.SecondaryIncrement = 0;
                         rippleEffectsManager.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
@@ -538,7 +530,7 @@
                 checkMark = checkDisabledGradient;
             }
 
-            checkBoxPoint = new Point(0, ClientRectangle.Height / 2 - boxSize.Height / 2);
+            checkBoxPoint = new Point(0, (ClientRectangle.Height / 2) - (boxSize.Height / 2));
             checkBoxRectangle = new Rectangle(checkBoxPoint, boxSize);
 
             checkRectangle = new Rectangle(checkPoint, checkMarkFillSize);
@@ -558,15 +550,15 @@
                 {
                     double animationValue = rippleEffectsManager.GetProgress(i);
 
-                    Point animationSource = new Point(checkBoxRectangle.X + checkBoxRectangle.Width / 2, checkBoxRectangle.Y + checkBoxRectangle.Height / 2);
+                    Point animationSource = new Point(checkBoxRectangle.X + (checkBoxRectangle.Width / 2), checkBoxRectangle.Y + (checkBoxRectangle.Height / 2));
                     SolidBrush animationBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), (bool)rippleEffectsManager.GetData(i)[0] ? Color.Black : checkMarkColor[0]));
 
                     int height = checkBoxRectangle.Height;
-                    int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + 0.2d * animationValue)) : height;
+                    int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + (0.2d * animationValue))) : height;
 
                     using (GraphicsPath path = GDI.DrawRoundedRectangle(
-                        animationSource.X - size / 2,
-                        animationSource.Y - size / 2,
+                        animationSource.X - (size / 2),
+                        animationSource.Y - (size / 2),
                         size,
                         size,
                         size / 2))
@@ -604,13 +596,11 @@
                 }
             }
 
-            // Setup checkbox border
             if (border.Visible)
             {
                 GDI.DrawBorderType(graphics, controlState, checkBoxPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
-            // Draw string
             StringFormat stringFormat = new StringFormat
                 {
                     // Alignment = StringAlignment.Center,
@@ -663,7 +653,7 @@
 
                 case CheckBoxType.Filled:
                     {
-                        checkPoint = new Point(checkBoxPoint.X + boxSize.Width / 2 - checkMarkFillSize.Width / 2, checkBoxPoint.Y + boxSize.Height / 2 - checkMarkFillSize.Height / 2);
+                        checkPoint = new Point((checkBoxPoint.X + (boxSize.Width / 2)) - (checkMarkFillSize.Width / 2), (checkBoxPoint.Y + (boxSize.Height / 2)) - (checkMarkFillSize.Height / 2));
                         break;
                     }
 

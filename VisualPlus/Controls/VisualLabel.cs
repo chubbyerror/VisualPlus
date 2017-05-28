@@ -29,6 +29,12 @@
         private const int ShadowDepth = 4;
         private const float ShadowSmooth = 1.5f;
 
+        private readonly Color[] foreColor =
+            {
+                Settings.DefaultValue.Style.ForeColor(0),
+                Settings.DefaultValue.Style.ForeColor(0)
+            };
+
         private readonly Color[] textDisabledColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
@@ -36,12 +42,6 @@
             };
 
         private bool autoSize;
-
-        private Color[] foreColor =
-            {
-                Settings.DefaultValue.Style.ForeColor(0),
-                Settings.DefaultValue.Style.ForeColor(0)
-            };
 
         private Orientation orientation = Orientation.Horizontal;
         private bool outline;
@@ -372,7 +372,7 @@
 
             Gradient foreGradient = Enabled ? textGradient : textDisabledGradient;
 
-            if (reflection && orientation == Orientation.Vertical)
+            if (reflection && (orientation == Orientation.Vertical))
             {
                 textBoxRectangle = new Rectangle(GDI.GetTextSize(graphics, Text, Font).Height, 0, ClientRectangle.Width, ClientRectangle.Height);
             }
@@ -418,7 +418,7 @@
                             Text,
                             Font.FontFamily,
                             (int)Font.Style,
-                            graphics.DpiY * Font.SizeInPoints / 72,
+                            (graphics.DpiY * Font.SizeInPoints) / 72,
                             outlineLocation,
                             new StringFormat());
 
@@ -431,7 +431,7 @@
                             Text,
                             Font.FontFamily,
                             (int)Font.Style,
-                            graphics.DpiY * Font.SizeInPoints / 72,
+                            (graphics.DpiY * Font.SizeInPoints) / 72,
                             outlineLocation,
                             new StringFormat(StringFormatFlags.DirectionVertical));
 
@@ -459,14 +459,14 @@
                         imageGraphics.TranslateTransform(0, GDI.GetTextSize(graphics, Text, Font).Height);
                         imageGraphics.ScaleTransform(1, -1);
 
-                        reflectionLocation = new Point(0, textBoxRectangle.Y - GDI.GetTextSize(graphics, Text, Font).Height / 2 - reflectionSpacing);
+                        reflectionLocation = new Point(0, textBoxRectangle.Y - (GDI.GetTextSize(graphics, Text, Font).Height / 2) - reflectionSpacing);
                         break;
                     }
 
                 case Orientation.Vertical:
                     {
                         imageGraphics.ScaleTransform(-1, 1);
-                        reflectionLocation = new Point(textBoxRectangle.X - GDI.GetTextSize(graphics, Text, Font).Width / 2 + reflectionSpacing, 0);
+                        reflectionLocation = new Point((textBoxRectangle.X - (GDI.GetTextSize(graphics, Text, Font).Width / 2)) + reflectionSpacing, 0);
                         break;
                     }
             }

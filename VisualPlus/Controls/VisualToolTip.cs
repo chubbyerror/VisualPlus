@@ -25,19 +25,16 @@
     {
         #region Variables
 
-        private bool autoSize = true;
-
-        private Color[] backgroundColor =
+        private readonly Color[] backgroundColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
                 Settings.DefaultValue.Style.BackgroundColor(0),
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
             };
 
+        private bool autoSize = true;
         private Gradient backgroundGradient = new Gradient();
-
         private Border border = new Border();
-
         private Font font = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Image icon;
@@ -61,7 +58,6 @@
         private Point titlePoint;
         private Size toolTipSize = new Size(100, 40);
         private ToolTipType toolTipType = ToolTipType.Default;
-
         private int xWidth;
         private int yHeight;
 

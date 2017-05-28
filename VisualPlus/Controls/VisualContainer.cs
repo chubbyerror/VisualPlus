@@ -17,12 +17,9 @@
         #region Variables
 
         private const int frameduration = totalduration / frames;
-
         private const int frames = 5;
         private const int totalduration = 100;
-
         private bool m_fade = true;
-
         private ToolStripControlHost m_host;
         private Control mContextContainer;
 
@@ -102,7 +99,7 @@
         protected override bool ProcessDialogKey(Keys keyData)
         {
             // Prevent ALT from closing it and allow ALT + MNEMONIC to work
-            return (keyData & Keys.Alt) != Keys.Alt && base.ProcessDialogKey(keyData);
+            return ((keyData & Keys.Alt) != Keys.Alt) && base.ProcessDialogKey(keyData);
         }
 
         protected override void SetVisibleCore(bool visible)
@@ -126,7 +123,7 @@
                     Thread.Sleep(frameduration);
                 }
 
-                Opacity = opacity * i / frames;
+                Opacity = (opacity * i) / frames;
             }
 
             Opacity = opacity;
@@ -145,7 +142,7 @@
 
             if (location.X + Size.Width > screen.Left + screen.Width)
             {
-                location.X = screen.Left + screen.Width - Size.Width;
+                location.X = (screen.Left + screen.Width) - Size.Width;
             }
 
             if (location.Y + Size.Height > screen.Top + screen.Height)

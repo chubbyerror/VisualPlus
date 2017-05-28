@@ -336,7 +336,7 @@
 
             UpdateButtons(e);
 
-            if (e.Button == MouseButtons.Left && !maximized)
+            if ((e.Button == MouseButtons.Left) && !maximized)
             {
                 ResizeForm(resizeDir);
             }
@@ -370,27 +370,27 @@
                 // True if the mouse is hovering over a child control
                 bool isChildUnderMouse = GetChildAtPoint(e.Location) != null;
 
-                if (e.Location.X < border.Thickness && e.Location.Y > Height - border.Thickness && !isChildUnderMouse && !maximized)
+                if ((e.Location.X < border.Thickness) && (e.Location.Y > Height - border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.BottomLeft;
                     Cursor = Cursors.SizeNESW;
                 }
-                else if (e.Location.X < border.Thickness && !isChildUnderMouse && !maximized)
+                else if ((e.Location.X < border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.Left;
                     Cursor = Cursors.SizeWE;
                 }
-                else if (e.Location.X > Width - border.Thickness && e.Location.Y > Height - border.Thickness && !isChildUnderMouse && !maximized)
+                else if ((e.Location.X > Width - border.Thickness) && (e.Location.Y > Height - border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.BottomRight;
                     Cursor = Cursors.SizeNWSE;
                 }
-                else if (e.Location.X > Width - border.Thickness && !isChildUnderMouse && !maximized)
+                else if ((e.Location.X > Width - border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.Right;
                     Cursor = Cursors.SizeWE;
                 }
-                else if (e.Location.Y > Height - border.Thickness && !isChildUnderMouse && !maximized)
+                else if ((e.Location.Y > Height - border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.Bottom;
                     Cursor = Cursors.SizeNS;
@@ -454,32 +454,32 @@
             SolidBrush downBrush = new SolidBrush(Settings.DefaultValue.Style.ButtonDownColor);
 
             // When MaximizeButton == false, the minimize button will be painted in its place
-            if (buttonState == ButtonState.MinOver && showMin)
+            if ((buttonState == ButtonState.MinOver) && showMin)
             {
                 graphics.FillRectangle(hoverBrush, showMax ? minButtonBounds : maxButtonBounds);
             }
 
-            if (buttonState == ButtonState.MinDown && showMin)
+            if ((buttonState == ButtonState.MinDown) && showMin)
             {
                 graphics.FillRectangle(downBrush, showMax ? minButtonBounds : maxButtonBounds);
             }
 
-            if (buttonState == ButtonState.MaxOver && showMax)
+            if ((buttonState == ButtonState.MaxOver) && showMax)
             {
                 graphics.FillRectangle(hoverBrush, maxButtonBounds);
             }
 
-            if (buttonState == ButtonState.MaxDown && showMax)
+            if ((buttonState == ButtonState.MaxDown) && showMax)
             {
                 graphics.FillRectangle(downBrush, maxButtonBounds);
             }
 
-            if (buttonState == ButtonState.XOver && ControlBox)
+            if ((buttonState == ButtonState.XOver) && ControlBox)
             {
                 graphics.FillRectangle(hoverBrush, xButtonBounds);
             }
 
-            if (buttonState == ButtonState.XDown && ControlBox)
+            if ((buttonState == ButtonState.XDown) && ControlBox)
             {
                 graphics.FillRectangle(downBrush, xButtonBounds);
             }
@@ -530,7 +530,7 @@
                 }
             }
 
-            iconPoint = new Point(5, statusBarBounds.Height / 2 - iconSize.Height / 2);
+            iconPoint = new Point(5, (statusBarBounds.Height / 2) - (iconSize.Height / 2));
             iconRectangle = new Rectangle(iconPoint, iconSize);
             iconGraphicsPath = new GraphicsPath();
             iconGraphicsPath.AddRectangle(iconRectangle);
@@ -557,16 +557,16 @@
             }
 
             // Form title
-            graphics.DrawString(Text, Font, new SolidBrush(HeaderTextColor), new Rectangle(5 + iconSize.Width + 5, statusBarBounds.X + statusBarBounds.Height / 2 - titleTextSize.Height / 2, Width, titleTextSize.Height), new StringFormat { LineAlignment = StringAlignment.Center });
+            graphics.DrawString(Text, Font, new SolidBrush(HeaderTextColor), new Rectangle(5 + iconSize.Width + 5, (statusBarBounds.X + (statusBarBounds.Height / 2)) - (titleTextSize.Height / 2), Width, titleTextSize.Height), new StringFormat { LineAlignment = StringAlignment.Center });
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
-            minButtonBounds = new Rectangle(Width - form_padding / 2 - 3 * STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
-            maxButtonBounds = new Rectangle(Width - form_padding / 2 - 2 * STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
-            xButtonBounds = new Rectangle(Width - form_padding / 2 - STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
+            minButtonBounds = new Rectangle(Width - (form_padding / 2) - (3 * STATUS_BAR_BUTTON_WIDTH), 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
+            maxButtonBounds = new Rectangle(Width - (form_padding / 2) - (2 * STATUS_BAR_BUTTON_WIDTH), 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
+            xButtonBounds = new Rectangle(Width - (form_padding / 2) - STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
             statusBarBounds = new Rectangle(0, 0, Width, controlBarHeight);
 
             // _actionBarBounds = new Rectangle(0, STATUS_BAR_HEIGHT, Width, ACTION_BAR_HEIGHT);
@@ -584,7 +584,7 @@
             {
                 MaximizeWindow(!maximized);
             }
-            else if (m.Msg == WM_MOUSEMOVE && maximized &&
+            else if ((m.Msg == WM_MOUSEMOVE) && maximized &&
                      (statusBarBounds.Contains(PointToClient(Cursor.Position)) || actionBarBounds.Contains(PointToClient(Cursor.Position))) &&
                      !(minButtonBounds.Contains(PointToClient(Cursor.Position)) || maxButtonBounds.Contains(PointToClient(Cursor.Position)) || xButtonBounds.Contains(PointToClient(Cursor.Position))))
             {
@@ -596,11 +596,11 @@
                     Point mousePoint = PointToClient(Cursor.Position);
                     if (mousePoint.X < Width / 2)
                     {
-                        Location = mousePoint.X < previousSize.Width / 2 ? new Point(Cursor.Position.X - mousePoint.X, Cursor.Position.Y - mousePoint.Y) : new Point(Cursor.Position.X - previousSize.Width / 2, Cursor.Position.Y - mousePoint.Y);
+                        Location = mousePoint.X < previousSize.Width / 2 ? new Point(Cursor.Position.X - mousePoint.X, Cursor.Position.Y - mousePoint.Y) : new Point(Cursor.Position.X - (previousSize.Width / 2), Cursor.Position.Y - mousePoint.Y);
                     }
                     else
                     {
-                        Location = Width - mousePoint.X < previousSize.Width / 2 ? new Point(Cursor.Position.X - previousSize.Width + Width - mousePoint.X, Cursor.Position.Y - mousePoint.Y) : new Point(Cursor.Position.X - previousSize.Width / 2, Cursor.Position.Y - mousePoint.Y);
+                        Location = Width - mousePoint.X < previousSize.Width / 2 ? new Point(((Cursor.Position.X - previousSize.Width) + Width) - mousePoint.X, Cursor.Position.Y - mousePoint.Y) : new Point(Cursor.Position.X - (previousSize.Width / 2), Cursor.Position.Y - mousePoint.Y);
                     }
 
                     Size = previousSize;
@@ -608,7 +608,7 @@
                     SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
                 }
             }
-            else if (m.Msg == WM_LBUTTONDOWN &&
+            else if ((m.Msg == WM_LBUTTONDOWN) &&
                      (statusBarBounds.Contains(PointToClient(Cursor.Position)) || actionBarBounds.Contains(PointToClient(Cursor.Position))) &&
                      !(minButtonBounds.Contains(PointToClient(Cursor.Position)) || maxButtonBounds.Contains(PointToClient(Cursor.Position)) || xButtonBounds.Contains(PointToClient(Cursor.Position))))
             {
@@ -748,7 +748,7 @@
             bool showMin = MinimizeBox && ControlBox;
             bool showMax = MaximizeBox && ControlBox;
 
-            if (e.Button == MouseButtons.Left && !up)
+            if ((e.Button == MouseButtons.Left) && !up)
             {
                 if (showMin && !showMax && maxButtonBounds.Contains(e.Location))
                 {
@@ -777,7 +777,7 @@
                 {
                     buttonState = ButtonState.MinOver;
 
-                    if (oldState == ButtonState.MinDown && up)
+                    if ((oldState == ButtonState.MinDown) && up)
                     {
                         WindowState = FormWindowState.Minimized;
                     }
@@ -786,7 +786,7 @@
                 {
                     buttonState = ButtonState.MinOver;
 
-                    if (oldState == ButtonState.MinDown && up)
+                    if ((oldState == ButtonState.MinDown) && up)
                     {
                         WindowState = FormWindowState.Minimized;
                     }
@@ -795,7 +795,7 @@
                 {
                     buttonState = ButtonState.MaxOver;
 
-                    if (oldState == ButtonState.MaxDown && up)
+                    if ((oldState == ButtonState.MaxDown) && up)
                     {
                         MaximizeWindow(!maximized);
                     }
@@ -804,7 +804,7 @@
                 {
                     buttonState = ButtonState.XOver;
 
-                    if (oldState == ButtonState.XDown && up)
+                    if ((oldState == ButtonState.XDown) && up)
                     {
                         Close();
                     }
@@ -868,7 +868,7 @@
 
             #endregion
 
-            #region Events
+            #region Constructors
 
             public static event MouseEventHandler MouseMove;
 

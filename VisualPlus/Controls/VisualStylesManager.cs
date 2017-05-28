@@ -10,9 +10,23 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Localization;
-    using VisualPlus.Styles;
 
     #endregion
+
+    public interface IComponent : IDisposable
+    {
+        #region Constructors
+
+        event EventHandler Disposed;
+
+        #endregion
+
+        #region Properties
+
+        ISite Site { get; set; }
+
+        #endregion
+    }
 
     /// <summary>The visual Toggle.</summary>
     [ToolboxBitmap(typeof(Component))]
@@ -39,7 +53,6 @@
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
         private float progressSize = Settings.DefaultValue.ProgressSize;
-        private IStyle style = Settings.DefaultValue.Style;
         private Color styleColor = Settings.DefaultValue.Style.StyleColor;
         private TextRenderingHint textRenderingHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible = Settings.DefaultValue.TextVisible;
@@ -54,6 +67,8 @@
         }
 
         public delegate void StyleChangedEventHandler();
+
+        public event StyleChangedEventHandler StyleChanged;
 
         #endregion
 
@@ -291,29 +306,6 @@
 
         #endregion
 
-        #region Events
-
-        public event StyleChangedEventHandler StyleChanged;
-
-        #endregion
-
-        #region Methods
-
-        public interface IComponent : IDisposable
-        {
-            #region Properties
-
-            ISite Site { get; set; }
-
-            #endregion
-
-            #region Events
-
-            event EventHandler Disposed;
-
-            #endregion
-        }
-
-        #endregion
+        // private IStyle style = Settings.DefaultValue.Style;
     }
 }

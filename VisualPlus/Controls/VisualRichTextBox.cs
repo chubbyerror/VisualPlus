@@ -34,7 +34,6 @@
         #region Variables
 
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
-
         private Border border = new Border();
         private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private GraphicsPath controlGraphicsPath;
@@ -252,7 +251,7 @@
 
             if (border.Visible)
             {
-                if (controlState == ControlState.Hover && border.HoverVisible)
+                if ((controlState == ControlState.Hover) && border.HoverVisible)
                 {
                     GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
                 }

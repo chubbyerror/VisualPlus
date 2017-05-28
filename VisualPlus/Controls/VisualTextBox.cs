@@ -49,7 +49,7 @@
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private Size iconSize = new Size(13, 13);
-        private int textboxHeight = 20;
+        private int textBoxHeight = 20;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color waterMarkActiveColor;
@@ -58,7 +58,6 @@
         private Panel waterMarkContainer;
         private Font waterMarkFont;
         private string waterMarkText = "Custom text...";
-
         private bool watermarkVisible;
         private int xValue;
         private int yValue;
@@ -98,6 +97,8 @@
         }
 
         public delegate void ButtonClickedEventHandler();
+
+        public event ButtonClickedEventHandler ButtonClicked;
 
         #endregion
 
@@ -383,8 +384,6 @@
 
         #region Events
 
-        public event ButtonClickedEventHandler ButtonClicked;
-
         public void CreateTextBox()
         {
             TextBox tb = TextBoxObject;
@@ -484,10 +483,10 @@
             if (buttonVisible)
             {
                 // Check if mouse in X position.
-                if (xValue > buttonRectangle.X && xValue < Width)
+                if ((xValue > buttonRectangle.X) && (xValue < Width))
                 {
                     // Determine the button middle separator by checking for the Y position.
-                    if (yValue > buttonRectangle.Y && yValue < Height)
+                    if ((yValue > buttonRectangle.Y) && (yValue < Height))
                     {
                         ButtonClicked?.Invoke();
                     }
@@ -547,7 +546,7 @@
                 graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
 
                 Size imageSize = new Size(iconSize.Width, iconSize.Height);
-                Point imagePoint = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - imageSize.Width / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - imageSize.Height / 2);
+                Point imagePoint = new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - (imageSize.Width / 2), (buttonRectangle.Y + (buttonRectangle.Height / 2)) - (imageSize.Height / 2));
 
                 Rectangle imageRectangle = new Rectangle(imagePoint, imageSize);
 
@@ -572,7 +571,7 @@
             // Draw border
             if (border.Visible)
             {
-                if (controlState == ControlState.Hover && border.HoverVisible)
+                if ((controlState == ControlState.Hover) && border.HoverVisible)
                 {
                     GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
                 }
@@ -600,7 +599,7 @@
             else
             {
                 // Auto adjust the text box height depending on the font size.
-                textboxHeight = Convert.ToInt32(Font.Size) * 2 + 1;
+                textBoxHeight = (Convert.ToInt32(Font.Size) * 2) + 1;
             }
 
             UpdateLocationPoints();
@@ -636,12 +635,12 @@
 
         private void DrawWaterMark()
         {
-            if (waterMarkContainer == null && TextLength <= 0)
+            if ((waterMarkContainer == null) && (TextLength <= 0))
             {
                 waterMarkContainer = new Panel(); // Creates the new panel instance
-                waterMarkContainer.Paint += waterMarkContainer_Paint;
+                waterMarkContainer.Paint += WaterMarkContainer_Paint;
                 waterMarkContainer.Invalidate();
-                waterMarkContainer.Click += waterMarkContainer_Click;
+                waterMarkContainer.Click += WaterMarkContainer_Click;
                 Controls.Add(waterMarkContainer); // adds the control
                 waterMarkContainer.BringToFront();
             }
@@ -655,14 +654,14 @@
         private void OnKeyDown(object obj, KeyEventArgs e)
         {
             // Select all
-            if (e.Control && e.KeyCode == Keys.A)
+            if (e.Control && (e.KeyCode == Keys.A))
             {
                 TextBoxObject.SelectAll();
                 e.SuppressKeyPress = true;
             }
 
             // Copy
-            if (e.Control && e.KeyCode == Keys.C)
+            if (e.Control && (e.KeyCode == Keys.C))
             {
                 TextBoxObject.Copy();
                 e.SuppressKeyPress = true;
@@ -682,7 +681,7 @@
         {
             if (!Multiline)
             {
-                Height = textboxHeight;
+                Height = textBoxHeight;
             }
 
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
@@ -693,12 +692,12 @@
             buttonPath.CloseAllFigures();
         }
 
-        private void waterMarkContainer_Click(object sender, EventArgs e)
+        private void WaterMarkContainer_Click(object sender, EventArgs e)
         {
             Focus();
         }
 
-        private void waterMarkContainer_Paint(object sender, PaintEventArgs e)
+        private void WaterMarkContainer_Paint(object sender, PaintEventArgs e)
         {
             // Configure the watermark
             waterMarkContainer.Location = new Point(2, 0);

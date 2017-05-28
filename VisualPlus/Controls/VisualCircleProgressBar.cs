@@ -62,7 +62,7 @@
             UpdateStyles();
 
             // Attempt to center icon
-            iconPoint = new Point(Width / 2 - iconRectangle.Width / 2, Height / 2 - iconRectangle.Height / 2);
+            iconPoint = new Point((Width / 2) - (iconRectangle.Width / 2), (Height / 2) - (iconRectangle.Height / 2));
         }
 
         public enum ProgressShape
@@ -379,7 +379,7 @@
                     }
 
                     // Draw progress
-                    graphics.DrawArc(progressPen, progressSize + 2, progressSize + 2, Width - progressSize * 2, Height - progressSize * 2, -90, (int)Math.Round(360.0 / Maximum * Value));
+                    graphics.DrawArc(progressPen, progressSize + 2, progressSize + 2, Width - (progressSize * 2), Height - (progressSize * 2), -90, (int)Math.Round((360.0 / Maximum) * Value));
                 }
             }
 
@@ -405,10 +405,10 @@
             // String percentage
             if (textVisible)
             {
-                SizeF measuredString = graphics.MeasureString(Convert.ToString(Convert.ToInt32(100 / Maximum * Value)), Font);
-                Point textPoint = new Point(Convert.ToInt32(Width / 2 - measuredString.Width / 2), Convert.ToInt32(Height / 2 - measuredString.Height / 2));
+                SizeF measuredString = graphics.MeasureString(Convert.ToString(Convert.ToInt32((100 / Maximum) * Value)), Font);
+                Point textPoint = new Point(Convert.ToInt32((Width / 2) - (measuredString.Width / 2)), Convert.ToInt32((Height / 2) - (measuredString.Height / 2)));
 
-                string stringValue = Convert.ToString(Convert.ToInt32(100 / Maximum * Value)) + @"%";
+                string stringValue = Convert.ToString(Convert.ToInt32((100 / Maximum) * Value)) + @"%";
 
                 graphics.DrawString(stringValue, font, new SolidBrush(ForeColor), textPoint);
             }

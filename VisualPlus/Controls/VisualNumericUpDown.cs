@@ -27,35 +27,33 @@
     {
         #region Variables
 
-        private Color[] backgroundColor =
+        private readonly Color[] backgroundColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
                 Settings.DefaultValue.Style.BackgroundColor(0)
             };
 
-        private Gradient backgroundDisabledGradient = new Gradient();
-        private Gradient backgroundGradient = new Gradient();
-        private Border border = new Border();
-        private Border buttonBorder = new Border();
-
-        private Color[] buttonColor =
+        private readonly Color[] buttonColor =
             {
                 Settings.DefaultValue.Style.ButtonNormalColor,
                 ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
                 Settings.DefaultValue.Style.ButtonNormalColor
             };
 
-        private Gradient buttonGradient = new Gradient();
-        private GraphicsPath buttonPath;
-        private Rectangle buttonRectangle;
-        private int buttonWidth = 19;
-
-        private Color[] controlDisabledColor =
+        private readonly Color[] controlDisabledColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
                 Settings.DefaultValue.Style.ControlDisabled
             };
 
+        private Gradient backgroundDisabledGradient = new Gradient();
+        private Gradient backgroundGradient = new Gradient();
+        private Border border = new Border();
+        private Border buttonBorder = new Border();
+        private Gradient buttonGradient = new Gradient();
+        private GraphicsPath buttonPath;
+        private Rectangle buttonRectangle;
+        private int buttonWidth = 19;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
@@ -384,17 +382,17 @@
             OnMouseClick(e);
 
             // Check if mouse in X position.
-            if (xValue > Width - buttonRectangle.Width && xValue < Width)
+            if ((xValue > Width - buttonRectangle.Width) && (xValue < Width))
             {
                 // Determine the button middle separator by checking for the Y position.
-                if (yValue > buttonRectangle.Y && yValue < Height / 2)
+                if ((yValue > buttonRectangle.Y) && (yValue < Height / 2))
                 {
                     if (Value + 1 <= maximumValue)
                     {
                         numericValue++;
                     }
                 }
-                else if (yValue > Height / 2 && yValue < Height)
+                else if ((yValue > Height / 2) && (yValue < Height))
                 {
                     if (Value - 1 >= minimumValue)
                     {
@@ -499,11 +497,11 @@
             graphics.ResetClip();
 
             // Draw string
-            graphics.DrawString("+", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2 - 2, Height / 4 - buttonRectangle.Height / 4));
-            graphics.DrawString("-", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2, Height / 2));
+            graphics.DrawString("+", Font, new SolidBrush(foreColor), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2) - 2, (Height / 4) - (buttonRectangle.Height / 4)));
+            graphics.DrawString("-", Font, new SolidBrush(foreColor), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2), Height / 2));
 
             // Button separator
-            graphics.DrawLine(new Pen(Settings.DefaultValue.Style.BorderColor(0)), buttonRectangle.X, buttonRectangle.Y + buttonRectangle.Height / 2, buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + buttonRectangle.Height / 2);
+            graphics.DrawLine(new Pen(Settings.DefaultValue.Style.BorderColor(0)), buttonRectangle.X, buttonRectangle.Y + (buttonRectangle.Height / 2), buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + (buttonRectangle.Height / 2));
 
             // Draw control border
             if (border.Visible)

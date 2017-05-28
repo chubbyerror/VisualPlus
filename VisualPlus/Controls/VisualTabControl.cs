@@ -28,12 +28,29 @@
     {
         #region Variables
 
+        private readonly Color[] tabHover =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
+                Settings.DefaultValue.Style.TabSelected
+            };
+
+        private readonly Color[] tabNormal =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.TabNormal),
+                Settings.DefaultValue.Style.TabNormal
+            };
+
+        private readonly Color[] tabSelected =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
+                Settings.DefaultValue.Style.TabSelected
+            };
+
         private TabAlignment alignment = TabAlignment.Top;
         private bool arrowSelectorVisible = true;
         private int arrowSpacing = 10;
         private int arrowThickness = 5;
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
-        private Border tabPageBorder = new Border();
         private ControlState controlState = ControlState.Normal;
         private Gradient hover = new Gradient();
         private Size itemSize = new Size(100, 25);
@@ -50,29 +67,9 @@
         private int separatorSpacing = 2;
         private float separatorThickness = 2F;
         private bool separatorVisible;
-
-        private Color[] tabHover =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
-                Settings.DefaultValue.Style.TabSelected
-            };
-
         private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
-
-        private Color[] tabNormal =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.TabNormal),
-                Settings.DefaultValue.Style.TabNormal
-            };
-
+        private Border tabPageBorder = new Border();
         private Rectangle tabPageRectangle;
-
-        private Color[] tabSelected =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
-                Settings.DefaultValue.Style.TabSelected
-            };
-
         private Color tabSelector = Settings.DefaultValue.Style.StyleColor;
         private StringAlignment textAlignment = StringAlignment.Center;
         private Color textNormal = Settings.DefaultValue.Style.TabTextNormal;
@@ -232,23 +229,6 @@
                     page.BackColor = backgroundColor;
                 }
 
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(BorderConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
-        public Border TabPageBorder
-        {
-            get
-            {
-                return tabPageBorder;
-            }
-
-            set
-            {
-                tabPageBorder = value;
                 Invalidate();
             }
         }
@@ -496,6 +476,23 @@
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Border TabPageBorder
+        {
+            get
+            {
+                return tabPageBorder;
+            }
+
+            set
+            {
+                tabPageBorder = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color TabSelector
@@ -718,7 +715,7 @@
                     // Draw other TabPages
                     graphics.FillRectangle(normalBrush, tabPageRectangle);
 
-                    if (controlState == ControlState.Hover && tabPageRectangle.Contains(mouseLocation))
+                    if ((controlState == ControlState.Hover) && tabPageRectangle.Contains(mouseLocation))
                     {
                         Cursor = Cursors.Hand;
 
@@ -764,7 +761,7 @@
 
         private void ConfigureAlignmentStyle(int tabIndex)
         {
-            if (Alignment == TabAlignment.Top && Alignment == TabAlignment.Bottom)
+            if ((Alignment == TabAlignment.Top) && (Alignment == TabAlignment.Bottom))
             {
                 // Top - Bottom
                 tabPageRectangle = new Rectangle(
@@ -801,7 +798,7 @@
                 case TabAlignment.Left:
                     {
                         points[0].X = selectedRectangle.Right - ArrowThickness;
-                        points[0].Y = selectedRectangle.Y + selectedRectangle.Height / 2;
+                        points[0].Y = selectedRectangle.Y + (selectedRectangle.Height / 2);
 
                         points[1].X = selectedRectangle.Right + ArrowSpacing;
                         points[1].Y = selectedRectangle.Top + ArrowSpacing;
@@ -813,7 +810,7 @@
 
                 case TabAlignment.Top:
                     {
-                        points[0].X = selectedRectangle.X + selectedRectangle.Width / 2;
+                        points[0].X = selectedRectangle.X + (selectedRectangle.Width / 2);
                         points[0].Y = selectedRectangle.Bottom - ArrowThickness;
 
                         points[1].X = selectedRectangle.Left + ArrowSpacing;
@@ -826,7 +823,7 @@
 
                 case TabAlignment.Bottom:
                     {
-                        points[0].X = selectedRectangle.X + selectedRectangle.Width / 2;
+                        points[0].X = selectedRectangle.X + (selectedRectangle.Width / 2);
                         points[0].Y = selectedRectangle.Top + ArrowThickness;
 
                         points[1].X = selectedRectangle.Left + ArrowSpacing;
@@ -840,7 +837,7 @@
                 case TabAlignment.Right:
                     {
                         points[0].X = selectedRectangle.Left + ArrowThickness;
-                        points[0].Y = selectedRectangle.Y + selectedRectangle.Height / 2;
+                        points[0].Y = selectedRectangle.Y + (selectedRectangle.Height / 2);
 
                         points[1].X = selectedRectangle.Left - ArrowSpacing;
                         points[1].Y = selectedRectangle.Top + ArrowSpacing;

@@ -24,7 +24,6 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ListView")]
-    //  [Designer(VSDesignerBinding.VisualListView)]
     public sealed class VisualListView : ListView
     {
         #region Variables
@@ -334,7 +333,7 @@
                 };
 
             // Draw the header text.
-            e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText), new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - itemPadding * 2, e.Bounds.Height - itemPadding * 2), stringFormat);
+            e.Graphics.DrawString(e.Header.Text, headerFont, new SolidBrush(headerText), new Rectangle(e.Bounds.X + itemPadding, e.Bounds.Y + itemPadding, e.Bounds.Width - (itemPadding * 2), e.Bounds.Height - (itemPadding * 2)), stringFormat);
             graphics.Dispose();
         }
 
@@ -352,7 +351,7 @@
                 // selected background
                 graphics.FillRectangle(new SolidBrush(itemSelected), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
             }
-            else if (e.Bounds.Contains(MouseLocation) && controlState == ControlState.Hover)
+            else if (e.Bounds.Contains(MouseLocation) && (controlState == ControlState.Hover))
             {
                 // hover background
                 graphics.FillRectangle(new SolidBrush(itemHover), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
@@ -364,7 +363,7 @@
             foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
             {
                 // Draw text
-                graphics.DrawString(subItem.Text, Font, new SolidBrush(Color.Black), new Rectangle(subItem.Bounds.X + itemPadding, itemPadding, subItem.Bounds.Width - 2 * itemPadding, subItem.Bounds.Height - 2 * itemPadding), GetStringFormat());
+                graphics.DrawString(subItem.Text, Font, new SolidBrush(Color.Black), new Rectangle(subItem.Bounds.X + itemPadding, itemPadding, subItem.Bounds.Width - (2 * itemPadding), subItem.Bounds.Height - (2 * itemPadding)), GetStringFormat());
             }
 
             if ((e.State & ListViewItemStates.Selected) != 0)
@@ -418,7 +417,7 @@
                 // Draw the text and background for a subitem with a 
                 // negative value. 
                 double subItemValue;
-                if (e.ColumnIndex > 0 && double.TryParse(e.SubItem.Text, NumberStyles.Currency, NumberFormatInfo.CurrentInfo, out subItemValue) && subItemValue < 0)
+                if ((e.ColumnIndex > 0) && double.TryParse(e.SubItem.Text, NumberStyles.Currency, NumberFormatInfo.CurrentInfo, out subItemValue) && (subItemValue < 0))
                 {
                     // Unless the item is selected, draw the standard 
                     // background to make it stand out from the gradient.

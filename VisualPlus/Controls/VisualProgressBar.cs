@@ -485,7 +485,7 @@
 
             gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
 
-            if (progressBarStyle == ProgressBarTypes.Horizontal || progressBarStyle == ProgressBarTypes.Vertical)
+            if ((progressBarStyle == ProgressBarTypes.Horizontal) || (progressBarStyle == ProgressBarTypes.Vertical))
             {
                 // Draw default progress
                 DrawDefaultProgress(progressBarStyle, graphics);
@@ -551,7 +551,7 @@
             {
                 case ProgressBarTypes.Horizontal:
                     {
-                        i1 = (int)Math.Round((Value - Minimum) / (double)(Maximum - Minimum) * (Width - 2));
+                        i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Width - 2));
 
                         if (border.Shape == BorderShape.Rectangle)
                         {
@@ -568,7 +568,7 @@
                     break;
                 case ProgressBarTypes.Vertical:
                     {
-                        i1 = (int)Math.Round((Value - Minimum) / (double)(Maximum - Minimum) * (Height - 2));
+                        i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Height - 2));
 
                         if (border.Shape == BorderShape.Rectangle)
                         {
@@ -614,7 +614,7 @@
             // Draw border
             if (border.Visible)
             {
-                if (controlState == ControlState.Hover && border.HoverVisible)
+                if ((controlState == ControlState.Hover) && border.HoverVisible)
                 {
                     GDI.DrawBorder(graphics, graphicsDefaultBorderPath, border.Thickness, border.HoverColor);
                 }
@@ -731,7 +731,7 @@
                 // Draw border
                 if (border.Visible)
                 {
-                    if (controlState == ControlState.Hover && border.HoverVisible)
+                    if ((controlState == ControlState.Hover) && border.HoverVisible)
                     {
                         GDI.DrawBorder(graphics, barStyle, border.Thickness, border.HoverColor);
                     }

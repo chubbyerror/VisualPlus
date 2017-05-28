@@ -28,6 +28,12 @@
     {
         #region Variables
 
+        private readonly Color[] titleBoxColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
+                Settings.DefaultValue.Style.BackgroundColor(0)
+            };
+
         private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
         private Border border = new Border();
         private GraphicsPath borderGraphicsPath;
@@ -40,12 +46,6 @@
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private TitleAlignments titleAlign = TitleAlignments.Top;
         private Border titleBorder = new Border();
-
-        private Color[] titleBoxColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0)
-            };
 
         private int titleBoxHeight = 25;
         private GraphicsPath titleBoxPath;

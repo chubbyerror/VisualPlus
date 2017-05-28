@@ -28,48 +28,44 @@
         #region Variables
 
         private const int Spacing = 2;
-        private bool animation = true;
-        private Border boxBorder = new Border();
 
-        private Color[] boxColor =
+        private readonly Color[] boxColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3)),
                 Settings.DefaultValue.Style.BackgroundColor(3)
             };
 
-        private Color[] boxDisabledColor =
+        private readonly Color[] boxDisabledColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
                 Settings.DefaultValue.Style.TextDisabled
             };
 
+        private readonly Color[] checkColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
+                Settings.DefaultValue.Style.StyleColor
+            };
+
+        private readonly Color[] checkDisabledColor =
+            {
+                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
+                Settings.DefaultValue.Style.TextDisabled
+            };
+
+        private bool animation = true;
+        private Border boxBorder = new Border();
         private Gradient boxDisabledGradient = new Gradient();
         private Gradient boxGradient = new Gradient();
         private GraphicsPath boxGraphicsPath;
         private Point boxLocation = new Point(2, 2);
         private Rectangle boxRectangle;
         private Size boxSize = new Size(10, 10);
-
-        private Color[] checkColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
-                Settings.DefaultValue.Style.StyleColor
-            };
-
-        private Color[] checkDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
-                Settings.DefaultValue.Style.TextDisabled
-            };
-
         private Gradient checkDisabledGradient = new Gradient();
         private Gradient checkGradient = new Gradient();
         private Point checkLocation = new Point(0, 0);
-
         private Size checkSize = new Size(6, 6);
-
         private ControlState controlState = ControlState.Normal;
-        private VFXManager effectsManager;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private VFXManager rippleEffectsManager;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
@@ -92,7 +88,7 @@
             Cursor = Cursors.Hand;
 
             // Setup effects animation
-            effectsManager = new VFXManager
+            VFXManager effectsManager = new VFXManager
                 {
                     Increment = 0.05,
                     EffectType = EffectType.EaseInOut
@@ -336,7 +332,7 @@
                 {
                     controlState = ControlState.Down;
 
-                    if (animation && args.Button == MouseButtons.Left && GDI.IsMouseInBounds(MouseLocation, boxRectangle))
+                    if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(MouseLocation, boxRectangle))
                     {
                         rippleEffectsManager.SecondaryIncrement = 0;
                         rippleEffectsManager.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
@@ -418,15 +414,15 @@
                 {
                     double animationValue = rippleEffectsManager.GetProgress(i);
 
-                    Point animationSource = new Point(boxRectangle.X + boxRectangle.Width / 2, boxRectangle.Y + boxRectangle.Height / 2);
+                    Point animationSource = new Point(boxRectangle.X + (boxRectangle.Width / 2), boxRectangle.Y + (boxRectangle.Height / 2));
                     SolidBrush animationBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), (bool)rippleEffectsManager.GetData(i)[0] ? Color.Black : checkColor[0]));
 
                     int height = boxRectangle.Height;
-                    int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + 0.2d * animationValue)) : height;
+                    int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + (0.2d * animationValue))) : height;
 
                     using (GraphicsPath path = GDI.DrawRoundedRectangle(
-                        animationSource.X - size / 2,
-                        animationSource.Y - size / 2,
+                        animationSource.X - (size / 2),
+                        animationSource.Y - (size / 2),
                         size,
                         size,
                         size / 2))
@@ -446,7 +442,7 @@
             }
 
             // Draw the string specified in 'Text' property
-            Point textPoint = new Point(boxLocation.X + boxSize.Width + Spacing, boxSize.Height / 2 - (int)Font.Size / 2);
+            Point textPoint = new Point(boxLocation.X + boxSize.Width + Spacing, (boxSize.Height / 2) - ((int)Font.Size / 2));
 
             StringFormat stringFormat = new StringFormat();
 

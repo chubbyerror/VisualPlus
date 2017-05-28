@@ -25,24 +25,24 @@
     {
         #region Variables
 
-        private Color[] lineColor =
+        private readonly Color[] lineColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.LineColor),
                 Settings.DefaultValue.Style.LineColor,
                 ControlPaint.Light(Settings.DefaultValue.Style.LineColor)
             };
 
-        private Gradient lineGradient = new Gradient();
-
-        private Rectangle lineRectangle;
-        private Orientation separatorOrientation = Orientation.Horizontal;
-
-        private Color[] shadowColor =
+        private readonly Color[] shadowColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ShadowColor),
                 Settings.DefaultValue.Style.ShadowColor,
                 ControlPaint.Light(Settings.DefaultValue.Style.ShadowColor)
             };
+
+        private Gradient lineGradient = new Gradient();
+
+        private Rectangle lineRectangle;
+        private Orientation separatorOrientation = Orientation.Horizontal;
 
         private Gradient shadowGradient = new Gradient();
 

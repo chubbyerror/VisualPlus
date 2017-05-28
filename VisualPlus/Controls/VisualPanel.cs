@@ -65,6 +65,9 @@
 
         public delegate void ExpanderClickedEventHandler();
 
+        [Description("Occours when the expander was clicked.")]
+        public event ExpanderClickedEventHandler ExpanderClicked;
+
         #endregion
 
         #region Properties
@@ -203,9 +206,6 @@
 
         #region Events
 
-        [Description("Occours when the expander was clicked.")]
-        public event ExpanderClickedEventHandler ExpanderClicked;
-
         protected override void OnControlAdded(ControlEventArgs e)
         {
             ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, false);
@@ -225,10 +225,10 @@
                 if (buttonDirection == Direction.Left)
                 {
                     // Check if mouse in X position.
-                    if (xValue > buttonRectangle.X && xValue < buttonSize.Width + ButtonSpacing)
+                    if ((xValue > buttonRectangle.X) && (xValue < buttonSize.Width + ButtonSpacing))
                     {
                         // Determine the button middle separator by checking for the Y position.
-                        if (yValue > buttonRectangle.Y && yValue < buttonSize.Height + ButtonSpacing)
+                        if ((yValue > buttonRectangle.Y) && (yValue < buttonSize.Height + ButtonSpacing))
                         {
                             if (Expanded)
                             {
@@ -250,10 +250,10 @@
                 else
                 {
                     // Check if mouse in X position.
-                    if (xValue > Width - buttonRectangle.X - buttonSize.Width && xValue < Width - buttonRectangle.X)
+                    if ((xValue > Width - buttonRectangle.X - buttonSize.Width) && (xValue < Width - buttonRectangle.X))
                     {
                         // Determine the button middle separator by checking for the Y position.
-                        if (yValue > buttonRectangle.Y && yValue < buttonRectangle.Y + buttonRectangle.Height)
+                        if ((yValue > buttonRectangle.Y) && (yValue < buttonRectangle.Y + buttonRectangle.Height))
                         {
                             if (Expanded)
                             {
@@ -303,7 +303,7 @@
             {
                 if (buttonDirection == Direction.Left)
                 {
-                    if (e.X < buttonRectangle.X + buttonSize.Width && e.Y < buttonRectangle.Y + buttonSize.Height)
+                    if ((e.X < buttonRectangle.X + buttonSize.Width) && (e.Y < buttonRectangle.Y + buttonSize.Height))
                     {
                         Cursor = Cursors.Hand;
                     }
@@ -314,7 +314,7 @@
                 }
                 else
                 {
-                    if (e.X > Width - buttonRectangle.X - buttonSize.Width && e.Y < buttonRectangle.Y + buttonSize.Height)
+                    if ((e.X > Width - buttonRectangle.X - buttonSize.Width) && (e.Y < buttonRectangle.Y + buttonSize.Height))
                     {
                         Cursor = Cursors.Hand;
                     }
@@ -370,7 +370,7 @@
             {
                 if (expanded)
                 {
-                    points[0].X = buttonRectangle.X + ButtonSize.Width / 2;
+                    points[0].X = buttonRectangle.X + (ButtonSize.Width / 2);
                     points[0].Y = buttonRectangle.Y;
 
                     points[1].X = buttonRectangle.X;
@@ -387,7 +387,7 @@
                     points[1].X = buttonRectangle.X + ButtonSize.Width;
                     points[1].Y = buttonRectangle.Y;
 
-                    points[2].X = buttonRectangle.X + ButtonSize.Width / 2;
+                    points[2].X = buttonRectangle.X + (ButtonSize.Width / 2);
                     points[2].Y = buttonRectangle.Y + ButtonSize.Height;
                 }
             }
@@ -395,7 +395,7 @@
             {
                 if (expanded)
                 {
-                    points[0].X = Width - buttonRectangle.X - ButtonSize.Width / 2;
+                    points[0].X = Width - buttonRectangle.X - (ButtonSize.Width / 2);
                     points[0].Y = buttonRectangle.Y;
 
                     points[1].X = Width - buttonRectangle.X - buttonSize.Width;
@@ -412,7 +412,7 @@
                     points[1].X = Width - buttonRectangle.X;
                     points[1].Y = buttonRectangle.Y;
 
-                    points[2].X = Width - buttonRectangle.X - ButtonSize.Width / 2;
+                    points[2].X = Width - buttonRectangle.X - (ButtonSize.Width / 2);
                     points[2].Y = buttonRectangle.Y + ButtonSize.Height;
                 }
             }

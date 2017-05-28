@@ -42,9 +42,7 @@
         public VisualProgressIndicator()
         {
             SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer
-                | ControlStyles.SupportsTransparentBackColor,
-                true);
+                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
 
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Size = new Size(80, 80);
@@ -189,10 +187,8 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
 
-
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
-
 
             buffGraphics.Graphics.Clear(BackColor);
             int num2 = floatPoint.Length - 1;
@@ -247,7 +243,7 @@
             startingFloatPoint = new PointF(Width / 2f, Height / 2f);
             for (var i = 0f; i < 360f; i += circles)
             {
-                SetValue(startingFloatPoint, (int)Math.Round(Width / 2.0 - 15.0), i);
+                SetValue(startingFloatPoint, (int)Math.Round((Width / 2.0) - 15.0), i);
                 PointF endPoint = EndPoint;
                 endPoint = new PointF(endPoint.X - diameter, endPoint.Y - diameter);
                 stack.Push(endPoint);
@@ -264,7 +260,7 @@
 
         private void SetValue(PointF startFloatPoint, int length, double angle)
         {
-            double circleRadian = Math.PI * angle / 180.0;
+            double circleRadian = (Math.PI * angle) / 180.0;
 
             startingFloatPoint = startFloatPoint;
             rise = AssignValues(ref run, length);
@@ -274,7 +270,7 @@
 
         private void UpdateGraphics()
         {
-            if (Width <= 0 || Height <= 0)
+            if ((Width <= 0) || (Height <= 0))
             {
                 return;
             }

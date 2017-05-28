@@ -52,6 +52,8 @@
 
         public delegate void ClickedEventHandler(object sender);
 
+        public event ClickedEventHandler Clicked;
+
         #endregion
 
         #region Properties
@@ -190,11 +192,9 @@
 
         #region Events
 
-        public event ClickedEventHandler Clicked;
-
         protected override void OnItemClicked(ToolStripItemClickedEventArgs e)
         {
-            if (e.ClickedItem != null && !(e.ClickedItem is ToolStripSeparator))
+            if ((e.ClickedItem != null) && !(e.ClickedItem is ToolStripSeparator))
             {
                 if (ReferenceEquals(e, clickedEventArgs))
                 {

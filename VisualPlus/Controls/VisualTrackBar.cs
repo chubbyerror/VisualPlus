@@ -33,58 +33,46 @@
 
         #region Variables
 
-        private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
-
-        private static Color[] progressColor =
+        private static readonly Color[] progressColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor),
                 Settings.DefaultValue.Style.ProgressColor
             };
 
-        private static Rectangle trackerRectangle = Rectangle.Empty;
-
-        private Color[] backgroundColor =
+        private readonly Color[] backgroundColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
                 Settings.DefaultValue.Style.BackgroundColor(0)
             };
 
-        private Gradient backgroundGradient = new Gradient();
-
-        private int barThickness = 10;
-        private int barTickSpacing = 8;
-
-        private bool buttonAutoSize = true;
-        private Border buttonBorder = new Border();
-
-        private Color[] buttonColor =
+        private readonly Color[] buttonColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
                 Settings.DefaultValue.Style.ButtonNormalColor
             };
 
-        private Gradient buttonGradient = new Gradient();
-
-        private GraphicsPath buttonPath = new GraphicsPath();
-        private Rectangle buttonRectangle;
-        private Size buttonSize = new Size(27, 20);
-        private Color buttonTextColor = Settings.DefaultValue.Style.ForeColor(0);
-        private bool buttonVisible = true;
-
-        private ControlState controlState = ControlState.Normal;
-        private int currentUsedPos;
-
-        private Color[] disabledColor =
+        private readonly Color[] disabledColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
                 Settings.DefaultValue.Style.ControlDisabled
             };
 
+        private Gradient backgroundGradient = new Gradient();
+        private int barThickness = 10;
+        private int barTickSpacing = 8;
+        private bool buttonAutoSize = true;
+        private Border buttonBorder = new Border();
+        private Gradient buttonGradient = new Gradient();
+        private GraphicsPath buttonPath = new GraphicsPath();
+        private Rectangle buttonRectangle;
+        private Size buttonSize = new Size(27, 20);
+        private Color buttonTextColor = Settings.DefaultValue.Style.ForeColor(0);
+        private bool buttonVisible = true;
+        private ControlState controlState = ControlState.Normal;
+        private int currentUsedPos;
         private ValueDivisor dividedValue = ValueDivisor.By1;
-
         private int fillingValue = 25;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-
         private Point[] gradientPoints;
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private float hatchSize = Settings.DefaultValue.HatchSize;
@@ -874,7 +862,7 @@
                             }
                             else
                             {
-                                offsetValue = (int)((currentPoint.X - indentWidth - buttonSize.Width) / 2 * (Maximum - Minimum) / (Width - 2 * indentWidth - buttonSize.Width) + 0.5);
+                                offsetValue = (int)(((((currentPoint.X - indentWidth - buttonSize.Width) / 2) * (Maximum - Minimum)) / (Width - (2 * indentWidth) - buttonSize.Width)) + 0.5);
                             }
 
                             break;
@@ -892,7 +880,7 @@
                             }
                             else
                             {
-                                offsetValue = (int)((Height - currentPoint.Y - indentHeight - buttonSize.Width) / 2 * (Maximum - Minimum) / (Height - 2 * indentHeight - buttonSize.Width) + 0.5);
+                                offsetValue = (int)(((((Height - currentPoint.Y - indentHeight - buttonSize.Width) / 2) * (Maximum - Minimum)) / (Height - (2 * indentHeight) - buttonSize.Width)) + 0.5);
                             }
 
                             break;
@@ -1155,6 +1143,10 @@
 
             return result;
         }
+
+        private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
+
+        private static Rectangle trackerRectangle = Rectangle.Empty;
 
         /// <summary>Configures the tick style.</summary>
         /// <param name="graphics">Graphics input.</param>
@@ -1422,6 +1414,7 @@
 
         /// <summary>Draws the button.</summary>
         /// <param name="graphics">Graphics input.</param>
+        /// <param name="progressValue">The progress Value.</param>
         private void DrawButton(Graphics graphics, Size progressValue)
         {
             Point buttonLocation = new Point();
@@ -1445,6 +1438,7 @@
                         {
                             buttonSize = new Size(buttonSize.Width, buttonSize.Height);
                         }
+
                         break;
                     }
 
@@ -1460,6 +1454,7 @@
                         {
                             buttonSize = new Size(buttonSize.Width, buttonSize.Height);
                         }
+
                         break;
                     }
             }

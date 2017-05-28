@@ -282,11 +282,8 @@
         private static readonly object EventSmallChangeChanged = new object();
         private readonly Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private LinearGradientBrush _blackBottomGradient;
-        private float _boxSizeRatio = 0.15f;
         private Bitmap _canvas;
-        private bool _fullColorSpectrum = true;
         private Graphics _graphicsBuffer;
-        private float _paddingPercentage = 0.05f;
         private LinearGradientBrush _spectrumGradient;
         private LinearGradientBrush _whiteTopGradient;
         private Border border = new Border();
@@ -313,9 +310,7 @@
 
         public VisualColorPicker()
         {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Selectable | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick |
-                ControlStyles.SupportsTransparentBackColor, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Selectable | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick | ControlStyles.SupportsTransparentBackColor, true);
 
             Color = Color.Black;
             ColorStep = 4;
@@ -334,6 +329,34 @@
 
             UpdateLinearGradientBrushes();
             UpdateGraphicsBuffer();
+        }
+
+        [Category("Property Changed")]
+        public event EventHandler ColorChanged
+        {
+            add
+            {
+                Events.AddHandler(EventColorChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(EventColorChanged, value);
+            }
+        }
+
+        [Category("Property Changed")]
+        public event EventHandler LargeChangeChanged
+        {
+            add
+            {
+                Events.AddHandler(EventLargeChangeChanged, value);
+            }
+
+            remove
+            {
+                Events.RemoveHandler(EventLargeChangeChanged, value);
+            }
         }
 
         public enum PickerType
@@ -595,34 +618,6 @@
         #endregion
 
         #region Events
-
-        [Category("Property Changed")]
-        public event EventHandler ColorChanged
-        {
-            add
-            {
-                Events.AddHandler(EventColorChanged, value);
-            }
-
-            remove
-            {
-                Events.RemoveHandler(EventColorChanged, value);
-            }
-        }
-
-        [Category("Property Changed")]
-        public event EventHandler LargeChangeChanged
-        {
-            add
-            {
-                Events.AddHandler(EventLargeChangeChanged, value);
-            }
-
-            remove
-            {
-                Events.RemoveHandler(EventLargeChangeChanged, value);
-            }
-        }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -1001,7 +996,7 @@
             handler?.Invoke(this, e);
         }
 
-        /// <summary>Raises the <see cref="ColorStepChanged" /> event.</summary>
+        /// <summary>Raises the event.</summary>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void OnColorStepChanged(EventArgs e)
         {
@@ -1010,7 +1005,7 @@
             handler?.Invoke(this, e);
         }
 
-        /// <summary>Raises the <see cref="HslColorChanged" /> event.</summary>
+        /// <summary>Raises the event.</summary>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void OnHslColorChanged(EventArgs e)
         {
@@ -1024,7 +1019,7 @@
             handler?.Invoke(this, e);
         }
 
-        /// <summary>Raises the <see cref="LargeChangeChanged" /> event.</summary>
+        /// <summary>Raises the event.</summary>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void OnLargeChangeChanged(EventArgs e)
         {
@@ -1032,7 +1027,7 @@
             handler?.Invoke(this, e);
         }
 
-        /// <summary>Raises the <see cref="SelectionSizeChanged" /> event.</summary>
+        /// <summary>Raises the event.</summary>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void OnSelectionSizeChanged(EventArgs e)
         {
@@ -1043,7 +1038,7 @@
             handler?.Invoke(this, e);
         }
 
-        /// <summary>Raises the <see cref="SmallChangeChanged" /> event.</summary>
+        /// <summary>Raises the event.</summary>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void OnSmallChangeChanged(EventArgs e)
         {

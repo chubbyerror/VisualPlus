@@ -32,37 +32,32 @@
                 Interval = 1
             };
 
-        private Color[] backgroundColor =
+        private readonly Color[] backgroundColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
                 Settings.DefaultValue.Style.BackgroundColor(0)
             };
 
-        private Gradient backgroundDisabledGradient = new Gradient();
-
-        private Gradient backgroundGradient = new Gradient();
-
-        private Border border = new Border();
-        private Border buttonBorder = new Border();
-
-        private Color[] buttonColor =
+        private readonly Color[] buttonColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
                 Settings.DefaultValue.Style.ButtonNormalColor
             };
 
-        private Gradient buttonDisabledGradient = new Gradient();
-        private Gradient buttonGradient = new Gradient();
-
-        private Rectangle buttonRectangle;
-        private Size buttonSize = new Size(20, 16);
-
-        private Color[] controlDisabledColor =
+        private readonly Color[] controlDisabledColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
                 Settings.DefaultValue.Style.ControlDisabled
             };
 
+        private Gradient backgroundDisabledGradient = new Gradient();
+        private Gradient backgroundGradient = new Gradient();
+        private Border border = new Border();
+        private Border buttonBorder = new Border();
+        private Gradient buttonDisabledGradient = new Gradient();
+        private Gradient buttonGradient = new Gradient();
+        private Rectangle buttonRectangle;
+        private Size buttonSize = new Size(20, 16);
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Point endPoint;
@@ -109,6 +104,8 @@
         }
 
         public delegate void ToggledChangedEventHandler();
+
+        public event ToggledChangedEventHandler ToggledChanged;
 
         public enum ToggleTypes
         {
@@ -331,8 +328,6 @@
 
         #region Events
 
-        public event ToggledChangedEventHandler ToggledChanged;
-
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
@@ -370,8 +365,8 @@
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
 
             // Update button location points
-            startPoint = new Point(0 + 2, ClientRectangle.Height / 2 - buttonSize.Height / 2);
-            endPoint = new Point(ClientRectangle.Width - buttonSize.Width - 2, ClientRectangle.Height / 2 - buttonSize.Height / 2);
+            startPoint = new Point(0 + 2, (ClientRectangle.Height / 2) - (buttonSize.Height / 2));
+            endPoint = new Point(ClientRectangle.Width - buttonSize.Width - 2, (ClientRectangle.Height / 2) - (buttonSize.Height / 2));
 
             Gradient buttonTemp = Enabled ? buttonGradient : buttonDisabledGradient;
             Gradient backTemp = Enabled ? backgroundGradient : backgroundDisabledGradient;
@@ -453,18 +448,18 @@
             foreColor = Enabled ? foreColor : textDisabledColor;
 
             // Draw string
-            Rectangle textboxRectangle;
+            Rectangle textBoxRectangle;
 
-            var XOff = 5;
-            var XOn = 7;
+            const int XOff = 5;
+            const int XOn = 7;
 
             if (toggled)
             {
-                textboxRectangle = new Rectangle(XOff, 0, Width - 1, Height - 1);
+                textBoxRectangle = new Rectangle(XOff, 0, Width - 1, Height - 1);
             }
             else
             {
-                textboxRectangle = new Rectangle(Width - (int)Font.SizeInPoints - XOn * 2, 0, Width - 1, Height - 1);
+                textBoxRectangle = new Rectangle(Width - (int)Font.SizeInPoints - (XOn * 2), 0, Width - 1, Height - 1);
             }
 
             StringFormat stringFormat = new StringFormat
@@ -478,7 +473,7 @@
                 textProcessor,
                 new Font(Font.FontFamily, 7f, Font.Style),
                 new SolidBrush(foreColor),
-                textboxRectangle,
+                textBoxRectangle,
                 stringFormat);
         }
 
