@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="Components\Symbols\Arrow.cs" />
     <Compile Include="Components\Symbols\Bars.cs" />
-    <Compile Include="Components\Symbols\Checkmark.cs" />
     <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Controls\FilterProperties\VisualCircleProgressBarDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualContextMenuDesigner.cs" />
