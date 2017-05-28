@@ -5,6 +5,7 @@ namespace VisualPlus.Framework
     using System.Drawing.Text;
 
     using VisualPlus.Enums;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Styles;
 
     #endregion
@@ -34,7 +35,7 @@ namespace VisualPlus.Framework
             public const int BorderThickness = 1;
             public const bool BorderHoverVisible = true;
             public const int BorderRounding = 6;
-            public const BorderShape BorderShape = Enums.BorderShape.Rounded;
+            public const BorderShape BorderShape = Structure.BorderShape.Rounded;
             public const bool BorderVisible = true;
             public const bool TextVisible = true;
             public const float ProgressSize = 5F;

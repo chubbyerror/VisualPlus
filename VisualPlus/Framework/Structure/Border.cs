@@ -7,10 +7,18 @@
     using System.Drawing;
     using System.Globalization;
 
-    using VisualPlus.Enums;
     using VisualPlus.Localization;
 
     #endregion
+
+    public enum BorderShape
+    {
+        /// <summary>Rectangle shape.</summary>
+        Rectangle,
+
+        /// <summary>Rounded shape.</summary>
+        Rounded
+    }
 
     [TypeConverter(typeof(BorderConverter))]
     [Description(Localize.Description.Border)]

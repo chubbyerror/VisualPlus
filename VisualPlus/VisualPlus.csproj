@@ -127,7 +127,6 @@
     <Compile Include="Framework\Settings.cs" />
     <Compile Include="Styles\Visual.cs" />
     <Compile Include="Enums\Animation.cs" />
-    <Compile Include="Enums\BorderShape.cs" />
     <Compile Include="Controls\VisualComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
