@@ -24,7 +24,7 @@
         /// <summary>Toggle move for control.</summary>
         /// <param name="control">The control.</param>
         /// <param name="enable">The toggle.</param>
-        public static void MoveToggle(this Control control, bool enable)
+        public static void ToggleMove(this Control control, bool enable)
         {
             if (enable)
             {
