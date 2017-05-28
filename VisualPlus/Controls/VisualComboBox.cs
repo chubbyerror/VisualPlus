@@ -13,6 +13,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -23,7 +24,7 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ComboBox")]
-    [Designer(VSDesignerBinding.VisualComboBox)]
+    [Designer(DesignManager.VisualComboBox)]
     public sealed class VisualComboBox : ComboBox
     {
         #region Variables

@@ -13,6 +13,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -23,7 +24,7 @@
     [DefaultEvent("CheckedChanged")]
     [DefaultProperty("Checked")]
     [Description("The Visual Checkbox")]
-    [Designer(VSDesignerBinding.VisualCheckBox)]
+    [Designer(DesignManager.VisualCheckBox)]
     public sealed class VisualCheckBox : CheckBox
     {
         #region Variables

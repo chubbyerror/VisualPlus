@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -22,7 +23,7 @@
     [DefaultEvent("TextChanged")]
     [DefaultProperty("Text")]
     [Description("The Visual RichTextBox")]
-    [Designer(VSDesignerBinding.VisualRichTextBox)]
+    [Designer(DesignManager.VisualRichTextBox)]
     public sealed class VisualRichTextBox : RichTextBox
     {
         #region Variables

@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
     using VisualPlus.Properties;
@@ -23,7 +24,7 @@
     [DefaultEvent("TextChanged")]
     [DefaultProperty("Text")]
     [Description("The Visual TextBox")]
-    [Designer(VSDesignerBinding.VisualTextBox)]
+    [Designer(DesignManager.VisualTextBox)]
     public sealed class VisualTextBox : TextBox
     {
         #region Variables

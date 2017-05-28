@@ -10,6 +10,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Localization;
 
     #endregion
@@ -19,7 +20,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Value")]
     [Description("The Visual Circle ProgressBar")]
-    [Designer(VSDesignerBinding.VisualCircleProgressBar)]
+    [Designer(DesignManager.VisualCircleProgressBar)]
     public sealed class VisualCircleProgressBar : ProgressBar
     {
         #region Variables

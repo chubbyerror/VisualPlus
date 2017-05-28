@@ -11,6 +11,7 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -21,7 +22,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Text")]
     [Description("The Visual Label")]
-    [Designer(VSDesignerBinding.VisualLabel)]
+    [Designer(DesignManager.VisualLabel)]
     public sealed class VisualLabel : Label
     {
         #region Variables
@@ -299,7 +300,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumAlpha, Settings.MaximumAlpha))
+                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumAlpha, Settings.MaximumAlpha))
                 {
                     shadowOpacity = value;
                 }

@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Framework.GDI
+﻿namespace VisualPlus.Framework.Handlers
 {
     #region Namespace
 
@@ -7,12 +7,14 @@
     using System.Drawing.Imaging;
     using System.Runtime.InteropServices;
 
+    using VisualPlus.Framework.GDI;
+
     #endregion
 
-    internal class ColorHelper
+    internal class ColorManager
     {
         #region Variables
-
+        
         private static Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
 
         #endregion

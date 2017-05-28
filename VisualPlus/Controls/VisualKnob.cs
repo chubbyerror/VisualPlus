@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -897,8 +898,8 @@
             float tx;
             float ty;
 
-            float incr = MathHelper.DegreeToRadian((endAngle - startAngle) / ((scaleDivisions - 1) * (scaleSubDivisions + 1)));
-            float currentAngle = MathHelper.DegreeToRadian(startAngle);
+            float incr = MathManager.DegreeToRadian((endAngle - startAngle) / ((scaleDivisions - 1) * (scaleSubDivisions + 1)));
+            float currentAngle = MathManager.DegreeToRadian(startAngle);
 
             float radius = knobRectangle.Width / 2;
             float rulerValue = minimum;
@@ -1033,8 +1034,8 @@
             float w = KnobTopSize.Width;
 
             // TODO: Adjust
-            float incr = MathHelper.DegreeToRadian((startAngle - endAngle) / ((buttonDivisions - 1) * (scaleSubDivisions + 1)));
-            float currentAngle = MathHelper.DegreeToRadian(0);
+            float incr = MathManager.DegreeToRadian((startAngle - endAngle) / ((buttonDivisions - 1) * (scaleSubDivisions + 1)));
+            float currentAngle = MathManager.DegreeToRadian(0);
 
             float radius = KnobTickSize.Width / 2;
 
@@ -1146,7 +1147,7 @@
             float radius = knobRectangle.Width / 2;
 
             float degree = (deltaAngle * Value) / (maximum - minimum);
-            degree = MathHelper.DegreeToRadian(degree + startAngle);
+            degree = MathManager.DegreeToRadian(degree + startAngle);
 
             Point Pos = new Point(0, 0);
 
@@ -1171,7 +1172,7 @@
             float radius = knobRectangle.Width / 2;
 
             float degree = (deltaAngle * Value) / (maximum - minimum);
-            degree = MathHelper.DegreeToRadian(degree + startAngle);
+            degree = MathManager.DegreeToRadian(degree + startAngle);
 
             Point Pos = new Point(0, 0)
                 {

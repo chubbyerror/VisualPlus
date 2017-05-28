@@ -113,14 +113,14 @@
     </Compile>
     <Compile Include="Enums\Direction.cs" />
     <Compile Include="Framework\Structure\Moveable.cs" />
-    <Compile Include="Framework\ExceptionHandler.cs" />
+    <Compile Include="Framework\Handlers\ExceptionManager.cs" />
     <Compile Include="Framework\Structure\Border.cs" />
-    <Compile Include="Framework\GDI\ColorHelper.cs" />
+    <Compile Include="Framework\Handlers\ColorManager.cs" />
     <Compile Include="Framework\Extensions.cs" />
     <Compile Include="Framework\Structure\Gradient.cs" />
     <Compile Include="Framework\GDI\VFX.cs" />
     <Compile Include="Framework\GDI\VFXManager.cs" />
-    <Compile Include="Framework\MathHelper.cs" />
+    <Compile Include="Framework\Handlers\MathManager.cs" />
     <Compile Include="Enums\Styles.cs" />
     <Compile Include="Styles\BlackAndYellow.cs" />
     <Compile Include="Styles\IStyle.cs" />
@@ -172,7 +172,7 @@
     <Compile Include="Framework\GDI\GDI.cs" />
     <Compile Include="Enums\ControlState.cs" />
     <Compile Include="Localization\Localization.cs" />
-    <Compile Include="Framework\VSDesigner.cs" />
+    <Compile Include="Framework\Handlers\DesignManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

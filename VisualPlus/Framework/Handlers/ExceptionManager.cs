@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Framework
+﻿namespace VisualPlus.Framework.Handlers
 {
     #region Namespace
 
@@ -10,10 +10,10 @@
 
     #endregion
 
-    internal class ExceptionHandler
+    internal class ExceptionManager
     {
         #region Events
-
+        
         /// <summary>Apply BackColor change on the container and it's child controls.</summary>
         /// <param name="container">The container control.</param>
         /// <param name="backgroundColor">The container backgroundColor.</param>

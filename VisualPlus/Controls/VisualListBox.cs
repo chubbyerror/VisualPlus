@@ -10,6 +10,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Localization;
 
     #endregion
@@ -19,7 +20,7 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ListBox")]
-    [Designer(VSDesignerBinding.VisualListBox)]
+    [Designer(DesignManager.VisualListBox)]
     public sealed class VisualListBox : ListBox
     {
         #region Variables

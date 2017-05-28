@@ -10,6 +10,7 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -20,7 +21,7 @@
     [DefaultEvent("Popup")]
     [DefaultProperty("Text")]
     [Description("The Visual ToolTip")]
-    [Designer(VSDesignerBinding.VisualToolTip)]
+    [Designer(DesignManager.VisualToolTip)]
     public sealed class VisualToolTip : ToolTip
     {
         #region Variables

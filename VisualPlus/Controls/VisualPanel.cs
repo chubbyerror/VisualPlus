@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -208,12 +209,12 @@
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
-            ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, false);
+            ExceptionManager.SetControlBackColor(e.Control, backgroundColor, false);
         }
 
         protected override void OnControlRemoved(ControlEventArgs e)
         {
-            ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, true);
+            ExceptionManager.SetControlBackColor(e.Control, backgroundColor, true);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

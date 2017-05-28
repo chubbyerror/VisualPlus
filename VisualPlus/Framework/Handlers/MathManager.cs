@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Framework
+﻿namespace VisualPlus.Framework.Handlers
 {
     #region Namespace
 
@@ -6,7 +6,7 @@
 
     #endregion
 
-    internal class MathHelper
+    internal class MathManager
     {
         #region Events
 
@@ -15,7 +15,7 @@
         /// <returns>Returns radian.</returns>
         public static float DegreeToRadian(float angle)
         {
-            return (float)(angle * Math.PI / 180);
+            return (float)((angle * Math.PI) / 180);
         }
 
         /// <summary>Gets the progress fraction.</summary>

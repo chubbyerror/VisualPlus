@@ -14,6 +14,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -1064,7 +1065,7 @@
             if (pickType == PickerType.Rectangle)
             {
                 LockUpdates = true;
-                Color = ColorHelper.CurrentPointerColor();
+                Color = ColorManager.CurrentPointerColor();
                 LockUpdates = false;
             }
             else

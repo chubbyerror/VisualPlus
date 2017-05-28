@@ -7,6 +7,7 @@
     using System.Drawing;
     using System.Globalization;
 
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Localization;
 
     #endregion
@@ -98,7 +99,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
+                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     rounding = value;
                 }
@@ -133,7 +134,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
+                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     thickness = value;
                 }

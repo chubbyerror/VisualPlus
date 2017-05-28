@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -22,7 +23,7 @@
     [DefaultEvent("ToggledChanged")]
     [DefaultProperty("Toggled")]
     [Description("The Visual Toggle")]
-    [Designer(VSDesignerBinding.VisualToggle)]
+    [Designer(DesignManager.VisualToggle)]
     public sealed class VisualToggle : Control
     {
         #region Variables

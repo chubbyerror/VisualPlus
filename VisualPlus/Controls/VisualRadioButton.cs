@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -22,7 +23,7 @@
     [DefaultEvent("CheckedChanged")]
     [DefaultProperty("Checked")]
     [Description("The Visual RadioButton")]
-    [Designer(VSDesignerBinding.VisualRadioButton)]
+    [Designer(DesignManager.VisualRadioButton)]
     public sealed class VisualRadioButton : RadioButton
     {
         #region Variables

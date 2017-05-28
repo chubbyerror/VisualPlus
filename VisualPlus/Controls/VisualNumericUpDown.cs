@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -22,7 +23,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Text")]
     [Description("The Visual NumericUpDown")]
-    [Designer(VSDesignerBinding.VisualNumericUpDown)]
+    [Designer(DesignManager.VisualNumericUpDown)]
     public sealed class VisualNumericUpDown : Control
     {
         #region Variables

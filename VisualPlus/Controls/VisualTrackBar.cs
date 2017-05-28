@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -22,7 +23,7 @@
     [DefaultEvent("ValueChanged")]
     [DefaultProperty("Value")]
     [Description("The Visual TrackBar")]
-    [Designer(VSDesignerBinding.VisualTrackBar)]
+    [Designer(DesignManager.VisualTrackBar)]
     public sealed class VisualTrackBar : TrackBar
     {
         #region Variables

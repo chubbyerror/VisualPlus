@@ -10,6 +10,7 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -20,7 +21,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Enabled")]
     [Description("The Visual Separator")]
-    [Designer(VSDesignerBinding.VisualSeparator)]
+    [Designer(DesignManager.VisualSeparator)]
     public sealed class VisualSeparator : Control
     {
         #region Variables

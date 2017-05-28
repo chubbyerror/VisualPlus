@@ -13,6 +13,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -23,7 +24,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Value")]
     [Description("The Visual ProgressBar")]
-    [Designer(VSDesignerBinding.VisualProgressBar)]
+    [Designer(DesignManager.VisualProgressBar)]
     public sealed class VisualProgressBar : ProgressBar
     {
         #region Variables
@@ -501,7 +502,7 @@
                 SetStyleSettings(progressBarStyle);
 
                 // Draw current progressbars
-                DrawStyledProgress(graphics, MathHelper.GetFactor(Convert.ToDouble(Value), bars), true);
+                DrawStyledProgress(graphics, MathManager.GetFactor(Convert.ToDouble(Value), bars), true);
             }
 
             graphics.SmoothingMode = SmoothingMode.None;

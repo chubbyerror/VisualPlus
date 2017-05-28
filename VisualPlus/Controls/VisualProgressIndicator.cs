@@ -10,13 +10,14 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Localization;
 
     #endregion
 
     /// <summary>The visual ProgressIndicator.</summary>
     [ToolboxBitmap(typeof(ProgressBar))]
-    [Designer(VSDesignerBinding.VisualProgressIndicator)]
+    [Designer(DesignManager.VisualProgressIndicator)]
     public sealed class VisualProgressIndicator : Control
     {
         #region Variables

@@ -1,8 +1,8 @@
-﻿namespace VisualPlus.Framework
+﻿namespace VisualPlus.Framework.Handlers
 {
     /// <summary>Bind visual studio designer files here to controls.</summary>
     /// <summary>Note: If you implement more controls or to bind your own designer styles, just add string here.</summary>
-    public struct VSDesignerBinding
+    public struct DesignManager
     {
         // Designer namespace location
         private const string NamespaceLocation = @"VisualPlus.Controls.BehaviorDesign.";
