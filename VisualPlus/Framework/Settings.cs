@@ -42,6 +42,7 @@ namespace VisualPlus.Framework
             public const bool HatchVisible = true;
             public const int BarAmount = 5;
             public const float HatchSize = 2F;
+            public const bool Moveable = false;
             public const Styles DefaultStyle = Styles.Visual;
             public static readonly IStyle Style = new Visual();
             public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
