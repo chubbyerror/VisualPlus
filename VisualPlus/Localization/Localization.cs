@@ -28,6 +28,7 @@
             public const string ComponentNoName = "Description not available for component style.";
             public const string ComponentShape = "The components border shape.";
             public const string ComponentSize = "The size of the component in pixels.";
+            public const string ComponentSpacing = "The spacing between two components.";
             public const string ComponentVisible = "Indicates whether the component is visible.";
             public const string ControlDisabled = "The disabled color for the control.";
             public const string Direction = "The flow of data.";
