@@ -43,6 +43,7 @@
             public const string IconSize = "The icon size.";
             public const string Image = "The image to display.";
             public const string MirrorColor = "The mirrored text color.";
+            public const string Moveable = "Toggle movable control state.";
             public const string NormalColor = "The controls normal color.";
             public const string Outline = "Draws a line around the elements.";
             public const string Orientation = "Defines the different orientations that a control or layout can have.";
