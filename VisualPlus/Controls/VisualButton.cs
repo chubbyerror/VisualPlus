@@ -27,43 +27,39 @@
     {
         #region Variables
 
-        private bool animation = true;
-        private Border border = new Border();
-
-        private Color[] buttonDisabled =
+        private readonly Color[] buttonDisabled =
             {
                 Settings.DefaultValue.Style.ControlDisabled,
                 ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
                 Settings.DefaultValue.Style.ControlDisabled
             };
 
-        private Gradient buttonDisabledGradient = new Gradient();
-
-        private Color[] buttonHover =
+        private readonly Color[] buttonHover =
             {
                 Settings.DefaultValue.Style.ButtonHoverColor,
                 ControlPaint.Light(Settings.DefaultValue.Style.ButtonHoverColor),
                 Settings.DefaultValue.Style.ButtonHoverColor
             };
 
-        private Gradient buttonHoverGradient = new Gradient();
-
-        private Color[] buttonNormal =
+        private readonly Color[] buttonNormal =
             {
                 Settings.DefaultValue.Style.ButtonNormalColor,
                 ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
                 Settings.DefaultValue.Style.ButtonNormalColor
             };
 
-        private Gradient buttonNormalGradient = new Gradient();
-
-        private Color[] buttonPressed =
+        private readonly Color[] buttonPressed =
             {
                 Settings.DefaultValue.Style.ButtonDownColor,
                 ControlPaint.Light(Settings.DefaultValue.Style.ButtonDownColor),
                 Settings.DefaultValue.Style.ButtonDownColor
             };
 
+        private bool animation = true;
+        private Border border = new Border();
+        private Gradient buttonDisabledGradient = new Gradient();
+        private Gradient buttonHoverGradient = new Gradient();
+        private Gradient buttonNormalGradient = new Gradient();
         private Gradient buttonPressedGradient = new Gradient();
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
@@ -77,7 +73,8 @@
         private Point iconPoint = new Point(0, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-        private Rectangle textboxRectangle;
+        private bool moveable = Settings.DefaultValue.Moveable;
+        private Rectangle textBoxRectangle;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextImageRelation textImageRelation = TextImageRelation.Overlay;
         private Point textPoint = new Point(0, 0);
@@ -135,6 +132,10 @@
             hoverEffectsManager.OnAnimationProgress += sender => Invalidate();
             effectsManager.OnAnimationProgress += sender => Invalidate();
         }
+
+        public delegate void ControlMovedEventHandler();
+
+        public event ControlMovedEventHandler ControlMoved;
 
         #endregion
 
@@ -297,8 +298,21 @@
             }
         }
 
-        [Browsable(false)]
-        public Point MouseLocation { get; set; }
+        [DefaultValue(Settings.DefaultValue.Moveable)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Moveable)]
+        public bool Moveable
+        {
+            get
+            {
+                return moveable;
+            }
+
+            set
+            {
+                moveable = value;
+            }
+        }
 
         [Category(Localize.Category.Design)]
         [Description(Localize.Description.Style)]
@@ -444,6 +458,17 @@
             Invalidate();
         }
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            this.ToggleMove(moveable);
+            if (moveable)
+            {
+                ControlMoved?.Invoke();
+            }
+        }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
@@ -461,7 +486,7 @@
             graphics.TextRenderingHint = textRendererHint;
 
             textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, false);
-            textboxRectangle.Location = textPoint;
+            textBoxRectangle.Location = textPoint;
             iconPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, true);
             iconRectangle = new Rectangle(iconPoint, iconSize);
 
@@ -556,7 +581,7 @@
             }
 
             // Draw string
-            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textboxRectangle);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle);
 
             // Ripple
             if (effectsManager.IsAnimating() && animation)
@@ -567,11 +592,11 @@
                     double animationValue = effectsManager.GetProgress(i);
                     Point animationSource = effectsManager.GetSource(i);
 
-                    using (Brush rippleBrush = new SolidBrush(Color.FromArgb((int)(101 - animationValue * 100), Color.Black)))
+                    using (Brush rippleBrush = new SolidBrush(Color.FromArgb((int)(101 - (animationValue * 100)), Color.Black)))
                     {
                         var rippleSize = (int)(animationValue * Width * 2);
                         graphics.SetClip(controlGraphicsPath);
-                        graphics.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
+                        graphics.FillEllipse(rippleBrush, new Rectangle(animationSource.X - (rippleSize / 2), animationSource.Y - (rippleSize / 2), rippleSize, rippleSize));
                     }
                 }
 
