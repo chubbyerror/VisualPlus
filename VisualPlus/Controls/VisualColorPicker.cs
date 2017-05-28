@@ -266,7 +266,7 @@
     }
 
     [ToolboxItem(true)]
-    [ToolboxBitmap(typeof(Control))]
+    [ToolboxBitmap(typeof(ColorDialog))]
     [DefaultEvent("ColorChanged")]
     [DefaultProperty("Color")]
     [Description("The Visual ColorPicker")]
