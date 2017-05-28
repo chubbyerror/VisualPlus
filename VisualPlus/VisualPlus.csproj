@@ -90,6 +90,9 @@
     <Compile Include="Controls\VisualContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualDrag.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\VisualForm.cs">
       <SubType>Form</SubType>
     </Compile>
