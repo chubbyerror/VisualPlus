@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Controls.BehaviorDesign
+﻿namespace VisualPlus.Controls.FilterProperties
 {
     #region Namespace
 

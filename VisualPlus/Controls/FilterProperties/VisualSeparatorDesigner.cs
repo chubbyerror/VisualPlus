@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Controls.BehaviorDesign
+﻿namespace VisualPlus.Controls.FilterProperties
 {
     using System.Collections;
     using System.Windows.Forms.Design;

@@ -1,11 +1,15 @@
-﻿namespace VisualPlus.Controls.BehaviorDesign
+﻿namespace VisualPlus.Controls.FilterProperties
 {
+    #region Namespace
+
     using System.Collections;
     using System.Windows.Forms.Design;
 
+    #endregion
+
     internal class VisualCheckBoxDesigner : ControlDesigner
     {
-        #region ${0} Events
+        #region Events
 
         protected override void PreFilterProperties(IDictionary properties)
         {
@@ -29,8 +33,7 @@
             properties.Remove("BackgroundImageLayout");
             properties.Remove("UseVisualStyleBackColor");
 
-            // properties.Remove("ComponentFont");
-            properties.Remove("ForeColor");
+            properties.Remove("CheckAlign");
             properties.Remove("RightToLeft");
 
             base.PreFilterProperties(properties);

@@ -5,7 +5,7 @@
     public struct DesignManager
     {
         // Designer namespace location
-        private const string NamespaceLocation = @"VisualPlus.Controls.BehaviorDesign.";
+        private const string NamespaceLocation = @"VisualPlus.Controls.FilterProperties.";
 
         // Binded designer files
         public const string VisualButton = NamespaceLocation + "VisualButtonDesigner";
