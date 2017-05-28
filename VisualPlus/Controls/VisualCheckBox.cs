@@ -27,7 +27,6 @@
     public sealed class VisualCheckBox : CheckBox
     {
         #region Variables
-
         private const int Spacing = 2;
 
         private readonly Color[] boxColor =
@@ -467,7 +466,7 @@
                 {
                     controlState = ControlState.Down;
 
-                    if (animation && (args.Button == MouseButtons.Left) && IsMouseInCheckArea())
+                    if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(MouseLocation, checkBoxRectangle))
                     {
                         rippleEffectsManager.SecondaryIncrement = 0;
                         rippleEffectsManager.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
@@ -481,7 +480,7 @@
             MouseMove += (sender, args) =>
                 {
                     MouseLocation = args.Location;
-                    Cursor = IsMouseInCheckArea() ? Cursors.Hand : Cursors.Default;
+                    Cursor = GDI.IsMouseInBounds(MouseLocation, checkBoxRectangle) ? Cursors.Hand : Cursors.Default;
                 };
         }
 
@@ -634,11 +633,6 @@
             Checkmark.DrawCheckMark(graphics, checkCharacterFont, controlCheckTemp, checkPoint, Checkmark.CheckChar);
             graphics.ResetClip();
             graphics.TextRenderingHint = textRendererHint;
-        }
-
-        private bool IsMouseInCheckArea()
-        {
-            return checkBoxRectangle.Contains(MouseLocation);
         }
 
         private void UpdateCheckPoint()
