@@ -23,7 +23,7 @@
     [DefaultEvent("CheckedChanged")]
     [DefaultProperty("Checked")]
     [Description("The Visual CheckBox")]
-    [Designer(DesignManager.VisualRadioButton)]
+    [Designer(DesignManager.VisualCheckBox)]
     public sealed class VisualCheckBox : CheckBox
     {
         #region Variables
