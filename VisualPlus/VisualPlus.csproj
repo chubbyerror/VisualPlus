@@ -112,6 +112,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Enums\Direction.cs" />
+    <Compile Include="Framework\Structure\Checkmark.cs" />
     <Compile Include="Framework\Structure\Moveable.cs" />
     <Compile Include="Framework\Handlers\ExceptionManager.cs" />
     <Compile Include="Framework\Structure\Border.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Framework\GDI\VFXManager.cs" />
     <Compile Include="Framework\Handlers\MathManager.cs" />
     <Compile Include="Enums\Styles.cs" />
+    <Compile Include="Framework\Structure\Shape.cs" />
     <Compile Include="Styles\BlackAndYellow.cs" />
     <Compile Include="Styles\IStyle.cs" />
     <Compile Include="Framework\Settings.cs" />

@@ -17,6 +17,8 @@
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
+    using Checkmark = VisualPlus.Components.Symbols.Checkmark;
+
     #endregion
 
     [ToolboxItem(true)]
