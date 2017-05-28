@@ -36,8 +36,6 @@
 
         #region Variables
 
-        private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
-
         private Color[] backgroundColor =
             {
                 ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
@@ -225,6 +223,21 @@
             }
         }
 
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color HatchBackColor
@@ -403,22 +416,6 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                foreColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
@@ -540,6 +537,8 @@
                     }
             }
         }
+
+        private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
 
         private void DrawDefaultProgress(ProgressBarTypes style, Graphics graphics)
         {

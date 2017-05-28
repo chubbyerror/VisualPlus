@@ -242,9 +242,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
+        public new Color ForeColor
         {
             get
             {
@@ -253,6 +251,7 @@
 
             set
             {
+                base.ForeColor = value;
                 foreColor = value;
                 Invalidate();
             }

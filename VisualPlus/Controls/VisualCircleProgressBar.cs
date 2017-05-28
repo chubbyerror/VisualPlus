@@ -112,6 +112,21 @@
             }
         }
 
+        public new Font Font
+        {
+            get
+            {
+                return font;
+            }
+
+            set
+            {
+                base.Font = value;
+                font = value;
+                Invalidate();
+            }
+        }
+
         [DefaultValue(true)]
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentVisible)]
@@ -275,22 +290,6 @@
             set
             {
                 progressShapeVal = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
-        public Font TextFont
-        {
-            get
-            {
-                return font;
-            }
-
-            set
-            {
-                font = value;
                 Invalidate();
             }
         }

@@ -343,6 +343,36 @@
             }
         }
 
+        public new Font Font
+        {
+            get
+            {
+                return textFont;
+            }
+
+            set
+            {
+                base.Font = value;
+                textFont = value;
+                Invalidate();
+            }
+        }
+
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color HatchBackColor
@@ -591,22 +621,6 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                foreColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color TextDisabledColor
         {
@@ -618,22 +632,6 @@
             set
             {
                 textDisabledColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
-        public Font TextFont
-        {
-            get
-            {
-                return textFont;
-            }
-
-            set
-            {
-                textFont = value;
                 Invalidate();
             }
         }

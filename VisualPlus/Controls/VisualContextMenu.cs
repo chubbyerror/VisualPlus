@@ -9,7 +9,6 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -24,15 +23,6 @@
     public sealed class VisualContextMenuStrip : ContextMenuStrip
     {
         #region Variables
-
-        private static Color arrowColor = Settings.DefaultValue.Style.DropDownButtonColor;
-        private static Color arrowDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
-        private static bool arrowVisible = Settings.DefaultValue.TextVisible;
-        private static Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
-        private static Border border = new Border();
-        private static Font contextMenuFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
-        private static Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private static Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
 
         private ToolStripItemClickedEventArgs clickedEventArgs;
 
@@ -140,6 +130,21 @@
             }
         }
 
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentFont)]
         public Font MenuFont
@@ -152,22 +157,6 @@
             set
             {
                 contextMenuFont = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                foreColor = value;
                 Invalidate();
             }
         }
@@ -224,6 +213,15 @@
             Cursor = Cursors.Hand;
             Invalidate();
         }
+
+        private static Color arrowColor = Settings.DefaultValue.Style.DropDownButtonColor;
+        private static Color arrowDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
+        private static bool arrowVisible = Settings.DefaultValue.TextVisible;
+        private static Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private static Border border = new Border();
+        private static Font contextMenuFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
+        private static Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private static Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
 
         #endregion
 
