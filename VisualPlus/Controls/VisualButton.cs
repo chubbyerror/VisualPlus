@@ -29,11 +29,8 @@
         #region Variables
 
         private bool animation = true;
-        private Border border = new Border();
-        private Gradient buttonDisabledGradient = new Gradient();
-        private Gradient buttonHoverGradient = new Gradient();
-        private Gradient buttonNormalGradient = new Gradient();
-        private Gradient buttonPressedGradient = new Gradient();
+
+        private Shape buttonShape = new Shape();
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
@@ -111,87 +108,19 @@
             }
         }
 
-        [TypeConverter(typeof(BorderConverter))]
+        [TypeConverter(typeof(ShapeConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        public Border Border
+        public Shape Button
         {
             get
             {
-                return border;
+                return buttonShape;
             }
 
             set
             {
-                border = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(GradientConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
-        public Gradient ButtonDisabled
-        {
-            get
-            {
-                return buttonDisabledGradient;
-            }
-
-            set
-            {
-                buttonDisabledGradient = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(GradientConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
-        public Gradient ButtonHover
-        {
-            get
-            {
-                return buttonHoverGradient;
-            }
-
-            set
-            {
-                buttonHoverGradient = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(GradientConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
-        public Gradient ButtonNormal
-        {
-            get
-            {
-                return buttonNormalGradient;
-            }
-
-            set
-            {
-                buttonNormalGradient = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(GradientConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
-        public Gradient ButtonPressed
-        {
-            get
-            {
-                return buttonPressedGradient;
-            }
-
-            set
-            {
-                buttonPressedGradient = value;
+                buttonShape = value;
                 Invalidate();
             }
         }
@@ -439,7 +368,7 @@
             iconGraphicsPath.AddRectangle(iconRectangle);
             iconGraphicsPath.CloseAllFigures();
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, buttonShape.Border.Shape, buttonShape.Border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
 
@@ -453,42 +382,42 @@
                 {
                     case ControlState.Normal:
                         {
-                            controlTempColor = buttonNormalGradient.Colors;
-                            gradientAngle = buttonNormalGradient.Angle;
-                            gradientPositions = buttonNormalGradient.Positions;
+                            controlTempColor = buttonShape.EnabledGradient.Colors;
+                            gradientAngle = buttonShape.EnabledGradient.Angle;
+                            gradientPositions = buttonShape.EnabledGradient.Positions;
                             break;
                         }
 
                     case ControlState.Hover:
                         {
-                            controlTempColor = buttonHoverGradient.Colors;
-                            gradientAngle = buttonHoverGradient.Angle;
-                            gradientPositions = buttonHoverGradient.Positions;
+                            controlTempColor = buttonShape.HoverGradient.Colors;
+                            gradientAngle = buttonShape.HoverGradient.Angle;
+                            gradientPositions = buttonShape.HoverGradient.Positions;
                             break;
                         }
 
                     case ControlState.Down:
                         {
-                            controlTempColor = buttonPressedGradient.Colors;
-                            gradientAngle = buttonPressedGradient.Angle;
-                            gradientPositions = buttonPressedGradient.Positions;
+                            controlTempColor = buttonShape.PressedGradient.Colors;
+                            gradientAngle = buttonShape.PressedGradient.Angle;
+                            gradientPositions = buttonShape.PressedGradient.Positions;
                             break;
                         }
 
                     default:
                         {
-                            controlTempColor = buttonNormalGradient.Colors;
-                            gradientAngle = buttonNormalGradient.Angle;
-                            gradientPositions = buttonNormalGradient.Positions;
+                            controlTempColor = buttonShape.EnabledGradient.Colors;
+                            gradientAngle = buttonShape.EnabledGradient.Angle;
+                            gradientPositions = buttonShape.EnabledGradient.Positions;
                             break;
                         }
                 }
             }
             else
             {
-                controlTempColor = buttonDisabledGradient.Colors;
-                gradientAngle = buttonDisabledGradient.Angle;
-                gradientPositions = buttonDisabledGradient.Positions;
+                controlTempColor = buttonShape.DisabledGradient.Colors;
+                gradientAngle = buttonShape.DisabledGradient.Angle;
+                gradientPositions = buttonShape.DisabledGradient.Positions;
             }
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
@@ -497,10 +426,9 @@
             // Draw button background
             graphics.FillPath(gradientBrush, controlGraphicsPath);
 
-            // Setup button border
-            if (border.Visible)
+            if (buttonShape.Border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, buttonShape.Border.Thickness, buttonShape.Border.Color, buttonShape.Border.HoverColor, buttonShape.Border.HoverVisible);
             }
 
             if (string.IsNullOrEmpty(Text))
@@ -518,7 +446,7 @@
                 // Draw icon border
                 if (iconBorder)
                 {
-                    graphics.DrawPath(new Pen(border.Color), iconGraphicsPath);
+                    graphics.DrawPath(new Pen(buttonShape.Border.Color), iconGraphicsPath);
                 }
 
                 // Draw icon
@@ -598,17 +526,17 @@
 
             float[] gradientPosition = { 0, 1 / 2f, 1 };
 
-            buttonNormalGradient.Colors = buttonNormal;
-            buttonNormalGradient.Positions = gradientPosition;
+            buttonShape.EnabledGradient.Colors = buttonNormal;
+            buttonShape.EnabledGradient.Positions = gradientPosition;
 
-            buttonHoverGradient.Colors = buttonHover;
-            buttonHoverGradient.Positions = gradientPosition;
+            buttonShape.DisabledGradient.Colors = buttonDisabled;
+            buttonShape.DisabledGradient.Positions = gradientPosition;
 
-            buttonPressedGradient.Colors = buttonPressed;
-            buttonPressedGradient.Positions = gradientPosition;
+            buttonShape.HoverGradient.Colors = buttonHover;
+            buttonShape.HoverGradient.Positions = gradientPosition;
 
-            buttonDisabledGradient.Colors = buttonDisabled;
-            buttonDisabledGradient.Positions = gradientPosition;
+            buttonShape.PressedGradient.Colors = buttonPressed;
+            buttonShape.PressedGradient.Positions = gradientPosition;
         }
 
         #endregion
