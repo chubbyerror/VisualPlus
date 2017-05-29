@@ -26,6 +26,7 @@
         private Point imagePoint = new Point(0, 0);
         private Size imageSize = new Size(0, 0);
         private bool imageVisible;
+        private Gradient pressedGradient = new Gradient();
         private Size size = new Size(25, 25);
 
         #endregion
@@ -173,6 +174,22 @@
             set
             {
                 imageVisible = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description("The pressed gradient.")]
+        public Gradient PressedGradient
+        {
+            get
+            {
+                return pressedGradient;
+            }
+
+            set
+            {
+                pressedGradient = value;
             }
         }
 
