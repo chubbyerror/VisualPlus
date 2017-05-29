@@ -28,34 +28,6 @@
     {
         #region Variables
 
-        private readonly Color[] buttonDisabled =
-            {
-                Settings.DefaultValue.Style.ControlDisabled,
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled
-            };
-
-        private readonly Color[] buttonHover =
-            {
-                Settings.DefaultValue.Style.ButtonHoverColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.ButtonHoverColor),
-                Settings.DefaultValue.Style.ButtonHoverColor
-            };
-
-        private readonly Color[] buttonNormal =
-            {
-                Settings.DefaultValue.Style.ButtonNormalColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
-                Settings.DefaultValue.Style.ButtonNormalColor
-            };
-
-        private readonly Color[] buttonPressed =
-            {
-                Settings.DefaultValue.Style.ButtonDownColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.ButtonDownColor),
-                Settings.DefaultValue.Style.ButtonDownColor
-            };
-
         private bool animation = true;
         private Border border = new Border();
         private Gradient buttonDisabledGradient = new Gradient();
@@ -97,41 +69,14 @@
 
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             AutoSize = false;
+            BackColor = Color.Transparent;
+            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Margin = new Padding(4, 6, 4, 6);
             Padding = new Padding(0);
             Size = new Size(140, 45);
-            BackColor = Color.Transparent;
 
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
-
-            float[] gradientPosition = { 0, 1 / 2f, 1 };
-
-            buttonNormalGradient.Colors = buttonNormal;
-            buttonNormalGradient.Positions = gradientPosition;
-
-            buttonHoverGradient.Colors = buttonHover;
-            buttonHoverGradient.Positions = gradientPosition;
-
-            buttonPressedGradient.Colors = buttonPressed;
-            buttonPressedGradient.Positions = gradientPosition;
-
-            buttonDisabledGradient.Colors = buttonDisabled;
-            buttonDisabledGradient.Positions = gradientPosition;
-
-            // Setup effects animation
-            effectsManager = new VFXManager(false)
-                {
-                    Increment = 0.03,
-                    EffectType = EffectType.EaseOut
-                };
-            hoverEffectsManager = new VFXManager
-                {
-                    Increment = 0.07,
-                    EffectType = EffectType.Linear
-                };
-
-            hoverEffectsManager.OnAnimationProgress += sender => Invalidate();
-            effectsManager.OnAnimationProgress += sender => Invalidate();
+            DefaultGradient();
+            ConfigureAnimation();
         }
 
         public delegate void ControlMovedEventHandler();
@@ -602,6 +547,68 @@
 
                 graphics.SmoothingMode = SmoothingMode.None;
             }
+        }
+
+        private void ConfigureAnimation()
+        {
+            effectsManager = new VFXManager(false)
+                {
+                    Increment = 0.03,
+                    EffectType = EffectType.EaseOut
+                };
+            hoverEffectsManager = new VFXManager
+                {
+                    Increment = 0.07,
+                    EffectType = EffectType.Linear
+                };
+
+            hoverEffectsManager.OnAnimationProgress += sender => Invalidate();
+            effectsManager.OnAnimationProgress += sender => Invalidate();
+        }
+
+        private void DefaultGradient()
+        {
+            Color[] buttonDisabled =
+                {
+                    Settings.DefaultValue.Style.ControlDisabled,
+                    ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+                    Settings.DefaultValue.Style.ControlDisabled
+                };
+
+            Color[] buttonHover =
+                {
+                    Settings.DefaultValue.Style.ButtonHoverColor,
+                    ControlPaint.Light(Settings.DefaultValue.Style.ButtonHoverColor),
+                    Settings.DefaultValue.Style.ButtonHoverColor
+                };
+
+            Color[] buttonNormal =
+                {
+                    Settings.DefaultValue.Style.ButtonNormalColor,
+                    ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
+                    Settings.DefaultValue.Style.ButtonNormalColor
+                };
+
+            Color[] buttonPressed =
+                {
+                    Settings.DefaultValue.Style.ButtonDownColor,
+                    ControlPaint.Light(Settings.DefaultValue.Style.ButtonDownColor),
+                    Settings.DefaultValue.Style.ButtonDownColor
+                };
+
+            float[] gradientPosition = { 0, 1 / 2f, 1 };
+
+            buttonNormalGradient.Colors = buttonNormal;
+            buttonNormalGradient.Positions = gradientPosition;
+
+            buttonHoverGradient.Colors = buttonHover;
+            buttonHoverGradient.Positions = gradientPosition;
+
+            buttonPressedGradient.Colors = buttonPressed;
+            buttonPressedGradient.Positions = gradientPosition;
+
+            buttonDisabledGradient.Colors = buttonDisabled;
+            buttonDisabledGradient.Positions = gradientPosition;
         }
 
         #endregion
