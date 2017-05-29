@@ -37,12 +37,11 @@
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private LinearGradientBrush gradientBrush;
         private VFXManager hoverEffectsManager;
-        private Image icon;
-        private bool iconBorder;
         private GraphicsPath iconGraphicsPath;
         private Point iconPoint = new Point(0, 0);
-        private Rectangle iconRectangle;
-        private Size iconSize = new Size(24, 24);
+        private Rectangle imageRectangle;
+        private Size imageSize = new Size(24, 24);
+        private bool imageVisible;
         private bool moveable = Settings.DefaultValue.Moveable;
         private Rectangle textBoxRectangle;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
@@ -140,50 +139,35 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Icon)]
-        public Image Icon
-        {
-            get
-            {
-                return icon;
-            }
-
-            set
-            {
-                icon = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool IconBorder
-        {
-            get
-            {
-                return iconBorder;
-            }
-
-            set
-            {
-                iconBorder = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.IconSize)]
-        public Size IconSize
+        public Size ImageSize
         {
             get
             {
-                return iconSize;
+                return imageSize;
             }
 
             set
             {
-                iconSize = value;
+                imageSize = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(false)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ComponentVisible)]
+        public bool ImageVisible
+        {
+            get
+            {
+                return imageVisible;
+            }
+
+            set
+            {
+                imageVisible = value;
                 Invalidate();
             }
         }
@@ -352,26 +336,24 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
-            textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, false);
+            textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, imageRectangle, Text, Font, ClientRectangle, false);
             textBoxRectangle.Location = textPoint;
-            iconPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, iconRectangle, Text, Font, ClientRectangle, true);
-            iconRectangle = new Rectangle(iconPoint, iconSize);
+            iconPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, imageRectangle, Text, Font, ClientRectangle, true);
+            imageRectangle = new Rectangle(iconPoint, imageSize);
 
             iconGraphicsPath = new GraphicsPath();
-            iconGraphicsPath.AddRectangle(iconRectangle);
+            iconGraphicsPath.AddRectangle(imageRectangle);
             iconGraphicsPath.CloseAllFigures();
 
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, buttonShape.Border.Shape, buttonShape.Border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
-
             Color[] controlTempColor;
             float gradientAngle;
             float[] gradientPositions;
@@ -422,8 +404,6 @@
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
             gradientBrush = GDI.CreateGradientBrush(controlTempColor, gradientPoints, gradientAngle, gradientPositions);
-
-            // Draw button background
             graphics.FillPath(gradientBrush, controlGraphicsPath);
 
             if (buttonShape.Border.Visible)
@@ -431,50 +411,11 @@
                 GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, buttonShape.Border.Thickness, buttonShape.Border.Color, buttonShape.Border.HoverColor, buttonShape.Border.HoverVisible);
             }
 
-            if (string.IsNullOrEmpty(Text))
-            {
-                // Center Icon
-                iconRectangle.X += 2;
-                iconRectangle.Y += 2;
-            }
+            DrawImage(graphics);
 
-            if (Icon != null)
-            {
-                // Update point
-                iconRectangle.Location = iconPoint;
-
-                // Draw icon border
-                if (iconBorder)
-                {
-                    graphics.DrawPath(new Pen(buttonShape.Border.Color), iconGraphicsPath);
-                }
-
-                // Draw icon
-                graphics.DrawImage(Icon, iconRectangle);
-            }
-
-            // Draw string
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle);
 
-            // Ripple
-            if (effectsManager.IsAnimating() && animation)
-            {
-                graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                for (var i = 0; i < effectsManager.GetAnimationCount(); i++)
-                {
-                    double animationValue = effectsManager.GetProgress(i);
-                    Point animationSource = effectsManager.GetSource(i);
-
-                    using (Brush rippleBrush = new SolidBrush(Color.FromArgb((int)(101 - (animationValue * 100)), Color.Black)))
-                    {
-                        var rippleSize = (int)(animationValue * Width * 2);
-                        graphics.SetClip(controlGraphicsPath);
-                        graphics.FillEllipse(rippleBrush, new Rectangle(animationSource.X - (rippleSize / 2), animationSource.Y - (rippleSize / 2), rippleSize, rippleSize));
-                    }
-                }
-
-                graphics.SmoothingMode = SmoothingMode.None;
-            }
+            DrawAnimation(graphics);
         }
 
         private void ConfigureAnimation()
@@ -537,6 +478,48 @@
 
             buttonShape.PressedGradient.Colors = buttonPressed;
             buttonShape.PressedGradient.Positions = gradientPosition;
+        }
+
+        private void DrawAnimation(Graphics graphics)
+        {
+            if (effectsManager.IsAnimating() && animation)
+            {
+                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                for (var i = 0; i < effectsManager.GetAnimationCount(); i++)
+                {
+                    double animationValue = effectsManager.GetProgress(i);
+                    Point animationSource = effectsManager.GetSource(i);
+
+                    using (Brush rippleBrush = new SolidBrush(Color.FromArgb((int)(101 - (animationValue * 100)), Color.Black)))
+                    {
+                        var rippleSize = (int)(animationValue * Width * 2);
+                        graphics.SetClip(controlGraphicsPath);
+                        graphics.FillEllipse(rippleBrush, new Rectangle(animationSource.X - (rippleSize / 2), animationSource.Y - (rippleSize / 2), rippleSize, rippleSize));
+                    }
+                }
+
+                graphics.SmoothingMode = SmoothingMode.None;
+            }
+        }
+
+        private void DrawImage(Graphics graphics)
+        {
+            if (Image != null)
+            {
+                if (string.IsNullOrEmpty(Text))
+                {
+                    // Center Image
+                    imageRectangle.X += 2;
+                    imageRectangle.Y += 2;
+                }
+
+                imageRectangle.Location = iconPoint;
+
+                if (imageVisible)
+                {
+                    graphics.DrawImage(Image, imageRectangle);
+                }
+            }
         }
 
         #endregion
