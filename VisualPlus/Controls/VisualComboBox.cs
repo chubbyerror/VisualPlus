@@ -29,20 +29,6 @@
     {
         #region Variables
 
-        private readonly Color[] controlColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0),
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
-            };
-
-        private readonly Color[] controlDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled,
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
-            };
-
         private Border border = new Border();
         private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
         private Direction buttonDirection = Direction.Right;
@@ -65,12 +51,7 @@
         private StringAlignment textAlignment = StringAlignment.Center;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Color waterMarkActiveColor = Color.Gray;
-        private SolidBrush waterMarkBrush;
-        private Color waterMarkColor = Color.LightGray;
-        private Font waterMarkFont;
-        private string waterMarkText = Settings.DefaultValue.WatermarkText;
-        private bool watermarkVisible = Settings.DefaultValue.WatermarkVisible;
+        private Watermark watermark = new Watermark();
 
         #endregion
 
@@ -94,13 +75,26 @@
             BackColor = Color.Transparent;
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             itemBorder.HoverVisible = false;
+
+            Color[] controlColor =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
+                    Settings.DefaultValue.Style.BackgroundColor(0),
+                    ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+                };
+
+            Color[] controlDisabledColor =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
+                    Settings.DefaultValue.Style.ControlDisabled,
+                    ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
+                };
+
             float[] gradientPosition = { 0, 1 / 2f, 1 };
             controlGradient.Colors = controlColor;
             controlGradient.Positions = gradientPosition;
             controlDisabledGradient.Colors = controlDisabledColor;
             controlDisabledGradient.Positions = gradientPosition;
-            waterMarkFont = Font;
-            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
         }
 
         public enum DropDownButtons
@@ -450,82 +444,19 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Watermark)]
-        public string WaterMark
+        [TypeConverter(typeof(WatermarkConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Behavior)]
+        public Watermark Watermark
         {
             get
             {
-                return waterMarkText;
+                return watermark;
             }
 
             set
             {
-                waterMarkText = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color WaterMarkActiveForeColor
-        {
-            get
-            {
-                return waterMarkActiveColor;
-            }
-
-            set
-            {
-                waterMarkActiveColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
-        public Font WaterMarkFont
-        {
-            get
-            {
-                return waterMarkFont;
-            }
-
-            set
-            {
-                waterMarkFont = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color WaterMarkForeColor
-        {
-            get
-            {
-                return waterMarkColor;
-            }
-
-            set
-            {
-                waterMarkColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
-        public bool WatermarkVisible
-        {
-            get
-            {
-                return watermarkVisible;
-            }
-
-            set
-            {
-                watermarkVisible = value;
+                watermark = value;
                 Invalidate();
             }
         }
@@ -562,13 +493,13 @@
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
-            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+            watermark.Brush = new SolidBrush(watermark.ActiveColor);
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            waterMarkBrush = new SolidBrush(waterMarkColor);
+            watermark.Brush = new SolidBrush(watermark.InactiveColor);
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -656,9 +587,9 @@
 
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
 
-            if (watermarkVisible && (Text.Length == 0))
+            if (Text.Length == 0)
             {
-                graphics.DrawString(waterMarkText, WaterMarkFont, waterMarkBrush, textBoxRectangle, stringFormat);
+                Watermark.DrawWatermark(graphics, textBoxRectangle, stringFormat, watermark);
             }
         }
 

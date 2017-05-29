@@ -52,13 +52,8 @@
         private int textBoxHeight = 20;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Color waterMarkActiveColor;
-        private SolidBrush waterMarkBrush;
-        private Color waterMarkColor;
+        private Watermark watermark = new Watermark();
         private Panel waterMarkContainer;
-        private Font waterMarkFont;
-        private string waterMarkText = Settings.DefaultValue.WatermarkText;
-        private bool watermarkVisible = Settings.DefaultValue.WatermarkVisible;
         private int xValue;
         private int yValue;
 
@@ -82,15 +77,9 @@
             BackColor = Color.Transparent;
             UpdateStyles();
 
-            // Sets some default values to the watermark properties
-            waterMarkColor = Color.LightGray;
-            waterMarkActiveColor = Color.Gray;
-            waterMarkFont = Font;
-            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
             waterMarkContainer = null;
 
-            // Draw the watermark, for design time
-            if (watermarkVisible)
+            if (watermark.Visible)
             {
                 DrawWaterMark();
             }
@@ -299,82 +288,19 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Watermark)]
-        public string WaterMark
+        [TypeConverter(typeof(WatermarkConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Behavior)]
+        public Watermark Watermark
         {
             get
             {
-                return waterMarkText;
+                return watermark;
             }
 
             set
             {
-                waterMarkText = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color WaterMarkActiveForeColor
-        {
-            get
-            {
-                return waterMarkActiveColor;
-            }
-
-            set
-            {
-                waterMarkActiveColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
-        public Font WaterMarkFont
-        {
-            get
-            {
-                return waterMarkFont;
-            }
-
-            set
-            {
-                waterMarkFont = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color WaterMarkForeColor
-        {
-            get
-            {
-                return waterMarkColor;
-            }
-
-            set
-            {
-                waterMarkColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
-        public bool WatermarkVisible
-        {
-            get
-            {
-                return watermarkVisible;
-            }
-
-            set
-            {
-                watermarkVisible = value;
+                watermark = value;
                 Invalidate();
             }
         }
@@ -407,10 +333,10 @@
             controlState = ControlState.Hover;
             Invalidate();
 
-            if (watermarkVisible)
+            if (watermark.Visible)
             {
                 // If focused use focus color
-                waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+                watermark.Brush = new SolidBrush(watermark.ActiveColor);
 
                 // Don't draw watermark if contains text.
                 if (TextLength <= 0)
@@ -459,7 +385,7 @@
             controlState = ControlState.Normal;
             Invalidate();
 
-            if (watermarkVisible)
+            if (watermark.Visible)
             {
                 // If the user has written something and left the control
                 if (TextLength > 0)
@@ -580,7 +506,7 @@
                 }
             }
 
-            if (watermarkVisible)
+            if (watermark.Visible)
             {
                 DrawWaterMark();
             }
@@ -616,7 +542,7 @@
             TextBoxObject.Text = Text;
             Invalidate();
 
-            if (watermarkVisible)
+            if (watermark.Visible)
             {
                 // If the text of the text box is not empty.
                 if (TextLength > 0)
@@ -707,10 +633,10 @@
             waterMarkContainer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
 
             // Set color
-            waterMarkBrush = ContainsFocus ? new SolidBrush(waterMarkActiveColor) : new SolidBrush(waterMarkColor);
+            watermark.Brush = ContainsFocus ? new SolidBrush(watermark.ActiveColor) : new SolidBrush(watermark.InactiveColor);
 
             // Draws the string on the panel
-            e.Graphics.DrawString(waterMarkText, waterMarkFont, waterMarkBrush, new PointF(-2f, 1f));
+            e.Graphics.DrawString(watermark.Text, watermark.Font, watermark.Brush, new PointF(-2f, 1f));
         }
 
         #endregion

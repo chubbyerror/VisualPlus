@@ -46,7 +46,7 @@ namespace VisualPlus.Framework
             public const float HatchSize = 2F;
             public const bool Moveable = false;
             public const bool WatermarkVisible = false;
-            public static readonly string WatermarkText = "Enter your custom watermark";
+            public static readonly string WatermarkText = "Watermark text";
             public static readonly IStyle Style = new Visual();
             public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
         }
