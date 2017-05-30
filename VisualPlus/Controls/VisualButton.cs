@@ -38,7 +38,7 @@
         private LinearGradientBrush gradientBrush;
         private VFXManager hoverEffectsManager;
         private GraphicsPath iconGraphicsPath;
-        private Point iconPoint = new Point(0, 0);
+        private Point imagePoint = new Point(0, 0);
         private Rectangle imageRectangle;
         private Size imageSize = new Size(24, 24);
         private bool imageVisible;
@@ -344,8 +344,8 @@
 
             textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, imageRectangle, Text, Font, ClientRectangle, false);
             textBoxRectangle.Location = textPoint;
-            iconPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, imageRectangle, Text, Font, ClientRectangle, true);
-            imageRectangle = new Rectangle(iconPoint, imageSize);
+            imagePoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, imageRectangle, Text, Font, ClientRectangle, true);
+            imageRectangle = new Rectangle(imagePoint, imageSize);
 
             iconGraphicsPath = new GraphicsPath();
             iconGraphicsPath.AddRectangle(imageRectangle);
@@ -513,7 +513,7 @@
                     imageRectangle.Y += 2;
                 }
 
-                imageRectangle.Location = iconPoint;
+                imageRectangle.Location = imagePoint;
 
                 if (imageVisible)
                 {
