@@ -104,6 +104,9 @@
     <Compile Include="Controls\VisualListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualRating.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\VisualStylesManager.cs">
       <SubType>Component</SubType>
     </Compile>
