@@ -21,7 +21,7 @@
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(NumericUpDown))]
     [DefaultEvent("Click")]
-    [DefaultProperty("Text")]
+    [DefaultProperty("Value")]
     [Description("The Visual NumericUpDown")]
     [Designer(DesignManager.VisualNumericUpDown)]
     public sealed class VisualNumericUpDown : Control
