@@ -45,6 +45,7 @@
         private Gradient backgroundGradient = new Gradient();
         private Point barLocation = new Point(0, 0);
         private Point barSize = new Point(15, 15);
+        private BarTypes barStyle = BarTypes.Horizontal;
         private Border border = new Border();
         private ControlState controlState = ControlState.Normal;
         private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
@@ -56,9 +57,12 @@
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private HatchStyle hatchStyle = HatchStyle.DarkDownwardDiagonal;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
+        private Timer marqueeTimer;
+        private bool marqueeTimerEnabled;
+        private int marqueeX;
+        private int marqueeY;
         private Size minimumSize = new Size(100, 20);
         private bool percentageVisible;
-        private ProgressBarTypes progressBarStyle = ProgressBarTypes.Horizontal;
 
         private Color[] progressColor =
             {
@@ -104,7 +108,7 @@
             progressGradient.Positions = gradientPosition;
         }
 
-        public enum ProgressBarTypes
+        public enum BarTypes
         {
             /// <summary>Bars type.</summary>
             Bars,
@@ -182,6 +186,35 @@
             set
             {
                 barSpacing = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.ProgressBarStyle)]
+        public BarTypes BarStyle
+        {
+            get
+            {
+                return barStyle;
+            }
+
+            set
+            {
+                barStyle = value;
+
+                if (barStyle == BarTypes.Horizontal)
+                {
+                    Size = GDI.FlipOrientationSize(Orientation.Horizontal, Size);
+                }
+                else if (barStyle == BarTypes.Vertical)
+                {
+                    Size = GDI.FlipOrientationSize(Orientation.Vertical, Size);
+                }
+
+                // Resize check
+                OnResize(EventArgs.Empty);
+
                 Invalidate();
             }
         }
@@ -334,35 +367,6 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ProgressBarStyle)]
-        public ProgressBarTypes ProgressBarStyle
-        {
-            get
-            {
-                return progressBarStyle;
-            }
-
-            set
-            {
-                progressBarStyle = value;
-
-                if (progressBarStyle == ProgressBarTypes.Horizontal)
-                {
-                    Size = GDI.FlipOrientationSize(Orientation.Horizontal, Size);
-                }
-                else if (progressBarStyle == ProgressBarTypes.Vertical)
-                {
-                    Size = GDI.FlipOrientationSize(Orientation.Vertical, Size);
-                }
-
-                // Resize check
-                OnResize(EventArgs.Empty);
-
-                Invalidate();
-            }
-        }
-
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color[] ProgressColor
@@ -427,6 +431,30 @@
             }
         }
 
+        private int ProgressBarMarqueeHeight
+        {
+            get
+            {
+                return ClientRectangle.Height / 3;
+            }
+        }
+
+        private int ProgressBarMarqueeWidth
+        {
+            get
+            {
+                return ClientRectangle.Width / 3;
+            }
+        }
+
+        private double ProgressBarWidth
+        {
+            get
+            {
+                return ((double)Value / Maximum) * ClientRectangle.Width;
+            }
+        }
+
         #endregion
 
         #region Events
@@ -463,20 +491,20 @@
 
             gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
 
-            if ((progressBarStyle == ProgressBarTypes.Horizontal) || (progressBarStyle == ProgressBarTypes.Vertical))
+            if ((barStyle == BarTypes.Horizontal) || (barStyle == BarTypes.Vertical))
             {
                 // Draw default progress
-                DrawDefaultProgress(progressBarStyle, graphics);
+                DrawDefaultProgress(barStyle, graphics);
             }
             else
             {
                 // Draw styled progress
-                SetStyleSettings(progressBarStyle);
+                SetStyleSettings(barStyle);
 
                 // Draw total bars
                 DrawStyledProgress(graphics, bars, false);
 
-                SetStyleSettings(progressBarStyle);
+                SetStyleSettings(barStyle);
 
                 // Draw current progressbars
                 DrawStyledProgress(graphics, MathManager.GetFactor(Convert.ToDouble(Value), bars), true);
@@ -489,22 +517,22 @@
 
         protected override void OnResize(EventArgs e)
         {
-            switch (progressBarStyle)
+            switch (barStyle)
             {
-                case ProgressBarTypes.Bars:
+                case BarTypes.Bars:
                     {
                         Height = barSize.Y;
                         MinimumSize = new Size(bars * barSize.X, barSize.Y + 2);
                         break;
                     }
 
-                case ProgressBarTypes.Horizontal:
+                case BarTypes.Horizontal:
                     {
                         MinimumSize = minimumSize;
                         break;
                     }
 
-                case ProgressBarTypes.Vertical:
+                case BarTypes.Vertical:
                     {
                         MinimumSize = new Size(minimumSize.Height, minimumSize.Width);
                         break;
@@ -512,75 +540,100 @@
             }
         }
 
-        private void DrawDefaultProgress(ProgressBarTypes style, Graphics graphics)
+        private void DrawDefaultProgress(BarTypes style, Graphics graphics)
         {
             graphicsDefaultBorderPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
             GraphicsPath progressPath = null;
 
-            var i1 = new int();
-
-            switch (style)
+            if (Style == ProgressBarStyle.Marquee)
             {
-                case ProgressBarTypes.Horizontal:
-                    {
-                        i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Width - 2));
-
-                        if (border.Shape == BorderShape.Rectangle)
-                        {
-                            progressPath = new GraphicsPath();
-                            progressPath.AddRectangle(new Rectangle(0, 0, i1 + 1, Height));
-                            progressPath.CloseAllFigures();
-                        }
-                        else
-                        {
-                            progressPath = GDI.DrawRoundedRectangle(new Rectangle(1, 1, i1, Height - 2), border.Rounding);
-                        }
-                    }
-
-                    break;
-                case ProgressBarTypes.Vertical:
-                    {
-                        i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Height - 2));
-
-                        if (border.Shape == BorderShape.Rectangle)
-                        {
-                            progressPath = new GraphicsPath();
-                            progressPath.AddRectangle(new Rectangle(0, Height - i1 - 2, Width, i1));
-                            progressPath.CloseAllFigures();
-                        }
-                        else
-                        {
-                            progressPath = GDI.DrawRoundedRectangle(new Rectangle(0, Height - i1 - 2, Width, i1), border.Rounding);
-                        }
-                    }
-
-                    break;
-            }
-
-            LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
-            graphics.FillPath(backgroundGradientBrush, graphicsDefaultBorderPath);
-
-            // Draw progress
-            if (i1 > 1)
-            {
-                LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
-                graphics.FillPath(progressGradientBrush, progressPath);
-
-                hatchPath = progressPath;
-
-                if (hatchVisible)
+                if (!DesignMode && Enabled)
                 {
-                    HatchBrush hatchBrush = new HatchBrush(hatchStyle, hatchForeColor, hatchBackColor);
-                    using (TextureBrush textureBrush = GDI.DrawTextureUsingHatch(hatchBrush))
-                    {
-                        textureBrush.ScaleTransform(hatchSize, hatchSize);
-                        graphics.FillPath(textureBrush, hatchPath);
-                    }
+                    StartTimer();
                 }
 
-                graphics.SetClip(progressPath);
-                graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                graphics.ResetClip();
+                if (!Enabled)
+                {
+                    StopTimer();
+                }
+
+                if (Value == Maximum)
+                {
+                    StopTimer();
+                    DrawProgressContinuous(graphics);
+                }
+                else
+                {
+                    DrawProgressMarquee(graphics);
+                }
+            }
+            else
+            {
+                var i1 = new int();
+
+                switch (style)
+                {
+                    case BarTypes.Horizontal:
+                        {
+                            i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Width - 2));
+
+                            if (border.Shape == BorderShape.Rectangle)
+                            {
+                                progressPath = new GraphicsPath();
+                                progressPath.AddRectangle(new Rectangle(0, 0, i1 + 1, Height));
+                                progressPath.CloseAllFigures();
+                            }
+                            else
+                            {
+                                progressPath = GDI.DrawRoundedRectangle(new Rectangle(1, 1, i1, Height - 2), border.Rounding);
+                            }
+                        }
+
+                        break;
+                    case BarTypes.Vertical:
+                        {
+                            i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Height - 2));
+
+                            if (border.Shape == BorderShape.Rectangle)
+                            {
+                                progressPath = new GraphicsPath();
+                                progressPath.AddRectangle(new Rectangle(0, Height - i1 - 2, Width, i1));
+                                progressPath.CloseAllFigures();
+                            }
+                            else
+                            {
+                                progressPath = GDI.DrawRoundedRectangle(new Rectangle(0, Height - i1 - 2, Width, i1), border.Rounding);
+                            }
+                        }
+
+                        break;
+                }
+
+                LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+                graphics.FillPath(backgroundGradientBrush, graphicsDefaultBorderPath);
+
+                // Draw progress
+                if (i1 > 1)
+                {
+                    LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+                    graphics.FillPath(progressGradientBrush, progressPath);
+
+                    hatchPath = progressPath;
+
+                    if (hatchVisible)
+                    {
+                        HatchBrush hatchBrush = new HatchBrush(hatchStyle, hatchForeColor, hatchBackColor);
+                        using (TextureBrush textureBrush = GDI.DrawTextureUsingHatch(hatchBrush))
+                        {
+                            textureBrush.ScaleTransform(hatchSize, hatchSize);
+                            graphics.FillPath(textureBrush, hatchPath);
+                        }
+                    }
+
+                    graphics.SetClip(progressPath);
+                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    graphics.ResetClip();
+                }
             }
 
             // Draw border
@@ -617,6 +670,26 @@
             }
         }
 
+        private void DrawProgressContinuous(Graphics graphics)
+        {
+            LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+            graphics.FillRectangle(progressGradientBrush, 0, 0, (int)ProgressBarWidth, ClientRectangle.Height);
+        }
+
+        private void DrawProgressMarquee(Graphics graphics)
+        {
+            LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+
+            if (barStyle == BarTypes.Horizontal)
+            {
+                graphics.FillRectangle(progressGradientBrush, marqueeX, 0, ProgressBarMarqueeWidth, ClientRectangle.Height);
+            }
+            else if (barStyle == BarTypes.Vertical)
+            {
+                graphics.FillRectangle(progressGradientBrush, 0, marqueeY, ClientRectangle.Width, ClientRectangle.Height);
+            }
+        }
+
         /// <summary>Draw styled progressbar.</summary>
         /// <param name="graphics">Graphics processor.</param>
         /// <param name="barCount">Amount of bars.</param>
@@ -634,9 +707,9 @@
                 }
 
                 // Create Bar
-                switch (progressBarStyle)
+                switch (this.barStyle)
                 {
-                    case ProgressBarTypes.Bars:
+                    case BarTypes.Bars:
                         {
                             // Create bars
                             if (border.Shape == BorderShape.Rounded)
@@ -656,14 +729,14 @@
                             break;
                         }
 
-                    case ProgressBarTypes.Horizontal:
+                    case BarTypes.Horizontal:
                         {
                             // Default progress bar
                             barStyle = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
                             break;
                         }
 
-                    case ProgressBarTypes.Vertical:
+                    case BarTypes.Vertical:
                         {
                             barStyle = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
                             break;
@@ -706,13 +779,35 @@
             }
         }
 
+        private void marqueeTimer_Tick(object sender, EventArgs e)
+        {
+            if (barStyle == BarTypes.Horizontal)
+            {
+                marqueeX++;
+                if (marqueeX > ClientRectangle.Width)
+                {
+                    marqueeX = -ProgressBarMarqueeWidth;
+                }
+            }
+            else if (barStyle == BarTypes.Vertical)
+            {
+                marqueeY++;
+                if (marqueeY > ClientRectangle.Height)
+                {
+                    marqueeY = -ProgressBarMarqueeHeight;
+                }
+            }
+
+            Invalidate();
+        }
+
         /// <summary>Sets the style settings.</summary>
         /// <param name="style">Current ProgressBarType.</param>
-        private void SetStyleSettings(ProgressBarTypes style)
+        private void SetStyleSettings(BarTypes style)
         {
             switch (style)
             {
-                case ProgressBarTypes.Bars:
+                case BarTypes.Bars:
                     {
                         barLocation = new Point(0, 0);
                         barSize = new Point(10, 10);
@@ -720,12 +815,12 @@
                         break;
                     }
 
-                case ProgressBarTypes.Horizontal:
+                case BarTypes.Horizontal:
                     {
                         break;
                     }
 
-                case ProgressBarTypes.Vertical:
+                case BarTypes.Vertical:
                     {
                         break;
                     }
@@ -733,6 +828,48 @@
                 default:
                     throw new ArgumentOutOfRangeException(nameof(style), style, null);
             }
+        }
+
+        private void StartTimer()
+        {
+            if (marqueeTimerEnabled)
+            {
+                return;
+            }
+
+            if (marqueeTimer == null)
+            {
+                marqueeTimer = new Timer { Interval = 10 };
+                marqueeTimer.Tick += marqueeTimer_Tick;
+            }
+
+            if (barStyle == BarTypes.Horizontal)
+            {
+                marqueeX = -ProgressBarMarqueeWidth;
+            }
+            else if (barStyle == BarTypes.Vertical)
+            {
+                marqueeY = -ProgressBarMarqueeHeight;
+            }
+
+            marqueeTimer.Stop();
+            marqueeTimer.Start();
+
+            marqueeTimerEnabled = true;
+
+            Invalidate();
+        }
+
+        private void StopTimer()
+        {
+            if (marqueeTimer == null)
+            {
+                return;
+            }
+
+            marqueeTimer.Stop();
+
+            Invalidate();
         }
 
         #endregion
