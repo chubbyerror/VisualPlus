@@ -2,6 +2,7 @@
 {
     #region Namespace
 
+    using System;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Text;
@@ -38,11 +39,11 @@
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
+        private IStyle interfaceStyle;
         private float progressSize = Settings.DefaultValue.ProgressSize;
         private Color styleColor = Settings.DefaultValue.Style.StyleColor;
         private TextRenderingHint textRenderingHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible = Settings.DefaultValue.TextVisible;
-        private IStyle tmpStyle;
         private Styles visualStyle;
         private string watermarkText = Settings.DefaultValue.WatermarkText;
         private bool watermarkVisible = Settings.DefaultValue.WatermarkVisible;
@@ -54,11 +55,11 @@
         public VisualStylesManager()
         {
             Initialized = true;
-            Style = Settings.GetStyleSheet(Settings.DefaultValue.DefaultStyle);
+            interfaceStyle = GetStyleSheet(Settings.DefaultValue.DefaultStyle);
             visualStyle = Settings.DefaultValue.DefaultStyle;
         }
 
-        public delegate void StyleChangedEventHandler();
+        public delegate void StyleChangedEventHandler(Styles newStyle);
 
         public event StyleChangedEventHandler StyleChanged;
 
@@ -216,6 +217,20 @@
             }
         }
 
+        [Browsable(false)]
+        public IStyle InterfaceStyle
+        {
+            get
+            {
+                return interfaceStyle;
+            }
+
+            set
+            {
+                interfaceStyle = value;
+            }
+        }
+
         [DefaultValue(Settings.DefaultValue.ProgressSize)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.ProgressSize)]
@@ -229,20 +244,6 @@
             set
             {
                 progressSize = value;
-            }
-        }
-
-        [Browsable(false)]
-        public IStyle Style
-        {
-            get
-            {
-                return tmpStyle;
-            }
-
-            set
-            {
-                tmpStyle = value;
             }
         }
 
@@ -306,8 +307,7 @@
             set
             {
                 visualStyle = value;
-                Style = Settings.GetStyleSheet(visualStyle);
-                StyleChanged?.Invoke();
+                OnStyleChanged(visualStyle);
             }
         }
 
@@ -341,6 +341,60 @@
             {
                 watermarkVisible = value;
             }
+        }
+
+        #endregion
+
+        #region Events
+
+        protected virtual void OnStyleChanged(Styles newStyle)
+        {
+            interfaceStyle = GetStyleSheet(newStyle);
+
+            StyleChangedEventHandler msc = VisualButton;
+            msc += VisualCheckBox;
+            msc(newStyle);
+
+            StyleChanged?.Invoke(newStyle);
+        }
+
+        /// <summary>Gets the style information.</summary>
+        /// <param name="styles">Input the style.</param>
+        /// <returns>The new style interface.</returns>
+        private static IStyle GetStyleSheet(Styles styles)
+        {
+            IStyle style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private void VisualButton(Styles newStyle)
+        {
+        }
+
+        private void VisualCheckBox(Styles newStyle)
+        {
+            // Todo
         }
 
         #endregion

@@ -446,7 +446,7 @@
             if (styleManager.VisualStylesManager != null)
             {
                 // Load style manager settings 
-                IStyle style = Settings.GetStyleSheet(styleManager.VisualStylesManager.VisualStyle);
+                IStyle style = styleManager.VisualStylesManager.InterfaceStyle;
 
                 animation = styleManager.VisualStylesManager.Animation;
                 buttonShape.Border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
@@ -461,30 +461,30 @@
 
                 Color[] buttonDisabled =
                     {
-                        styleManager.VisualStylesManager.Style.ControlDisabled,
-                        ControlPaint.Light(styleManager.VisualStylesManager.Style.ControlDisabled),
-                        styleManager.VisualStylesManager.Style.ControlDisabled
+                        styleManager.VisualStylesManager.InterfaceStyle.ControlDisabled,
+                        ControlPaint.Light(styleManager.VisualStylesManager.InterfaceStyle.ControlDisabled),
+                        styleManager.VisualStylesManager.InterfaceStyle.ControlDisabled
                     };
 
                 Color[] buttonHover =
                     {
-                        styleManager.VisualStylesManager.Style.ButtonHoverColor,
-                        ControlPaint.Light(styleManager.VisualStylesManager.Style.ButtonHoverColor),
-                        styleManager.VisualStylesManager.Style.ButtonHoverColor
+                        styleManager.VisualStylesManager.InterfaceStyle.ButtonHoverColor,
+                        ControlPaint.Light(styleManager.VisualStylesManager.InterfaceStyle.ButtonHoverColor),
+                        styleManager.VisualStylesManager.InterfaceStyle.ButtonHoverColor
                     };
 
                 Color[] buttonNormal =
                     {
-                        styleManager.VisualStylesManager.Style.ButtonNormalColor,
-                        ControlPaint.Light(styleManager.VisualStylesManager.Style.ButtonNormalColor),
-                        styleManager.VisualStylesManager.Style.ButtonNormalColor
+                        styleManager.VisualStylesManager.InterfaceStyle.ButtonNormalColor,
+                        ControlPaint.Light(styleManager.VisualStylesManager.InterfaceStyle.ButtonNormalColor),
+                        styleManager.VisualStylesManager.InterfaceStyle.ButtonNormalColor
                     };
 
                 Color[] buttonPressed =
                     {
-                        styleManager.VisualStylesManager.Style.ButtonDownColor,
-                        ControlPaint.Light(styleManager.VisualStylesManager.Style.ButtonDownColor),
-                        styleManager.VisualStylesManager.Style.ButtonDownColor
+                        styleManager.VisualStylesManager.InterfaceStyle.ButtonDownColor,
+                        ControlPaint.Light(styleManager.VisualStylesManager.InterfaceStyle.ButtonDownColor),
+                        styleManager.VisualStylesManager.InterfaceStyle.ButtonDownColor
                     };
 
                 float[] gradientPosition = { 0, 1 / 2f, 1 };
