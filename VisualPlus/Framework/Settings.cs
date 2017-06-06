@@ -2,6 +2,7 @@ namespace VisualPlus.Framework
 {
     #region Namespace
 
+    using System;
     using System.Drawing.Text;
 
     using VisualPlus.Enums;
@@ -24,6 +25,40 @@ namespace VisualPlus.Framework
         public static readonly int MinimumCheckBoxBorderRounding = 1;
         public static readonly int MinimumCheckBoxSize = 3;
         public static readonly int MinimumRounding = 1;
+
+        #endregion
+
+        #region Events
+
+        /// <summary>Gets the style information.</summary>
+        /// <param name="styles">Input the style.</param>
+        /// <returns>The new style interface.</returns>
+        public static IStyle GetStyleSheet(Styles styles)
+        {
+            IStyle style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
 
         #endregion
 

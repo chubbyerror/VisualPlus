@@ -2,7 +2,6 @@
 {
     #region Namespace
 
-    using System;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Text;
@@ -12,23 +11,9 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
-
-    public interface IComponent : IDisposable
-    {
-        #region Constructors
-
-        event EventHandler Disposed;
-
-        #endregion
-
-        #region Properties
-
-        ISite Site { get; set; }
-
-        #endregion
-    }
 
     /// <summary>The visual Toggle.</summary>
     [ToolboxBitmap(typeof(Component))]
@@ -51,13 +36,16 @@
         private BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private Styles currentStyle = Settings.DefaultValue.DefaultStyle;
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
         private float progressSize = Settings.DefaultValue.ProgressSize;
         private Color styleColor = Settings.DefaultValue.Style.StyleColor;
         private TextRenderingHint textRenderingHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible = Settings.DefaultValue.TextVisible;
+        private IStyle tmpStyle;
+        private Styles visualStyle;
+        private string watermarkText = Settings.DefaultValue.WatermarkText;
+        private bool watermarkVisible = Settings.DefaultValue.WatermarkVisible;
 
         #endregion
 
@@ -66,6 +54,8 @@
         public VisualStylesManager()
         {
             Initialized = true;
+            Style = Settings.GetStyleSheet(Settings.DefaultValue.DefaultStyle);
+            visualStyle = Settings.DefaultValue.DefaultStyle;
         }
 
         public delegate void StyleChangedEventHandler();
@@ -242,21 +232,17 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Style)]
-        public Styles Style
+        [Browsable(false)]
+        public IStyle Style
         {
             get
             {
-                return currentStyle;
+                return tmpStyle;
             }
 
             set
             {
-                currentStyle = value;
-
-                // Change the style
-                StyleChanged?.Invoke();
+                tmpStyle = value;
             }
         }
 
@@ -306,8 +292,57 @@
             }
         }
 
-        #endregion
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Style)]
+        public Styles VisualStyle
+        {
+            get
+            {
+                return visualStyle;
+            }
 
-        // private IStyle style = Settings.DefaultValue.Style;
+            set
+            {
+                visualStyle = value;
+                Style = Settings.GetStyleSheet(visualStyle);
+                StyleChanged?.Invoke();
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description("The watermark text.")]
+        public string WatermarkText
+        {
+            get
+            {
+                return watermarkText;
+            }
+
+            set
+            {
+                watermarkText = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description("Watermark visible toggle.")]
+        public bool WatermarkVisible
+        {
+            get
+            {
+                return watermarkVisible;
+            }
+
+            set
+            {
+                watermarkVisible = value;
+            }
+        }
+
+        #endregion
     }
 }
