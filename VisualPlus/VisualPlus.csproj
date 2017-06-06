@@ -113,8 +113,9 @@
     <Compile Include="Controls\VisualToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Enums\Direction.cs" />
+    <Compile Include="Enums\Alignment.cs" />
     <Compile Include="Framework\Structure\Checkmark.cs" />
+    <Compile Include="Framework\Structure\Expander.cs" />
     <Compile Include="Framework\Structure\Moveable.cs" />
     <Compile Include="Framework\Handlers\ExceptionManager.cs" />
     <Compile Include="Framework\Structure\Border.cs" />

@@ -39,15 +39,17 @@
         private Border border = new Border();
         private GraphicsPath borderGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
 
+        private Expander expander;
+        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
         private GroupBoxStyle groupBoxStyle = GroupBoxStyle.Default;
+
+        private bool onButtonBounds;
         private StringAlignment stringAlignment = StringAlignment.Center;
         private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private TitleAlignments titleAlign = TitleAlignments.Top;
         private Border titleBorder = new Border();
-
         private int titleBoxHeight = 25;
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
@@ -67,16 +69,25 @@
 
             ForeColor = Settings.DefaultValue.Style.ForeColor(0);
             Size = new Size(220, 180);
-            MinimumSize = new Size(136, 50);
             Padding = new Padding(5, 28, 5, 5);
             Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
+
+            expander = new Expander(this, 25)
+                {
+                    Visible = false
+                };
 
             float[] gradientPosition = { 0, 1 };
 
             titleGradient.Colors = titleBoxColor;
             titleGradient.Positions = gradientPosition;
         }
+
+        [Description("Occours when the expander toggle has changed.")]
+        public delegate void ToggleChangedEventHandler();
+
+        public event ToggleChangedEventHandler ToggleExpanderChanged;
 
         public enum GroupBoxStyle
         {
@@ -146,6 +157,23 @@
             set
             {
                 groupBoxStyle = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(ExpanderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Expander Expander
+        {
+            get
+            {
+                return expander;
+            }
+
+            set
+            {
+                expander = value;
                 Invalidate();
             }
         }
@@ -311,6 +339,29 @@
             ExceptionManager.SetControlBackColor(e.Control, backgroundColor, true);
         }
 
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (expander.MouseOnButton)
+            {
+                if (expander.Expanded)
+                {
+                    expander.Expanded = false;
+                }
+                else
+                {
+                    expander.Expanded = true;
+                }
+
+                ToggleExpanderChanged?.Invoke();
+            }
+            else
+            {
+                Focus();
+            }
+        }
+
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
@@ -323,6 +374,25 @@
             base.OnMouseLeave(e);
             controlState = ControlState.Normal;
             Invalidate();
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            if (expander.Visible)
+            {
+                expander.GetMouseOnButton(e.Location);
+
+                if (expander.MouseOnButton)
+                {
+                    Cursor = expander.Cursor;
+                }
+                else
+                {
+                    Cursor = Cursors.Default;
+                }
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -387,6 +457,24 @@
 
                 graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
             }
+
+            if (expander.Visible)
+            {
+                Point buttonPoint = expander.GetAlignmentPoint(Size);
+                expander.Draw(graphics, buttonPoint);
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            expander?.UpdateOriginal(Size);
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            expander?.UpdateOriginal(Size);
         }
 
         private Rectangle ConfigureStyleBox(Size textArea)

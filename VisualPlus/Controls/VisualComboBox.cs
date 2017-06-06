@@ -31,7 +31,7 @@
 
         private Border border = new Border();
         private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
-        private Direction buttonDirection = Direction.Right;
+        private Alignment buttonAlignment = Alignment.Right;
         private DropDownButtons buttonStyles = DropDownButtons.Arrow;
         private bool buttonVisible = Settings.DefaultValue.TextVisible;
         private int buttonWidth = 30;
@@ -162,16 +162,16 @@
 
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.Direction)]
-        public Direction ButtonDirection
+        public Alignment ButtonAlignment
         {
             get
             {
-                return buttonDirection;
+                return buttonAlignment;
             }
 
             set
             {
-                buttonDirection = value;
+                buttonAlignment = value;
                 Invalidate();
             }
         }
@@ -560,7 +560,7 @@
             Point buttonPoint;
             Size buttonSize = new Size(buttonWidth, Height);
 
-            if (buttonDirection == Direction.Right)
+            if (buttonAlignment == Alignment.Right)
             {
                 buttonPoint = new Point(Width - buttonWidth, 0);
                 textBoxPoint = new Point(0, 0);
@@ -600,7 +600,7 @@
 
         private void ConfigureDirection(Rectangle textBoxRectangle, Rectangle buttonRectangle)
         {
-            if (buttonDirection == Direction.Right)
+            if (buttonAlignment == Alignment.Right)
             {
                 if (textAlignment == StringAlignment.Far)
                 {
@@ -657,7 +657,7 @@
         {
             if (separatorVisible)
             {
-                if (buttonDirection == Direction.Right)
+                if (buttonAlignment == Alignment.Right)
                 {
                     graphics.DrawLine(new Pen(separatorColor), buttonRectangle.X - 1, 4, buttonRectangle.X - 1, Height - 5);
                     graphics.DrawLine(new Pen(separatorShadowColor), buttonRectangle.X, 4, buttonRectangle.X, Height - 5);
