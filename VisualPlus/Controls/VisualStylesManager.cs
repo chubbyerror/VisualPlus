@@ -55,7 +55,7 @@
         public VisualStylesManager()
         {
             Initialized = true;
-            interfaceStyle = GetStyleSheet(Settings.DefaultValue.DefaultStyle);
+            interfaceStyle = GetStyleInterface(Settings.DefaultValue.DefaultStyle);
             visualStyle = Settings.DefaultValue.DefaultStyle;
         }
 
@@ -349,7 +349,7 @@
 
         protected virtual void OnStyleChanged(Styles newStyle)
         {
-            interfaceStyle = GetStyleSheet(newStyle);
+            interfaceStyle = GetStyleInterface(newStyle);
 
             StyleChangedEventHandler msc = VisualButton;
             msc += VisualCheckBox;
@@ -361,7 +361,7 @@
         /// <summary>Gets the style information.</summary>
         /// <param name="styles">Input the style.</param>
         /// <returns>The new style interface.</returns>
-        private static IStyle GetStyleSheet(Styles styles)
+        private static IStyle GetStyleInterface(Styles styles)
         {
             IStyle style;
 
