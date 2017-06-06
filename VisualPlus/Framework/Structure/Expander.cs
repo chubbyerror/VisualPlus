@@ -19,7 +19,7 @@
     {
         #region Variables
 
-        private Alignment alignment = Alignment.Left;
+        private Alignment.Horizontal horizontal = Enums.Alignment.Horizontal.Left;
         private Size buttonSize = new Size(12, 10);
         private Color color = Settings.DefaultValue.Style.DropDownButtonColor;
         private int contractedHeight;
@@ -48,16 +48,16 @@
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description("The alignment.")]
-        public Alignment Alignment
+        public Alignment.Horizontal Alignment
         {
             get
             {
-                return alignment;
+                return horizontal;
             }
 
             set
             {
-                alignment = value;
+                horizontal = value;
             }
         }
 
@@ -235,7 +235,7 @@
         public Point GetAlignmentPoint(Size control)
         {
             Point newPoint = new Point { Y = spacing };
-            if (alignment == Alignment.Left)
+            if (horizontal == Enums.Alignment.Horizontal.Left)
             {
                 newPoint.X = spacing;
             }
