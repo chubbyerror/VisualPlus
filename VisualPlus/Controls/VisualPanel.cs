@@ -15,6 +15,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -28,11 +29,12 @@
     {
         #region Variables
 
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor;
         private Border border = new Border();
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Expander expander;
+        private StyleManager styleManager = new StyleManager();
 
         #endregion
 
@@ -45,7 +47,6 @@
                 ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Size = new Size(187, 117);
             Padding = new Padding(5, 5, 5, 5);
             DoubleBuffered = true;
@@ -53,6 +54,8 @@
             UpdateStyles();
 
             expander = new Expander(this, 22);
+
+            ConfigureStyleManager();
         }
 
         [Description("Occours when the expander toggle has changed.")]
@@ -110,6 +113,23 @@
             set
             {
                 expander = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
                 Invalidate();
             }
         }
@@ -191,6 +211,11 @@
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
             graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
 
@@ -216,6 +241,38 @@
         {
             base.OnSizeChanged(e);
             expander?.UpdateOriginal(Size);
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                backgroundColor = controlStyle.Background(0);
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.BorderRounding;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                backgroundColor = Settings.DefaultValue.Control.Background(0);
+            }
         }
 
         #endregion

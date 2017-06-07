@@ -28,16 +28,16 @@
 
         private readonly Color[] lineColor =
             {
-                ControlPaint.Light(Settings.DefaultValue.Style.LineColor),
-                Settings.DefaultValue.Style.LineColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.LineColor)
+                ControlPaint.Light(Settings.DefaultValue.Control.Line),
+                Settings.DefaultValue.Control.Line,
+                ControlPaint.Light(Settings.DefaultValue.Control.Line)
             };
 
         private readonly Color[] shadowColor =
             {
-                ControlPaint.Light(Settings.DefaultValue.Style.ShadowColor),
-                Settings.DefaultValue.Style.ShadowColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.ShadowColor)
+                ControlPaint.Light(Settings.DefaultValue.Control.Shadow),
+                Settings.DefaultValue.Control.Shadow,
+                ControlPaint.Light(Settings.DefaultValue.Control.Shadow)
             };
 
         private Gradient lineGradient = new Gradient();

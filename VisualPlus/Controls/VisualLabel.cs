@@ -14,6 +14,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -27,23 +28,7 @@
     {
         #region Variables
 
-        private const int ShadowDepth = 4;
-        private const float ShadowSmooth = 1.5f;
-
-        private readonly Color[] foreColor =
-            {
-                Settings.DefaultValue.Style.ForeColor(0),
-                Settings.DefaultValue.Style.ForeColor(0)
-            };
-
-        private readonly Color[] textDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
-                Settings.DefaultValue.Style.TextDisabled
-            };
-
         private bool autoSize;
-
         private Orientation orientation = Orientation.Horizontal;
         private bool outline;
         private Color outlineColor = Color.Red;
@@ -56,6 +41,8 @@
         private int shadowDirection = 315;
         private Point shadowLocation = new Point(0, 0);
         private int shadowOpacity = 100;
+
+        private StyleManager styleManager = new StyleManager();
         private Rectangle textBoxRectangle;
         private Gradient textDisabledGradient = new Gradient();
         private Gradient textGradient = new Gradient();
@@ -71,15 +58,9 @@
 
             UpdateStyles();
             BackColor = Color.Transparent;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
 
-            float[] gradientPosition = { 0, 1 };
-
-            textGradient.Colors = foreColor;
-            textGradient.Positions = gradientPosition;
-
-            textDisabledGradient.Colors = textDisabledColor;
-            textDisabledGradient.Positions = gradientPosition;
+            ConfigureStyleManager();
+            DefaultGradient();
         }
 
         #endregion
@@ -309,6 +290,23 @@
             }
         }
 
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
+                Invalidate();
+            }
+        }
+
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
@@ -371,6 +369,11 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             Gradient foreGradient = Enabled ? textGradient : textDisabledGradient;
 
             if (reflection && (orientation == Orientation.Vertical))
@@ -405,6 +408,52 @@
 
             // Draw text
             graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle, GetStringFormat());
+        }
+
+        private const int ShadowDepth = 4;
+        private const float ShadowSmooth = 1.5f;
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+            }
+            else
+            {
+                // Load default settings
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+            }
+        }
+
+        private void DefaultGradient()
+        {
+            Color[] foreColor =
+                {
+                    Settings.DefaultValue.Font.ForeColor,
+                    Settings.DefaultValue.Font.ForeColor
+                };
+
+            Color[] textDisabledColor =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Font.ForeColorDisabled),
+                    Settings.DefaultValue.Font.ForeColorDisabled
+                };
+
+            float[] gradientPosition = { 0, 1 };
+
+            textGradient.Colors = foreColor;
+            textGradient.Positions = gradientPosition;
+
+            textDisabledGradient.Colors = textDisabledColor;
+            textDisabledGradient.Positions = gradientPosition;
         }
 
         private void DrawOutline(Graphics graphics)

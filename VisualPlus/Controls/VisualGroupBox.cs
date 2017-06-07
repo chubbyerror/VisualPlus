@@ -16,6 +16,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -29,25 +30,18 @@
     {
         #region Variables
 
-        private readonly Color[] titleBoxColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0)
-            };
-
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor;
         private Border border = new Border();
         private GraphicsPath borderGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-
         private Expander expander;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor;
         private GroupBoxStyle groupBoxStyle = GroupBoxStyle.Default;
-
-        private bool onButtonBounds;
         private StringAlignment stringAlignment = StringAlignment.Center;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+
+        private StyleManager styleManager = new StyleManager();
+        private Color textDisabledColor;
+        private TextRenderingHint textRendererHint;
         private TitleAlignments titleAlign = TitleAlignments.Top;
         private Border titleBorder = new Border();
         private int titleBoxHeight = 25;
@@ -67,10 +61,8 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            ForeColor = Settings.DefaultValue.Style.ForeColor(0);
             Size = new Size(220, 180);
             Padding = new Padding(5, 28, 5, 5);
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
 
             expander = new Expander(this, 25)
@@ -78,10 +70,8 @@
                     Visible = false
                 };
 
-            float[] gradientPosition = { 0, 1 };
-
-            titleGradient.Colors = titleBoxColor;
-            titleGradient.Positions = gradientPosition;
+            ConfigureStyleManager();
+            DefaultGradient();
         }
 
         [Description("Occours when the expander toggle has changed.")]
@@ -404,8 +394,12 @@
             graphics.TextRenderingHint = textRendererHint;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
-            Size textArea = GDI.GetTextSize(graphics, Text, Font);
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
 
+            Size textArea = GDI.GetTextSize(graphics, Text, Font);
             Rectangle group = ConfigureStyleBox(textArea);
             Rectangle title = ConfigureStyleTitleBox(textArea);
 
@@ -511,6 +505,45 @@
             return groupBoxRectangle;
         }
 
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+                backgroundColor = controlStyle.Background(0);
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.BorderRounding;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+                backgroundColor = Settings.DefaultValue.Control.Background(0);
+            }
+        }
+
         private Rectangle ConfigureStyleTitleBox(Size textArea)
         {
             Size titleSize = new Size(Width, titleBoxHeight);
@@ -577,6 +610,12 @@
 
             Rectangle titleRectangle = new Rectangle(titlePoint, titleSize);
             return titleRectangle;
+        }
+
+        private void DefaultGradient()
+        {
+            titleGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
+            titleGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
         }
 
         #endregion

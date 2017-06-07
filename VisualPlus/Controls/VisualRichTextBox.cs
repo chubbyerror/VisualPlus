@@ -34,13 +34,13 @@
 
         #region Variables
 
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
+        private Color backgroundColor = Settings.DefaultValue.Control.Background(3);
         private Border border = new Border();
-        private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private Color controlDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
+        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
 
         #endregion
@@ -62,7 +62,7 @@
             AutoWordSelection = false;
             BorderStyle = BorderStyle.None;
             TextChanged += TextBoxTextChanged;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             UpdateStyles();
         }
 

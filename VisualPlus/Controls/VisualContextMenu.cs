@@ -12,6 +12,7 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -24,7 +25,11 @@
     {
         #region Variables
 
+        private static Color background;
+
         private ToolStripItemClickedEventArgs clickedEventArgs;
+
+        private StyleManager styleManager = new StyleManager();
 
         #endregion
 
@@ -33,11 +38,7 @@
         public VisualContextMenuStrip()
         {
             Renderer = new VisualToolStripRender();
-            BackColor = backgroundColor;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
-
-            border.HoverVisible = false;
-            border.Shape = BorderShape.Rectangle;
+            ConfigureStyleManager();
         }
 
         public delegate void ClickedEventHandler(object sender);
@@ -99,16 +100,16 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
-        public Color BackgroundColor
+        public Color Background
         {
             get
             {
-                return backgroundColor;
+                return background;
             }
 
             set
             {
-                backgroundColor = value;
+                background = value;
                 Invalidate();
             }
         }
@@ -157,6 +158,23 @@
             set
             {
                 contextMenuFont = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
                 Invalidate();
             }
         }
@@ -214,14 +232,60 @@
             Invalidate();
         }
 
-        private static Color arrowColor = Settings.DefaultValue.Style.DropDownButtonColor;
-        private static Color arrowDisabledColor = Settings.DefaultValue.Style.ControlDisabled;
+        private static Color arrowColor;
+        private static Color arrowDisabledColor;
         private static bool arrowVisible = Settings.DefaultValue.TextVisible;
-        private static Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
         private static Border border = new Border();
-        private static Font contextMenuFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
-        private static Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private static Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private static Font contextMenuFont;
+        private static Color foreColor;
+        private static Color textDisabledColor;
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+
+                BackColor = controlStyle.Background(0);
+                arrowColor = controlStyle.FlatButtonEnabled;
+                arrowDisabledColor = controlStyle.FlatButtonDisabled;
+                contextMenuFont = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+
+                background = controlStyle.Background(0);
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = false;
+                border.Shape = BorderShape.Rectangle;
+
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+
+                BackColor = background;
+                arrowColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+                arrowDisabledColor = Settings.DefaultValue.Control.FlatButtonDisabled;
+                contextMenuFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+
+                background = Settings.DefaultValue.Control.Background(0);
+            }
+        }
 
         #endregion
 
@@ -235,7 +299,7 @@
             {
                 AutoSize = false;
                 Size = new Size(160, 30);
-                Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+                Font = contextMenuFont;
             }
 
             #endregion
@@ -310,9 +374,9 @@
             protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
             {
                 e.Graphics.InterpolationMode = InterpolationMode.High;
-                e.Graphics.Clear(Settings.DefaultValue.Style.BackgroundColor(0));
+                e.Graphics.Clear(background);
                 Rectangle menuItemRectangle = new Rectangle(0, e.Item.ContentRectangle.Y - 2, e.Item.ContentRectangle.Width + 4, e.Item.ContentRectangle.Height + 3);
-                e.Graphics.FillRectangle(e.Item.Selected && e.Item.Enabled ? new SolidBrush(Color.FromArgb(130, backgroundColor)) : new SolidBrush(backgroundColor), menuItemRectangle);
+                e.Graphics.FillRectangle(e.Item.Selected && e.Item.Enabled ? new SolidBrush(Color.FromArgb(130, background)) : new SolidBrush(background), menuItemRectangle);
             }
 
             protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
@@ -326,7 +390,7 @@
                 base.OnRenderToolStripBackground(e);
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 e.Graphics.InterpolationMode = InterpolationMode.High;
-                e.Graphics.Clear(backgroundColor);
+                e.Graphics.Clear(background);
             }
 
             protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)

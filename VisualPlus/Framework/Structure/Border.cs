@@ -9,6 +9,7 @@
 
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -23,12 +24,12 @@
 
     [TypeConverter(typeof(BorderConverter))]
     [Description(Localize.Description.Border)]
-    public class Border
+    public class Border : IBorder
     {
         #region Variables
 
-        private Color color = Settings.DefaultValue.Style.BorderColor(0);
-        private Color hoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private Color color = Settings.DefaultValue.Border.Color;
+        private Color hoverColor = Settings.DefaultValue.Border.HoverColor;
         private bool hoverVisible = true;
         private int rounding = Settings.DefaultValue.BorderRounding;
         private BorderShape shape = Settings.DefaultValue.BorderShape;

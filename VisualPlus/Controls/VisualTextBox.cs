@@ -35,22 +35,22 @@
 
         #region Variables
 
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
+        private Color backgroundColor = Settings.DefaultValue.Control.Background(3);
         private Border border = new Border();
         private Border buttonBorder = new Border();
-        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+        private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private Image buttonImage = Resources.search;
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private bool buttonVisible;
         private int buttonWidth = 19;
-        private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private Color controlDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Size iconSize = new Size(13, 13);
         private int textBoxHeight = 20;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Watermark watermark = new Watermark();
         private Panel waterMarkContainer;
@@ -70,7 +70,7 @@
 
             BorderStyle = BorderStyle.None;
             AutoSize = false;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             Size = new Size(135, 25);
             CreateTextBox();
             Controls.Add(TextBoxObject);

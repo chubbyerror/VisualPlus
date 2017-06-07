@@ -35,23 +35,16 @@
 
         #region Variables
 
-        private Color[] backgroundColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0),
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
-            };
-
         private Gradient backgroundGradient = new Gradient();
         private Point barLocation = new Point(0, 0);
         private Point barSize = new Point(15, 15);
         private BarTypes barStyle = BarTypes.Horizontal;
         private Border border = new Border();
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Point[] gradientPoints;
         private GraphicsPath graphicsDefaultBorderPath;
-        private Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
+        private Color hatchBackColor = Settings.DefaultValue.Progress.Hatch;
         private Color hatchForeColor;
         private GraphicsPath hatchPath = new GraphicsPath();
         private float hatchSize = Settings.DefaultValue.HatchSize;
@@ -63,15 +56,7 @@
         private int marqueeY;
         private Size minimumSize = new Size(100, 20);
         private bool percentageVisible;
-
-        private Color[] progressColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor),
-                Settings.DefaultValue.Style.ProgressColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor)
-            };
-
-        private Font progressFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
+        private Font progressFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
         private Gradient progressGradient = new Gradient();
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private StringAlignment valueAlignment = StringAlignment.Center;
@@ -87,7 +72,7 @@
                 ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             Maximum = 100;
 
             Size = minimumSize;
@@ -99,13 +84,11 @@
 
             hatchForeColor = Color.FromArgb(40, hatchBackColor);
 
-            float[] gradientPosition = { 0, 1 / 2f, 1 };
+            backgroundGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
+            backgroundGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
 
-            backgroundGradient.Colors = backgroundColor;
-            backgroundGradient.Positions = gradientPosition;
-
-            progressGradient.Colors = progressColor;
-            progressGradient.Positions = gradientPosition;
+            progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
+            progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
         }
 
         public enum BarTypes
@@ -363,22 +346,6 @@
             set
             {
                 progressGradient = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color[] ProgressColor
-        {
-            get
-            {
-                return progressColor;
-            }
-
-            set
-            {
-                progressColor = value;
                 Invalidate();
             }
         }

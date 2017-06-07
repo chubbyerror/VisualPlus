@@ -11,7 +11,9 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -25,22 +27,25 @@
     {
         #region Variables
 
-        private Color backgroundCircleColor = Settings.DefaultValue.Style.BackgroundProgressCircle;
+        private Color backgroundCircleColor;
         private bool backgroundCircleVisible = true;
-        private Font font = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
-        private Color foregroundCircleColor = Settings.DefaultValue.Style.ForegroundProgressCircle;
+        private Font font;
+        private Color foreColor;
+        private Color foregroundCircleColor;
         private bool foregroundCircleVisible = true;
         private float gradientRotation;
-        private Image icon;
-        private GraphicsPath iconGraphicsPath;
         private Point iconPoint;
         private Rectangle iconRectangle;
         private Size iconSize = new Size(16, 16);
-        private Color progressGradient1 = Settings.DefaultValue.Style.ProgressColor;
-        private Color progressGradient2 = ControlPaint.LightLight(Settings.DefaultValue.Style.ProgressColor);
+        private Image image;
+        private GraphicsPath imagePath;
+        private Color progressGradient1;
+        private Color progressGradient2;
         private ProgressShape progressShapeVal = ProgressShape.Round;
         private float progressSize = 5F;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private StyleManager styleManager = new StyleManager();
+        private Color textDisabledColor;
+        private TextRenderingHint textRendererHint;
         private bool textVisible;
 
         #endregion
@@ -54,16 +59,16 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            MinimumSize = new Size(100, 100);
-
-            ForeColor = Color.White;
-            textVisible = true;
             BackColor = Color.Transparent;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            MinimumSize = new Size(100, 100);
             UpdateStyles();
+
+            textVisible = true;
 
             // Attempt to center icon
             iconPoint = new Point((Width / 2) - (iconRectangle.Width / 2), (Height / 2) - (iconRectangle.Height / 2));
+
+            ConfigureStyleManager();
         }
 
         public enum ProgressShape
@@ -144,6 +149,21 @@
             }
         }
 
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
         public Color ForegroundCircle
@@ -177,27 +197,6 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Icon)]
-        public Image Icon
-        {
-            get
-            {
-                return icon;
-            }
-
-            set
-            {
-                icon = value;
-                if (AutoSize)
-                {
-                    Size = GetPreferredSize();
-                }
-
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.IconPosition)]
         public Point IconPoint
         {
@@ -225,6 +224,22 @@
             set
             {
                 iconSize = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Icon)]
+        public Image Image
+        {
+            get
+            {
+                return image;
+            }
+
+            set
+            {
+                image = value;
                 Invalidate();
             }
         }
@@ -294,6 +309,23 @@
             }
         }
 
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
@@ -345,13 +377,71 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
+            DrawCircles(graphics);
+            DrawImage(graphics);
+            DrawText(graphics);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            SetStandardSize();
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            SetStandardSize();
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+                IProgress progressStyle = styleManager.VisualStylesManager.ProgressStyle;
+
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+
+                backgroundCircleColor = progressStyle.BackCircle;
+                foregroundCircleColor = progressStyle.ForeCircle;
+
+                progressGradient1 = progressStyle.Progress.Colors[0];
+                progressGradient2 = progressStyle.Progress.Colors[1];
+            }
+            else
+            {
+                // Load default settings
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+
+                backgroundCircleColor = Settings.DefaultValue.Progress.BackCircle;
+                foregroundCircleColor = Settings.DefaultValue.Progress.ForeCircle;
+
+                progressGradient1 = Settings.DefaultValue.Progress.Progress.Colors[0];
+                progressGradient2 = Settings.DefaultValue.Progress.Progress.Colors[1];
+            }
+        }
+
+        private void DrawCircles(Graphics graphics)
+        {
             if (backgroundCircleVisible)
             {
                 // Draw background circle
                 graphics.FillEllipse(new SolidBrush(backgroundCircleColor), progressSize, progressSize, Width - progressSize - 1, Height - progressSize - 1);
             }
 
-            // Progress
             using (LinearGradientBrush progressBrush = new LinearGradientBrush(
                 ClientRectangle,
                 progressGradient1,
@@ -388,47 +478,32 @@
                 // Draw foreground circle
                 graphics.FillEllipse(new SolidBrush(foregroundCircleColor), progressSize + 4, progressSize + 4, Width - progressSize - 10, Height - progressSize - 10);
             }
+        }
 
-            iconGraphicsPath = new GraphicsPath();
-            iconGraphicsPath.AddRectangle(iconRectangle);
-            iconGraphicsPath.CloseAllFigures();
+        private void DrawImage(Graphics graphics)
+        {
+            imagePath = new GraphicsPath();
+            imagePath.AddRectangle(iconRectangle);
+            imagePath.CloseAllFigures();
 
-            if (Icon != null)
+            if (Image != null)
             {
                 // Point iconPoint = new Point(Width / 2 - iconRectangle.Width / 2, Height / 2 - iconRectangle.Height / 2);
                 iconRectangle = new Rectangle(iconPoint, iconSize);
-
-                // Draw icon
-                graphics.DrawImage(Icon, iconRectangle);
+                graphics.DrawImage(Image, iconRectangle);
             }
+        }
 
-            // String percentage
+        private void DrawText(Graphics graphics)
+        {
             if (textVisible)
             {
                 SizeF measuredString = graphics.MeasureString(Convert.ToString(Convert.ToInt32((100 / Maximum) * Value)), Font);
                 Point textPoint = new Point(Convert.ToInt32((Width / 2) - (measuredString.Width / 2)), Convert.ToInt32((Height / 2) - (measuredString.Height / 2)));
-
                 string stringValue = Convert.ToString(Convert.ToInt32((100 / Maximum) * Value)) + @"%";
-
-                graphics.DrawString(stringValue, font, new SolidBrush(ForeColor), textPoint);
+                foreColor = Enabled ? foreColor : textDisabledColor;
+                graphics.DrawString(stringValue, font, new SolidBrush(foreColor), textPoint);
             }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            SetStandardSize();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            SetStandardSize();
-        }
-
-        private Size GetPreferredSize()
-        {
-            return GetPreferredSize(new Size(0, 0));
         }
 
         private void SetStandardSize()

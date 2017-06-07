@@ -24,7 +24,25 @@
     {
         #region Variables
 
+        [Browsable(false)]
+        public ITab TabStyle;
+
+        [Browsable(false)]
+        public IBorder BorderStyle;
+
+        [Browsable(false)]
+        public IControl ControlStyle;
+
+        [Browsable(false)]
+        public IFont FontStyle;
+
         public bool Initialized;
+
+        [Browsable(false)]
+        public IProgress ProgressStyle;
+
+        [Browsable(false)]
+        public IWatermark WatermarkStyle;
 
         #endregion
 
@@ -39,9 +57,8 @@
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
-        private IStyle interfaceStyle;
         private float progressSize = Settings.DefaultValue.ProgressSize;
-        private Color styleColor = Settings.DefaultValue.Style.StyleColor;
+        private Color styleColor = Color.Green;
         private TextRenderingHint textRenderingHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible = Settings.DefaultValue.TextVisible;
         private Styles visualStyle;
@@ -54,9 +71,16 @@
 
         public VisualStylesManager()
         {
-            Initialized = true;
-            interfaceStyle = GetStyleInterface(Settings.DefaultValue.DefaultStyle);
+            // Load default style
             visualStyle = Settings.DefaultValue.DefaultStyle;
+
+            BorderStyle = GetBorderStyle(visualStyle);
+            ControlStyle = GetControlStyle(visualStyle);
+            FontStyle = GetFontStyle(visualStyle);
+            ProgressStyle = GetProgressStyle(visualStyle);
+            WatermarkStyle = GetWatermarkStyle(visualStyle);
+
+            Initialized = true;
         }
 
         public delegate void StyleChangedEventHandler(Styles newStyle);
@@ -217,20 +241,6 @@
             }
         }
 
-        [Browsable(false)]
-        public IStyle InterfaceStyle
-        {
-            get
-            {
-                return interfaceStyle;
-            }
-
-            set
-            {
-                interfaceStyle = value;
-            }
-        }
-
         [DefaultValue(Settings.DefaultValue.ProgressSize)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.ProgressSize)]
@@ -349,7 +359,12 @@
 
         protected virtual void OnStyleChanged(Styles newStyle)
         {
-            interfaceStyle = GetStyleInterface(newStyle);
+            BorderStyle = GetBorderStyle(newStyle);
+            ControlStyle = GetControlStyle(newStyle);
+            FontStyle = GetFontStyle(newStyle);
+            ProgressStyle = GetProgressStyle(newStyle);
+            WatermarkStyle = GetWatermarkStyle(newStyle);
+            TabStyle = GetTabStyle(newStyle);
 
             StyleChangedEventHandler msc = VisualButton;
             msc += VisualCheckBox;
@@ -358,12 +373,144 @@
             StyleChanged?.Invoke(newStyle);
         }
 
-        /// <summary>Gets the style information.</summary>
-        /// <param name="styles">Input the style.</param>
-        /// <returns>The new style interface.</returns>
-        private static IStyle GetStyleInterface(Styles styles)
+        private static ITab GetTabStyle(Styles styles)
         {
-            IStyle style;
+            ITab style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IBorder GetBorderStyle(Styles styles)
+        {
+            IBorder style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IControl GetControlStyle(Styles styles)
+        {
+            IControl style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IFont GetFontStyle(Styles styles)
+        {
+            IFont style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IProgress GetProgressStyle(Styles styles)
+        {
+            IProgress style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IWatermark GetWatermarkStyle(Styles styles)
+        {
+            IWatermark style;
 
             switch (styles)
             {

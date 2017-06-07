@@ -281,7 +281,7 @@
         private static readonly object EventLargeChangeChanged = new object();
         private static readonly object EventSelectionSizeChanged = new object();
         private static readonly object EventSmallChangeChanged = new object();
-        private readonly Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+        private readonly Color buttonColor = Settings.DefaultValue.Control.ControlEnabled.Colors[0];
         private LinearGradientBrush _blackBottomGradient;
         private Bitmap _canvas;
         private Graphics _graphicsBuffer;

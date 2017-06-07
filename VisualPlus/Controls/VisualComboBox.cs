@@ -16,6 +16,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -30,7 +31,7 @@
         #region Variables
 
         private Border border = new Border();
-        private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
+        private Color buttonColor;
         private Alignment.Horizontal buttonHorizontal = Alignment.Horizontal.Right;
         private DropDownButtons buttonStyles = DropDownButtons.Arrow;
         private bool buttonVisible = Settings.DefaultValue.TextVisible;
@@ -39,17 +40,19 @@
         private Gradient controlGradient = new Gradient();
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor;
         private Border itemBorder = new Border();
-        private Color menuItemHover = Settings.DefaultValue.Style.ItemHover(0);
-        private Color menuItemNormal = Settings.DefaultValue.Style.BackgroundColor(0);
-        private Color menuTextColor = Settings.DefaultValue.Style.ForeColor(0);
-        private Color separatorColor = Settings.DefaultValue.Style.LineColor;
-        private Color separatorShadowColor = Settings.DefaultValue.Style.ShadowColor;
+        private Color menuItemHover;
+        private Color menuItemNormal;
+        private Color menuTextColor;
+        private Color separatorColor;
+        private Color separatorShadowColor;
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
         private int startIndex;
+
+        private StyleManager styleManager = new StyleManager();
         private StringAlignment textAlignment = StringAlignment.Center;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Watermark watermark = new Watermark();
 
@@ -73,28 +76,10 @@
             UpdateStyles();
             DropDownHeight = 100;
             BackColor = Color.Transparent;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             itemBorder.HoverVisible = false;
 
-            Color[] controlColor =
-                {
-                    ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                    Settings.DefaultValue.Style.BackgroundColor(0),
-                    ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
-                };
-
-            Color[] controlDisabledColor =
-                {
-                    ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                    Settings.DefaultValue.Style.ControlDisabled,
-                    ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
-                };
-
-            float[] gradientPosition = { 0, 1 / 2f, 1 };
-            controlGradient.Colors = controlColor;
-            controlGradient.Positions = gradientPosition;
-            controlDisabledGradient.Colors = controlDisabledColor;
-            controlDisabledGradient.Positions = gradientPosition;
+            DefaultGradient();
+            ConfigureStyleManager();
         }
 
         public enum DropDownButtons
@@ -396,6 +381,23 @@
             }
         }
 
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.Alignment)]
         public StringAlignment TextAlignment
@@ -533,6 +535,11 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
@@ -584,7 +591,6 @@
                 };
 
             ConfigureDirection(textBoxRectangle, buttonRectangle);
-
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
 
             if (Text.Length == 0)
@@ -623,6 +629,73 @@
                     textBoxRectangle.X = buttonWidth;
                 }
             }
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                buttonColor = controlStyle.FlatButtonEnabled;
+                menuTextColor = fontStyle.ForeColor;
+
+                menuItemNormal = controlStyle.ItemEnabled;
+                menuItemHover = controlStyle.ItemHover;
+
+                separatorColor = controlStyle.Line;
+                separatorShadowColor = controlStyle.Shadow;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+
+                controlGradient.Colors = controlStyle.BoxEnabled.Colors;
+                controlGradient.Positions = controlStyle.BoxEnabled.Positions;
+                controlDisabledGradient.Colors = controlStyle.BoxDisabled.Colors;
+                controlDisabledGradient.Positions = controlStyle.BoxDisabled.Positions;
+            }
+            else
+            {
+                // Load default settings
+                buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+                menuTextColor = Settings.DefaultValue.Font.ForeColor;
+
+                menuItemNormal = Settings.DefaultValue.Control.ItemEnabled;
+                menuItemHover = Settings.DefaultValue.Control.ItemHover;
+
+                separatorColor = Settings.DefaultValue.Control.Line;
+                separatorShadowColor = Settings.DefaultValue.Control.Shadow;
+
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.BorderRounding;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+            }
+        }
+
+        private void DefaultGradient()
+        {
+            controlGradient.Colors = Settings.DefaultValue.Control.BoxEnabled.Colors;
+            controlGradient.Positions = Settings.DefaultValue.Control.BoxEnabled.Positions;
+            controlDisabledGradient.Colors = Settings.DefaultValue.Control.BoxDisabled.Colors;
+            controlDisabledGradient.Positions = Settings.DefaultValue.Control.BoxDisabled.Positions;
         }
 
         private void DrawButton(Graphics graphics, Rectangle buttonRectangle)

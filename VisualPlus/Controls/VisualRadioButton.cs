@@ -15,6 +15,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -45,11 +46,12 @@
         private GraphicsPath checkPath;
         private Rectangle checkRectangle;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Point mouseLocation = new Point(0, 0);
         private VFXManager rippleEffectsManager;
+        private StyleManager styleManager = new StyleManager();
         private Color textColor;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
@@ -63,63 +65,14 @@
                 | ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
-            ForeColor = Settings.DefaultValue.Style.ForeColor(0);
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            ForeColor = Settings.DefaultValue.Font.ForeColor;
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             Width = 132;
             UpdateStyles();
             Cursor = Cursors.Hand;
 
-            checkMark.Style = CheckType.Shape;
-            checkMark.Location = new Point(3, 8);
-            checkMark.ImageSize = new Size(19, 16);
-            checkMark.Shape.Shape = BorderShape.Rounded;
-            checkMark.ShapeSize = new Size(8, 8);
-            checkMark.Shape.Rounding = 6;
-            boxShape.Size = new Size(14, 14);
-            boxShape.ImageSize = new Size(19, 16);
-            boxShape.Border.Rounding = 12;
-
-            Color[] boxColor =
-                {
-                    ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(3)),
-                    Settings.DefaultValue.Style.BackgroundColor(3)
-                };
-
-            Color[] boxDisabledColor =
-                {
-                    ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
-                    Settings.DefaultValue.Style.TextDisabled
-                };
-
-            Color[] checkColor =
-                {
-                    ControlPaint.Light(Settings.DefaultValue.Style.StyleColor),
-                    Settings.DefaultValue.Style.StyleColor
-                };
-
-            Color[] checkDisabledColor =
-                {
-                    ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
-                    Settings.DefaultValue.Style.TextDisabled
-                };
-
-            float[] gradientPosition = { 0, 1 };
-
-            boxShape.EnabledGradient.Colors = boxColor;
-            boxShape.EnabledGradient.Positions = gradientPosition;
-
-            boxShape.HoverGradient.Colors = boxColor;
-            boxShape.HoverGradient.Positions = gradientPosition;
-
-            boxShape.DisabledGradient.Colors = boxDisabledColor;
-            boxShape.DisabledGradient.Positions = gradientPosition;
-
-            checkMark.EnabledGradient.Colors = checkColor;
-            checkMark.EnabledGradient.Positions = gradientPosition;
-
-            checkMark.DisabledGradient.Colors = checkDisabledColor;
-            checkMark.DisabledGradient.Positions = gradientPosition;
-
+            ConfigureStyleManager();
+            DefaultGradient();
             ConfigureControlState();
             ConfigureComponents();
             ConfigureAnimation();
@@ -214,6 +167,23 @@
             {
                 base.ForeColor = value;
                 foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
                 Invalidate();
             }
         }
@@ -326,7 +296,11 @@
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
-            graphics.TextRenderingHint = textRendererHint;
+
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
 
             ConfigureControlState();
             ConfigureComponents();
@@ -381,15 +355,7 @@
         {
             if (Enabled)
             {
-                if (controlState == ControlState.Hover)
-                {
-                    boxGradient = boxShape.HoverGradient;
-                }
-                else
-                {
-                    boxGradient = boxShape.EnabledGradient;
-                }
-
+                boxGradient = boxShape.EnabledGradient;
                 backgroundImage = boxShape.EnabledImage;
 
                 checkGradient = checkMark.EnabledGradient;
@@ -407,6 +373,73 @@
 
                 textColor = textDisabledColor;
             }
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+                IProgress progressStyle = StyleManager.VisualStylesManager.ProgressStyle;
+
+                animation = styleManager.VisualStylesManager.Animation;
+                boxShape.Border.Color = borderStyle.Color;
+                boxShape.Border.HoverColor = borderStyle.HoverColor;
+                boxShape.Border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                boxShape.Border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                boxShape.Border.Shape = styleManager.VisualStylesManager.BorderShape;
+                boxShape.Border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                boxShape.Border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+
+                boxShape.EnabledGradient.Colors = controlStyle.BoxEnabled.Colors;
+                boxShape.EnabledGradient.Positions = controlStyle.BoxEnabled.Positions;
+                boxShape.DisabledGradient.Colors = controlStyle.BoxDisabled.Colors;
+                boxShape.DisabledGradient.Positions = controlStyle.BoxDisabled.Positions;
+
+                checkMark.EnabledGradient.Colors = progressStyle.Progress.Colors;
+                checkMark.EnabledGradient.Positions = progressStyle.Progress.Positions;
+                checkMark.DisabledGradient.Colors = progressStyle.ProgressDisabled.Colors;
+                checkMark.DisabledGradient.Positions = progressStyle.ProgressDisabled.Positions;
+            }
+            else
+            {
+                // Load default settings
+                animation = Settings.DefaultValue.Animation;
+                boxShape.Border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                boxShape.Border.Rounding = Settings.DefaultValue.BorderRounding;
+                boxShape.Border.Shape = Settings.DefaultValue.BorderShape;
+                boxShape.Border.Thickness = Settings.DefaultValue.BorderThickness;
+                boxShape.Border.Visible = Settings.DefaultValue.BorderVisible;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+
+                checkMark.Style = CheckType.Shape;
+                checkMark.Location = new Point(3, 8);
+                checkMark.ImageSize = new Size(19, 16);
+                checkMark.Shape.Shape = BorderShape.Rounded;
+                checkMark.ShapeSize = new Size(8, 8);
+                checkMark.Shape.Rounding = 12;
+                boxShape.Size = new Size(14, 14);
+                boxShape.ImageSize = new Size(19, 16);
+                boxShape.Border.Rounding = 12;
+            }
+        }
+
+        private void DefaultGradient()
+        {
+            boxShape.EnabledGradient.Colors = Settings.DefaultValue.Control.BoxEnabled.Colors;
+            boxShape.EnabledGradient.Positions = Settings.DefaultValue.Control.BoxEnabled.Positions;
+            boxShape.DisabledGradient.Colors = Settings.DefaultValue.Control.BoxDisabled.Colors;
+            boxShape.DisabledGradient.Positions = Settings.DefaultValue.Control.BoxDisabled.Positions;
         }
 
         private void DrawAnimation(Graphics graphics)

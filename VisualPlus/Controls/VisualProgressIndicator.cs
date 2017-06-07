@@ -22,8 +22,6 @@
     {
         #region Variables
 
-        private static SolidBrush animationColor = new SolidBrush(Color.DimGray);
-        private static Size circleSize = new Size(15, 15);
         private Timer animationSpeed = new Timer();
         private SolidBrush baseColor = new SolidBrush(Color.DarkGray);
         private BufferedGraphics buffGraphics;
@@ -45,7 +43,7 @@
             SetStyle(
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
 
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             Size = new Size(80, 80);
             MinimumSize = new Size(80, 80);
             SetPoints();
@@ -218,11 +216,15 @@
             SetPoints();
         }
 
+        private static SolidBrush animationColor = new SolidBrush(Color.DimGray);
+
         private static X AssignValues<X>(ref X run, X length)
         {
             run = length;
             return length;
         }
+
+        private static Size circleSize = new Size(15, 15);
 
         private void AnimationSpeedTick(object sender, EventArgs e)
         {

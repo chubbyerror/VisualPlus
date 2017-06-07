@@ -7,46 +7,155 @@
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
+    using VisualPlus.Framework.Structure;
 
     #endregion
 
-    public class BlackAndYellow : IStyle
+    public class BlackAndYellow : IBorder, IControl, IFont, IProgress, ITab, IWatermark
     {
         #region Variables
 
-        public Color BackgroundProgressCircle
+        public Color Color
         {
             get
             {
-                return Color.FromArgb(52, 73, 96);
+                return Color.FromArgb(180, 180, 180);
             }
         }
 
-        public Color ButtonDownColor
+        public Color HoverColor
         {
             get
             {
-                return Color.FromArgb(137, 136, 136);
+                return Color.FromArgb(120, 183, 230);
             }
         }
 
-        public Color ButtonHoverColor
+        public Gradient BoxDisabled
         {
             get
             {
-                return Color.DarkGray;
+                Color[] boxDisabledColors =
+                    {
+                        ControlPaint.Light(Color.FromArgb(131, 129, 129)),
+                        Color.FromArgb(131, 129, 129)
+                    };
+
+                Gradient boxDisabled = new Gradient
+                    {
+                        Colors = boxDisabledColors,
+                        Positions = twoPosition
+                    };
+
+                return boxDisabled;
             }
         }
 
-        public Color ButtonNormalColor
+        public Gradient BoxEnabled
         {
             get
             {
-                return Color.Black;
+                Color[] boxEnabledColors =
+                    {
+                        ControlPaint.Light(Color.FromArgb(241, 244, 249)),
+                        Color.FromArgb(241, 244, 249)
+                    };
+
+                Gradient boxEnabled = new Gradient
+                    {
+                        Colors = boxEnabledColors,
+                        Positions = twoPosition
+                    };
+
+                return boxEnabled;
             }
         }
 
-        public Color ControlDisabled
+        public Gradient ControlDisabled
+        {
+            get
+            {
+                Color[] controlDisabledColors =
+                    {
+                        Color.FromArgb(243, 243, 243),
+                        ControlPaint.Light(Color.FromArgb(243, 243, 243)),
+                        Color.FromArgb(243, 243, 243)
+                    };
+
+                Gradient controlDisabled = new Gradient
+                    {
+                        Colors = controlDisabledColors,
+                        Positions = triplePosition
+                    };
+
+                return controlDisabled;
+            }
+        }
+
+        public Gradient ControlEnabled
+        {
+            get
+            {
+                Color[] controlEnabledColors =
+                    {
+                        Color.FromArgb(226, 226, 226),
+                        ControlPaint.Light(Color.FromArgb(226, 226, 226)),
+                        Color.FromArgb(226, 226, 226)
+                    };
+
+                Gradient controlEnabled = new Gradient
+                    {
+                        Colors = controlEnabledColors,
+                        Positions = triplePosition
+                    };
+
+                return controlEnabled;
+            }
+        }
+
+        public Gradient ControlHover
+        {
+            get
+            {
+                Color[] controlHoverColors =
+                    {
+                        Color.FromArgb(181, 181, 181),
+                        ControlPaint.Light(Color.FromArgb(181, 181, 181)),
+                        Color.FromArgb(181, 181, 181)
+                    };
+
+                Gradient controlHover = new Gradient
+                    {
+                        Colors = controlHoverColors,
+                        Positions = triplePosition
+                    };
+
+                return controlHover;
+            }
+        }
+
+        public Gradient ControlPressed
+        {
+            get
+            {
+                Color[] controlPressedColors =
+                    {
+                        Color.FromArgb(137, 136, 136),
+                        ControlPaint.Light(Color.FromArgb(137, 136, 136)),
+                        Color.FromArgb(137, 136, 136)
+                    };
+
+                Gradient controlPressed = new Gradient
+                    {
+                        Colors = controlPressedColors,
+                        Positions = triplePosition
+                    };
+
+                return controlPressed;
+            }
+        }
+
+        public Color FlatButtonDisabled
         {
             get
             {
@@ -54,7 +163,7 @@
             }
         }
 
-        public Color DropDownButtonColor
+        public Color FlatButtonEnabled
         {
             get
             {
@@ -62,7 +171,7 @@
             }
         }
 
-        public Color DropDownColor
+        public Color ItemEnabled
         {
             get
             {
@@ -70,31 +179,15 @@
             }
         }
 
-        public Color ForegroundProgressCircle
+        public Color ItemHover
         {
             get
             {
-                return Color.FromArgb(48, 56, 68);
+                return Color.FromArgb(241, 241, 241);
             }
         }
 
-        public Color HatchColor
-        {
-            get
-            {
-                return Color.FromArgb(20, Color.Black);
-            }
-        }
-
-        public Color ItemDisableBackgroundColor
-        {
-            get
-            {
-                return Color.LightGray;
-            }
-        }
-
-        public Color LineColor
+        public Color Line
         {
             get
             {
@@ -102,91 +195,11 @@
             }
         }
 
-        public Color StyleColor
-        {
-            get
-            {
-                return ColorTranslator.FromHtml("#2D882D");
-            }
-        }
-
-        public Color ProgressColor
-        {
-            get
-            {
-                return ColorTranslator.FromHtml("#2D882D");
-            }
-        }
-
-        public Color ShadowColor
+        public Color Shadow
         {
             get
             {
                 return Color.FromArgb(250, 249, 249);
-            }
-        }
-
-        public Styles StyleManagement
-        {
-            get
-            {
-                return Styles.BlackAndYellow;
-            }
-        }
-
-        public Color TabHover
-        {
-            get
-            {
-                return Color.FromArgb(35, 36, 38);
-            }
-        }
-
-        public Color TabMenu
-        {
-            get
-            {
-                return Color.FromArgb(55, 61, 73);
-            }
-        }
-
-        public Color TabNormal
-        {
-            get
-            {
-                return Color.FromArgb(55, 61, 73);
-            }
-        }
-
-        public Color TabSelected
-        {
-            get
-            {
-                return Color.FromArgb(70, 76, 88);
-            }
-        }
-
-        public Color TabTextNormal
-        {
-            get
-            {
-                return Color.FromArgb(174, 181, 187);
-            }
-        }
-
-        public Color TabTextSelected
-        {
-            get
-            {
-                return Color.FromArgb(217, 220, 227);
-            }
-        }
-
-        public Color TextDisabled
-        {
-            get
-            {
-                return Color.FromArgb(131, 129, 129);
             }
         }
 
@@ -198,7 +211,187 @@
             }
         }
 
-        public Color BackgroundColor(int depth)
+        public float FontSize
+        {
+            get
+            {
+                return 8.25F;
+            }
+        }
+
+        public FontStyle FontStyle
+        {
+            get
+            {
+                return FontStyle.Regular;
+            }
+        }
+
+        public Color ForeColor
+        {
+            get
+            {
+                return Color.Black;
+            }
+        }
+
+        public Color ForeColorDisabled
+        {
+            get
+            {
+                return Color.FromArgb(131, 129, 129);
+            }
+        }
+
+        public Color ForeColorSelected
+        {
+            get
+            {
+                return Color.FromArgb(217, 220, 227);
+            }
+        }
+
+        public Color BackCircle
+        {
+            get
+            {
+                return Color.FromArgb(52, 73, 96);
+            }
+        }
+
+        public Gradient Background
+        {
+            get
+            {
+                Color[] backgroundColors =
+                    {
+                        ControlPaint.Light(Color.FromArgb(137, 136, 136)),
+                        Color.FromArgb(137, 136, 136)
+                    };
+
+                Gradient backgroundGradient = new Gradient
+                    {
+                        Colors = backgroundColors,
+                        Positions = twoPosition
+                    };
+
+                return backgroundGradient;
+            }
+        }
+
+        public Color ForeCircle
+        {
+            get
+            {
+                return Color.FromArgb(48, 56, 68);
+            }
+        }
+
+        public Color Hatch
+        {
+            get
+            {
+                return Color.FromArgb(20, Color.Black);
+            }
+        }
+
+        public Gradient Progress
+        {
+            get
+            {
+                Color[] progressColors =
+                    {
+                        ControlPaint.Light(ColorTranslator.FromHtml("#2D882D")),
+                        ColorTranslator.FromHtml("#2D882D")
+                    };
+
+                Gradient progressGradient = new Gradient
+                    {
+                        Colors = progressColors,
+                        Positions = twoPosition
+                    };
+
+                return progressGradient;
+            }
+        }
+
+        public Gradient ProgressDisabled
+        {
+            get
+            {
+                Color[] progressDisabledColors =
+                    {
+                        ControlPaint.Light(Color.FromArgb(131, 129, 129)),
+                        Color.FromArgb(131, 129, 129)
+                    };
+
+                Gradient progressDisabled = new Gradient
+                    {
+                        Colors = progressDisabledColors,
+                        Positions = twoPosition
+                    };
+
+                return progressDisabled;
+            }
+        }
+
+        public Color Menu
+        {
+            get
+            {
+                return Color.FromArgb(55, 61, 73);
+            }
+        }
+
+        public Color TabEnabled
+        {
+            get
+            {
+                return Color.FromArgb(55, 61, 73);
+            }
+        }
+
+        public Color TabHover
+        {
+            get
+            {
+                return Color.FromArgb(35, 36, 38);
+            }
+        }
+
+        public Color TabSelected
+        {
+            get
+            {
+                return Color.FromArgb(70, 76, 88);
+            }
+        }
+
+        public Color ActiveColor
+        {
+            get
+            {
+                return Color.Gray;
+            }
+        }
+
+        public Color InactiveColor
+        {
+            get
+            {
+                return Color.LightGray;
+            }
+        }
+
+        #endregion
+
+        #region Variables
+
+        private readonly Color defaultBackgroundColorNoDepth = Color.White;
+        private readonly float[] triplePosition = { 0, 1 / 2f, 1 };
+        private readonly float[] twoPosition = { 0, 1 };
+
+        Color IControl.Background(int depth)
         {
             if (depth < GetBackgroundColor().Count)
             {
@@ -208,65 +401,15 @@
             return defaultBackgroundColorNoDepth;
         }
 
-        public Color BorderColor(int depth)
-        {
-            if (depth < GetBorderColor().Count)
-            {
-                return GetBorderColor()[depth];
-            }
-
-            return defaultBorderColorNoDepth;
-        }
-
-        public Color ForeColor(int depth)
-        {
-            if (depth < GetForeColor().Count)
-            {
-                return GetForeColor()[depth];
-            }
-
-            return defaultForeColorNoDepth;
-        }
-
-        public Color ItemHover(int depth)
-        {
-            if (depth < GetItemHover().Count)
-            {
-                return GetItemHover()[depth];
-            }
-
-            return defaultItemHoverNoDepth;
-        }
-
-        public Color ItemNormal(int depth)
-        {
-            if (depth < GetItemNormal().Count)
-            {
-                return GetItemNormal()[depth];
-            }
-
-            return defaultItemNormalNoDepth;
-        }
-
-        #endregion
-
-        #region Variables
-
-        private readonly Color defaultBackgroundColorNoDepth = Color.White;
-        private readonly Color defaultBorderColorNoDepth = Color.FromArgb(180, 180, 180);
-        private readonly Color defaultForeColorNoDepth = Color.Black;
-        private readonly Color defaultItemHoverNoDepth = Color.White;
-        private readonly Color defaultItemNormalNoDepth = Color.White;
-
         #endregion
 
         #region Properties
 
-        public SolidBrush BrushFontItemDisable
+        public Styles StyleManagement
         {
             get
             {
-                return new SolidBrush(Color.DarkGray);
+                return Styles.BlackAndYellow;
             }
         }
 
@@ -282,51 +425,6 @@
                     ControlPaint.Light(Color.Gainsboro),
                     Color.FromArgb(66, 64, 65),
                     Color.FromArgb(241, 244, 249)
-                };
-
-            return list;
-        }
-
-        private static List<Color> GetBorderColor()
-        {
-            var list = new List<Color>
-                {
-                    Color.FromArgb(180, 180, 180),
-                    Color.FromArgb(120, 183, 230),
-                    Color.FromArgb(66, 64, 65)
-                };
-
-            return list;
-        }
-
-        private static List<Color> GetForeColor()
-        {
-            var list = new List<Color>
-                {
-                    Color.DarkGoldenrod,
-                    ControlPaint.LightLight(Color.Green)
-                };
-
-            return list;
-        }
-
-        private static List<Color> GetItemHover()
-        {
-            var list = new List<Color>
-                {
-                    Color.FromArgb(241, 241, 241),
-                    ControlPaint.LightLight(Color.Gainsboro)
-                };
-
-            return list;
-        }
-
-        private static List<Color> GetItemNormal()
-        {
-            var list = new List<Color>
-                {
-                    Color.White,
-                    ControlPaint.LightLight(Color.Gainsboro)
                 };
 
             return list;

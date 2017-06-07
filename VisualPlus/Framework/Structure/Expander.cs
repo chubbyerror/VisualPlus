@@ -21,7 +21,7 @@
 
         private Alignment.Horizontal horizontal = Enums.Alignment.Horizontal.Left;
         private Size buttonSize = new Size(12, 10);
-        private Color color = Settings.DefaultValue.Style.DropDownButtonColor;
+        private Color color = Settings.DefaultValue.Control.FlatButtonEnabled;
         private int contractedHeight;
         private Cursor cursor = Cursors.Hand;
         private bool expanded = true;

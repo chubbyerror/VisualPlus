@@ -88,12 +88,12 @@
         private Border border = new Border();
 
         private ButtonState buttonState = ButtonState.None;
-        private Color controlBoxItemColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color controlBoxItemColor = Settings.DefaultValue.Font.ForeColor;
         private ControlState controlState = ControlState.Normal;
         private int form_padding = 2;
-        private Color headerBackColor = Settings.DefaultValue.Style.ButtonNormalColor;
+        private Color headerBackColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private bool headerMouseDown;
-        private Color headerTextColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color headerTextColor = Settings.DefaultValue.Font.ForeColor;
 
         private Image icon = Resources.Icon;
         private bool iconBorder;
@@ -450,8 +450,8 @@
             // Determine whether or not we even should be drawing the buttons.
             bool showMin = MinimizeBox && ControlBox;
             bool showMax = MaximizeBox && ControlBox;
-            SolidBrush hoverBrush = new SolidBrush(Settings.DefaultValue.Style.ButtonHoverColor);
-            SolidBrush downBrush = new SolidBrush(Settings.DefaultValue.Style.ButtonDownColor);
+            SolidBrush hoverBrush = new SolidBrush(Settings.DefaultValue.Control.ControlEnabled.Colors[0]);
+            SolidBrush downBrush = new SolidBrush(Settings.DefaultValue.Control.ControlDisabled.Colors[0]);
 
             // When MaximizeButton == false, the minimize button will be painted in its place
             if ((buttonState == ButtonState.MinOver) && showMin)

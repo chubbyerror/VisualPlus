@@ -29,16 +29,16 @@
         #region Variables
 
         private Border columnBorder = new Border();
-        private Color columnHeaderBackground = Settings.DefaultValue.Style.BackgroundColor(3);
+        private Color columnHeaderBackground = Settings.DefaultValue.Control.FlatButtonDisabled;
         private ControlState controlState;
         private bool drawFocusRectangle;
         private bool drawStandardHeader;
         private Font headerFont = new Font("Helvetica", 10, FontStyle.Regular);
-        private Color headerText = Settings.DefaultValue.Style.ForeColor(0);
-        private Color itemBackground = Settings.DefaultValue.Style.BackgroundColor(3);
-        private Color itemHover = Settings.DefaultValue.Style.ItemHover(0);
+        private Color headerText = Settings.DefaultValue.Font.ForeColor;
+        private Color itemBackground = Settings.DefaultValue.Control.ItemEnabled;
+        private Color itemHover = Settings.DefaultValue.Control.ItemHover;
         private int itemPadding = 12;
-        private Color itemSelected = Settings.DefaultValue.Style.BorderColor(1);
+        private Color itemSelected = Settings.DefaultValue.Border.Color;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
@@ -68,43 +68,48 @@
             AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
             UpdateStyles();
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Font.Size);
             MouseLocation = new Point(-1, -1);
             controlState = ControlState.Normal;
 
             columnBorder.Shape = BorderShape.Rectangle;
             columnBorder.HoverVisible = false;
 
+            ConfigureAnimation();
+        }
+
+        private void ConfigureAnimation()
+        {
             MouseEnter += delegate
-                {
-                    controlState = ControlState.Hover;
-                };
+            {
+                controlState = ControlState.Hover;
+            };
             MouseLeave += delegate
-                {
-                    controlState = ControlState.Normal;
-                    MouseLocation = new Point(-1, -1);
-                    HoveredItem = null;
-                    Invalidate();
-                };
+            {
+                controlState = ControlState.Normal;
+                MouseLocation = new Point(-1, -1);
+                HoveredItem = null;
+                Invalidate();
+            };
 
             MouseDown += delegate
-                {
-                    controlState = ControlState.Down;
-                };
+            {
+                controlState = ControlState.Down;
+            };
             MouseUp += delegate
+            {
+                controlState = ControlState.Hover;
+            };
+            MouseMove += delegate (object sender, MouseEventArgs args)
+            {
+                MouseLocation = args.Location;
+                ListViewItem currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
+                if (HoveredItem != currentHoveredItem)
                 {
-                    controlState = ControlState.Hover;
-                };
-            MouseMove += delegate(object sender, MouseEventArgs args)
-                {
-                    MouseLocation = args.Location;
-                    ListViewItem currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
-                    if (HoveredItem != currentHoveredItem)
-                    {
-                        HoveredItem = currentHoveredItem;
-                        Invalidate();
-                    }
-                };
+                    HoveredItem = currentHoveredItem;
+                    Invalidate();
+                }
+            };
         }
 
         #endregion
@@ -358,7 +363,7 @@
             }
 
             // Draw separator
-            graphics.DrawLine(new Pen(Settings.DefaultValue.Style.BorderColor(0)), e.Bounds.Left, 0, e.Bounds.Right, 0);
+            graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), e.Bounds.Left, 0, e.Bounds.Right, 0);
 
             foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
             {

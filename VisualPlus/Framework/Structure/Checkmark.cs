@@ -31,7 +31,7 @@
 
         private char checkCharacter = '✔';
 
-        private Font checkCharacterFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Bold);
+        private Font checkCharacterFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
 
         private Point checkLocation = new Point(0, 0);
 
@@ -52,6 +52,14 @@
         private Size shapeSize = new Size(0, 0);
 
         #endregion
+
+        public Checkmark()
+        {
+            enabledGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
+            enabledGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
+            disabledGradient.Colors = Settings.DefaultValue.Progress.ProgressDisabled.Colors;
+            disabledGradient.Positions = Settings.DefaultValue.Progress.ProgressDisabled.Positions;
+        }
 
         #region Properties
 

@@ -35,20 +35,8 @@
 
         private readonly Color[] backgroundColor =
             {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0)
-            };
-
-        private readonly Color[] buttonColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
-                Settings.DefaultValue.Style.ButtonNormalColor
-            };
-
-        private readonly Color[] controlDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled
+                ControlPaint.Light(Settings.DefaultValue.Control.Background(0)),
+                Settings.DefaultValue.Control.Background(0)
             };
 
         private Gradient backgroundDisabledGradient = new Gradient();
@@ -62,9 +50,9 @@
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Point endPoint;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Point startPoint;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private string textProcessor;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private bool toggled;
@@ -86,7 +74,7 @@
 
             BackColor = Color.Transparent;
             Size = new Size(50, 20);
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             animationTimer.Tick += AnimationTimerTick;
 
             float[] gradientPosition = { 0, 1 };
@@ -94,14 +82,14 @@
             backgroundGradient.Colors = backgroundColor;
             backgroundGradient.Positions = gradientPosition;
 
-            backgroundDisabledGradient.Colors = controlDisabledColor;
+            backgroundDisabledGradient.Colors = backgroundColor;
             backgroundDisabledGradient.Positions = gradientPosition;
 
-            buttonGradient.Colors = buttonColor;
-            buttonGradient.Positions = gradientPosition;
+            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
+            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
 
-            buttonDisabledGradient.Colors = controlDisabledColor;
-            buttonDisabledGradient.Positions = gradientPosition;
+            buttonDisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
+            buttonDisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
         }
 
         public delegate void ToggledChangedEventHandler();

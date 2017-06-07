@@ -30,27 +30,27 @@
 
         private readonly Color[] tabHover =
             {
-                ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
-                Settings.DefaultValue.Style.TabSelected
+                ControlPaint.Light(Settings.DefaultValue.Tab.TabSelected),
+                Settings.DefaultValue.Tab.TabSelected
             };
 
         private readonly Color[] tabNormal =
             {
-                ControlPaint.Light(Settings.DefaultValue.Style.TabNormal),
-                Settings.DefaultValue.Style.TabNormal
+                ControlPaint.Light(Settings.DefaultValue.Tab.TabEnabled),
+                Settings.DefaultValue.Tab.TabEnabled
             };
 
         private readonly Color[] tabSelected =
             {
-                ControlPaint.Light(Settings.DefaultValue.Style.TabSelected),
-                Settings.DefaultValue.Style.TabSelected
+                ControlPaint.Light(Settings.DefaultValue.Tab.TabSelected),
+                Settings.DefaultValue.Tab.TabSelected
             };
 
         private TabAlignment alignment = TabAlignment.Top;
         private bool arrowSelectorVisible = true;
         private int arrowSpacing = 10;
         private int arrowThickness = 5;
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
+        private Color backgroundColor = Settings.DefaultValue.Control.Background(3);
         private ControlState controlState = ControlState.Normal;
         private Gradient hover = new Gradient();
         private Size itemSize = new Size(100, 25);
@@ -63,19 +63,19 @@
         private int selectorThickness = 4;
         private bool selectorVisible;
         private bool selectorVisible2;
-        private Color separator = Settings.DefaultValue.Style.TabSelected;
+        private Color separator = Settings.DefaultValue.Control.Line;
         private int separatorSpacing = 2;
         private float separatorThickness = 2F;
         private bool separatorVisible;
-        private Color tabMenu = Settings.DefaultValue.Style.TabMenu;
+        private Color tabMenu = Color.FromArgb(55, 61, 73);
         private Border tabPageBorder = new Border();
         private Rectangle tabPageRectangle;
-        private Color tabSelector = Settings.DefaultValue.Style.StyleColor;
+        private Color tabSelector = Color.Green;
         private StringAlignment textAlignment = StringAlignment.Center;
-        private Color textNormal = Settings.DefaultValue.Style.TabTextNormal;
+        private Color textNormal = Color.FromArgb(174, 181, 187);
         private Rectangle textRectangle;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Color textSelected = Settings.DefaultValue.Style.TabTextSelected;
+        private Color textSelected = Color.FromArgb(217, 220, 227);
 
         #endregion
 
@@ -94,7 +94,7 @@
             Size = new Size(320, 160);
             MinimumSize = new Size(144, 85);
             LineAlignment = StringAlignment.Center;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             ItemSize = itemSize;
 
             float[] gradientPosition = { 0, 1 };

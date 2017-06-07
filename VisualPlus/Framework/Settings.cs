@@ -47,8 +47,14 @@ namespace VisualPlus.Framework
             public const bool Moveable = false;
             public const bool WatermarkVisible = false;
             public static readonly string WatermarkText = "Watermark text";
-            public static readonly IStyle Style = new Visual();
             public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+            public static readonly IBorder Border = new Visual();
+            public static readonly IWatermark Watermark = new Visual();
+            public static readonly IFont Font = new Visual();
+            public static readonly IControl Control = new Visual();
+            public static readonly IProgress Progress = new Visual();
+            public static readonly ITab Tab = new Visual();
         }
 
         #endregion

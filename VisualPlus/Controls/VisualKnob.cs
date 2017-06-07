@@ -75,7 +75,7 @@
         private int mouseWheelBarPartitions = 10;
         private Graphics offGraphics;
         private Image offScreenImage;
-        private Color pointerColor = Settings.DefaultValue.Style.ProgressColor;
+        private Color pointerColor = Settings.DefaultValue.Progress.Progress.Colors[0];
         private PointerStyle pointerStyle = PointerStyle.Circle;
         private bool rotating;
         private Gradient scale = new Gradient();

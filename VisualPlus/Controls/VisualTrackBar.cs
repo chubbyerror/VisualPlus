@@ -34,30 +34,6 @@
 
         #region Variables
 
-        private static readonly Color[] progressColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor),
-                Settings.DefaultValue.Style.ProgressColor
-            };
-
-        private readonly Color[] backgroundColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0)
-            };
-
-        private readonly Color[] buttonColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
-                Settings.DefaultValue.Style.ButtonNormalColor
-            };
-
-        private readonly Color[] disabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled
-            };
-
         private Gradient backgroundGradient = new Gradient();
         private int barThickness = 10;
         private int barTickSpacing = 8;
@@ -67,13 +43,13 @@
         private GraphicsPath buttonPath = new GraphicsPath();
         private Rectangle buttonRectangle;
         private Size buttonSize = new Size(27, 20);
-        private Color buttonTextColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color buttonTextColor = Settings.DefaultValue.Font.ForeColor;
         private bool buttonVisible = true;
         private ControlState controlState = ControlState.Normal;
         private int currentUsedPos;
         private ValueDivisor dividedValue = ValueDivisor.By1;
         private int fillingValue = 25;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Point[] gradientPoints;
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private float hatchSize = Settings.DefaultValue.HatchSize;
@@ -91,10 +67,10 @@
         private bool progressVisible = Settings.DefaultValue.TextVisible;
         private string suffix;
         private Size textAreaSize;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private Font textFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
+        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+        private Font textFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Color tickColor = Settings.DefaultValue.Style.LineColor;
+        private Color tickColor = Settings.DefaultValue.Control.Line;
         private int tickHeight = 4;
         private Border trackBarBorder = new Border();
         private Gradient trackBarDisabledGradient = new Gradient();
@@ -115,7 +91,7 @@
                 true);
 
             UpdateStyles();
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             BackColor = Color.Transparent;
             DoubleBuffered = true;
             UpdateStyles();
@@ -123,23 +99,22 @@
             Size = new Size(200, 50);
             MinimumSize = new Size(0, 0);
 
-            float[] gradientPositions = { 0, 1 };
             float angle = 90;
 
             backgroundGradient.Angle = angle;
-            backgroundGradient.Colors = backgroundColor;
-            backgroundGradient.Positions = gradientPositions;
+            backgroundGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
+            backgroundGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
 
             trackBarDisabledGradient.Angle = angle;
-            trackBarDisabledGradient.Colors = disabledColor;
-            trackBarDisabledGradient.Positions = gradientPositions;
+            trackBarDisabledGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
+            trackBarDisabledGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
 
             progressGradient.Angle = angle;
-            progressGradient.Colors = progressColor;
-            progressGradient.Positions = gradientPositions;
+            progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
+            progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
 
-            buttonGradient.Colors = buttonColor;
-            buttonGradient.Positions = gradientPositions;
+            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
+            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
         }
 
         public enum ValueDivisor
@@ -1143,7 +1118,7 @@
             return result;
         }
 
-        private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
+        private static Color hatchBackColor = Settings.DefaultValue.Progress.Hatch;
 
         private static Rectangle trackerRectangle = Rectangle.Empty;
 

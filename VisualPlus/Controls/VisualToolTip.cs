@@ -28,23 +28,23 @@
 
         private readonly Color[] backgroundColor =
             {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0),
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+                ControlPaint.Light(Settings.DefaultValue.Control.Background(0)),
+                Settings.DefaultValue.Control.Background(0),
+                ControlPaint.Light(Settings.DefaultValue.Control.Background(0))
             };
 
         private bool autoSize = true;
         private Gradient backgroundGradient = new Gradient();
         private Border border = new Border();
-        private Font font = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Font font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Image icon;
         private bool iconBorder;
         private GraphicsPath iconGraphicsPath;
         private Point iconPoint = new Point(0, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-        private Color lineColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color lineColor = Settings.DefaultValue.Border.Color;
         private Padding padding = new Padding(4, 4, 4, 4);
         private Rectangle separator;
         private int separatorThickness = 1;
@@ -55,7 +55,7 @@
         private bool textShadow;
         private string title;
         private Color titleColor = Color.Gray;
-        private Font titleFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Bold);
+        private Font titleFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
         private Point titlePoint;
         private Size toolTipSize = new Size(100, 40);
         private ToolTipType toolTipType = ToolTipType.Default;

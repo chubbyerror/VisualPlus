@@ -7,29 +7,18 @@
     using System.Drawing;
     using System.Globalization;
 
+    using VisualPlus.Styles;
+
     #endregion
 
     [TypeConverter(typeof(WatermarkConverter))]
     [Description("The watermark class.")]
-    public class Watermark
+    public class Watermark : IWatermark
     {
         #region Variables
 
         [Browsable(false)]
-        public SolidBrush Brush = new SolidBrush(inactiveColor);
-
-        #endregion
-
-        #region Variables
-
-        private Color activeColor = Color.Gray;
-        private Font font = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
-        private string text = Settings.DefaultValue.WatermarkText;
-        private bool visible = Settings.DefaultValue.WatermarkVisible;
-
-        #endregion
-
-        #region Properties
+        public SolidBrush Brush;
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
@@ -49,22 +38,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The watermark font.")]
-        public Font Font
-        {
-            get
-            {
-                return font;
-            }
-
-            set
-            {
-                font = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description("The inactive color.")]
         public Color InactiveColor
         {
@@ -76,6 +49,45 @@
             set
             {
                 inactiveColor = value;
+            }
+        }
+
+        #endregion
+
+        #region Variables
+
+        private Color activeColor = Settings.DefaultValue.Watermark.ActiveColor;
+        private Font font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+        private Color inactiveColor = Settings.DefaultValue.Watermark.InactiveColor;
+        private string text = Settings.DefaultValue.WatermarkText;
+        private bool visible = Settings.DefaultValue.WatermarkVisible;
+
+        #endregion
+
+        #region Constructors
+
+        public Watermark()
+        {
+            Brush = new SolidBrush(inactiveColor);
+        }
+
+        #endregion
+
+        #region Properties
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description("The watermark font.")]
+        public Font Font
+        {
+            get
+            {
+                return font;
+            }
+
+            set
+            {
+                font = value;
             }
         }
 
@@ -122,8 +134,6 @@
                 graphics.DrawString(watermark.Text, watermark.Font, watermark.Brush, textBoxRectangle, stringFormat);
             }
         }
-
-        private static Color inactiveColor = Color.LightGray;
 
         #endregion
     }
