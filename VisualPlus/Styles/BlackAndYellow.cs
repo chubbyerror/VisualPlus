@@ -98,9 +98,9 @@
             {
                 Color[] controlEnabledColors =
                     {
-                        Color.FromArgb(226, 226, 226),
-                        ControlPaint.Light(Color.FromArgb(226, 226, 226)),
-                        Color.FromArgb(226, 226, 226)
+                        Color.Black,
+                        ControlPaint.Light(Color.Black),
+                        Color.Black
                     };
 
                 Gradient controlEnabled = new Gradient
@@ -231,7 +231,7 @@
         {
             get
             {
-                return Color.Black;
+                return Color.Yellow;
             }
         }
 
