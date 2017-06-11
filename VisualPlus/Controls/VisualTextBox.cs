@@ -16,6 +16,7 @@
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
     using VisualPlus.Properties;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -35,7 +36,7 @@
 
         #region Variables
 
-        private Color backgroundColor = Settings.DefaultValue.Control.Background(3);
+        private Color backgroundColor;
         private Border border = new Border();
         private Border buttonBorder = new Border();
         private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
@@ -47,11 +48,13 @@
         private Color controlDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
+        private Color foreColor;
         private Size iconSize = new Size(13, 13);
+
+        private StyleManager styleManager = new StyleManager();
         private int textBoxHeight = 20;
-        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private Color textDisabledColor;
+        private TextRenderingHint textRendererHint;
         private Watermark watermark = new Watermark();
         private Panel waterMarkContainer;
         private int xValue;
@@ -70,7 +73,6 @@
 
             BorderStyle = BorderStyle.None;
             AutoSize = false;
-            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             Size = new Size(135, 25);
             CreateTextBox();
             Controls.Add(TextBoxObject);
@@ -78,6 +80,8 @@
             UpdateStyles();
 
             waterMarkContainer = null;
+
+            ConfigureStyleManager();
 
             if (watermark.Visible)
             {
@@ -252,6 +256,23 @@
             set
             {
                 iconSize = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
                 Invalidate();
             }
         }
@@ -445,7 +466,11 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = textRendererHint;
+
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
 
             UpdateLocationPoints();
             graphics.SetClip(controlGraphicsPath);
@@ -555,6 +580,42 @@
                     // But if the text is empty, draw the watermark again.
                     DrawWaterMark();
                 }
+            }
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                backgroundColor = controlStyle.Background(0);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.BorderRounding;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                backgroundColor = Settings.DefaultValue.Control.Background(3);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }
         }
 

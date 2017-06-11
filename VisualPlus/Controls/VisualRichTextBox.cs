@@ -6,7 +6,6 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
-    using System.Drawing.Text;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
@@ -15,6 +14,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -34,14 +34,14 @@
 
         #region Variables
 
-        private Color backgroundColor = Settings.DefaultValue.Control.Background(3);
+        private Color backgroundColor;
         private Border border = new Border();
         private Color controlDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
-        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-        private TextRenderingHint textRendererHint = TextRenderingHint.AntiAlias;
+        private Color foreColor;
+        private StyleManager styleManager = new StyleManager();
+        private Color textDisabledColor;
 
         #endregion
 
@@ -62,8 +62,9 @@
             AutoWordSelection = false;
             BorderStyle = BorderStyle.None;
             TextChanged += TextBoxTextChanged;
-            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             UpdateStyles();
+
+            ConfigureStyleManager();
         }
 
         #endregion
@@ -134,6 +135,23 @@
             }
         }
 
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         public override string Text
         {
@@ -161,22 +179,6 @@
             set
             {
                 textDisabledColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
                 Invalidate();
             }
         }
@@ -238,7 +240,11 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = textRendererHint;
+
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
@@ -275,6 +281,42 @@
         {
             base.OnSizeChanged(e);
             RichObject.Size = new Size(Width - 13, Height - 11);
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                backgroundColor = controlStyle.Background(0);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.BorderRounding;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                backgroundColor = Settings.DefaultValue.Control.Background(3);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+            }
         }
 
         #endregion

@@ -15,6 +15,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -41,10 +42,10 @@
         private BarTypes barStyle = BarTypes.Horizontal;
         private Border border = new Border();
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
+        private Color foreColor;
         private Point[] gradientPoints;
         private GraphicsPath graphicsDefaultBorderPath;
-        private Color hatchBackColor = Settings.DefaultValue.Progress.Hatch;
+        private Color hatchBackColor;
         private Color hatchForeColor;
         private GraphicsPath hatchPath = new GraphicsPath();
         private float hatchSize = Settings.DefaultValue.HatchSize;
@@ -56,9 +57,10 @@
         private int marqueeY;
         private Size minimumSize = new Size(100, 20);
         private bool percentageVisible;
-        private Font progressFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+        private Font progressFont;
         private Gradient progressGradient = new Gradient();
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private StyleManager styleManager = new StyleManager();
+        private TextRenderingHint textRendererHint;
         private StringAlignment valueAlignment = StringAlignment.Center;
 
         #endregion
@@ -72,7 +74,6 @@
                 ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
-            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             Maximum = 100;
 
             Size = minimumSize;
@@ -82,13 +83,8 @@
             DoubleBuffered = true;
             UpdateStyles();
 
-            hatchForeColor = Color.FromArgb(40, hatchBackColor);
-
-            backgroundGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
-            backgroundGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
-
-            progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
-            progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
+            DefaultGradient();
+            ConfigureStyleManager();
         }
 
         public enum BarTypes
@@ -366,6 +362,23 @@
             }
         }
 
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.TextRenderingHint)]
         public TextRenderingHint TextRendering
@@ -458,6 +471,11 @@
 
             gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             if ((barStyle == BarTypes.Horizontal) || (barStyle == BarTypes.Vertical))
             {
                 // Draw default progress
@@ -505,6 +523,53 @@
                         break;
                     }
             }
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                progressFont = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.BorderRounding;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                progressFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                hatchBackColor = Settings.DefaultValue.Progress.Hatch;
+                hatchForeColor = Color.FromArgb(40, hatchBackColor);
+
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+            }
+        }
+
+        private void DefaultGradient()
+        {
+            backgroundGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
+            backgroundGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
+
+            progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
+            progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
         }
 
         private void DrawDefaultProgress(BarTypes style, Graphics graphics)

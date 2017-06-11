@@ -51,8 +51,8 @@
         private VFXManager rippleEffectsManager;
         private StyleManager styleManager = new StyleManager();
         private Color textColor;
-        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private Color textDisabledColor;
+        private TextRenderingHint textRendererHint;
 
         #endregion
 

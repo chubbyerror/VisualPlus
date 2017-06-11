@@ -26,27 +26,10 @@
     {
         #region Variables
 
-        private readonly Color[] lineColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Control.Line),
-                Settings.DefaultValue.Control.Line,
-                ControlPaint.Light(Settings.DefaultValue.Control.Line)
-            };
-
-        private readonly Color[] shadowColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Control.Shadow),
-                Settings.DefaultValue.Control.Shadow,
-                ControlPaint.Light(Settings.DefaultValue.Control.Shadow)
-            };
-
         private Gradient lineGradient = new Gradient();
-
         private Rectangle lineRectangle;
         private Orientation separatorOrientation = Orientation.Horizontal;
-
         private Gradient shadowGradient = new Gradient();
-
         private Rectangle shadowRectangle;
         private bool shadowVisible;
 
@@ -67,6 +50,20 @@
 
             float[] gradientPosition = { 0, 1 / 2f, 1 };
             float angle = 90;
+
+            Color[] lineColor =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Control.Line),
+                    Settings.DefaultValue.Control.Line,
+                    ControlPaint.Light(Settings.DefaultValue.Control.Line)
+                };
+
+            Color[] shadowColor =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Control.Shadow),
+                    Settings.DefaultValue.Control.Shadow,
+                    ControlPaint.Light(Settings.DefaultValue.Control.Shadow)
+                };
 
             lineGradient.Angle = angle;
             lineGradient.Colors = lineColor;
