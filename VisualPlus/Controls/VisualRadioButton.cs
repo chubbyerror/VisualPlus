@@ -427,7 +427,7 @@
                 checkMark.ImageSize = new Size(19, 16);
                 checkMark.Shape.Shape = BorderShape.Rounded;
                 checkMark.ShapeSize = new Size(8, 8);
-                checkMark.Shape.Rounding = 12;
+                checkMark.Shape.Rounding = 6;
                 boxShape.Size = new Size(14, 14);
                 boxShape.ImageSize = new Size(19, 16);
                 boxShape.Border.Rounding = 12;
