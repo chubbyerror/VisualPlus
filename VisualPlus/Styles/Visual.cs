@@ -265,8 +265,8 @@
             {
                 Color[] backgroundColors =
                     {
-                        ControlPaint.Light(Color.FromArgb(137, 136, 136)),
-                        Color.FromArgb(137, 136, 136)
+                        ControlPaint.Light(Color.Gainsboro),
+                        Color.Gainsboro
                     };
 
                 Gradient backgroundGradient = new Gradient
