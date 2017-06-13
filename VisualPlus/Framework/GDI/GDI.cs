@@ -214,6 +214,27 @@
         /// <param name="borderColor">Normal border color.</param>
         /// <param name="borderHoverColor">Hover border color.</param>
         /// <param name="borderHoverVisible">Hover visible.</param>
+        public static void DrawBorderType(Graphics graphics, MouseStates controlState, GraphicsPath controlPath, float borderThickness, Color borderColor, Color borderHoverColor, bool borderHoverVisible)
+        {
+            if ((controlState == MouseStates.Hover) && borderHoverVisible)
+            {
+                DrawBorder(graphics, controlPath, borderThickness, borderHoverColor);
+            }
+            else
+            {
+                DrawBorder(graphics, controlPath, borderThickness, borderColor);
+            }
+        }
+
+
+        /// <summary>Handles and draws a border on the control depending on it's current focus.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="controlState">The control state.</param>
+        /// <param name="controlPath">The border path.</param>
+        /// <param name="borderThickness">The border size.</param>
+        /// <param name="borderColor">Normal border color.</param>
+        /// <param name="borderHoverColor">Hover border color.</param>
+        /// <param name="borderHoverVisible">Hover visible.</param>
         public static void DrawBorderType(Graphics graphics, ControlState controlState, GraphicsPath controlPath, float borderThickness, Color borderColor, Color borderHoverColor, bool borderHoverVisible)
         {
             if ((controlState == ControlState.Hover) && borderHoverVisible)

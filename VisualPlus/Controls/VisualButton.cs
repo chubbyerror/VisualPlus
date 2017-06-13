@@ -2,7 +2,6 @@
 {
     #region Namespace
 
-    using System;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
@@ -29,10 +28,11 @@
     {
         #region Variables
 
+        private readonly MouseState mouseState;
+
         private bool animation;
         private Shape buttonShape = new Shape();
         private GraphicsPath controlGraphicsPath;
-        private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
         private Color foreColor;
         private LinearGradientBrush gradientBrush;
@@ -62,6 +62,8 @@
                 true);
 
             UpdateStyles();
+
+            mouseState = new MouseState(this);
 
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             AutoSize = false;
@@ -172,6 +174,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.ControlState;
+            }
+
+            set
+            {
+                mouseState.ControlState = value;
+                Invalidate();
+            }
+        }
+
         [DefaultValue(Settings.DefaultValue.Moveable)]
         [Category(Localize.Category.Behavior)]
         [Description(Localize.Description.Moveable)]
@@ -265,16 +282,16 @@
                 return;
             }
 
-            controlState = ControlState.Normal;
+            mouseState.ControlState = MouseStates.Normal;
             MouseEnter += (sender, args) =>
                 {
-                    controlState = ControlState.Hover;
+                    mouseState.ControlState = MouseStates.Hover;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.In);
                     Invalidate();
                 };
             MouseLeave += (sender, args) =>
                 {
-                    controlState = ControlState.Normal;
+                    mouseState.ControlState = MouseStates.Normal;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.Out);
                     Invalidate();
                 };
@@ -282,39 +299,16 @@
                 {
                     if (args.Button == MouseButtons.Left)
                     {
-                        controlState = ControlState.Down;
-
+                        mouseState.ControlState = MouseStates.Down;
                         effectsManager.StartNewAnimation(AnimationDirection.In, args.Location);
                         Invalidate();
                     }
                 };
             MouseUp += (sender, args) =>
                 {
-                    controlState = ControlState.Hover;
-
+                    mouseState.ControlState = MouseStates.Hover;
                     Invalidate();
                 };
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-            controlState = ControlState.Down;
-            Invalidate();
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
-            Invalidate();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
-            Invalidate();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -326,13 +320,6 @@
             {
                 ControlMoved?.Invoke();
             }
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-            controlState = ControlState.Hover;
-            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -356,6 +343,8 @@
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle);
 
             DrawAnimation(graphics);
+
+            Text = MouseState.ToString();
         }
 
         private void ConfigureAnimation()
@@ -480,9 +469,9 @@
 
             if (Enabled)
             {
-                switch (controlState)
+                switch (mouseState.ControlState)
                 {
-                    case ControlState.Normal:
+                    case MouseStates.Normal:
                         {
                             controlTempColor = buttonShape.EnabledGradient.Colors;
                             gradientAngle = buttonShape.EnabledGradient.Angle;
@@ -490,7 +479,7 @@
                             break;
                         }
 
-                    case ControlState.Hover:
+                    case MouseStates.Hover:
                         {
                             controlTempColor = buttonShape.HoverGradient.Colors;
                             gradientAngle = buttonShape.HoverGradient.Angle;
@@ -498,7 +487,7 @@
                             break;
                         }
 
-                    case ControlState.Down:
+                    case MouseStates.Down:
                         {
                             controlTempColor = buttonShape.PressedGradient.Colors;
                             gradientAngle = buttonShape.PressedGradient.Angle;
@@ -528,7 +517,7 @@
 
             if (buttonShape.Border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, buttonShape.Border.Thickness, buttonShape.Border.Color, buttonShape.Border.HoverColor, buttonShape.Border.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.ControlState, controlGraphicsPath, buttonShape.Border.Thickness, buttonShape.Border.Color, buttonShape.Border.HoverColor, buttonShape.Border.HoverVisible);
             }
         }
 
