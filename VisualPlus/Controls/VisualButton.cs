@@ -179,12 +179,12 @@
         {
             get
             {
-                return mouseState.ControlState;
+                return mouseState.State;
             }
 
             set
             {
-                mouseState.ControlState = value;
+                mouseState.State = value;
                 Invalidate();
             }
         }
@@ -282,16 +282,16 @@
                 return;
             }
 
-            mouseState.ControlState = MouseStates.Normal;
+            mouseState.State = MouseStates.Normal;
             MouseEnter += (sender, args) =>
                 {
-                    mouseState.ControlState = MouseStates.Hover;
+                    mouseState.State = MouseStates.Hover;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.In);
                     Invalidate();
                 };
             MouseLeave += (sender, args) =>
                 {
-                    mouseState.ControlState = MouseStates.Normal;
+                    mouseState.State = MouseStates.Normal;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.Out);
                     Invalidate();
                 };
@@ -299,14 +299,14 @@
                 {
                     if (args.Button == MouseButtons.Left)
                     {
-                        mouseState.ControlState = MouseStates.Down;
+                        mouseState.State = MouseStates.Down;
                         effectsManager.StartNewAnimation(AnimationDirection.In, args.Location);
                         Invalidate();
                     }
                 };
             MouseUp += (sender, args) =>
                 {
-                    mouseState.ControlState = MouseStates.Hover;
+                    mouseState.State = MouseStates.Hover;
                     Invalidate();
                 };
         }
@@ -469,7 +469,7 @@
 
             if (Enabled)
             {
-                switch (mouseState.ControlState)
+                switch (mouseState.State)
                 {
                     case MouseStates.Normal:
                         {
@@ -517,7 +517,7 @@
 
             if (buttonShape.Border.Visible)
             {
-                GDI.DrawBorderType(graphics, mouseState.ControlState, controlGraphicsPath, buttonShape.Border.Thickness, buttonShape.Border.Color, buttonShape.Border.HoverColor, buttonShape.Border.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, buttonShape.Border.Thickness, buttonShape.Border.Color, buttonShape.Border.HoverColor, buttonShape.Border.HoverVisible);
             }
         }
 

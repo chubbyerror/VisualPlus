@@ -55,7 +55,7 @@
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description("The state of the control.")]
-        public MouseStates ControlState
+        public MouseStates State
         {
             get
             {
