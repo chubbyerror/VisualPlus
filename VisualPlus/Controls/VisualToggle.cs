@@ -15,6 +15,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -33,14 +34,8 @@
                 Interval = 1
             };
 
-        private readonly Color[] backgroundColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Control.Background(0)),
-                Settings.DefaultValue.Control.Background(0)
-            };
-
         private Gradient backgroundDisabledGradient = new Gradient();
-        private Gradient backgroundGradient = new Gradient();
+        private Gradient backgroundEnabledGradient = new Gradient();
         private Border border = new Border();
         private Border buttonBorder = new Border();
         private Gradient buttonDisabledGradient = new Gradient();
@@ -52,6 +47,7 @@
         private Point endPoint;
         private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Point startPoint;
+        private StyleManager styleManager = new StyleManager();
         private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private string textProcessor;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
@@ -77,19 +73,8 @@
             Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             animationTimer.Tick += AnimationTimerTick;
 
-            float[] gradientPosition = { 0, 1 };
-
-            backgroundGradient.Colors = backgroundColor;
-            backgroundGradient.Positions = gradientPosition;
-
-            backgroundDisabledGradient.Colors = backgroundColor;
-            backgroundDisabledGradient.Positions = gradientPosition;
-
-            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
-            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
-
-            buttonDisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
-            buttonDisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
+            DefaultGradient();
+            ConfigureStyleManager();
         }
 
         public delegate void ToggledChangedEventHandler();
@@ -115,23 +100,6 @@
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        public Gradient Background
-        {
-            get
-            {
-                return backgroundGradient;
-            }
-
-            set
-            {
-                backgroundGradient = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(GradientConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
         public Gradient BackgroundDisabled
         {
             get
@@ -142,6 +110,23 @@
             set
             {
                 backgroundDisabledGradient = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Gradient BackgroundEnabled
+        {
+            get
+            {
+                return backgroundEnabledGradient;
+            }
+
+            set
+            {
+                backgroundEnabledGradient = value;
                 Invalidate();
             }
         }
@@ -241,6 +226,23 @@
             {
                 base.ForeColor = value;
                 foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
                 Invalidate();
             }
         }
@@ -350,6 +352,11 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
 
             // Update button location points
@@ -357,7 +364,7 @@
             endPoint = new Point(ClientRectangle.Width - buttonSize.Width - 2, (ClientRectangle.Height / 2) - (buttonSize.Height / 2));
 
             Gradient buttonTemp = Enabled ? buttonGradient : buttonDisabledGradient;
-            Gradient backTemp = Enabled ? backgroundGradient : backgroundDisabledGradient;
+            Gradient backTemp = Enabled ? backgroundEnabledGradient : backgroundDisabledGradient;
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
             LinearGradientBrush buttonGradientBrush = GDI.CreateGradientBrush(buttonTemp.Colors, gradientPoints, buttonTemp.Angle, buttonTemp.Positions);
@@ -403,6 +410,70 @@
                 toggleLocation -= 10;
                 Invalidate(false);
             }
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+
+                buttonBorder.Color = borderStyle.Color;
+                buttonBorder.HoverColor = borderStyle.HoverColor;
+                buttonBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                buttonBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                buttonBorder.Shape = styleManager.VisualStylesManager.BorderShape;
+                buttonBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                buttonBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
+
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.BorderRounding;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+
+                buttonBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                buttonBorder.Rounding = Settings.DefaultValue.BorderRounding;
+                buttonBorder.Shape = Settings.DefaultValue.BorderShape;
+                buttonBorder.Thickness = Settings.DefaultValue.BorderThickness;
+                buttonBorder.Visible = Settings.DefaultValue.BorderVisible;
+
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+            }
+        }
+
+        private void DefaultGradient()
+        {
+            backgroundEnabledGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
+            backgroundEnabledGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
+
+            backgroundDisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
+            backgroundDisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
+
+            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
+            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+
+            buttonDisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
+            buttonDisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
         }
 
         private void DrawToggleType(Graphics graphics)

@@ -15,6 +15,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -65,6 +66,7 @@
         private Gradient progressGradient = new Gradient();
         private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
+        private StyleManager styleManager = new StyleManager();
         private string suffix;
         private Size textAreaSize;
         private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
@@ -99,22 +101,8 @@
             Size = new Size(200, 50);
             MinimumSize = new Size(0, 0);
 
-            float angle = 90;
-
-            backgroundGradient.Angle = angle;
-            backgroundGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
-            backgroundGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
-
-            trackBarDisabledGradient.Angle = angle;
-            trackBarDisabledGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
-            trackBarDisabledGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
-
-            progressGradient.Angle = angle;
-            progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
-            progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
-
-            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
-            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+            DefaultGradient();
+            ConfigureStyleManager();
         }
 
         public enum ValueDivisor
@@ -579,6 +567,23 @@
             }
         }
 
+        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Data)]
         [Description(Localize.Description.TextVisible)]
         public string Suffix
@@ -984,6 +989,11 @@
 
             workingRectangle = Rectangle.Inflate(ClientRectangle, -indentWidth, -indentHeight);
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
 
@@ -1121,6 +1131,57 @@
         private static Color hatchBackColor = Settings.DefaultValue.Progress.Hatch;
 
         private static Rectangle trackerRectangle = Rectangle.Empty;
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                trackBarBorder.Color = borderStyle.Color;
+                trackBarBorder.HoverColor = borderStyle.HoverColor;
+                trackBarBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                trackBarBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                trackBarBorder.Shape = styleManager.VisualStylesManager.BorderShape;
+                trackBarBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                trackBarBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
+
+                buttonBorder.Color = borderStyle.Color;
+                buttonBorder.HoverColor = borderStyle.HoverColor;
+                buttonBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                buttonBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                buttonBorder.Shape = styleManager.VisualStylesManager.BorderShape;
+                buttonBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                buttonBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
+
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+
+                foreColor = fontStyle.ForeColor;
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+            }
+            else
+            {
+                // Load default settings
+                trackBarBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                trackBarBorder.Rounding = Settings.DefaultValue.BorderRounding;
+                trackBarBorder.Shape = Settings.DefaultValue.BorderShape;
+                trackBarBorder.Thickness = Settings.DefaultValue.BorderThickness;
+                trackBarBorder.Visible = Settings.DefaultValue.BorderVisible;
+
+                buttonBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                buttonBorder.Rounding = Settings.DefaultValue.BorderRounding;
+                buttonBorder.Shape = Settings.DefaultValue.BorderShape;
+                buttonBorder.Thickness = Settings.DefaultValue.BorderThickness;
+                buttonBorder.Visible = Settings.DefaultValue.BorderVisible;
+
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+            }
+        }
 
         /// <summary>Configures the tick style.</summary>
         /// <param name="graphics">Graphics input.</param>
@@ -1353,6 +1414,25 @@
                     VerticalStyle(graphics, workingRectangle, true);
                 }
             }
+        }
+
+        private void DefaultGradient()
+        {
+            backgroundGradient.Angle = Settings.DefaultValue.Progress.Background.Angle;
+            backgroundGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
+            backgroundGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
+
+            trackBarDisabledGradient.Angle = Settings.DefaultValue.Progress.Background.Angle;
+            trackBarDisabledGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
+            trackBarDisabledGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
+
+            progressGradient.Angle = Settings.DefaultValue.Progress.Progress.Angle;
+            progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
+            progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
+
+            buttonGradient.Angle = Settings.DefaultValue.Control.ControlEnabled.Angle;
+            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
+            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
         }
 
         /// <summary>Draws the bar.</summary>
