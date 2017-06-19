@@ -114,6 +114,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Enums\Alignment.cs" />
+    <Compile Include="Enums\ControlState.cs" />
     <Compile Include="Framework\Structure\Checkmark.cs" />
     <Compile Include="Framework\Structure\Expander.cs" />
     <Compile Include="Framework\Structure\MouseState.cs" />
@@ -178,7 +179,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Framework\GDI\GDI.cs" />
-    <Compile Include="Enums\ControlState.cs" />
     <Compile Include="Localization\Localization.cs" />
     <Compile Include="Framework\Handlers\DesignManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
