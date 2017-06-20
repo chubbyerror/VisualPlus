@@ -83,7 +83,7 @@
 
             Text = "Visual Form";
 
-            Padding = new Padding(2);
+            Padding = new Padding(0);
 
             border.Thickness = 3;
             border.Shape = BorderShape.Rectangle;
@@ -134,7 +134,6 @@
             set
             {
                 border = value;
-                border.Shape = BorderShape.Rectangle;
                 Invalidate();
             }
         }
@@ -405,7 +404,6 @@
         {
             Graphics graphics = e.Graphics;
             graphics.Clear(BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
             // Title box
@@ -447,8 +445,7 @@
             {
                 graphics.FillRectangle(downBrush, xButtonBounds);
             }
-
-            // TODO: Button align in the middle   
+  
             using (Pen formButtonsPen = new Pen(ButtonColor, 2))
             {
                 // Minimize button.
@@ -521,7 +518,8 @@
 
             // Form title
             titleTextSize = GDI.GetTextSize(graphics, Text, Font);
-            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), new Rectangle(5 + iconSize.Width + 5, (statusBarBounds.X + (statusBarBounds.Height / 2)) - (titleTextSize.Height / 2), Width, titleTextSize.Height), new StringFormat { LineAlignment = StringAlignment.Center });
+            Rectangle textRectangle = new Rectangle(5 + iconSize.Width + 5, (statusBarBounds.Height / 2) - (titleTextSize.Height / 2), Width, titleTextSize.Height);
+            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textRectangle, new StringFormat { LineAlignment = StringAlignment.Center });
 
             // Draw border
             if (border.Visible)
@@ -533,15 +531,16 @@
             }
         }
 
+        // TODO: Align in middle of windowBar
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+           
+            minButtonBounds = new Rectangle(Width - Padding.Left - (3 * buttonSize.Width), (statusBarBounds.Height / 2) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
-            minButtonBounds = new Rectangle(Width - (Padding.Left / 2) - (3 * buttonSize.Width), 0, buttonSize.Width, buttonSize.Height);
+            maxButtonBounds = new Rectangle(Width - Padding.Left - (2 * buttonSize.Width), (statusBarBounds.Height / 2) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
-            maxButtonBounds = new Rectangle(Width - (Padding.Left / 2) - (2 * buttonSize.Width), 0, buttonSize.Width, buttonSize.Height);
-
-            xButtonBounds = new Rectangle(Width - (Padding.Left / 2) - buttonSize.Width, 0, buttonSize.Width, buttonSize.Height);
+            xButtonBounds = new Rectangle(Width - Padding.Left - buttonSize.Width, (statusBarBounds.Height / 2) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
             statusBarBounds = new Rectangle(0, 0, Width, windowBarHeight);
         }
