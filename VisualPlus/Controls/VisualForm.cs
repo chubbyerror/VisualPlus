@@ -83,7 +83,8 @@
 
             Text = "Visual Form";
 
-            Padding = new Padding(0);
+            // Padding-Left: 5 for icon
+            Padding = new Padding(5, 0, 0, 0);
 
             border.Thickness = 3;
             border.Shape = BorderShape.Rectangle;
@@ -445,7 +446,7 @@
             {
                 graphics.FillRectangle(downBrush, xButtonBounds);
             }
-  
+
             using (Pen formButtonsPen = new Pen(ButtonColor, 2))
             {
                 // Minimize button.
@@ -492,29 +493,7 @@
                 }
             }
 
-            iconPoint = new Point(5, (statusBarBounds.Height / 2) - (iconSize.Height / 2));
-            iconRectangle = new Rectangle(iconPoint, iconSize);
-            iconGraphicsPath = new GraphicsPath();
-            iconGraphicsPath.AddRectangle(iconRectangle);
-            iconGraphicsPath.CloseAllFigures();
-
-            if (ShowIcon)
-            {
-                if (icon != null)
-                {
-                    // Update point
-                    iconRectangle.Location = iconPoint;
-
-                    // Draw icon border
-                    if (iconBorder)
-                    {
-                        graphics.DrawPath(new Pen(border.Color), iconGraphicsPath);
-                    }
-
-                    // Draw icon
-                    graphics.DrawImage(Icon, iconRectangle);
-                }
-            }
+            DrawIcon(graphics);
 
             // Form title
             titleTextSize = GDI.GetTextSize(graphics, Text, Font);
@@ -535,12 +514,12 @@
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-           
-            minButtonBounds = new Rectangle(Width - Padding.Left - (3 * buttonSize.Width), (statusBarBounds.Height / 2) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
-            maxButtonBounds = new Rectangle(Width - Padding.Left - (2 * buttonSize.Width), (statusBarBounds.Height / 2) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
+            minButtonBounds = new Rectangle(Width - Padding.Right - (3 * buttonSize.Width), (Padding.Top + (statusBarBounds.Height / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
-            xButtonBounds = new Rectangle(Width - Padding.Left - buttonSize.Width, (statusBarBounds.Height / 2) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
+            maxButtonBounds = new Rectangle(Width - Padding.Right - (2 * buttonSize.Width), (Padding.Top + (statusBarBounds.Height / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
+
+            xButtonBounds = new Rectangle(Width - Padding.Right - buttonSize.Width, (Padding.Top + (statusBarBounds.Height / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
             statusBarBounds = new Rectangle(0, 0, Width, windowBarHeight);
         }
@@ -665,6 +644,33 @@
         private const int WMSZ_TOPRIGHT = 5;
         private const int WS_MINIMIZEBOX = 0x20000;
         private const int WS_SYSMENU = 0x00080000;
+
+        private void DrawIcon(Graphics graphics)
+        {
+            iconPoint = new Point(Padding.Left, (statusBarBounds.Height / 2) - (iconSize.Height / 2));
+            iconRectangle = new Rectangle(iconPoint, iconSize);
+            iconGraphicsPath = new GraphicsPath();
+            iconGraphicsPath.AddRectangle(iconRectangle);
+            iconGraphicsPath.CloseAllFigures();
+
+            if (ShowIcon)
+            {
+                if (icon != null)
+                {
+                    // Update point
+                    iconRectangle.Location = iconPoint;
+
+                    // Draw icon border
+                    if (iconBorder)
+                    {
+                        graphics.DrawPath(new Pen(border.Color), iconGraphicsPath);
+                    }
+
+                    // Draw icon
+                    graphics.DrawImage(Icon, iconRectangle);
+                }
+            }
+        }
 
         private void MaximizeWindow(bool maximize)
         {
