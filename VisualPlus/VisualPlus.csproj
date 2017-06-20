@@ -107,6 +107,9 @@
     <Compile Include="Controls\VisualRating.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VisualShape.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\VisualStylesManager.cs">
       <SubType>Component</SubType>
     </Compile>
