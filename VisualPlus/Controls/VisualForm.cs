@@ -10,6 +10,7 @@
     using System.Drawing.Drawing2D;
     using System.Drawing.Text;
     using System.Runtime.InteropServices;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
@@ -28,47 +29,6 @@
     {
         #region Variables
 
-        public const int HT_CAPTION = 0x2;
-        public const int WM_LBUTTONDBLCLK = 0x0203;
-        public const int WM_LBUTTONDOWN = 0x0201;
-        public const int WM_LBUTTONUP = 0x0202;
-        public const int WM_MOUSEMOVE = 0x0200;
-
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int WM_RBUTTONDOWN = 0x0204;
-
-        #endregion
-
-        #region Variables
-
-        private const int HTBOTTOM = 15;
-        private const int HTBOTTOMLEFT = 16;
-        private const int HTBOTTOMRIGHT = 17;
-        private const int HTLEFT = 10;
-        private const int HTRIGHT = 11;
-        private const int HTTOP = 12;
-        private const int HTTOPLEFT = 13;
-        private const int HTTOPRIGHT = 14;
-
-        private const int MONITOR_DEFAULTTONEAREST = 2;
-
-        private const uint TPM_LEFTALIGN = 0x0000;
-        private const uint TPM_RETURNCMD = 0x0100;
-
-        private const int WM_SYSCOMMAND = 0x0112;
-        private const int WMSZ_BOTTOM = 6;
-        private const int WMSZ_BOTTOMLEFT = 7;
-        private const int WMSZ_BOTTOMRIGHT = 8;
-        private const int WMSZ_LEFT = 1;
-        private const int WMSZ_RIGHT = 2;
-
-        private const int WMSZ_TOP = 3;
-        private const int WMSZ_TOPLEFT = 4;
-        private const int WMSZ_TOPRIGHT = 5;
-        private const int WS_MINIMIZEBOX = 0x20000;
-        private const int WS_SYSMENU = 0x00080000;
-        private static int controlBarHeight = 24;
-
         private readonly Dictionary<int, int> _resizingLocationsToCmd = new Dictionary<int, int>
             {
                 { HTTOP, WMSZ_TOP },
@@ -84,17 +44,14 @@
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
 
         private Rectangle actionBarBounds;
-
         private Border border = new Border();
-
+        private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private ButtonState buttonState = ButtonState.None;
-        private Color controlBoxItemColor = Settings.DefaultValue.Font.ForeColor;
         private ControlState controlState = ControlState.Normal;
-        private int form_padding = 2;
-        private Color headerBackColor = Settings.DefaultValue.Control.FlatButtonEnabled;
-        private bool headerMouseDown;
-        private Color headerTextColor = Settings.DefaultValue.Font.ForeColor;
 
+        private int formPadding = 2;
+        private Color headerBackColor = Settings.DefaultValue.Control.Background(0);
+        private bool headerMouseDown;
         private Image icon = Resources.Icon;
         private bool iconBorder;
         private GraphicsPath iconGraphicsPath;
@@ -108,7 +65,7 @@
         private Size previousSize;
         private ResizeDirection resizeDir;
 
-        private int STATUS_BAR_BUTTON_WIDTH = controlBarHeight;
+        private int STATUS_BAR_BUTTON_WIDTH = windowBarHeight;
         private Rectangle statusBarBounds;
 
         private Size titleTextSize;
@@ -178,34 +135,34 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
-        public int ControlBarHeight
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color ButtonColor
         {
             get
             {
-                return controlBarHeight;
+                return buttonColor;
             }
 
             set
             {
-                controlBarHeight = value;
+                buttonColor = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color ControlBoxItemColor
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int WindowBarHeight
         {
             get
             {
-                return controlBoxItemColor;
+                return windowBarHeight;
             }
 
             set
             {
-                controlBoxItemColor = value;
+                windowBarHeight = value;
                 Invalidate();
             }
         }
@@ -222,22 +179,6 @@
             set
             {
                 headerBackColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color HeaderTextColor
-        {
-            get
-            {
-                return headerTextColor;
-            }
-
-            set
-            {
-                headerTextColor = value;
                 Invalidate();
             }
         }
@@ -315,6 +256,8 @@
         [DllImport("user32.dll")]
         public static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
 
+        public const int HT_CAPTION = 0x2;
+
         [DllImport("user32.dll")]
         public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
 
@@ -326,6 +269,13 @@
 
         [DllImport("user32.dll")]
         public static extern int TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+
+        public const int WM_LBUTTONDBLCLK = 0x0203;
+        public const int WM_LBUTTONDOWN = 0x0201;
+        public const int WM_LBUTTONUP = 0x0202;
+        public const int WM_MOUSEMOVE = 0x0200;
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int WM_RBUTTONDOWN = 0x0204;
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -344,15 +294,23 @@
             base.OnMouseDown(e);
         }
 
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            controlState = ControlState.Hover;
+            Invalidate();
+        }
+
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+
             if (DesignMode)
             {
                 return;
             }
 
             buttonState = ButtonState.None;
+            controlState = ControlState.Normal;
             Invalidate();
         }
 
@@ -426,23 +384,9 @@
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-
             graphics.Clear(BackColor);
-
-            // sub-header
-            // g.FillRectangle(new SolidBrush(Color.Blue), _actionBarBounds);
-
-            // Draw border
-            if (border.Visible)
-            {
-                using (Pen borderPen = new Pen(border.Color, border.Thickness))
-                {
-                    graphics.DrawLine(borderPen, new Point(0, actionBarBounds.Bottom), new Point(0, Height - 2));
-                    graphics.DrawLine(borderPen, new Point(Width - 1, actionBarBounds.Bottom), new Point(Width - 1, Height - 2));
-                    graphics.DrawLine(borderPen, new Point(0, Height - 1), new Point(Width - 1, Height - 1));
-                }
-            }
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
             // Title box
             graphics.FillRectangle(new SolidBrush(headerBackColor), statusBarBounds);
@@ -450,8 +394,8 @@
             // Determine whether or not we even should be drawing the buttons.
             bool showMin = MinimizeBox && ControlBox;
             bool showMax = MaximizeBox && ControlBox;
-            SolidBrush hoverBrush = new SolidBrush(Settings.DefaultValue.Control.ControlEnabled.Colors[0]);
-            SolidBrush downBrush = new SolidBrush(Settings.DefaultValue.Control.ControlDisabled.Colors[0]);
+            SolidBrush hoverBrush = new SolidBrush(Settings.DefaultValue.Control.ControlHover.Colors[0]);
+            SolidBrush downBrush = new SolidBrush(Settings.DefaultValue.Control.ControlPressed.Colors[0]);
 
             // When MaximizeButton == false, the minimize button will be painted in its place
             if ((buttonState == ButtonState.MinOver) && showMin)
@@ -484,7 +428,8 @@
                 graphics.FillRectangle(downBrush, xButtonBounds);
             }
 
-            using (Pen formButtonsPen = new Pen(ControlBoxItemColor, 2))
+            // TODO: Button align in the middle   
+            using (Pen formButtonsPen = new Pen(ButtonColor, 2))
             {
                 // Minimize button.
                 if (showMin)
@@ -536,8 +481,6 @@
             iconGraphicsPath.AddRectangle(iconRectangle);
             iconGraphicsPath.CloseAllFigures();
 
-            titleTextSize = GDI.GetTextSize(graphics, Text, Font);
-
             if (ShowIcon)
             {
                 if (icon != null)
@@ -557,19 +500,28 @@
             }
 
             // Form title
-            graphics.DrawString(Text, Font, new SolidBrush(HeaderTextColor), new Rectangle(5 + iconSize.Width + 5, (statusBarBounds.X + (statusBarBounds.Height / 2)) - (titleTextSize.Height / 2), Width, titleTextSize.Height), new StringFormat { LineAlignment = StringAlignment.Center });
+            titleTextSize = GDI.GetTextSize(graphics, Text, Font);
+            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), new Rectangle(5 + iconSize.Width + 5, (statusBarBounds.X + (statusBarBounds.Height / 2)) - (titleTextSize.Height / 2), Width, titleTextSize.Height), new StringFormat { LineAlignment = StringAlignment.Center });
+
+            // Draw border
+            if (border.Visible)
+            {
+                GraphicsPath controlGraphicsPath = new GraphicsPath();
+                controlGraphicsPath.AddRectangle(ClientRectangle);
+
+                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+            }
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
-            minButtonBounds = new Rectangle(Width - (form_padding / 2) - (3 * STATUS_BAR_BUTTON_WIDTH), 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
-            maxButtonBounds = new Rectangle(Width - (form_padding / 2) - (2 * STATUS_BAR_BUTTON_WIDTH), 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
-            xButtonBounds = new Rectangle(Width - (form_padding / 2) - STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
-            statusBarBounds = new Rectangle(0, 0, Width, controlBarHeight);
+            minButtonBounds = new Rectangle(Width - (formPadding / 2) - (3 * STATUS_BAR_BUTTON_WIDTH), 0, STATUS_BAR_BUTTON_WIDTH, windowBarHeight);
+            maxButtonBounds = new Rectangle(Width - (formPadding / 2) - (2 * STATUS_BAR_BUTTON_WIDTH), 0, STATUS_BAR_BUTTON_WIDTH, windowBarHeight);
+            xButtonBounds = new Rectangle(Width - (formPadding / 2) - STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, windowBarHeight);
 
-            // _actionBarBounds = new Rectangle(0, STATUS_BAR_HEIGHT, Width, ACTION_BAR_HEIGHT);
+            statusBarBounds = new Rectangle(0, 0, Width, windowBarHeight);
         }
 
         protected override void WndProc(ref Message m)
@@ -663,6 +615,35 @@
                 headerMouseDown = false;
             }
         }
+
+        private static int windowBarHeight = 24;
+
+        private const int HTBOTTOM = 15;
+        private const int HTBOTTOMLEFT = 16;
+        private const int HTBOTTOMRIGHT = 17;
+        private const int HTLEFT = 10;
+        private const int HTRIGHT = 11;
+        private const int HTTOP = 12;
+        private const int HTTOPLEFT = 13;
+        private const int HTTOPRIGHT = 14;
+
+        private const int MONITOR_DEFAULTTONEAREST = 2;
+
+        private const uint TPM_LEFTALIGN = 0x0000;
+        private const uint TPM_RETURNCMD = 0x0100;
+
+        private const int WM_SYSCOMMAND = 0x0112;
+        private const int WMSZ_BOTTOM = 6;
+        private const int WMSZ_BOTTOMLEFT = 7;
+        private const int WMSZ_BOTTOMRIGHT = 8;
+        private const int WMSZ_LEFT = 1;
+        private const int WMSZ_RIGHT = 2;
+
+        private const int WMSZ_TOP = 3;
+        private const int WMSZ_TOPLEFT = 4;
+        private const int WMSZ_TOPRIGHT = 5;
+        private const int WS_MINIMIZEBOX = 0x20000;
+        private const int WS_SYSMENU = 0x00080000;
 
         private void MaximizeWindow(bool maximize)
         {
@@ -862,15 +843,15 @@
 
             #endregion
 
-            #region Variables
-
-            private const int WM_MOUSEMOVE = 0x0200;
-
-            #endregion
-
             #region Constructors
 
             public static event MouseEventHandler MouseMove;
+
+            #endregion
+
+            #region Events
+
+            private const int WM_MOUSEMOVE = 0x0200;
 
             #endregion
         }
@@ -914,6 +895,49 @@
 
             /// <summary>The top.</summary>
             Top
+        }
+
+        #endregion
+    }
+
+    internal class Fade
+    {
+        #region Events
+
+        /// <summary>
+        ///     Fades in the object.
+        /// </summary>
+        /// <param name="o">Object to fade in.</param>
+        /// <param name="interval">Fading interval.</param>
+        public static async void FadeIn(Form o, int interval = 80)
+        {
+            // Fade in object
+            while (o.Opacity < 1.0)
+            {
+                await Task.Delay(interval);
+                o.Opacity += 0.05;
+            }
+
+            // Make visible
+            o.Opacity = 1;
+        }
+
+        /// <summary>
+        ///     Fades out the object.
+        /// </summary>
+        /// <param name="o">Object to fade out.</param>
+        /// <param name="interval">Fading interval.</param>
+        public static async void FadeOut(Form o, int interval = 80)
+        {
+            // Fade out object
+            while (o.Opacity > 0.0)
+            {
+                await Task.Delay(interval);
+                o.Opacity -= 0.05;
+            }
+
+            // Make invisible 
+            o.Opacity = 0;
         }
 
         #endregion
