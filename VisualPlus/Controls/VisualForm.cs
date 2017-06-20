@@ -46,11 +46,9 @@
         private Rectangle actionBarBounds;
         private Border border = new Border();
         private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+        private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
         private ControlState controlState = ControlState.Normal;
-
-        private int formPadding = 2;
-        private Color headerBackColor = Settings.DefaultValue.Control.Background(0);
         private bool headerMouseDown;
         private Image icon = Resources.Icon;
         private bool iconBorder;
@@ -65,10 +63,10 @@
         private Size previousSize;
         private ResizeDirection resizeDir;
 
-        private int STATUS_BAR_BUTTON_WIDTH = windowBarHeight;
         private Rectangle statusBarBounds;
 
         private Size titleTextSize;
+        private Color windowBarColor = Settings.DefaultValue.Control.Background(1);
         private Rectangle xButtonBounds;
 
         #endregion
@@ -84,6 +82,11 @@
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
 
             Text = "Visual Form";
+
+            Padding = new Padding(2);
+
+            border.Thickness = 3;
+            border.Shape = BorderShape.Rectangle;
 
             // This enables the form to trigger the MouseMove event even when mouse is over another control
             Application.AddMessageFilter(new MouseMessageFilter());
@@ -131,6 +134,7 @@
             set
             {
                 border = value;
+                border.Shape = BorderShape.Rectangle;
                 Invalidate();
             }
         }
@@ -152,33 +156,17 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
-        public int WindowBarHeight
+        [Description(Localize.Description.ButtonSize)]
+        public Size ButtonSize
         {
             get
             {
-                return windowBarHeight;
+                return buttonSize;
             }
 
             set
             {
-                windowBarHeight = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color HeaderBackColor
-        {
-            get
-            {
-                return headerBackColor;
-            }
-
-            set
-            {
-                headerBackColor = value;
+                buttonSize = value;
                 Invalidate();
             }
         }
@@ -232,6 +220,38 @@
         }
 
         public bool Sizable { get; set; }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color WindowBarColor
+        {
+            get
+            {
+                return windowBarColor;
+            }
+
+            set
+            {
+                windowBarColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.ComponentSize)]
+        public int WindowBarHeight
+        {
+            get
+            {
+                return windowBarHeight;
+            }
+
+            set
+            {
+                windowBarHeight = value;
+                Invalidate();
+            }
+        }
 
         protected override CreateParams CreateParams
         {
@@ -389,7 +409,7 @@
             graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
             // Title box
-            graphics.FillRectangle(new SolidBrush(headerBackColor), statusBarBounds);
+            graphics.FillRectangle(new SolidBrush(windowBarColor), statusBarBounds);
 
             // Determine whether or not we even should be drawing the buttons.
             bool showMin = MinimizeBox && ControlBox;
@@ -517,9 +537,11 @@
         {
             base.OnResize(e);
 
-            minButtonBounds = new Rectangle(Width - (formPadding / 2) - (3 * STATUS_BAR_BUTTON_WIDTH), 0, STATUS_BAR_BUTTON_WIDTH, windowBarHeight);
-            maxButtonBounds = new Rectangle(Width - (formPadding / 2) - (2 * STATUS_BAR_BUTTON_WIDTH), 0, STATUS_BAR_BUTTON_WIDTH, windowBarHeight);
-            xButtonBounds = new Rectangle(Width - (formPadding / 2) - STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, windowBarHeight);
+            minButtonBounds = new Rectangle(Width - (Padding.Left / 2) - (3 * buttonSize.Width), 0, buttonSize.Width, buttonSize.Height);
+
+            maxButtonBounds = new Rectangle(Width - (Padding.Left / 2) - (2 * buttonSize.Width), 0, buttonSize.Width, buttonSize.Height);
+
+            xButtonBounds = new Rectangle(Width - (Padding.Left / 2) - buttonSize.Width, 0, buttonSize.Width, buttonSize.Height);
 
             statusBarBounds = new Rectangle(0, 0, Width, windowBarHeight);
         }
@@ -616,8 +638,6 @@
             }
         }
 
-        private static int windowBarHeight = 24;
-
         private const int HTBOTTOM = 15;
         private const int HTBOTTOMLEFT = 16;
         private const int HTBOTTOMRIGHT = 17;
@@ -631,6 +651,8 @@
 
         private const uint TPM_LEFTALIGN = 0x0000;
         private const uint TPM_RETURNCMD = 0x0100;
+
+        private static int windowBarHeight = 24;
 
         private const int WM_SYSCOMMAND = 0x0112;
         private const int WMSZ_BOTTOM = 6;
