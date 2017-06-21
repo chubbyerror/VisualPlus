@@ -73,9 +73,6 @@
             Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             animationTimer.Tick += AnimationTimerTick;
 
-            border.Rounding = 20;
-            buttonBorder.Rounding = 18;
-
             DefaultGradient();
             ConfigureStyleManager();
         }
