@@ -10,6 +10,7 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Localization;
 
     #endregion
 
@@ -63,7 +64,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The button size.")]
+        [Description(Localize.Description.Common.Size)]
         public Size ButtonSize
         {
             get
@@ -79,7 +80,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The color.")]
+        [Description(Localize.Description.Common.Color)]
         public Color Color
         {
             get
@@ -147,7 +148,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The default size.")]
+        [Description(Localize.Description.Common.Size)]
         public Size OriginalSize
         {
             get
@@ -179,7 +180,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("Visible.")]
+        [Description(Localize.Description.Common.Visible)]
         public bool Visible
         {
             get

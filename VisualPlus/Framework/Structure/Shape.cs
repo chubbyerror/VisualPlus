@@ -7,12 +7,12 @@
     using System.Drawing;
     using System.Globalization;
 
+    using VisualPlus.Localization;
     using VisualPlus.Properties;
 
     #endregion
 
     [TypeConverter(typeof(ShapeConverter))]
-    [Description("The shape class.")]
     public class Shape
     {
         #region Variables
@@ -35,7 +35,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border.")]
         public Border Border
         {
             get
@@ -51,7 +50,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The disabled gradient.")]
+        [Description(Localize.Description.Common.Gradient)]
         public Gradient DisabledGradient
         {
             get
@@ -67,7 +66,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The disabled image.")]
+        [Description(Localize.Description.Common.Image)]
         public Image DisabledImage
         {
             get
@@ -83,7 +82,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The enabled gradient.")]
+        [Description(Localize.Description.Common.Gradient)]
         public Gradient EnabledGradient
         {
             get
@@ -99,7 +98,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The enabled image.")]
+        [Description(Localize.Description.Common.Image)]
         public Image EnabledImage
         {
             get
@@ -115,7 +114,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The hover gradient.")]
+        [Description(Localize.Description.Common.Gradient)]
         public Gradient HoverGradient
         {
             get
@@ -131,7 +130,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The image location.")]
+        [Description(Localize.Description.Common.Point)]
         public Point ImageLocation
         {
             get
@@ -147,7 +146,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The image size.")]
+        [Description(Localize.Description.Common.Size)]
         public Size ImageSize
         {
             get
@@ -163,7 +162,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The image visible.")]
+        [Description(Localize.Description.Common.Visible)]
         public bool ImageVisible
         {
             get
@@ -179,7 +178,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The pressed gradient.")]
+        [Description(Localize.Description.Common.Gradient)]
         public Gradient PressedGradient
         {
             get
@@ -195,7 +194,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The shape size.")]
+        [Description(Localize.Description.Common.Size)]
         public Size Size
         {
             get

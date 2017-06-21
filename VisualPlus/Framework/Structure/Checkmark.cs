@@ -9,6 +9,8 @@
     using System.Globalization;
     using System.IO;
 
+    using VisualPlus.Localization;
+
     #endregion
 
     public enum CheckType
@@ -81,7 +83,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The disabled gradient.")]
+        [Description(Localize.Description.Common.Gradient)]
         public Gradient DisabledGradient
         {
             get
@@ -97,7 +99,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The disabled image.")]
+        [Description(Localize.Description.Common.Image)]
         public Image DisabledImage
         {
             get
@@ -113,7 +115,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The enabled gradient.")]
+        [Description(Localize.Description.Common.Gradient)]
         public Gradient EnabledGradient
         {
             get
@@ -129,7 +131,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The enabled image.")]
+        [Description(Localize.Description.Common.Image)]
         public Image EnabledImage
         {
             get
@@ -161,7 +163,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The image size.")]
+        [Description(Localize.Description.Common.Size)]
         public Size ImageSize
         {
             get
@@ -177,7 +179,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The location.")]
+        [Description(Localize.Description.Common.Point)]
         public Point Location
         {
             get
@@ -193,7 +195,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The shape.")]
         public Border Shape
         {
             get
@@ -209,7 +210,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The shape size.")]
+        [Description(Localize.Description.Common.Size)]
         public Size ShapeSize
         {
             get

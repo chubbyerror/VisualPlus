@@ -23,7 +23,6 @@
     }
 
     [TypeConverter(typeof(BorderConverter))]
-    [Description(Localize.Description.Border)]
     public class Border : IBorder
     {
         #region Variables
@@ -42,7 +41,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border color.")]
+        [Description(Localize.Description.Common.Color)]
         public Color Color
         {
             get
@@ -58,7 +57,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The hover color.")]
+        [Description(Localize.Description.Common.Color)]
         public Color HoverColor
         {
             get
@@ -74,7 +73,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The hover visible toggle.")]
+        [Description(Localize.Description.Common.Visible)]
         public bool HoverVisible
         {
             get
@@ -90,7 +89,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border rounding.")]
+        [Description(Localize.Description.Border.Rounding)]
         public int Rounding
         {
             get
@@ -109,7 +108,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border shape.")]
+        [Description(Localize.Description.Border.Shape)]
         public BorderShape Shape
         {
             get
@@ -125,7 +124,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border thickness.")]
+        [Description(Localize.Description.Border.Thickness)]
         public int Thickness
         {
             get
@@ -144,7 +143,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border visible toggle.")]
+        [Description(Localize.Description.Common.Visible)]
         public bool Visible
         {
             get

@@ -9,6 +9,7 @@
     using System.Globalization;
 
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Localization;
 
     #endregion
 
@@ -43,7 +44,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border.")]
         public Border Border
         {
             get
@@ -58,7 +58,7 @@
         }
 
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The image.")]
+        [Description(Localize.Description.Common.Image)]
         public Image Image
         {
             get
@@ -73,7 +73,7 @@
         }
 
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The image point.")]
+        [Description(Localize.Description.Common.Point)]
         public Point Point
         {
             get
@@ -88,7 +88,7 @@
         }
 
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The image size.")]
+        [Description(Localize.Description.Common.Size)]
         public Size Size
         {
             get
@@ -103,7 +103,7 @@
         }
 
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The visibilty.")]
+        [Description(Localize.Description.Common.Visible)]
         public bool Visible
         {
             get

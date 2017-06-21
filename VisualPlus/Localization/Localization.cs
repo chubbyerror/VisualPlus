@@ -5,7 +5,7 @@
         public struct Description
         {
             public const string Alignment = "Gets or sets the alignment.";
-            public const string Angle = "Applies the specified angle to the transformation matrix of this Graphics.";
+            public const string AngleDesc = "Applies the specified angle to the transformation matrix of this Graphics.";
             public const string Animation = "Toggle the animation state.";
             public const string AnimationSpeed = "The speed of the animation.";
             public const string AutoSize = "Gets or sets a value indicating whether the control is automatically resized to display its entire contents.";
@@ -14,7 +14,6 @@
             public const string BarSpacing = "The progress bar/s spacing.";
             public const string ButtonImage = "Image on the button.";
             public const string ButtonSize = "Size of the button.";
-            public const string Border = "The border settings style.";
             public const string BorderColor = "The controls border color.";
             public const string BorderHoverColor = "The controls border hover color.";
             public const string BorderHoverVisible = "Indicates whether the hover border is visible.";
@@ -34,7 +33,7 @@
             public const string Direction = "The flow of data.";
             public const string DropDownButton = "Applies the specified drop down button style.";
             public const string FocusVisible = "Sets input focus to the control";
-            public const string Gradient = "A range of position-dependant colors.";
+            public const string GradientDesc = "A range of position-dependant colors.";
             public const string GradientPosition = "The position of the gradient colors.";
             public const string HatchSize = "The hatch size.";
             public const string HatchStyle = "Applies the specified hatch style.";
@@ -42,7 +41,7 @@
             public const string Icon = "The icon to be displayed.";
             public const string IconPosition = "The icon position.";
             public const string IconSize = "The icon size.";
-            public const string Image = "The image to display.";
+            public const string ImageDesc = "The image to display.";
             public const string MirrorColor = "The mirrored text color.";
             public const string Moveable = "Toggle movable control state.";
             public const string NormalColor = "The controls normal color.";
@@ -75,6 +74,29 @@
             public const string ValueDivisor = "The value division.";
             public const string Watermark = "The watermark to display for the control.";
 
+            public struct Border
+            {
+                public const string Rounding = "Gets or sets the rounding of the border in pixels.";
+                public const string Shape = "Gets or sets the shape of the border.";
+                public const string Thickness = "Gets or sets the pixel thickness for the border.";
+            }
+
+            public struct Common
+            {
+                public const string Color = "Gets or sets the color.";
+                public const string Gradient = "Gets or sets the gradient.";
+                public const string Image = "Gets or sets the image.";
+                public const string Point = "Gets or sets the point.";
+                public const string Size = "Gets or sets the size.";
+                public const string Visible = "Gets or sets whether the control is visible.";
+            }
+
+            public struct Gradient
+            {
+                public const string Angle = "The space between two intersecting lines.";
+                public const string Colors = "The range of position-dependant colors";
+                public const string Positions = "The gradient color positioning.";
+            }
         }
 
 #if DEBUG

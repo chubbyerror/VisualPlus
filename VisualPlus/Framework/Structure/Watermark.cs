@@ -7,6 +7,7 @@
     using System.Drawing;
     using System.Globalization;
 
+    using VisualPlus.Localization;
     using VisualPlus.Styles;
 
     #endregion
@@ -109,7 +110,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("Watermark visible toggle.")]
+        [Description(Localize.Description.Common.Visible)]
         public bool Visible
         {
             get
