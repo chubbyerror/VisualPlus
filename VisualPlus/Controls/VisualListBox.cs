@@ -18,7 +18,7 @@
     #endregion
 
     [ToolboxItem(true)]
-    [ToolboxBitmap(typeof(Button))]
+    [ToolboxBitmap(typeof(ListBox))]
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ListBox")]
