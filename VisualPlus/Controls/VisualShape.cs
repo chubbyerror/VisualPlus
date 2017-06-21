@@ -349,7 +349,7 @@
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
                 border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.BorderRounding;
+                border.Rounding = Settings.DefaultValue.Rounding.Default;
                 border.Shape = Settings.DefaultValue.BorderShape;
                 border.Thickness = Settings.DefaultValue.BorderThickness;
                 border.Visible = Settings.DefaultValue.BorderVisible;

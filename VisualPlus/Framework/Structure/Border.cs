@@ -31,7 +31,7 @@
         private Color color = Settings.DefaultValue.Border.Color;
         private Color hoverColor = Settings.DefaultValue.Border.HoverColor;
         private bool hoverVisible = true;
-        private int rounding = Settings.DefaultValue.BorderRounding;
+        private int rounding = Settings.DefaultValue.Rounding.Default;
         private BorderShape shape = Settings.DefaultValue.BorderShape;
         private int thickness = Settings.DefaultValue.BorderThickness;
         private bool visible = true;

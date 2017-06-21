@@ -34,7 +34,6 @@ namespace VisualPlus.Framework
             public const bool Animation = true;
             public const int BorderThickness = 1;
             public const bool BorderHoverVisible = true;
-            public const int BorderRounding = 6;
             public const BorderShape BorderShape = Structure.BorderShape.Rounded;
             public const bool BorderVisible = true;
             public const bool TextVisible = true;
@@ -46,8 +45,6 @@ namespace VisualPlus.Framework
             public const float HatchSize = 2F;
             public const bool Moveable = false;
             public const bool WatermarkVisible = false;
-            public static readonly string WatermarkText = "Watermark text";
-            public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
             public static readonly IBorder Border = new Visual();
             public static readonly IWatermark Watermark = new Visual();
@@ -55,6 +52,16 @@ namespace VisualPlus.Framework
             public static readonly IControl Control = new Visual();
             public static readonly IProgress Progress = new Visual();
             public static readonly ITab Tab = new Visual();
+            
+            public static readonly string WatermarkText = "Watermark text";
+            public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+            public struct Rounding
+            {
+                public const int Default = 6;
+                public const int ToggleBorder = 20;
+                public const int ToggleButton = 18;
+            }
         }
 
         #endregion

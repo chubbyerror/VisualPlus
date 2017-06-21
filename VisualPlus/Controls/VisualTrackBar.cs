@@ -1165,13 +1165,13 @@
             {
                 // Load default settings
                 trackBarBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                trackBarBorder.Rounding = Settings.DefaultValue.BorderRounding;
+                trackBarBorder.Rounding = Settings.DefaultValue.Rounding.Default;
                 trackBarBorder.Shape = Settings.DefaultValue.BorderShape;
                 trackBarBorder.Thickness = Settings.DefaultValue.BorderThickness;
                 trackBarBorder.Visible = Settings.DefaultValue.BorderVisible;
 
                 buttonBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                buttonBorder.Rounding = Settings.DefaultValue.BorderRounding;
+                buttonBorder.Rounding = Settings.DefaultValue.Rounding.Default;
                 buttonBorder.Shape = Settings.DefaultValue.BorderShape;
                 buttonBorder.Thickness = Settings.DefaultValue.BorderThickness;
                 buttonBorder.Visible = Settings.DefaultValue.BorderVisible;

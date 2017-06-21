@@ -410,7 +410,7 @@
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
                 buttonShape.Border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                buttonShape.Border.Rounding = Settings.DefaultValue.BorderRounding;
+                buttonShape.Border.Rounding = Settings.DefaultValue.Rounding.Default;
                 buttonShape.Border.Shape = Settings.DefaultValue.BorderShape;
                 buttonShape.Border.Thickness = Settings.DefaultValue.BorderThickness;
                 buttonShape.Border.Visible = Settings.DefaultValue.BorderVisible;

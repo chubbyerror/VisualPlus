@@ -409,7 +409,7 @@
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
                 boxShape.Border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                boxShape.Border.Rounding = Settings.DefaultValue.BorderRounding;
+                boxShape.Border.Rounding = Settings.DefaultValue.Rounding.Default;
                 boxShape.Border.Shape = Settings.DefaultValue.BorderShape;
                 boxShape.Border.Thickness = Settings.DefaultValue.BorderThickness;
                 boxShape.Border.Visible = Settings.DefaultValue.BorderVisible;

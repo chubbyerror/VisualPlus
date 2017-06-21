@@ -51,7 +51,7 @@
         private bool animation = Settings.DefaultValue.Animation;
         private int barAmount = Settings.DefaultValue.BarAmount;
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private int borderRounding = Settings.DefaultValue.Rounding.Default;
         private BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
@@ -139,7 +139,7 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.Rounding.Default)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.BorderRounding)]
         public int BorderRounding

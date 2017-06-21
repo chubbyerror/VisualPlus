@@ -41,7 +41,7 @@
         private Gradient buttonDisabledGradient = new Gradient();
         private Gradient buttonGradient = new Gradient();
         private Rectangle buttonRectangle;
-        private Size buttonSize = new Size(20, 16);
+        private Size buttonSize = new Size(20, 20);
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
         private Point endPoint;
@@ -69,9 +69,12 @@
             UpdateStyles();
 
             BackColor = Color.Transparent;
-            Size = new Size(50, 20);
+            Size = new Size(50, 25);
             Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             animationTimer.Tick += AnimationTimerTick;
+
+            border.Rounding = 20;
+            buttonBorder.Rounding = 18;
 
             DefaultGradient();
             ConfigureStyleManager();
@@ -444,13 +447,13 @@
             {
                 // Load default settings
                 border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.BorderRounding;
+                border.Rounding = Settings.DefaultValue.Rounding.ToggleBorder;
                 border.Shape = Settings.DefaultValue.BorderShape;
                 border.Thickness = Settings.DefaultValue.BorderThickness;
                 border.Visible = Settings.DefaultValue.BorderVisible;
 
                 buttonBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                buttonBorder.Rounding = Settings.DefaultValue.BorderRounding;
+                buttonBorder.Rounding = Settings.DefaultValue.Rounding.ToggleButton;
                 buttonBorder.Shape = Settings.DefaultValue.BorderShape;
                 buttonBorder.Thickness = Settings.DefaultValue.BorderThickness;
                 buttonBorder.Visible = Settings.DefaultValue.BorderVisible;
