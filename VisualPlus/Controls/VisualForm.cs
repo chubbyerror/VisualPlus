@@ -46,6 +46,8 @@
         private Rectangle actionBarBounds;
         private Border border = new Border();
         private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+        private Color buttonHoverColor = Settings.DefaultValue.Control.ControlHover.Colors[0];
+        private Color buttonPressedColor = Settings.DefaultValue.Control.ControlPressed.Colors[0];
         private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
         private ControlState controlState = ControlState.Normal;
@@ -62,9 +64,7 @@
         private Point previousLocation;
         private Size previousSize;
         private ResizeDirection resizeDir;
-
         private Rectangle statusBarBounds;
-
         private Size titleTextSize;
         private Color windowBarColor = Settings.DefaultValue.Control.Background(1);
         private Rectangle xButtonBounds;
@@ -151,6 +151,38 @@
             set
             {
                 buttonColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color ButtonHoverColor
+        {
+            get
+            {
+                return buttonHoverColor;
+            }
+
+            set
+            {
+                buttonHoverColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color ButtonPressedColor
+        {
+            get
+            {
+                return buttonPressedColor;
+            }
+
+            set
+            {
+                buttonPressedColor = value;
                 Invalidate();
             }
         }
@@ -413,8 +445,8 @@
             // Determine whether or not we even should be drawing the buttons.
             bool showMin = MinimizeBox && ControlBox;
             bool showMax = MaximizeBox && ControlBox;
-            SolidBrush hoverBrush = new SolidBrush(Settings.DefaultValue.Control.ControlHover.Colors[0]);
-            SolidBrush downBrush = new SolidBrush(Settings.DefaultValue.Control.ControlPressed.Colors[0]);
+            SolidBrush hoverBrush = new SolidBrush(buttonHoverColor);
+            SolidBrush downBrush = new SolidBrush(buttonPressedColor);
 
             // When MaximizeButton == false, the minimize button will be painted in its place
             if ((buttonState == ButtonState.MinOver) && showMin)
