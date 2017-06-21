@@ -10,12 +10,12 @@
     using System.Drawing.Drawing2D;
     using System.Drawing.Text;
     using System.Runtime.InteropServices;
-    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
     using VisualPlus.Properties;
@@ -25,6 +25,7 @@
     [ToolboxItem(false)]
     [ToolboxBitmap(typeof(Form))]
     [Description("The Visual Form")]
+    [Designer(DesignManager.VisualForm)]
     public class VisualForm : Form
     {
         #region Variables
@@ -42,7 +43,6 @@
             };
 
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
-
         private Rectangle actionBarBounds;
         private Border border = new Border();
         private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
@@ -52,12 +52,6 @@
         private ButtonState buttonState = ButtonState.None;
         private ControlState controlState = ControlState.Normal;
         private bool headerMouseDown;
-        private Image icon = Resources.Icon;
-        private bool iconBorder;
-        private GraphicsPath iconGraphicsPath;
-        private Point iconPoint = new Point(0, 0);
-        private Rectangle iconRectangle;
-        private Size iconSize = new Size(16, 16);
         private Rectangle maxButtonBounds;
         private bool maximized;
         private Rectangle minButtonBounds;
@@ -66,7 +60,9 @@
         private ResizeDirection resizeDir;
         private Rectangle statusBarBounds;
         private Size titleTextSize;
+        private VisualImage vsImage = new VisualImage(Resources.Icon, new Size(16, 16));
         private Color windowBarColor = Settings.DefaultValue.Control.Background(1);
+        private int windowBarHeight = 30;
         private Rectangle xButtonBounds;
 
         #endregion
@@ -203,50 +199,33 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Icon)]
         public new Image Icon
         {
             get
             {
-                return icon;
+                return vsImage.Image;
             }
 
             set
             {
-                icon = value;
+                vsImage.Image = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool IconBorder
+        public VisualImage Image
         {
             get
             {
-                return iconBorder;
+                return vsImage;
             }
 
             set
             {
-                iconBorder = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.IconSize)]
-        public Size IconSize
-        {
-            get
-            {
-                return iconSize;
-            }
-
-            set
-            {
-                iconSize = value;
+                vsImage = value;
                 Invalidate();
             }
         }
@@ -442,116 +421,21 @@
             // Title box
             graphics.FillRectangle(new SolidBrush(windowBarColor), statusBarBounds);
 
-            // Determine whether or not we even should be drawing the buttons.
-            bool showMin = MinimizeBox && ControlBox;
-            bool showMax = MaximizeBox && ControlBox;
-            SolidBrush hoverBrush = new SolidBrush(buttonHoverColor);
-            SolidBrush downBrush = new SolidBrush(buttonPressedColor);
-
-            // When MaximizeButton == false, the minimize button will be painted in its place
-            if ((buttonState == ButtonState.MinOver) && showMin)
-            {
-                graphics.FillRectangle(hoverBrush, showMax ? minButtonBounds : maxButtonBounds);
-            }
-
-            if ((buttonState == ButtonState.MinDown) && showMin)
-            {
-                graphics.FillRectangle(downBrush, showMax ? minButtonBounds : maxButtonBounds);
-            }
-
-            if ((buttonState == ButtonState.MaxOver) && showMax)
-            {
-                graphics.FillRectangle(hoverBrush, maxButtonBounds);
-            }
-
-            if ((buttonState == ButtonState.MaxDown) && showMax)
-            {
-                graphics.FillRectangle(downBrush, maxButtonBounds);
-            }
-
-            if ((buttonState == ButtonState.XOver) && ControlBox)
-            {
-                graphics.FillRectangle(hoverBrush, xButtonBounds);
-            }
-
-            if ((buttonState == ButtonState.XDown) && ControlBox)
-            {
-                graphics.FillRectangle(downBrush, xButtonBounds);
-            }
-
-            using (Pen formButtonsPen = new Pen(ButtonColor, 2))
-            {
-                // Minimize button.
-                if (showMin)
-                {
-                    int x = showMax ? minButtonBounds.X : maxButtonBounds.X;
-                    int y = showMax ? minButtonBounds.Y : maxButtonBounds.Y;
-
-                    graphics.DrawLine(
-                        formButtonsPen,
-                        x + (int)(minButtonBounds.Width * 0.33),
-                        y + (int)(minButtonBounds.Height * 0.66),
-                        x + (int)(minButtonBounds.Width * 0.66),
-                        y + (int)(minButtonBounds.Height * 0.66));
-                }
-
-                // Maximize button
-                if (showMax)
-                {
-                    graphics.DrawRectangle(
-                        formButtonsPen,
-                        maxButtonBounds.X + (int)(maxButtonBounds.Width * 0.33),
-                        maxButtonBounds.Y + (int)(maxButtonBounds.Height * 0.36),
-                        (int)(maxButtonBounds.Width * 0.39),
-                        (int)(maxButtonBounds.Height * 0.31));
-                }
-
-                // Close button
-                if (ControlBox)
-                {
-                    graphics.DrawLine(
-                        formButtonsPen,
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
-
-                    graphics.DrawLine(
-                        formButtonsPen,
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
-                }
-            }
-
+            DrawButtons(graphics);
             DrawIcon(graphics);
-
-            // Form title
-            titleTextSize = GDI.GetTextSize(graphics, Text, Font);
-            Rectangle textRectangle = new Rectangle(5 + iconSize.Width + 5, (statusBarBounds.Height / 2) - (titleTextSize.Height / 2), Width, titleTextSize.Height);
-            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textRectangle, new StringFormat { LineAlignment = StringAlignment.Center });
-
-            // Draw border
-            if (border.Visible)
-            {
-                GraphicsPath controlGraphicsPath = new GraphicsPath();
-                controlGraphicsPath.AddRectangle(ClientRectangle);
-
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-            }
+            DrawTitle(graphics);
+            DrawBorder(graphics);
         }
 
-        // TODO: Align in middle of windowBar
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
-            minButtonBounds = new Rectangle(Width - Padding.Right - (3 * buttonSize.Width), (Padding.Top + (statusBarBounds.Height / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
+            minButtonBounds = new Rectangle(Width - Padding.Right - (3 * buttonSize.Width), (Padding.Top + (windowBarHeight / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
-            maxButtonBounds = new Rectangle(Width - Padding.Right - (2 * buttonSize.Width), (Padding.Top + (statusBarBounds.Height / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
+            maxButtonBounds = new Rectangle(Width - Padding.Right - (2 * buttonSize.Width), (Padding.Top + (windowBarHeight / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
-            xButtonBounds = new Rectangle(Width - Padding.Right - buttonSize.Width, (Padding.Top + (statusBarBounds.Height / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
+            xButtonBounds = new Rectangle(Width - Padding.Right - buttonSize.Width, (Padding.Top + (windowBarHeight / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
             statusBarBounds = new Rectangle(0, 0, Width, windowBarHeight);
         }
@@ -662,8 +546,6 @@
         private const uint TPM_LEFTALIGN = 0x0000;
         private const uint TPM_RETURNCMD = 0x0100;
 
-        private static int windowBarHeight = 24;
-
         private const int WM_SYSCOMMAND = 0x0112;
         private const int WMSZ_BOTTOM = 6;
         private const int WMSZ_BOTTOMLEFT = 7;
@@ -677,31 +559,114 @@
         private const int WS_MINIMIZEBOX = 0x20000;
         private const int WS_SYSMENU = 0x00080000;
 
-        private void DrawIcon(Graphics graphics)
+        private void DrawBorder(Graphics graphics)
         {
-            iconPoint = new Point(Padding.Left, (statusBarBounds.Height / 2) - (iconSize.Height / 2));
-            iconRectangle = new Rectangle(iconPoint, iconSize);
-            iconGraphicsPath = new GraphicsPath();
-            iconGraphicsPath.AddRectangle(iconRectangle);
-            iconGraphicsPath.CloseAllFigures();
-
-            if (ShowIcon)
+            if (border.Visible)
             {
-                if (icon != null)
+                GraphicsPath clientPath = new GraphicsPath();
+                clientPath.AddRectangle(ClientRectangle);
+
+                GDI.DrawBorderType(graphics, controlState, clientPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+            }
+        }
+
+        private void DrawButtons(Graphics graphics)
+        {
+            // Determine whether or not we even should be drawing the buttons.
+            bool showMin = MinimizeBox && ControlBox;
+            bool showMax = MaximizeBox && ControlBox;
+            SolidBrush hoverBrush = new SolidBrush(buttonHoverColor);
+            SolidBrush downBrush = new SolidBrush(buttonPressedColor);
+
+            // When MaximizeButton == false, the minimize button will be painted in its place
+            if ((buttonState == ButtonState.MinOver) && showMin)
+            {
+                graphics.FillRectangle(hoverBrush, showMax ? minButtonBounds : maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.MinDown) && showMin)
+            {
+                graphics.FillRectangle(downBrush, showMax ? minButtonBounds : maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.MaxOver) && showMax)
+            {
+                graphics.FillRectangle(hoverBrush, maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.MaxDown) && showMax)
+            {
+                graphics.FillRectangle(downBrush, maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.XOver) && ControlBox)
+            {
+                graphics.FillRectangle(hoverBrush, xButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.XDown) && ControlBox)
+            {
+                graphics.FillRectangle(downBrush, xButtonBounds);
+            }
+
+            using (Pen formButtonsPen = new Pen(ButtonColor, 2))
+            {
+                // Minimize button.
+                if (showMin)
                 {
-                    // Update point
-                    iconRectangle.Location = iconPoint;
+                    int x = showMax ? minButtonBounds.X : maxButtonBounds.X;
+                    int y = showMax ? minButtonBounds.Y : maxButtonBounds.Y;
 
-                    // Draw icon border
-                    if (iconBorder)
-                    {
-                        graphics.DrawPath(new Pen(border.Color), iconGraphicsPath);
-                    }
+                    graphics.DrawLine(
+                        formButtonsPen,
+                        x + (int)(minButtonBounds.Width * 0.33),
+                        y + (int)(minButtonBounds.Height * 0.66),
+                        x + (int)(minButtonBounds.Width * 0.66),
+                        y + (int)(minButtonBounds.Height * 0.66));
+                }
 
-                    // Draw icon
-                    graphics.DrawImage(Icon, iconRectangle);
+                // Maximize button
+                if (showMax)
+                {
+                    graphics.DrawRectangle(
+                        formButtonsPen,
+                        maxButtonBounds.X + (int)(maxButtonBounds.Width * 0.33),
+                        maxButtonBounds.Y + (int)(maxButtonBounds.Height * 0.36),
+                        (int)(maxButtonBounds.Width * 0.39),
+                        (int)(maxButtonBounds.Height * 0.31));
+                }
+
+                // Close button
+                if (ControlBox)
+                {
+                    graphics.DrawLine(
+                        formButtonsPen,
+                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
+                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
+                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
+                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
+
+                    graphics.DrawLine(
+                        formButtonsPen,
+                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
+                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
+                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
+                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
                 }
             }
+        }
+
+        private void DrawIcon(Graphics graphics)
+        {
+            vsImage.Point = new Point(Padding.Left, (statusBarBounds.Height / 2) - (vsImage.Size.Height / 2));
+            VisualImage.DrawImage(graphics, vsImage.Border, vsImage.Point, vsImage.Image, vsImage.Size, vsImage.Visible);
+        }
+
+        private void DrawTitle(Graphics graphics)
+        {
+            titleTextSize = GDI.GetTextSize(graphics, Text, Font);
+            Rectangle textRectangle = new Rectangle(5 + vsImage.Size.Width + 5, (windowBarHeight / 2) - (titleTextSize.Height / 2), Width, titleTextSize.Height);
+            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textRectangle, new StringFormat { LineAlignment = StringAlignment.Center });
         }
 
         private void MaximizeWindow(bool maximize)
@@ -954,49 +919,6 @@
 
             /// <summary>The top.</summary>
             Top
-        }
-
-        #endregion
-    }
-
-    internal class Fade
-    {
-        #region Events
-
-        /// <summary>
-        ///     Fades in the object.
-        /// </summary>
-        /// <param name="o">Object to fade in.</param>
-        /// <param name="interval">Fading interval.</param>
-        public static async void FadeIn(Form o, int interval = 80)
-        {
-            // Fade in object
-            while (o.Opacity < 1.0)
-            {
-                await Task.Delay(interval);
-                o.Opacity += 0.05;
-            }
-
-            // Make visible
-            o.Opacity = 1;
-        }
-
-        /// <summary>
-        ///     Fades out the object.
-        /// </summary>
-        /// <param name="o">Object to fade out.</param>
-        /// <param name="interval">Fading interval.</param>
-        public static async void FadeOut(Form o, int interval = 80)
-        {
-            // Fade out object
-            while (o.Opacity > 0.0)
-            {
-                await Task.Delay(interval);
-                o.Opacity -= 0.05;
-            }
-
-            // Make invisible 
-            o.Opacity = 0;
         }
 
         #endregion

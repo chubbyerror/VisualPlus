@@ -5,6 +5,7 @@
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Globalization;
 
     #endregion
@@ -114,6 +115,18 @@
         public static Rectangle AlignTop(this Rectangle rectangle, Rectangle outerBounds, int spacing)
         {
             return new Rectangle(rectangle.X, outerBounds.Y + spacing, rectangle.Width, rectangle.Height);
+        }
+
+        /// <summary>Returns the rectangles graphics path.</summary>
+        /// <param name="rectangle">The rectangle.</param>
+        /// <returns>The graphics path.</returns>
+        public static GraphicsPath GetGraphicsPath(this Rectangle rectangle)
+        {
+            using (GraphicsPath returnGraphicsPath = new GraphicsPath())
+            {
+                returnGraphicsPath.AddRectangle(rectangle);
+                return returnGraphicsPath;
+            }
         }
 
         #endregion

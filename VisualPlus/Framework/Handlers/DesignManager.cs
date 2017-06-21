@@ -13,6 +13,7 @@
         public const string VisualCircleProgressBar = NamespaceLocation + "VisualCircleProgressBarDesigner";
         public const string VisualComboBox = NamespaceLocation + "VisualComboBoxDesigner";
         public const string VisualContextMenu = NamespaceLocation + "VisualContextMenuDesigner";
+        public const string VisualForm = NamespaceLocation + "VisualFormDesigner";
         public const string VisualGroupBox = NamespaceLocation + "VisualGroupBoxDesigner";
         public const string VisualLabel = NamespaceLocation + "VisualLabelDesigner";
         public const string VisualListBox = NamespaceLocation + "VisualListBoxDesigner";
