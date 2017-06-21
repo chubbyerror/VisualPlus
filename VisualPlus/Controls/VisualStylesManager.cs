@@ -93,7 +93,7 @@
 
         [DefaultValue(Settings.DefaultValue.Animation)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Animation)]
+        [Description(Localize.Description.Common.Animation)]
         public bool Animation
         {
             get
@@ -109,7 +109,7 @@
 
         [DefaultValue(Settings.DefaultValue.BarAmount)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BarAmount)]
+        [Description(Localize.Description.Progressbar.Bars)]
         public int BarAmount
         {
             get
@@ -125,7 +125,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool BorderHoverVisible
         {
             get
@@ -141,7 +141,7 @@
 
         [DefaultValue(Settings.DefaultValue.Rounding.Default)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
+        [Description(Localize.Description.Border.Rounding)]
         public int BorderRounding
         {
             get
@@ -160,7 +160,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderShape)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
+        [Description(Localize.Description.Common.Type)]
         public BorderShape BorderShape
         {
             get
@@ -176,7 +176,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
+        [Description(Localize.Description.Border.Thickness)]
         public int BorderThickness
         {
             get
@@ -195,7 +195,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool BorderVisible
         {
             get
@@ -211,7 +211,7 @@
 
         [Category(Localize.Category.Layout)]
         [DefaultValue(Settings.DefaultValue.HatchSize)]
-        [Description(Localize.Description.HatchSize)]
+        [Description(Localize.Description.Common.Size)]
         public float HatchSize
         {
             get
@@ -227,7 +227,7 @@
 
         [DefaultValue(Settings.DefaultValue.HatchVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool HatchVisible
         {
             get
@@ -243,7 +243,7 @@
 
         [DefaultValue(Settings.DefaultValue.ProgressSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ProgressSize)]
+        [Description(Localize.Description.Common.Size)]
         public float ProgressSize
         {
             get
@@ -258,7 +258,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.StyleColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color StyleColor
         {
             get
@@ -273,7 +273,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRenderingHint
         {
             get
@@ -289,7 +289,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool TextVisible
         {
             get
@@ -306,7 +306,7 @@
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Style)]
+        [Description(Localize.Description.Common.Type)]
         public Styles VisualStyle
         {
             get

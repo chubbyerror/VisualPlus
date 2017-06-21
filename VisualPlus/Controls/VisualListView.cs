@@ -117,7 +117,7 @@
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ColumnBackground
         {
             get
@@ -151,7 +151,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.FocusVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool FocusVisible
         {
             get
@@ -167,7 +167,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentFont)]
+        [Description(Localize.Description.Strings.Font)]
         public Font HeaderFont
         {
             get
@@ -183,7 +183,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color HeaderText
         {
             get
@@ -199,7 +199,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ItemBackground
         {
             get
@@ -215,7 +215,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ItemHover
         {
             get
@@ -246,7 +246,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ItemSelected
         {
             get
@@ -281,7 +281,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get

@@ -69,7 +69,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.AutoSize)]
+        [Description(Localize.Description.Common.AutoSize)]
         public override bool AutoSize
         {
             get
@@ -92,7 +92,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Orientation)]
+        [Description(Localize.Description.Common.Orientation)]
         public Orientation Orientation
         {
             get
@@ -109,7 +109,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Outline)]
+        [Description(Localize.Description.Common.Outline)]
         public bool Outline
         {
             get
@@ -125,7 +125,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color OutlineColor
         {
             get
@@ -141,7 +141,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentLocation)]
+        [Description(Localize.Description.Common.Point)]
         public Point OutlineLocation
         {
             get
@@ -158,7 +158,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Reflection)]
+        [Description(Localize.Description.Common.Toggle)]
         public bool Reflection
         {
             get
@@ -174,7 +174,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.MirrorColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ReflectionColor
         {
             get
@@ -190,7 +190,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ReflectionSpacing)]
+        [Description(Localize.Description.Common.Spacing)]
         public int ReflectionSpacing
         {
             get
@@ -207,7 +207,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Shadow)]
+        [Description(Localize.Description.Common.Toggle)]
         public bool Shadow
         {
             get
@@ -223,7 +223,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ShadowColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ShadowColor
         {
             get
@@ -239,7 +239,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ShadowDirection)]
+        [Description(Localize.Description.Common.Direction)]
         public int ShadowDirection
         {
             get
@@ -255,7 +255,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentLocation)]
+        [Description(Localize.Description.Common.Point)]
         public Point ShadowLocation
         {
             get
@@ -271,7 +271,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ShadowOpacity)]
+        [Description(Localize.Description.Common.Opacity)]
         public int ShadowOpacity
         {
             get
@@ -342,7 +342,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get

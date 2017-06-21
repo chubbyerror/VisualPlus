@@ -80,7 +80,7 @@
 
         [DefaultValue(Settings.DefaultValue.Animation)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Animation)]
+        [Description(Localize.Description.Common.Animation)]
         public bool Animation
         {
             get

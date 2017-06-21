@@ -200,7 +200,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ButtonSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size ButtonSize
         {
             get
@@ -248,7 +248,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -264,7 +264,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -281,7 +281,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Toggled)]
+        [Description(Localize.Description.Common.Toggle)]
         public bool Toggled
         {
             get
@@ -299,7 +299,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ToggleType)]
+        [Description(Localize.Description.Common.Type)]
         public ToggleTypes Type
         {
             get

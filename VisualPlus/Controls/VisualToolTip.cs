@@ -96,7 +96,7 @@
         #region Properties
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.AutoSize)]
+        [Description(Localize.Description.Common.AutoSize)]
         public bool AutoSize
         {
             get
@@ -143,7 +143,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
+        [Description(Localize.Description.Strings.Font)]
         public Font Font
         {
             get
@@ -172,7 +172,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Icon)]
+        [Description(Localize.Description.Common.Image)]
         public Image Icon
         {
             get
@@ -187,7 +187,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool IconBorder
         {
             get
@@ -202,7 +202,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.IconSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size IconSize
         {
             get
@@ -217,7 +217,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color LineColor
         {
             get
@@ -232,7 +232,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentNoName)]
+        [Description(Localize.Description.Common.Padding)]
         public Padding Padding
         {
             get
@@ -247,7 +247,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int SeparatorThickness
         {
             get
@@ -262,7 +262,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Spacing)]
         public int Spacing
         {
             get
@@ -277,7 +277,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentNoName)]
+        [Description(Localize.Description.Strings.Text)]
         public string Text
         {
             get
@@ -292,7 +292,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -307,7 +307,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool TextShadow
         {
             get
@@ -322,7 +322,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentNoName)]
+        [Description(Localize.Description.Common.Type)]
         public ToolTipType TipType
         {
             get
@@ -337,7 +337,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentNoName)]
+        [Description(Localize.Description.Strings.Text)]
         public string Title
         {
             get
@@ -352,7 +352,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TitleColor
         {
             get
@@ -367,7 +367,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
+        [Description(Localize.Description.Strings.Font)]
         public Font TitleFont
         {
             get
@@ -382,7 +382,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size ToolTipSize
         {
             get

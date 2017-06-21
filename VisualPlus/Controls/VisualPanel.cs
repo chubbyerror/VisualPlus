@@ -68,7 +68,7 @@
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color Background
         {
             get

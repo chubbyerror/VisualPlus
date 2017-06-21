@@ -102,7 +102,7 @@
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color BackgroundColor
         {
             get
@@ -184,7 +184,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.StringAlignment)]
+        [Description(Localize.Description.Common.Alignment)]
         public StringAlignment TextAlignment
         {
             get
@@ -200,7 +200,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -216,7 +216,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -232,7 +232,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentNoName)]
+        [Description(Localize.Description.Common.Alignment)]
         public TitleAlignments TitleAlignment
         {
             get
@@ -266,7 +266,7 @@
 
         [DefaultValue("25")]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int TitleBoxHeight
         {
             get
@@ -283,7 +283,7 @@
 
         [DefaultValue(Settings.DefaultValue.TitleBoxVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.TitleBoxVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool TitleBoxVisible
         {
             get

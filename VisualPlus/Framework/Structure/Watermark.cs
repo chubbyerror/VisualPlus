@@ -23,7 +23,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The active color.")]
+        [Description(Localize.Description.Common.Color)]
         public Color ActiveColor
         {
             get
@@ -39,7 +39,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The inactive color.")]
+        [Description(Localize.Description.Common.Color)]
         public Color InactiveColor
         {
             get
@@ -78,7 +78,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The watermark font.")]
+        [Description(Localize.Description.Strings.Font)]
         public Font Font
         {
             get
@@ -94,7 +94,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The watermark text.")]
+        [Description(Localize.Description.Strings.Text)]
         public string Text
         {
             get

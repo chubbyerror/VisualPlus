@@ -86,7 +86,7 @@
 
         [DefaultValue(true)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool BackCircleVisible
         {
             get
@@ -102,7 +102,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color BackgroundCircle
         {
             get
@@ -134,7 +134,7 @@
 
         [DefaultValue(true)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ForeCircleVisible
         {
             get
@@ -165,7 +165,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ForegroundCircle
         {
             get
@@ -181,7 +181,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.Rotation)]
+        [Description(Localize.Description.Common.Rotation)]
         public float GradientRotation
         {
             get
@@ -197,7 +197,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.IconPosition)]
+        [Description(Localize.Description.Common.Image)]
         public Point IconPoint
         {
             get
@@ -213,7 +213,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.IconSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size IconSize
         {
             get
@@ -229,7 +229,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Icon)]
+        [Description(Localize.Description.Common.Image)]
         public Image Image
         {
             get
@@ -245,7 +245,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ProgressGradient1
         {
             get
@@ -261,7 +261,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ProgressGradient2
         {
             get
@@ -278,7 +278,7 @@
 
         [DefaultValue(Settings.DefaultValue.ProgressSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ProgressSize)]
+        [Description(Localize.Description.Common.Size)]
         public float ProgressSize
         {
             get
@@ -294,7 +294,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
+        [Description(Localize.Description.Common.Type)]
         public ProgressShape Shape
         {
             get
@@ -327,7 +327,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -344,7 +344,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool TextVisible
         {
             get

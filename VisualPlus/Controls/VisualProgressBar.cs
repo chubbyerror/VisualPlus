@@ -122,7 +122,7 @@
 
         [DefaultValue(Settings.DefaultValue.BarAmount)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BarAmount)]
+        [Description(Localize.Description.Progressbar.Bars)]
         public int BarAmount
         {
             get
@@ -138,7 +138,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BarSize)]
+        [Description(Localize.Description.Common.Size)]
         public Point BarSize
         {
             get
@@ -154,7 +154,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BarSpacing)]
+        [Description(Localize.Description.Common.Spacing)]
         public int BarSpacing
         {
             get
@@ -170,7 +170,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ProgressBarStyle)]
+        [Description(Localize.Description.Common.Type)]
         public BarTypes BarStyle
         {
             get
@@ -231,7 +231,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color HatchBackColor
         {
             get
@@ -247,7 +247,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color HatchForeColor
         {
             get
@@ -264,7 +264,7 @@
 
         [Category(Localize.Category.Layout)]
         [DefaultValue(Settings.DefaultValue.HatchSize)]
-        [Description(Localize.Description.HatchSize)]
+        [Description(Localize.Description.Common.Size)]
         public float HatchSize
         {
             get
@@ -280,7 +280,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.HatchStyle)]
+        [Description(Localize.Description.Common.Type)]
         public HatchStyle HatchStyle
         {
             get
@@ -297,7 +297,7 @@
 
         [DefaultValue(Settings.DefaultValue.HatchVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool HatchVisible
         {
             get
@@ -314,7 +314,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool PercentageVisible
         {
             get
@@ -347,7 +347,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
+        [Description(Localize.Description.Strings.Font)]
         public Font ProgressFont
         {
             get
@@ -380,7 +380,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -396,7 +396,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.Alignment)]
+        [Description(Localize.Description.Common.Alignment)]
         public StringAlignment ValueAlignment
         {
             get

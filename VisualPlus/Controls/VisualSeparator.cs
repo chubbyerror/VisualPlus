@@ -96,7 +96,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.SeparatorStyle)]
+        [Description(Localize.Description.Common.Orientation)]
         public Orientation Orientation
         {
             get
@@ -150,7 +150,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ShadowVisible
         {
             get

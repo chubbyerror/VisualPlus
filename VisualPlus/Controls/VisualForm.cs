@@ -132,7 +132,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ButtonBackHoverColor
         {
             get
@@ -148,7 +148,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ButtonBackPressedColor
         {
             get
@@ -164,7 +164,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ButtonColor
         {
             get
@@ -180,7 +180,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ButtonSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size ButtonSize
         {
             get
@@ -229,7 +229,7 @@
         public bool Sizable { get; set; }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color WindowBarColor
         {
             get
@@ -245,7 +245,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int WindowBarHeight
         {
             get

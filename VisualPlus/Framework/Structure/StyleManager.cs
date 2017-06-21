@@ -11,7 +11,6 @@
     #endregion
 
     [TypeConverter(typeof(VisualStyleManagerConverter))]
-    [Description("The Visual Style Manager type.")]
     public class StyleManager
     {
         #region Variables

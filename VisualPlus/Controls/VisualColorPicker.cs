@@ -392,7 +392,7 @@
 
         [Category(Localize.Category.Appearance)]
         [DefaultValue(typeof(Color), "Black")]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color Color
         {
             get
@@ -439,7 +439,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool DrawFocusRectangle
         {
             get
@@ -534,7 +534,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool PickerVisible
         {
             get

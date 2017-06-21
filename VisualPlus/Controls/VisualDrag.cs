@@ -39,7 +39,7 @@
 
         [DefaultValue(true)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Moveable)]
+        [Description(Localize.Description.Common.Toggle)]
         public bool Movable
         {
             get

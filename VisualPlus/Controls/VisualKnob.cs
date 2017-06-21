@@ -233,7 +233,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         [Category(Localize.Category.Layout)]
         public int KnobDistance
         {
@@ -249,7 +249,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         [Category(Localize.Category.Layout)]
         public Size KnobSize
         {
@@ -281,7 +281,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         [Category(Localize.Category.Layout)]
         public Size KnobTickSize
         {
@@ -331,7 +331,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         [Category(Localize.Category.Layout)]
         public Size KnobTopSize
         {
@@ -428,7 +428,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         [Category(Localize.Category.Appearance)]
         public Color PointerColor
         {
@@ -582,7 +582,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         [Category(Localize.Category.Behavior)]
         public Color TickColor
         {

@@ -67,7 +67,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The character.")]
+        [Description(Localize.Description.Checkmark.Character)]
         public char Character
         {
             get
@@ -83,7 +83,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Gradient)]
+        [Description(Localize.Description.Common.ColorGradient)]
         public Gradient DisabledGradient
         {
             get
@@ -115,7 +115,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Gradient)]
+        [Description(Localize.Description.Common.ColorGradient)]
         public Gradient EnabledGradient
         {
             get
@@ -147,7 +147,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The character font.")]
+        [Description(Localize.Description.Strings.Font)]
         public Font Font
         {
             get
@@ -226,7 +226,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The style.")]
+        [Description(Localize.Description.Checkmark.CheckType)]
         public CheckType Style
         {
             get

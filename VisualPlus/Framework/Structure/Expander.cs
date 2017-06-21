@@ -48,7 +48,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The alignment.")]
+        [Description(Localize.Description.Common.Alignment)]
         public Alignment.Horizontal Alignment
         {
             get
@@ -96,7 +96,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The contracted height.")]
+        [Description(Localize.Description.Expander.ContractedHeight)]
         public int ContractedHeight
         {
             get
@@ -112,7 +112,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The cursor.")]
+        [Description(Localize.Description.Common.Cursor)]
         public Cursor Cursor
         {
             get
@@ -128,7 +128,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The expanded.")]
+        [Description(Localize.Description.Expander.Expanded)]
         public bool Expanded
         {
             get
@@ -164,7 +164,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The spacing.")]
+        [Description(Localize.Description.Common.Spacing)]
         public int Spacing
         {
             get

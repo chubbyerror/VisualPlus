@@ -12,7 +12,6 @@
     #endregion
 
     [TypeConverter(typeof(GradientConverter))]
-    [Description(Localize.Description.GradientDesc)]
     public class Gradient
     {
         #region Variables

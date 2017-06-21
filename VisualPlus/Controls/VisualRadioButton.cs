@@ -84,7 +84,7 @@
 
         [DefaultValue(Settings.DefaultValue.Animation)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Animation)]
+        [Description(Localize.Description.Common.Animation)]
         public bool Animation
         {
             get
@@ -124,7 +124,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSpacing)]
+        [Description(Localize.Description.Common.Spacing)]
         public int BoxSpacing
         {
             get
@@ -189,7 +189,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -205,7 +205,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get

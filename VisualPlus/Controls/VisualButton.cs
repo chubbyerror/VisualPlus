@@ -87,7 +87,7 @@
 
         [DefaultValue(Settings.DefaultValue.Animation)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Animation)]
+        [Description(Localize.Description.Common.Animation)]
         public bool Animation
         {
             get
@@ -142,7 +142,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.IconSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size ImageSize
         {
             get
@@ -159,7 +159,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ImageVisible
         {
             get
@@ -191,7 +191,7 @@
 
         [DefaultValue(Settings.DefaultValue.Moveable)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Moveable)]
+        [Description(Localize.Description.Common.Toggle)]
         public bool Moveable
         {
             get
@@ -223,7 +223,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -239,7 +239,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.TextImageRelation)]
+        [Description(Localize.Description.Common.TextImageRelation)]
         public new TextImageRelation TextImageRelation
         {
             get
@@ -255,7 +255,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get

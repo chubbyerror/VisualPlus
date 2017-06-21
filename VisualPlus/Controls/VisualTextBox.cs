@@ -98,7 +98,7 @@
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color BackgroundColor
         {
             get
@@ -148,7 +148,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ButtonColor
         {
             get
@@ -164,7 +164,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ButtonImage)]
+        [Description(Localize.Description.Common.Image)]
         public Image ButtonImage
         {
             get
@@ -180,7 +180,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ButtonVisible
         {
             get
@@ -196,7 +196,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int ButtonWidth
         {
             get
@@ -214,7 +214,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
+        [Description(Localize.Description.Common.Color)]
         public Color ControlDisabledColor
         {
             get
@@ -245,7 +245,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size IconSize
         {
             get
@@ -278,7 +278,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -294,7 +294,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get

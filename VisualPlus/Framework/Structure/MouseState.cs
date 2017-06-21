@@ -8,6 +8,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Controls;
+    using VisualPlus.Localization;
 
     #endregion
 
@@ -23,7 +24,6 @@
         Down
     }
 
-    [Description("The state of the mouse on the control.")]
     public class MouseState
     {
         #region Variables
@@ -76,7 +76,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The state of the control.")]
+        [Description(Localize.Description.Common.MouseState)]
         public MouseStates State
         {
             get

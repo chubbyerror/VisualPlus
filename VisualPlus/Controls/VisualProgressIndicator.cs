@@ -56,7 +56,7 @@
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color AnimationColor
         {
             get
@@ -71,7 +71,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.AnimationSpeed)]
+        [Description(Localize.Description.Common.AnimationSpeed)]
         public int AnimationSpeed
         {
             get
@@ -86,7 +86,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color BaseColor
         {
             get
@@ -102,7 +102,7 @@
 
         [DefaultValue(45F)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentDiameter)]
+        [Description(Localize.Description.Common.Amount)]
         public float Circles
         {
             get
@@ -119,7 +119,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size CircleSize
         {
             get
@@ -136,7 +136,7 @@
 
         [DefaultValue(7.5F)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentDiameter)]
+        [Description(Localize.Description.Common.Diameter)]
         public float Diameter
         {
             get

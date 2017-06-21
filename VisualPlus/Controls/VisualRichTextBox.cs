@@ -72,7 +72,7 @@
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color BackgroundColor
         {
             get
@@ -105,7 +105,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
+        [Description(Localize.Description.Common.Color)]
         public Color ControlDisabledColor
         {
             get
@@ -168,7 +168,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get

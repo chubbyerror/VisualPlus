@@ -120,7 +120,7 @@
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Alignment)]
+        [Description(Localize.Description.Common.Alignment)]
         public new TabAlignment Alignment
         {
             get
@@ -165,7 +165,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ArrowSelectorVisible
         {
             get
@@ -181,7 +181,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Spacing)]
         public int ArrowSpacing
         {
             get
@@ -197,7 +197,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int ArrowThickness
         {
             get
@@ -213,7 +213,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color BackgroundColor
         {
             get
@@ -251,7 +251,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public new Size ItemSize
         {
             get
@@ -317,7 +317,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Alignment)]
+        [Description(Localize.Description.Common.Alignment)]
         public TabAlignment SelectorAlignment
         {
             get
@@ -333,7 +333,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Alignment)]
+        [Description(Localize.Description.Common.Alignment)]
         public TabAlignment SelectorAlignment2
         {
             get
@@ -349,7 +349,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int SelectorThickness
         {
             get
@@ -365,7 +365,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool SelectorVisible
         {
             get
@@ -381,7 +381,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool SelectorVisible2
         {
             get
@@ -397,7 +397,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color Separator
         {
             get
@@ -413,7 +413,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Spacing)]
         public int SeparatorSpacing
         {
             get
@@ -429,7 +429,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public float SeparatorThickness
         {
             get
@@ -461,7 +461,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TabMenu
         {
             get
@@ -494,7 +494,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TabSelector
         {
             get
@@ -525,7 +525,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextNormal
         {
             get
@@ -541,7 +541,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -557,7 +557,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextSelected
         {
             get

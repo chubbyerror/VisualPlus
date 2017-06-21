@@ -142,7 +142,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int BarThickness
         {
             get
@@ -158,7 +158,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int BarTickSpacing
         {
             get
@@ -175,7 +175,7 @@
 
         [DefaultValue(true)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.AutoSize)]
+        [Description(Localize.Description.Common.AutoSize)]
         public bool ButtonAutoSize
         {
             get
@@ -225,7 +225,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size ButtonSize
         {
             get
@@ -241,7 +241,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ButtonTextColor
         {
             get
@@ -258,7 +258,7 @@
 
         [DefaultValue(true)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ButtonVisible
         {
             get
@@ -337,7 +337,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color HatchBackColor
         {
             get
@@ -353,7 +353,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color HatchForeColor
         {
             get
@@ -370,7 +370,7 @@
 
         [Category(Localize.Category.Layout)]
         [DefaultValue(Settings.DefaultValue.HatchSize)]
-        [Description(Localize.Description.HatchSize)]
+        [Description(Localize.Description.Common.Size)]
         public float HatchSize
         {
             get
@@ -386,7 +386,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.HatchStyle)]
+        [Description(Localize.Description.Common.Type)]
         public HatchStyle HatchStyle
         {
             get
@@ -403,7 +403,7 @@
 
         [DefaultValue(Settings.DefaultValue.HatchVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool HatchVisible
         {
             get
@@ -419,7 +419,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int IndentHeight
         {
             get
@@ -435,7 +435,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int IndentWidth
         {
             get
@@ -452,7 +452,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool LineTicksVisible
         {
             get
@@ -468,7 +468,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Orientation)]
+        [Description(Localize.Description.Common.Orientation)]
         public new Orientation Orientation
         {
             get
@@ -485,7 +485,7 @@
         }
 
         [Category(Localize.Category.Data)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public string Prefix
         {
             get
@@ -518,7 +518,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ProgressFilling
         {
             get
@@ -535,7 +535,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ProgressValueVisible
         {
             get
@@ -552,7 +552,7 @@
 
         [DefaultValue(true)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ProgressVisible
         {
             get
@@ -585,7 +585,7 @@
         }
 
         [Category(Localize.Category.Data)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public string Suffix
         {
             get
@@ -601,7 +601,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -617,7 +617,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -633,7 +633,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TickColor
         {
             get
@@ -649,7 +649,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int TickHeight
         {
             get
@@ -682,7 +682,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ValueDivisor)]
+        [Description(Localize.Description.Common.ValueDivisor)]
         public ValueDivisor ValueDivision
         {
             get
@@ -699,7 +699,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ValueTicksVisible
         {
             get

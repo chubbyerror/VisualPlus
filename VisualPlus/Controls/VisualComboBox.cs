@@ -130,7 +130,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ButtonColor
         {
             get
@@ -146,7 +146,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.Direction)]
+        [Description(Localize.Description.Common.Direction)]
         public Alignment.Horizontal ButtonHorizontal
         {
             get
@@ -162,7 +162,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.DropDownButton)]
+        [Description(Localize.Description.Common.Type)]
         public DropDownButtons ButtonStyles
         {
             get
@@ -179,7 +179,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ButtonVisible
         {
             get
@@ -195,7 +195,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int ButtonWidth
         {
             get
@@ -260,7 +260,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color MenuItemHover
         {
             get
@@ -276,7 +276,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color MenuItemNormal
         {
             get
@@ -292,7 +292,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color MenuTextColor
         {
             get
@@ -308,7 +308,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color SeparatorColor
         {
             get
@@ -324,7 +324,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color SeparatorShadowColor
         {
             get
@@ -341,7 +341,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool SeparatorVisible
         {
             get
@@ -357,7 +357,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.StartIndex)]
+        [Description(Localize.Description.Common.StartIndex)]
         public int StartIndex
         {
             get
@@ -399,7 +399,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Alignment)]
+        [Description(Localize.Description.Common.Alignment)]
         public StringAlignment TextAlignment
         {
             get
@@ -415,7 +415,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -431,7 +431,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get

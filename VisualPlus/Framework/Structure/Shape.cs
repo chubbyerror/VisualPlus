@@ -50,7 +50,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Gradient)]
+        [Description(Localize.Description.Common.ColorGradient)]
         public Gradient DisabledGradient
         {
             get
@@ -82,7 +82,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Gradient)]
+        [Description(Localize.Description.Common.ColorGradient)]
         public Gradient EnabledGradient
         {
             get
@@ -114,7 +114,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Gradient)]
+        [Description(Localize.Description.Common.ColorGradient)]
         public Gradient HoverGradient
         {
             get
@@ -178,7 +178,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Gradient)]
+        [Description(Localize.Description.Common.ColorGradient)]
         public Gradient PressedGradient
         {
             get
