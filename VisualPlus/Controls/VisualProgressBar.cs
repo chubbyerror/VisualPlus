@@ -704,22 +704,55 @@
 
         private void DrawProgressContinuous(Graphics graphics)
         {
+            LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+            graphics.FillPath(backgroundGradientBrush, graphicsDefaultBorderPath);
+
+            graphics.SetClip(graphicsDefaultBorderPath);
+
             LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
             graphics.FillRectangle(progressGradientBrush, 0, 0, (int)ProgressBarWidth, ClientRectangle.Height);
+
+            graphics.ResetClip();
         }
 
         private void DrawProgressMarquee(Graphics graphics)
         {
+            LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+            graphics.FillPath(backgroundGradientBrush, graphicsDefaultBorderPath);
+
+            graphics.SetClip(graphicsDefaultBorderPath);
+
             LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+
+            Rectangle progressRectangle = new Rectangle();
 
             if (barStyle == BarTypes.Horizontal)
             {
-                graphics.FillRectangle(progressGradientBrush, marqueeX, 0, ProgressBarMarqueeWidth, ClientRectangle.Height);
+                progressRectangle = new Rectangle(marqueeX, 0, ProgressBarMarqueeWidth, ClientRectangle.Height);
             }
             else if (barStyle == BarTypes.Vertical)
             {
-                graphics.FillRectangle(progressGradientBrush, 0, marqueeY, ClientRectangle.Width, ClientRectangle.Height);
+                progressRectangle = new Rectangle(0, marqueeY, ClientRectangle.Width, ClientRectangle.Height);
             }
+
+            graphics.FillRectangle(progressGradientBrush, progressRectangle);
+
+            GraphicsPath progressPath = new GraphicsPath();
+            progressPath.AddRectangle(progressRectangle);
+
+            hatchPath = progressPath;
+
+            if (hatchVisible)
+            {
+                HatchBrush hatchBrush = new HatchBrush(hatchStyle, hatchForeColor, hatchBackColor);
+                using (TextureBrush textureBrush = GDI.DrawTextureUsingHatch(hatchBrush))
+                {
+                    textureBrush.ScaleTransform(hatchSize, hatchSize);
+                    graphics.FillPath(textureBrush, hatchPath);
+                }
+            }
+
+            graphics.ResetClip();
         }
 
         /// <summary>Draw styled progressbar.</summary>

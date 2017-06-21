@@ -45,9 +45,9 @@
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
         private Rectangle actionBarBounds;
         private Border border = new Border();
+        private Color buttonBackHoverColor = Settings.DefaultValue.Control.ControlHover.Colors[0];
+        private Color buttonBackPressedColor = Settings.DefaultValue.Control.ControlPressed.Colors[0];
         private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
-        private Color buttonHoverColor = Settings.DefaultValue.Control.ControlHover.Colors[0];
-        private Color buttonPressedColor = Settings.DefaultValue.Control.ControlPressed.Colors[0];
         private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
         private ControlState controlState = ControlState.Normal;
@@ -71,13 +71,9 @@
 
         public VisualForm()
         {
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             FormBorderStyle = FormBorderStyle.None;
             Sizable = true;
-            DoubleBuffered = true;
-
-            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
-
-            Text = "Visual Form";
 
             // Padding-Left: 5 for icon
             Padding = new Padding(5, 0, 0, 0);
@@ -137,6 +133,38 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.ComponentColor)]
+        public Color ButtonBackHoverColor
+        {
+            get
+            {
+                return buttonBackHoverColor;
+            }
+
+            set
+            {
+                buttonBackHoverColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
+        public Color ButtonBackPressedColor
+        {
+            get
+            {
+                return buttonBackPressedColor;
+            }
+
+            set
+            {
+                buttonBackPressedColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.ComponentColor)]
         public Color ButtonColor
         {
             get
@@ -147,38 +175,6 @@
             set
             {
                 buttonColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color ButtonHoverColor
-        {
-            get
-            {
-                return buttonHoverColor;
-            }
-
-            set
-            {
-                buttonHoverColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color ButtonPressedColor
-        {
-            get
-            {
-                return buttonPressedColor;
-            }
-
-            set
-            {
-                buttonPressedColor = value;
                 Invalidate();
             }
         }
@@ -575,41 +571,13 @@
             // Determine whether or not we even should be drawing the buttons.
             bool showMin = MinimizeBox && ControlBox;
             bool showMax = MaximizeBox && ControlBox;
-            SolidBrush hoverBrush = new SolidBrush(buttonHoverColor);
-            SolidBrush downBrush = new SolidBrush(buttonPressedColor);
+            SolidBrush hoverBrush = new SolidBrush(buttonBackHoverColor);
+            SolidBrush downBrush = new SolidBrush(buttonBackPressedColor);
 
             // When MaximizeButton == false, the minimize button will be painted in its place
-            if ((buttonState == ButtonState.MinOver) && showMin)
-            {
-                graphics.FillRectangle(hoverBrush, showMax ? minButtonBounds : maxButtonBounds);
-            }
+            DrawMinimizeOverMaximizeButton(graphics, showMin, showMax, hoverBrush, downBrush);
 
-            if ((buttonState == ButtonState.MinDown) && showMin)
-            {
-                graphics.FillRectangle(downBrush, showMax ? minButtonBounds : maxButtonBounds);
-            }
-
-            if ((buttonState == ButtonState.MaxOver) && showMax)
-            {
-                graphics.FillRectangle(hoverBrush, maxButtonBounds);
-            }
-
-            if ((buttonState == ButtonState.MaxDown) && showMax)
-            {
-                graphics.FillRectangle(downBrush, maxButtonBounds);
-            }
-
-            if ((buttonState == ButtonState.XOver) && ControlBox)
-            {
-                graphics.FillRectangle(hoverBrush, xButtonBounds);
-            }
-
-            if ((buttonState == ButtonState.XDown) && ControlBox)
-            {
-                graphics.FillRectangle(downBrush, xButtonBounds);
-            }
-
-            using (Pen formButtonsPen = new Pen(ButtonColor, 2))
+            using (Pen formButtonsPen = new Pen(buttonColor, 2))
             {
                 // Minimize button.
                 if (showMin)
@@ -660,6 +628,39 @@
         {
             vsImage.Point = new Point(Padding.Left, (statusBarBounds.Height / 2) - (vsImage.Size.Height / 2));
             VisualImage.DrawImage(graphics, vsImage.Border, vsImage.Point, vsImage.Image, vsImage.Size, vsImage.Visible);
+        }
+
+        private void DrawMinimizeOverMaximizeButton(Graphics graphics, bool showMin, bool showMax, SolidBrush hoverBrush, SolidBrush downBrush)
+        {
+            if ((buttonState == ButtonState.MinOver) && showMin)
+            {
+                graphics.FillRectangle(hoverBrush, showMax ? minButtonBounds : maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.MinDown) && showMin)
+            {
+                graphics.FillRectangle(downBrush, showMax ? minButtonBounds : maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.MaxOver) && showMax)
+            {
+                graphics.FillRectangle(hoverBrush, maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.MaxDown) && showMax)
+            {
+                graphics.FillRectangle(downBrush, maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.XOver) && ControlBox)
+            {
+                graphics.FillRectangle(hoverBrush, xButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.XDown) && ControlBox)
+            {
+                graphics.FillRectangle(downBrush, xButtonBounds);
+            }
         }
 
         private void DrawTitle(Graphics graphics)

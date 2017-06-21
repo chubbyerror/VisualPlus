@@ -5,6 +5,7 @@
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Globalization;
 
     using VisualPlus.Framework.GDI;
@@ -123,10 +124,12 @@
         public static void DrawImage(Graphics graphics, Border _border, Point _imagePoint, Image _image, Size _imageSize, bool _visible)
         {
             Rectangle imageRectangle = new Rectangle(_imagePoint, _imageSize);
+            GraphicsPath imagePath = new GraphicsPath();
+            imagePath.AddRectangle(imageRectangle);
 
             if (_border.Visible)
             {
-                GDI.DrawBorder(graphics, imageRectangle.GetGraphicsPath(), _border.Thickness, _border.Color);
+                GDI.DrawBorder(graphics, imagePath, _border.Thickness, _border.Color);
             }
 
             if (_visible)
