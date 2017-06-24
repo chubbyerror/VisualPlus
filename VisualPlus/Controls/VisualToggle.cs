@@ -357,7 +357,7 @@
                 ConfigureStyleManager();
             }
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
 
             // Update button location points
             startPoint = new Point(0 + 2, (ClientRectangle.Height / 2) - (buttonSize.Height / 2));
@@ -383,7 +383,7 @@
 
             DrawToggleType(graphics);
 
-            GraphicsPath buttonPath = GDI.GetBorderShape(buttonRectangle, buttonBorder.Shape, buttonBorder.Rounding);
+            GraphicsPath buttonPath = GDI.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
             graphics.FillPath(buttonGradientBrush, buttonPath);
 
             if (buttonBorder.Visible)
@@ -424,7 +424,7 @@
                 border.HoverColor = borderStyle.HoverColor;
                 border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Type = styleManager.VisualStylesManager.BorderType;
                 border.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 border.Visible = styleManager.VisualStylesManager.BorderVisible;
 
@@ -432,7 +432,7 @@
                 buttonBorder.HoverColor = borderStyle.HoverColor;
                 buttonBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 buttonBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                buttonBorder.Shape = styleManager.VisualStylesManager.BorderShape;
+                buttonBorder.Type = styleManager.VisualStylesManager.BorderType;
                 buttonBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 buttonBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
 
@@ -445,13 +445,13 @@
                 // Load default settings
                 border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 border.Rounding = Settings.DefaultValue.Rounding.ToggleBorder;
-                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Type = Settings.DefaultValue.BorderShape;
                 border.Thickness = Settings.DefaultValue.BorderThickness;
                 border.Visible = Settings.DefaultValue.BorderVisible;
 
                 buttonBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 buttonBorder.Rounding = Settings.DefaultValue.Rounding.ToggleButton;
-                buttonBorder.Shape = Settings.DefaultValue.BorderShape;
+                buttonBorder.Type = Settings.DefaultValue.BorderShape;
                 buttonBorder.Thickness = Settings.DefaultValue.BorderThickness;
                 buttonBorder.Visible = Settings.DefaultValue.BorderVisible;
 

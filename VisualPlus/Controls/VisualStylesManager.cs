@@ -52,7 +52,7 @@
         private int barAmount = Settings.DefaultValue.BarAmount;
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
         private int borderRounding = Settings.DefaultValue.Rounding.Default;
-        private BorderShape borderShape = Settings.DefaultValue.BorderShape;
+        private BorderType borderType = Settings.DefaultValue.BorderShape;
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
         private float hatchSize = Settings.DefaultValue.HatchSize;
@@ -161,16 +161,16 @@
         [DefaultValue(Settings.DefaultValue.BorderShape)]
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.Common.Type)]
-        public BorderShape BorderShape
+        public BorderType BorderType
         {
             get
             {
-                return borderShape;
+                return borderType;
             }
 
             set
             {
-                borderShape = value;
+                borderType = value;
             }
         }
 

@@ -119,6 +119,7 @@
     </Compile>
     <Compile Include="Enums\Alignment.cs" />
     <Compile Include="Enums\ControlState.cs" />
+    <Compile Include="Enums\BorderType.cs" />
     <Compile Include="Framework\Structure\Checkmark.cs" />
     <Compile Include="Framework\Structure\Expander.cs" />
     <Compile Include="Framework\Structure\MouseState.cs" />

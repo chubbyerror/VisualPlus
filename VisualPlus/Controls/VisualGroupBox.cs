@@ -404,9 +404,9 @@
             Rectangle title = ConfigureStyleTitleBox(textArea);
 
             titleBoxRectangle = new Rectangle(title.X, title.Y, title.Width, title.Height);
-            titleBoxPath = GDI.GetBorderShape(titleBoxRectangle, titleBorder.Shape, titleBorder.Rounding);
+            titleBoxPath = GDI.GetBorderShape(titleBoxRectangle, titleBorder.Type, titleBorder.Rounding);
 
-            borderGraphicsPath = GDI.GetBorderShape(group, border.Shape, border.Rounding);
+            borderGraphicsPath = GDI.GetBorderShape(group, border.Type, border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
             graphics.FillPath(new SolidBrush(backgroundColor), borderGraphicsPath);
@@ -518,7 +518,7 @@
                 border.HoverColor = borderStyle.HoverColor;
                 border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Type = styleManager.VisualStylesManager.BorderType;
                 border.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 border.Visible = styleManager.VisualStylesManager.BorderVisible;
 
@@ -533,7 +533,7 @@
                 // Load default settings
                 border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Type = Settings.DefaultValue.BorderShape;
                 border.Thickness = Settings.DefaultValue.BorderThickness;
                 border.Visible = Settings.DefaultValue.BorderVisible;
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;

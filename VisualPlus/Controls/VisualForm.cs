@@ -79,7 +79,7 @@
             Padding = new Padding(5, 0, 0, 0);
 
             border.Thickness = 3;
-            border.Shape = BorderShape.Rectangle;
+            border.Type = BorderType.Rectangle;
 
             // This enables the form to trigger the MouseMove event even when mouse is over another control
             Application.AddMessageFilter(new MouseMessageFilter());

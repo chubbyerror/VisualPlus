@@ -7,37 +7,17 @@
     using System.Drawing;
     using System.Globalization;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Localization;
     using VisualPlus.Styles;
 
     #endregion
 
-    public enum BorderShape
-    {
-        /// <summary>Rectangle shape.</summary>
-        Rectangle,
-
-        /// <summary>Rounded shape.</summary>
-        Rounded
-    }
-
     [TypeConverter(typeof(BorderConverter))]
     public class Border : IBorder
     {
         #region Variables
-
-        private Color color = Settings.DefaultValue.Border.Color;
-        private Color hoverColor = Settings.DefaultValue.Border.HoverColor;
-        private bool hoverVisible = true;
-        private int rounding = Settings.DefaultValue.Rounding.Default;
-        private BorderShape shape = Settings.DefaultValue.BorderShape;
-        private int thickness = Settings.DefaultValue.BorderThickness;
-        private bool visible = true;
-
-        #endregion
-
-        #region Properties
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
@@ -70,6 +50,22 @@
                 hoverColor = value;
             }
         }
+
+        #endregion
+
+        #region Variables
+
+        private Color color = Settings.DefaultValue.Border.Color;
+        private Color hoverColor = Settings.DefaultValue.Border.HoverColor;
+        private bool hoverVisible = true;
+        private int rounding = Settings.DefaultValue.Rounding.Default;
+        private BorderType type = Settings.DefaultValue.BorderShape;
+        private int thickness = Settings.DefaultValue.BorderThickness;
+        private bool visible = true;
+
+        #endregion
+
+        #region Properties
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
@@ -109,16 +105,16 @@
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Border.Shape)]
-        public BorderShape Shape
+        public BorderType Type
         {
             get
             {
-                return shape;
+                return type;
             }
 
             set
             {
-                shape = value;
+                type = value;
             }
         }
 

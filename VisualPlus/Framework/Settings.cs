@@ -35,7 +35,7 @@ namespace VisualPlus.Framework
             public const bool Animation = true;
             public const int BorderThickness = 1;
             public const bool BorderHoverVisible = true;
-            public const BorderShape BorderShape = Structure.BorderShape.Rounded;
+            public const BorderType BorderShape = Enums.BorderType.Rounded;
             public const bool BorderVisible = true;
             public const bool TextVisible = true;
             public const float ProgressSize = 5F;

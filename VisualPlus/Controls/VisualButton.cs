@@ -371,7 +371,7 @@
             iconGraphicsPath = new GraphicsPath();
             iconGraphicsPath.AddRectangle(imageRectangle);
             iconGraphicsPath.CloseAllFigures();
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, buttonShape.Border.Shape, buttonShape.Border.Rounding);
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, buttonShape.Border.Type, buttonShape.Border.Rounding);
         }
 
         private void ConfigureStyleManager()
@@ -388,7 +388,7 @@
                 buttonShape.Border.HoverColor = borderStyle.HoverColor;
                 buttonShape.Border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 buttonShape.Border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                buttonShape.Border.Shape = styleManager.VisualStylesManager.BorderShape;
+                buttonShape.Border.Type = styleManager.VisualStylesManager.BorderType;
                 buttonShape.Border.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 buttonShape.Border.Visible = styleManager.VisualStylesManager.BorderVisible;
                 textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
@@ -411,7 +411,7 @@
                 animation = Settings.DefaultValue.Animation;
                 buttonShape.Border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 buttonShape.Border.Rounding = Settings.DefaultValue.Rounding.Default;
-                buttonShape.Border.Shape = Settings.DefaultValue.BorderShape;
+                buttonShape.Border.Type = Settings.DefaultValue.BorderShape;
                 buttonShape.Border.Thickness = Settings.DefaultValue.BorderThickness;
                 buttonShape.Border.Visible = Settings.DefaultValue.BorderVisible;
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;

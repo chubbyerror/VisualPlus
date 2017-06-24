@@ -596,7 +596,7 @@
                 border.HoverColor = borderStyle.HoverColor;
                 border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Type = styleManager.VisualStylesManager.BorderType;
                 border.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 border.Visible = styleManager.VisualStylesManager.BorderVisible;
                 Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
@@ -609,7 +609,7 @@
                 // Load default settings
                 border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Type = Settings.DefaultValue.BorderShape;
                 border.Thickness = Settings.DefaultValue.BorderThickness;
                 border.Visible = Settings.DefaultValue.BorderVisible;
                 Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
@@ -670,7 +670,7 @@
                 Height = textBoxHeight;
             }
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
             buttonPath = new GraphicsPath();

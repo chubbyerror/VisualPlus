@@ -284,7 +284,7 @@
 
                 case ShapeType.Rectangle:
                     {
-                        controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+                        controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
                         graphics.FillPath(gradientBrush, controlGraphicsPath);
 
                         if (border.Visible)
@@ -338,7 +338,7 @@
                 border.HoverColor = borderStyle.HoverColor;
                 border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Type = styleManager.VisualStylesManager.BorderType;
                 border.Visible = styleManager.VisualStylesManager.BorderVisible;
 
                 background.Colors = controlStyle.ControlEnabled.Colors;
@@ -350,7 +350,7 @@
                 animation = Settings.DefaultValue.Animation;
                 border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Type = Settings.DefaultValue.BorderShape;
                 border.Thickness = Settings.DefaultValue.BorderThickness;
                 border.Visible = Settings.DefaultValue.BorderVisible;
             }

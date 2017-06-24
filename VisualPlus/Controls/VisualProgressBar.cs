@@ -537,7 +537,7 @@
                 border.HoverColor = borderStyle.HoverColor;
                 border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Type = styleManager.VisualStylesManager.BorderType;
                 border.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 border.Visible = styleManager.VisualStylesManager.BorderVisible;
                 Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
@@ -550,7 +550,7 @@
                 // Load default settings
                 border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Type = Settings.DefaultValue.BorderShape;
                 border.Thickness = Settings.DefaultValue.BorderThickness;
                 border.Visible = Settings.DefaultValue.BorderVisible;
                 Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
@@ -574,7 +574,7 @@
 
         private void DrawDefaultProgress(BarTypes style, Graphics graphics)
         {
-            graphicsDefaultBorderPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+            graphicsDefaultBorderPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
             GraphicsPath progressPath = null;
 
             if (Style == ProgressBarStyle.Marquee)
@@ -609,7 +609,7 @@
                         {
                             i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Width - 2));
 
-                            if (border.Shape == BorderShape.Rectangle)
+                            if (border.Type == BorderType.Rectangle)
                             {
                                 progressPath = new GraphicsPath();
                                 progressPath.AddRectangle(new Rectangle(0, 0, i1 + 1, Height));
@@ -626,7 +626,7 @@
                         {
                             i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Height - 2));
 
-                            if (border.Shape == BorderShape.Rectangle)
+                            if (border.Type == BorderType.Rectangle)
                             {
                                 progressPath = new GraphicsPath();
                                 progressPath.AddRectangle(new Rectangle(0, Height - i1 - 2, Width, i1));
@@ -777,7 +777,7 @@
                     case BarTypes.Bars:
                         {
                             // Create bars
-                            if (border.Shape == BorderShape.Rounded)
+                            if (border.Type == BorderType.Rounded)
                             {
                                 // Rounded rectangle - makes it possible to make circles with full roundness.
                                 barStyle.AddPath(
@@ -797,13 +797,13 @@
                     case BarTypes.Horizontal:
                         {
                             // Default progress bar
-                            barStyle = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+                            barStyle = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
                             break;
                         }
 
                     case BarTypes.Vertical:
                         {
-                            barStyle = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+                            barStyle = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
                             break;
                         }
 

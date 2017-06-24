@@ -1144,7 +1144,7 @@
                 trackBarBorder.HoverColor = borderStyle.HoverColor;
                 trackBarBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 trackBarBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                trackBarBorder.Shape = styleManager.VisualStylesManager.BorderShape;
+                trackBarBorder.Type = styleManager.VisualStylesManager.BorderType;
                 trackBarBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 trackBarBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
 
@@ -1152,7 +1152,7 @@
                 buttonBorder.HoverColor = borderStyle.HoverColor;
                 buttonBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 buttonBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                buttonBorder.Shape = styleManager.VisualStylesManager.BorderShape;
+                buttonBorder.Type = styleManager.VisualStylesManager.BorderType;
                 buttonBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 buttonBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
 
@@ -1166,13 +1166,13 @@
                 // Load default settings
                 trackBarBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 trackBarBorder.Rounding = Settings.DefaultValue.Rounding.Default;
-                trackBarBorder.Shape = Settings.DefaultValue.BorderShape;
+                trackBarBorder.Type = Settings.DefaultValue.BorderShape;
                 trackBarBorder.Thickness = Settings.DefaultValue.BorderThickness;
                 trackBarBorder.Visible = Settings.DefaultValue.BorderVisible;
 
                 buttonBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 buttonBorder.Rounding = Settings.DefaultValue.Rounding.Default;
-                buttonBorder.Shape = Settings.DefaultValue.BorderShape;
+                buttonBorder.Type = Settings.DefaultValue.BorderShape;
                 buttonBorder.Thickness = Settings.DefaultValue.BorderThickness;
                 buttonBorder.Visible = Settings.DefaultValue.BorderVisible;
 
@@ -1455,7 +1455,7 @@
             }
 
             trackBarRectangle = new Rectangle(trackLocation, trackSize);
-            trackBarPath = GDI.GetBorderShape(trackBarRectangle, trackBarBorder.Shape, trackBarBorder.Rounding);
+            trackBarPath = GDI.GetBorderShape(trackBarRectangle, trackBarBorder.Type, trackBarBorder.Rounding);
 
             LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
             graphics.FillPath(gradientBrush, trackBarPath);
@@ -1518,7 +1518,7 @@
             if (buttonVisible)
             {
                 LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
-                buttonPath = GDI.GetBorderShape(buttonRectangle, buttonBorder.Shape, buttonBorder.Rounding);
+                buttonPath = GDI.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
                 graphics.FillPath(gradientBrush, buttonPath);
 
                 if (buttonBorder.Visible)
@@ -1561,7 +1561,7 @@
                         }
 
                         progressRectangle = new Rectangle(progressLocation, progressSize);
-                        progressPath = GDI.GetBorderShape(progressRectangle, trackBarBorder.Shape, trackBarBorder.Rounding);
+                        progressPath = GDI.GetBorderShape(progressRectangle, trackBarBorder.Type, trackBarBorder.Rounding);
                     }
 
                     break;
@@ -1584,7 +1584,7 @@
 
                         progressSize = new Size(Width, Height + textAreaSize.Height);
                         progressRectangle = new Rectangle(progressLocation, progressSize);
-                        progressPath = GDI.GetBorderShape(progressRectangle, trackBarBorder.Shape, trackBarBorder.Rounding);
+                        progressPath = GDI.GetBorderShape(progressRectangle, trackBarBorder.Type, trackBarBorder.Rounding);
                     }
 
                     break;

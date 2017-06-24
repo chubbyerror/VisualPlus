@@ -72,7 +72,7 @@
             MouseLocation = new Point(-1, -1);
             controlState = ControlState.Normal;
 
-            columnBorder.Shape = BorderShape.Rectangle;
+            columnBorder.Type = BorderType.Rectangle;
             columnBorder.HoverVisible = false;
 
             ConfigureAnimation();

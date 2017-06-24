@@ -71,7 +71,7 @@
             checkMark.Style = CheckType.Character;
             checkMark.Location = new Point(-1, 5);
             checkMark.ImageSize = new Size(19, 16);
-            checkMark.Shape.Shape = BorderShape.Rounded;
+            checkMark.Shape.Type = BorderType.Rounded;
             checkMark.ShapeSize = new Size(8, 8);
             checkMark.Shape.Rounding = 2;
             boxShape.Size = new Size(14, 14);
@@ -338,10 +338,10 @@
         private void ConfigureComponents()
         {
             boxPoint = new Point(0, (ClientRectangle.Height / 2) - (boxShape.Size.Height / 2));
-            boxPath = GDI.GetBorderShape(boxRectangle, boxShape.Border.Shape, boxShape.Border.Rounding);
+            boxPath = GDI.GetBorderShape(boxRectangle, boxShape.Border.Type, boxShape.Border.Rounding);
             boxRectangle = new Rectangle(boxPoint, boxShape.Size);
 
-            checkPath = GDI.GetBorderShape(checkRectangle, checkMark.Shape.Shape, checkMark.Shape.Rounding);
+            checkPath = GDI.GetBorderShape(checkRectangle, checkMark.Shape.Type, checkMark.Shape.Rounding);
             checkRectangle = new Rectangle(checkMark.Location, checkMark.ShapeSize);
 
             var boxGradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
@@ -386,7 +386,7 @@
                 boxShape.Border.HoverColor = borderStyle.HoverColor;
                 boxShape.Border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 boxShape.Border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                boxShape.Border.Shape = styleManager.VisualStylesManager.BorderShape;
+                boxShape.Border.Type = styleManager.VisualStylesManager.BorderType;
                 boxShape.Border.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 boxShape.Border.Visible = styleManager.VisualStylesManager.BorderVisible;
                 textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
@@ -410,7 +410,7 @@
                 animation = Settings.DefaultValue.Animation;
                 boxShape.Border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
                 boxShape.Border.Rounding = Settings.DefaultValue.Rounding.Default;
-                boxShape.Border.Shape = Settings.DefaultValue.BorderShape;
+                boxShape.Border.Type = Settings.DefaultValue.BorderShape;
                 boxShape.Border.Thickness = Settings.DefaultValue.BorderThickness;
                 boxShape.Border.Visible = Settings.DefaultValue.BorderVisible;
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;

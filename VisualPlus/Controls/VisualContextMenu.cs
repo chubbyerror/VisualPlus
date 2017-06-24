@@ -9,6 +9,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -253,7 +254,7 @@
                 border.HoverColor = borderStyle.HoverColor;
                 border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
                 border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Type = styleManager.VisualStylesManager.BorderType;
                 border.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 border.Visible = styleManager.VisualStylesManager.BorderVisible;
 
@@ -272,7 +273,7 @@
             {
                 // Load default settings
                 border.HoverVisible = false;
-                border.Shape = BorderShape.Rectangle;
+                border.Type = BorderType.Rectangle;
 
                 Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
                 foreColor = Settings.DefaultValue.Font.ForeColor;

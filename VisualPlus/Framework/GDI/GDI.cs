@@ -225,8 +225,7 @@
                 DrawBorder(graphics, controlPath, borderThickness, borderColor);
             }
         }
-
-
+        
         /// <summary>Handles and draws a border on the control depending on it's current focus.</summary>
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="controlState">The control state.</param>
@@ -447,17 +446,17 @@
 
         /// <summary>Draws the border shape.</summary>
         /// <param name="rectangle">The rectangle.</param>
-        /// <param name="borderShape">The border Shape.</param>
+        /// <param name="borderType">The border Shape.</param>
         /// <param name="borderRounding">The border Rounding.</param>
         /// <returns>The <see cref="GraphicsPath" />.</returns>
-        public static GraphicsPath GetBorderShape(Rectangle rectangle, BorderShape borderShape, int borderRounding)
+        public static GraphicsPath GetBorderShape(Rectangle rectangle, BorderType borderType, int borderRounding)
         {
             Rectangle newRectangle = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width - 1, rectangle.Height - 1);
             GraphicsPath newShape = new GraphicsPath();
 
-            switch (borderShape)
+            switch (borderType)
             {
-                case BorderShape.Rectangle:
+                case BorderType.Rectangle:
                     {
                         newShape = new GraphicsPath();
                         newShape.AddRectangle(newRectangle);
@@ -465,7 +464,7 @@
                         break;
                     }
 
-                case BorderShape.Rounded:
+                case BorderType.Rounded:
                     {
                         newShape = new GraphicsPath();
                         newShape.AddArc(newRectangle.X, newRectangle.Y, borderRounding, borderRounding, 180.0F, 90.0F);
