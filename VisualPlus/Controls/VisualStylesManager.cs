@@ -16,7 +16,7 @@
 
     #endregion
 
-    /// <summary>The visual Toggle.</summary>
+    [ToolboxItem(false)]
     [ToolboxBitmap(typeof(Component))]
     [DefaultEvent("StyleChanged")]
     [Description("The visual style manager.")]
