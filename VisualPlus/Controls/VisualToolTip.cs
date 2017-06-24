@@ -13,6 +13,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Properties;
 
     #endregion
 
@@ -26,36 +27,29 @@
     {
         #region Variables
 
-        private readonly Color[] backgroundColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Control.Background(0)),
-                Settings.DefaultValue.Control.Background(0),
-                ControlPaint.Light(Settings.DefaultValue.Control.Background(0))
-            };
-
         private bool autoSize = true;
         private Gradient backgroundGradient = new Gradient();
         private Border border = new Border();
-        private Font font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+        private Font font = Settings.DefaultValue.DefaultFont;
         private Color foreColor = Settings.DefaultValue.Font.ForeColor;
-        private Image icon;
+        private Image icon = Resources.Icon;
         private bool iconBorder;
         private GraphicsPath iconGraphicsPath;
         private Point iconPoint = new Point(0, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-        private Color lineColor = Settings.DefaultValue.Border.Color;
+        private Color lineColor = Settings.DefaultValue.Control.Line;
         private Padding padding = new Padding(4, 4, 4, 4);
         private Rectangle separator;
         private int separatorThickness = 1;
         private int spacing = 2;
-        private string text;
+        private string text = "Enter your custom text here.";
         private Point textPoint;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private bool textShadow;
-        private string title;
+        private string title = "Title";
         private Color titleColor = Color.Gray;
-        private Font titleFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+        private Font titleFont = Settings.DefaultValue.DefaultFont;
         private Point titlePoint;
         private Size toolTipSize = new Size(100, 40);
         private ToolTipType toolTipType = ToolTipType.Default;
@@ -68,10 +62,8 @@
 
         public VisualToolTip()
         {
-            float[] gradientPosition = { 0, 1 / 2f, 1 };
-
-            backgroundGradient.Colors = backgroundColor;
-            backgroundGradient.Positions = gradientPosition;
+            backgroundGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
+            backgroundGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
 
             IsBalloon = false;
             OwnerDraw = true;
