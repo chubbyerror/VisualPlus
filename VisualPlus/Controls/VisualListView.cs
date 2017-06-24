@@ -28,9 +28,10 @@
     {
         #region Variables
 
+        private readonly MouseState mouseState;
+
         private Border columnBorder = new Border();
         private Color columnHeaderBackground = Settings.DefaultValue.Control.FlatButtonDisabled;
-        private ControlState controlState;
         private bool drawFocusRectangle;
         private bool drawStandardHeader;
         private Font headerFont = new Font("Helvetica", 10, FontStyle.Regular);
@@ -49,6 +50,8 @@
         {
             SetStyle(
                 ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
+
+            mouseState = new MouseState(this);
 
             View = View.Details;
             MultiSelect = false;
@@ -70,46 +73,11 @@
             UpdateStyles();
             Font = new Font(Settings.DefaultValue.Font.FontFamily, Font.Size);
             MouseLocation = new Point(-1, -1);
-            controlState = ControlState.Normal;
 
             columnBorder.Type = BorderType.Rectangle;
             columnBorder.HoverVisible = false;
 
             ConfigureAnimation();
-        }
-
-        private void ConfigureAnimation()
-        {
-            MouseEnter += delegate
-            {
-                controlState = ControlState.Hover;
-            };
-            MouseLeave += delegate
-            {
-                controlState = ControlState.Normal;
-                MouseLocation = new Point(-1, -1);
-                HoveredItem = null;
-                Invalidate();
-            };
-
-            MouseDown += delegate
-            {
-                controlState = ControlState.Down;
-            };
-            MouseUp += delegate
-            {
-                controlState = ControlState.Hover;
-            };
-            MouseMove += delegate (object sender, MouseEventArgs args)
-            {
-                MouseLocation = args.Location;
-                ListViewItem currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
-                if (HoveredItem != currentHoveredItem)
-                {
-                    HoveredItem = currentHoveredItem;
-                    Invalidate();
-                }
-            };
         }
 
         #endregion
@@ -264,6 +232,21 @@
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
+
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
         public bool StandardHeader
@@ -328,7 +311,7 @@
             if (columnBorder.Visible)
             {
                 GDI.DrawBorder(graphics, columnHeaderPath, columnBorder.Thickness, columnBorder.Color);
-                GDI.DrawBorderType(graphics, controlState, columnHeaderPath, columnBorder.Thickness, columnBorder.Color, columnBorder.HoverColor, columnBorder.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, columnHeaderPath, columnBorder.Thickness, columnBorder.Color, columnBorder.HoverColor, columnBorder.HoverVisible);
             }
 
             StringFormat stringFormat = new StringFormat
@@ -356,7 +339,7 @@
                 // selected background
                 graphics.FillRectangle(new SolidBrush(itemSelected), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
             }
-            else if (e.Bounds.Contains(MouseLocation) && (controlState == ControlState.Hover))
+            else if (e.Bounds.Contains(MouseLocation) && (mouseState.State == MouseStates.Hover))
             {
                 // hover background
                 graphics.FillRectangle(new SolidBrush(itemHover), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
@@ -446,14 +429,14 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -465,6 +448,40 @@
                     Trimming = StringTrimming.EllipsisCharacter,
                     Alignment = StringAlignment.Near,
                     LineAlignment = StringAlignment.Center
+                };
+        }
+
+        private void ConfigureAnimation()
+        {
+            MouseEnter += delegate
+                {
+                    mouseState.State = MouseStates.Hover;
+                };
+            MouseLeave += delegate
+                {
+                    mouseState.State = MouseStates.Normal;
+                    MouseLocation = new Point(-1, -1);
+                    HoveredItem = null;
+                    Invalidate();
+                };
+
+            MouseDown += delegate
+                {
+                    mouseState.State = MouseStates.Down;
+                };
+            MouseUp += delegate
+                {
+                    mouseState.State = MouseStates.Hover;
+                };
+            MouseMove += delegate(object sender, MouseEventArgs args)
+                {
+                    MouseLocation = args.Location;
+                    ListViewItem currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
+                    if (HoveredItem != currentHoveredItem)
+                    {
+                        HoveredItem = currentHoveredItem;
+                        Invalidate();
+                    }
                 };
         }
 

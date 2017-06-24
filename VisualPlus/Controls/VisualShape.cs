@@ -19,13 +19,13 @@
 
     public enum ShapeType
     {
-        /// <summary>TODO The circle.</summary>
+        /// <summary>The circle.</summary>
         Circle,
 
-        /// <summary>TODO The rectangle.</summary>
+        /// <summary>The rectangle.</summary>
         Rectangle,
 
-        /// <summary>TODO The triangle.</summary>
+        /// <summary>The triangle.</summary>
         Triangle
     }
 
@@ -44,7 +44,6 @@
         private Gradient background = new Gradient();
         private Border border = new Border();
         private GraphicsPath controlGraphicsPath;
-        private ControlState controlState = ControlState.Normal;
         private VFXManager effectsManager;
         private VFXManager hoverEffectsManager;
         private int rotation;
@@ -137,6 +136,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Behavior)]
         [Description("The type of shape.")]
         public ShapeType ShapeForm
@@ -213,13 +227,13 @@
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -276,7 +290,7 @@
 
                         if (border.Visible)
                         {
-                            GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                            GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
                         }
 
                         break;
@@ -289,7 +303,7 @@
 
                         if (border.Visible)
                         {
-                            GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                            GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
                         }
 
                         break;
@@ -316,7 +330,7 @@
 
                         if (border.Visible)
                         {
-                            GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                            GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
                         }
 
                         break;

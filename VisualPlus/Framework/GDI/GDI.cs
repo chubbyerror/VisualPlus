@@ -226,26 +226,6 @@
             }
         }
         
-        /// <summary>Handles and draws a border on the control depending on it's current focus.</summary>
-        /// <param name="graphics">Graphics controller.</param>
-        /// <param name="controlState">The control state.</param>
-        /// <param name="controlPath">The border path.</param>
-        /// <param name="borderThickness">The border size.</param>
-        /// <param name="borderColor">Normal border color.</param>
-        /// <param name="borderHoverColor">Hover border color.</param>
-        /// <param name="borderHoverVisible">Hover visible.</param>
-        public static void DrawBorderType(Graphics graphics, ControlState controlState, GraphicsPath controlPath, float borderThickness, Color borderColor, Color borderHoverColor, bool borderHoverVisible)
-        {
-            if ((controlState == ControlState.Hover) && borderHoverVisible)
-            {
-                DrawBorder(graphics, controlPath, borderThickness, borderHoverColor);
-            }
-            else
-            {
-                DrawBorder(graphics, controlPath, borderThickness, borderColor);
-            }
-        }
-
         /// <summary>Draws the rounded rectangle from specific values.</summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>

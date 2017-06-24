@@ -2,7 +2,6 @@
 {
     #region Namespace
 
-    using System;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
@@ -29,6 +28,8 @@
     {
         #region Variables
 
+        private readonly MouseState mouseState;
+
         private bool animation;
         private Image backgroundImage;
         private Gradient boxGradient = new Gradient();
@@ -45,7 +46,6 @@
         private Checkmark checkMark = new Checkmark();
         private GraphicsPath checkPath;
         private Rectangle checkRectangle;
-        private ControlState controlState = ControlState.Normal;
         private Color foreColor;
         private Point mouseLocation = new Point(0, 0);
         private VFXManager rippleEffectsManager;
@@ -66,8 +66,11 @@
 
             Cursor = Cursors.Hand;
             Width = 132;
+
+            mouseState = new MouseState(this);
+
             UpdateStyles();
-            
+
             checkMark.Style = CheckType.Character;
             checkMark.Location = new Point(-1, 5);
             checkMark.ImageSize = new Size(19, 16);
@@ -177,6 +180,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
+
         [TypeConverter(typeof(StyleManagerConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
@@ -239,19 +257,19 @@
                 return;
             }
 
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             MouseEnter += (sender, args) =>
                 {
-                    controlState = ControlState.Hover;
+                    mouseState.State = MouseStates.Hover;
                 };
             MouseLeave += (sender, args) =>
                 {
                     mouseLocation = new Point(-1, -1);
-                    controlState = ControlState.Normal;
+                    mouseState.State = MouseStates.Normal;
                 };
             MouseDown += (sender, args) =>
                 {
-                    controlState = ControlState.Down;
+                    mouseState.State = MouseStates.Down;
 
                     if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(mouseLocation, boxRectangle))
                     {
@@ -261,7 +279,7 @@
                 };
             MouseUp += (sender, args) =>
                 {
-                    controlState = ControlState.Hover;
+                    mouseState.State = MouseStates.Hover;
                     rippleEffectsManager.SecondaryIncrement = 0.08;
                 };
             MouseMove += (sender, args) =>
@@ -269,20 +287,6 @@
                     mouseLocation = args.Location;
                     Cursor = GDI.IsMouseInBounds(mouseLocation, boxRectangle) ? Cursors.Hand : Cursors.Default;
                 };
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
-            Invalidate();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
-            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -493,7 +497,7 @@
 
             if (boxShape.Border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, boxPath, boxShape.Border.Thickness, boxShape.Border.Color, boxShape.Border.HoverColor, boxShape.Border.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, boxPath, boxShape.Border.Thickness, boxShape.Border.Color, boxShape.Border.HoverColor, boxShape.Border.HoverVisible);
             }
         }
 

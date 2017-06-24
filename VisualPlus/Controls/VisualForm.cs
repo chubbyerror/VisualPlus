@@ -29,6 +29,21 @@
     public class VisualForm : Form
     {
         #region Variables
+        private readonly MouseState mouseState;
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
 
         private readonly Dictionary<int, int> _resizingLocationsToCmd = new Dictionary<int, int>
             {
@@ -50,7 +65,7 @@
         private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
-        private ControlState controlState = ControlState.Normal;
+        // private ControlState controlState = ControlState.Normal;
         private bool headerMouseDown;
         private Rectangle maxButtonBounds;
         private bool maximized;
@@ -74,7 +89,7 @@
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             FormBorderStyle = FormBorderStyle.None;
             Sizable = true;
-
+            mouseState = new MouseState(this);
             // Padding-Left: 5 for icon
             Padding = new Padding(5, 0, 0, 0);
 
@@ -323,7 +338,7 @@
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
@@ -337,7 +352,7 @@
             }
 
             buttonState = ButtonState.None;
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -562,7 +577,7 @@
                 GraphicsPath clientPath = new GraphicsPath();
                 clientPath.AddRectangle(ClientRectangle);
 
-                GDI.DrawBorderType(graphics, controlState, clientPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, clientPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
         }
 

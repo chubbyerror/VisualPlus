@@ -11,7 +11,6 @@
     using System.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
@@ -282,6 +281,8 @@
         private static readonly object EventSelectionSizeChanged = new object();
         private static readonly object EventSmallChangeChanged = new object();
         private readonly Color buttonColor = Settings.DefaultValue.Control.ControlEnabled.Colors[0];
+
+        private readonly MouseState mouseState;
         private LinearGradientBrush _blackBottomGradient;
         private Bitmap _canvas;
         private Graphics _graphicsBuffer;
@@ -293,7 +294,6 @@
         private Color color;
         private HslColorManager colorManagement;
         private int colorStep;
-        private ControlState controlState = ControlState.Normal;
         private bool drag;
         private bool drawFocusRectangle;
         private int largeChange;
@@ -312,6 +312,8 @@
         public VisualColorPicker()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Selectable | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick | ControlStyles.SupportsTransparentBackColor, true);
+
+            mouseState = new MouseState(this);
 
             Color = Color.Black;
             ColorStep = 4;
@@ -500,6 +502,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
+
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
@@ -660,8 +677,8 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
 
+            // controlState = Mouste.Hover;
             switch (pickType)
             {
                 case PickerType.Rectangle:
@@ -680,8 +697,8 @@
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
 
+            // controlState = ControlState.Normal;
             switch (pickType)
             {
                 case PickerType.Rectangle:
@@ -792,7 +809,7 @@
 
             if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             // Draws the button
@@ -944,7 +961,7 @@
             // Draw border
             if (pickerBorder.Visible)
             {
-                GDI.DrawBorderType(e.Graphics, controlState, buttonGraphicsPath, pickerBorder.Thickness, pickerBorder.Color, pickerBorder.HoverColor, pickerBorder.HoverVisible);
+                GDI.DrawBorderType(e.Graphics, mouseState.State, buttonGraphicsPath, pickerBorder.Thickness, pickerBorder.Color, pickerBorder.HoverColor, pickerBorder.HoverVisible);
             }
 
             if (Focused && includeFocus)

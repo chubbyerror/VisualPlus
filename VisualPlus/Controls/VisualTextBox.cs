@@ -9,7 +9,6 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
@@ -36,6 +35,8 @@
 
         #region Variables
 
+        private readonly MouseState mouseState;
+
         private Color backgroundColor;
         private Border border = new Border();
         private Border buttonBorder = new Border();
@@ -47,10 +48,8 @@
         private int buttonWidth = 19;
         private Color controlDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private GraphicsPath controlGraphicsPath;
-        private ControlState controlState = ControlState.Normal;
         private Color foreColor;
         private Size iconSize = new Size(13, 13);
-
         private StyleManager styleManager = new StyleManager();
         private int textBoxHeight = 20;
         private Color textDisabledColor;
@@ -70,6 +69,8 @@
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
+
+            mouseState = new MouseState(this);
 
             BorderStyle = BorderStyle.None;
             AutoSize = false;
@@ -260,6 +261,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
+
         [TypeConverter(typeof(StyleManagerConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
@@ -351,7 +367,7 @@
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
 
             if (watermark.Visible)
@@ -403,7 +419,7 @@
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
 
             if (watermark.Visible)
@@ -506,7 +522,7 @@
 
                 if (buttonBorder.Visible)
                 {
-                    GDI.DrawBorderType(graphics, controlState, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
+                    GDI.DrawBorderType(graphics, mouseState.State, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
                 }
 
                 TextBoxObject.Width = buttonRectangle.X - 10;
@@ -521,7 +537,7 @@
             // Draw border
             if (border.Visible)
             {
-                if ((controlState == ControlState.Hover) && border.HoverVisible)
+                if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
                 {
                     GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
                 }

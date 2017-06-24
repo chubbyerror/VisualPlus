@@ -30,6 +30,8 @@
     {
         #region Variables
 
+        private readonly MouseState mouseState;
+
         private Border border = new Border();
         private Color buttonColor;
         private Alignment.Horizontal buttonHorizontal = Alignment.Horizontal.Right;
@@ -39,7 +41,6 @@
         private Gradient controlDisabledGradient = new Gradient();
         private Gradient controlGradient = new Gradient();
         private GraphicsPath controlGraphicsPath;
-        private ControlState controlState = ControlState.Normal;
         private Color foreColor;
         private Border itemBorder = new Border();
         private Color menuItemHover;
@@ -69,6 +70,9 @@
 
             SetStyle((ControlStyles)139286, true);
             SetStyle(ControlStyles.Selectable, false);
+
+            mouseState = new MouseState(this);
+
             DrawMode = DrawMode.OwnerDrawFixed;
             DropDownStyle = ComboBoxStyle.DropDownList;
             Size = new Size(135, 26);
@@ -308,6 +312,21 @@
         }
 
         [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color SeparatorColor
         {
@@ -509,21 +528,7 @@
             SuspendLayout();
             Update();
             ResumeLayout();
-            controlState = ControlState.Normal;
-            Invalidate();
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
-            Invalidate();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -560,7 +565,7 @@
 
             if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             Point textBoxPoint;

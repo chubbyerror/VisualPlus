@@ -36,12 +36,12 @@
 
         #region Variables
 
+        private readonly MouseState mouseState;
         private Gradient backgroundGradient = new Gradient();
         private Point barLocation = new Point(0, 0);
         private Point barSize = new Point(15, 15);
         private BarTypes barStyle = BarTypes.Horizontal;
         private Border border = new Border();
-        private ControlState controlState = ControlState.Normal;
         private Color foreColor;
         private Point[] gradientPoints;
         private GraphicsPath graphicsDefaultBorderPath;
@@ -74,6 +74,7 @@
                 ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
+            mouseState = new MouseState(this);
             Maximum = 100;
 
             Size = minimumSize;
@@ -312,6 +313,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
+
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.Common.Visible)]
@@ -450,14 +466,14 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -671,7 +687,7 @@
             // Draw border
             if (border.Visible)
             {
-                if ((controlState == ControlState.Hover) && border.HoverVisible)
+                if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
                 {
                     GDI.DrawBorder(graphics, graphicsDefaultBorderPath, border.Thickness, border.HoverColor);
                 }
@@ -832,7 +848,7 @@
                 // Draw border
                 if (border.Visible)
                 {
-                    if ((controlState == ControlState.Hover) && border.HoverVisible)
+                    if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
                     {
                         GDI.DrawBorder(graphics, barStyle, border.Thickness, border.HoverColor);
                     }

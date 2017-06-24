@@ -11,7 +11,6 @@
     using System.Linq;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Structure;
@@ -28,30 +27,13 @@
     {
         #region Variables
 
-        private readonly Color[] tabHover =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Tab.TabSelected),
-                Settings.DefaultValue.Tab.TabSelected
-            };
-
-        private readonly Color[] tabNormal =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Tab.TabEnabled),
-                Settings.DefaultValue.Tab.TabEnabled
-            };
-
-        private readonly Color[] tabSelected =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Tab.TabSelected),
-                Settings.DefaultValue.Tab.TabSelected
-            };
+        private readonly MouseState mouseState;
 
         private TabAlignment alignment = TabAlignment.Top;
         private bool arrowSelectorVisible = true;
         private int arrowSpacing = 10;
         private int arrowThickness = 5;
         private Color backgroundColor = Settings.DefaultValue.Control.Background(3);
-        private ControlState controlState = ControlState.Normal;
         private Gradient hover = new Gradient();
         private Size itemSize = new Size(100, 25);
         private StringAlignment lineAlignment = StringAlignment.Near;
@@ -90,6 +72,7 @@
                 true);
 
             UpdateStyles();
+            mouseState = new MouseState(this);
 
             Size = new Size(320, 160);
             MinimumSize = new Size(144, 85);
@@ -98,6 +81,24 @@
             ItemSize = itemSize;
 
             float[] gradientPosition = { 0, 1 };
+
+            Color[] tabHover =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Tab.TabSelected),
+                    Settings.DefaultValue.Tab.TabSelected
+                };
+
+            Color[] tabNormal =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Tab.TabEnabled),
+                    Settings.DefaultValue.Tab.TabEnabled
+                };
+
+            Color[] tabSelected =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Tab.TabSelected),
+                    Settings.DefaultValue.Tab.TabSelected
+                };
 
             normal.Colors = tabNormal;
             normal.Positions = gradientPosition;
@@ -278,6 +279,21 @@
             set
             {
                 lineAlignment = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
                 Invalidate();
             }
         }
@@ -613,13 +629,13 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             if (TabPages.Cast<TabPage>().Any(Tab => Tab.DisplayRectangle.Contains(mouseLocation)))
             {
                 Invalidate();
@@ -688,7 +704,7 @@
                     {
                         GraphicsPath borderPath = new GraphicsPath();
                         borderPath.AddRectangle(tabPageRectangle);
-                        GDI.DrawBorderType(graphics, controlState, borderPath, tabPageBorder.Thickness, tabPageBorder.Color, tabPageBorder.HoverColor, tabPageBorder.HoverVisible);
+                        GDI.DrawBorderType(graphics, mouseState.State, borderPath, tabPageBorder.Thickness, tabPageBorder.Color, tabPageBorder.HoverColor, tabPageBorder.HoverVisible);
                     }
 
                     if (arrowSelectorVisible)
@@ -715,7 +731,7 @@
                     // Draw other TabPages
                     graphics.FillRectangle(normalBrush, tabPageRectangle);
 
-                    if ((controlState == ControlState.Hover) && tabPageRectangle.Contains(mouseLocation))
+                    if ((mouseState.State == MouseStates.Hover) && tabPageRectangle.Contains(mouseLocation))
                     {
                         Cursor = Cursors.Hand;
 
@@ -737,7 +753,7 @@
                         {
                             GraphicsPath borderPath = new GraphicsPath();
                             borderPath.AddRectangle(tabPageRectangle);
-                            GDI.DrawBorderType(graphics, controlState, borderPath, tabPageBorder.Thickness, tabPageBorder.Color, tabPageBorder.HoverColor, tabPageBorder.HoverVisible);
+                            GDI.DrawBorderType(graphics, mouseState.State, borderPath, tabPageBorder.Thickness, tabPageBorder.Color, tabPageBorder.HoverColor, tabPageBorder.HoverVisible);
                         }
                     }
 

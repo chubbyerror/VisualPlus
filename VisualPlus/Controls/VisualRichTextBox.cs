@@ -8,7 +8,6 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
@@ -34,11 +33,12 @@
 
         #region Variables
 
+        private readonly MouseState mouseState;
+
         private Color backgroundColor;
         private Border border = new Border();
         private Color controlDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private GraphicsPath controlGraphicsPath;
-        private ControlState controlState = ControlState.Normal;
         private Color foreColor;
         private StyleManager styleManager = new StyleManager();
         private Color textDisabledColor;
@@ -53,6 +53,8 @@
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
+
+            mouseState = new MouseState(this);
 
             CreateRichTextBox();
             Controls.Add(RichObject);
@@ -135,6 +137,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
+
         [TypeConverter(typeof(StyleManagerConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
@@ -209,7 +226,7 @@
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
@@ -230,7 +247,7 @@
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -257,7 +274,7 @@
 
             if (border.Visible)
             {
-                if ((controlState == ControlState.Hover) && border.HoverVisible)
+                if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
                 {
                     GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
                 }

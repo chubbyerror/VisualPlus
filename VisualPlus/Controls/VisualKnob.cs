@@ -9,7 +9,6 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
@@ -29,28 +28,11 @@
     {
         #region Variables
 
-        private readonly Color[] knobColor =
-            {
-                Color.LightGray,
-                Color.White
-            };
-
-        private readonly Color[] knobTopColor =
-            {
-                Color.White,
-                Color.LightGray
-            };
-
-        private readonly Color[] scaleColor =
-            {
-                Color.LightGray,
-                Color.White
-            };
+        private readonly MouseState mouseState;
 
         private int _value;
         private int buttonDivisions = 30;
         private Container components = null;
-        private ControlState controlState = ControlState.Normal;
         private float deltaAngle;
         private bool drawDivInside;
         private float drawRatio;
@@ -99,12 +81,30 @@
                 true);
 
             UpdateStyles();
-
+            mouseState = new MouseState(this);
             knobFont = Font;
             ForeColor = Color.DimGray;
             knobTopBorder.HoverVisible = false;
 
             float[] gradientPosition = { 0, 1 };
+
+            Color[] knobColor =
+                {
+                    Color.LightGray,
+                    Color.White
+                };
+
+            Color[] knobTopColor =
+                {
+                    Color.White,
+                    Color.LightGray
+                };
+
+            Color[] scaleColor =
+                {
+                    Color.LightGray,
+                    Color.White
+                };
 
             knob.Angle = 180;
             knob.Colors = knobColor;
@@ -401,6 +401,21 @@
             set
             {
                 minimum = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
                 Invalidate();
             }
         }
@@ -729,14 +744,14 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -1009,7 +1024,7 @@
             {
                 GraphicsPath borderPath = new GraphicsPath();
                 borderPath.AddEllipse(knobRectangle);
-                GDI.DrawBorderType(offGraphics, controlState, borderPath, knobBorder.Thickness, knobBorder.Color, knobBorder.HoverColor, knobBorder.Visible);
+                GDI.DrawBorderType(offGraphics, mouseState.State, borderPath, knobBorder.Thickness, knobBorder.Color, knobBorder.HoverColor, knobBorder.Visible);
             }
         }
 
@@ -1025,7 +1040,7 @@
             {
                 GraphicsPath borderPath = new GraphicsPath();
                 borderPath.AddEllipse(knobTopRectangle);
-                GDI.DrawBorderType(offGraphics, controlState, borderPath, knobTopBorder.Thickness, knobTopBorder.Color, knobTopBorder.HoverColor, knobTopBorder.HoverVisible);
+                GDI.DrawBorderType(offGraphics, mouseState.State, borderPath, knobTopBorder.Thickness, knobTopBorder.Color, knobTopBorder.HoverColor, knobTopBorder.HoverVisible);
             }
 
             float cx = knobPoint.X;

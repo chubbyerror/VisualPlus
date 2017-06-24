@@ -29,6 +29,8 @@
     {
         #region Variables
 
+        private readonly MouseState mouseState;
+
         private Gradient backgroundDisabledGradient = new Gradient();
         private Gradient backgroundGradient = new Gradient();
         private Border border = new Border();
@@ -38,7 +40,7 @@
         private Rectangle buttonRectangle;
         private int buttonWidth = 19;
         private GraphicsPath controlGraphicsPath;
-        private ControlState controlState = ControlState.Normal;
+
         private Color foreColor;
         private bool keyboardNum;
         private long maximumValue;
@@ -61,6 +63,7 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
+            mouseState = new MouseState(this);
             BackColor = Color.Transparent;
             minimumValue = 0;
             maximumValue = 100;
@@ -244,6 +247,21 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
+                Invalidate();
+            }
+        }
+
         [TypeConverter(typeof(StyleManagerConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
@@ -402,14 +420,14 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -486,7 +504,7 @@
             // Setup buttons border
             if (buttonBorder.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
             }
 
             graphics.ResetClip();
@@ -501,7 +519,7 @@
             // Draw control border
             if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             // Draw value string

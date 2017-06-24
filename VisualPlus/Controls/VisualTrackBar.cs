@@ -9,7 +9,6 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
@@ -35,6 +34,8 @@
 
         #region Variables
 
+        private readonly MouseState mouseState;
+
         private Gradient backgroundGradient = new Gradient();
         private int barThickness = 10;
         private int barTickSpacing = 8;
@@ -46,7 +47,6 @@
         private Size buttonSize = new Size(27, 20);
         private Color buttonTextColor = Settings.DefaultValue.Font.ForeColor;
         private bool buttonVisible = true;
-        private ControlState controlState = ControlState.Normal;
         private int currentUsedPos;
         private ValueDivisor dividedValue = ValueDivisor.By1;
         private int fillingValue = 25;
@@ -92,6 +92,7 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
+            mouseState = new MouseState(this);
             UpdateStyles();
             Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             BackColor = Color.Transparent;
@@ -463,6 +464,21 @@
             set
             {
                 lineTicksVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
                 Invalidate();
             }
         }
@@ -882,7 +898,7 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             OnEnter(e);
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
@@ -896,7 +912,7 @@
         protected override void OnMouseLeave(EventArgs e)
         {
             OnLeave(e);
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -1462,7 +1478,7 @@
 
             if (trackBarBorder.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, trackBarPath, trackBarBorder.Thickness, trackBarBorder.Color, trackBarBorder.HoverColor, trackBarBorder.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, trackBarPath, trackBarBorder.Thickness, trackBarBorder.Color, trackBarBorder.HoverColor, trackBarBorder.HoverVisible);
             }
         }
 
@@ -1523,7 +1539,7 @@
 
                 if (buttonBorder.Visible)
                 {
-                    GDI.DrawBorderType(graphics, controlState, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
+                    GDI.DrawBorderType(graphics, mouseState.State, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
                 }
             }
         }

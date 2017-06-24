@@ -10,7 +10,6 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
@@ -30,11 +29,15 @@
     {
         #region Variables
 
+        private readonly MouseState mouseState;
+
         private Color backgroundColor;
         private Border border = new Border();
+
         private GraphicsPath borderGraphicsPath;
-        private ControlState controlState = ControlState.Normal;
+
         private Expander expander;
+
         private Color foreColor;
         private GroupBoxStyle groupBoxStyle = GroupBoxStyle.Default;
         private StringAlignment stringAlignment = StringAlignment.Center;
@@ -61,6 +64,7 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
+            mouseState = new MouseState(this);
             Size = new Size(220, 180);
             Padding = new Padding(5, 28, 5, 5);
             UpdateStyles();
@@ -179,6 +183,21 @@
             {
                 base.ForeColor = value;
                 foreColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
                 Invalidate();
             }
         }
@@ -354,15 +373,13 @@
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            base.OnMouseEnter(e);
-            controlState = ControlState.Hover;
+            mouseState.State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            base.OnMouseLeave(e);
-            controlState = ControlState.Normal;
+            mouseState.State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -413,7 +430,7 @@
 
             if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, borderGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                GDI.DrawBorderType(graphics, mouseState.State, borderGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             if (titleBoxVisible)
@@ -425,7 +442,7 @@
 
                 if (titleBorder.Visible)
                 {
-                    if ((controlState == ControlState.Hover) && titleBorder.HoverVisible)
+                    if ((mouseState.State == MouseStates.Hover) && titleBorder.HoverVisible)
                     {
                         GDI.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.HoverColor);
                     }

@@ -36,10 +36,56 @@
 
         public MouseState(Control control)
         {
-            control.MouseDown += OnMouseDown;
-            control.MouseEnter += OnMouseEnter;
-            control.MouseLeave += OnMouseLeave;
-            control.MouseUp += OnMouseUp;
+            if (control is VisualButton)
+            {
+                control.MouseDown += OnMouseDown;
+                control.MouseEnter += OnMouseEnter;
+                control.MouseLeave += OnMouseLeave;
+                control.MouseUp += OnMouseUp;
+            }
+
+            if (control is VisualCheckBox)
+            {
+                control.MouseEnter += OnMouseEnter;
+                control.MouseLeave += OnMouseLeave;
+            }
+
+            if (control is VisualColorPicker)
+            {
+                control.MouseEnter += OnMouseEnter;
+                control.MouseLeave += OnMouseLeave;
+            }
+
+            if (control is VisualComboBox)
+            {
+                control.MouseEnter += OnMouseEnter;
+                control.MouseLeave += OnMouseLeave;
+                control.LostFocus += OnLostFocus;
+            }
+
+            if (control is VisualForm)
+            {
+                control.MouseEnter += OnMouseEnter;
+                control.MouseLeave += OnMouseLeave;
+            }
+
+            if (control is VisualGroupBox)
+            {
+                control.MouseEnter += OnMouseEnter;
+                control.MouseLeave += OnMouseLeave;
+            }
+
+            if (control is VisualKnob)
+            {
+                control.MouseEnter += OnMouseEnter;
+                control.MouseLeave += OnMouseLeave;
+            }
+
+            if (control is VisualNumericUpDown)
+            {
+                control.MouseEnter += OnMouseEnter;
+                control.MouseLeave += OnMouseLeave;
+            }
 
             // Specific controls might need to ignore some events
             //if (!(control is VisualCheckBox))
@@ -114,6 +160,10 @@
             mouseState = MouseStates.Hover;
         }
 
+        protected virtual void OnLostFocus(object sender, EventArgs e)
+        {
+            mouseState = MouseStates.Normal;
+        }
         #endregion
     }
 }
