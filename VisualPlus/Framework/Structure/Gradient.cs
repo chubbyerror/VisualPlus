@@ -12,7 +12,6 @@
     #endregion
 
     [TypeConverter(typeof(GradientConverter))]
-    [Description(Localize.Description.Gradient)]
     public class Gradient
     {
         #region Variables
@@ -34,7 +33,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The gradient angle.")]
+        [Description(Localize.Description.Gradient.Angle)]
         public float Angle
         {
             get
@@ -50,7 +49,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The gradient colors.")]
+        [Description(Localize.Description.Gradient.Colors)]
         public Color[] Colors
         {
             get
@@ -66,7 +65,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The color positioning of the gradient.")]
+        [Description(Localize.Description.Gradient.Positions)]
         public float[] Positions
         {
             get

@@ -10,6 +10,7 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -20,32 +21,15 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Enabled")]
     [Description("The Visual Separator")]
-    [Designer(VSDesignerBinding.VisualSeparator)]
+    [Designer(DesignManager.VisualSeparator)]
     public sealed class VisualSeparator : Control
     {
         #region Variables
 
-        private Color[] lineColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.LineColor),
-                Settings.DefaultValue.Style.LineColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.LineColor)
-            };
-
         private Gradient lineGradient = new Gradient();
-
         private Rectangle lineRectangle;
         private Orientation separatorOrientation = Orientation.Horizontal;
-
-        private Color[] shadowColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ShadowColor),
-                Settings.DefaultValue.Style.ShadowColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.ShadowColor)
-            };
-
         private Gradient shadowGradient = new Gradient();
-
         private Rectangle shadowRectangle;
         private bool shadowVisible;
 
@@ -66,6 +50,20 @@
 
             float[] gradientPosition = { 0, 1 / 2f, 1 };
             float angle = 90;
+
+            Color[] lineColor =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Control.Line),
+                    Settings.DefaultValue.Control.Line,
+                    ControlPaint.Light(Settings.DefaultValue.Control.Line)
+                };
+
+            Color[] shadowColor =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Control.Shadow),
+                    Settings.DefaultValue.Control.Shadow,
+                    ControlPaint.Light(Settings.DefaultValue.Control.Shadow)
+                };
 
             lineGradient.Angle = angle;
             lineGradient.Colors = lineColor;
@@ -98,7 +96,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.SeparatorStyle)]
+        [Description(Localize.Description.Common.Orientation)]
         public Orientation Orientation
         {
             get
@@ -152,7 +150,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ShadowVisible
         {
             get

@@ -7,21 +7,30 @@
     using System.Drawing;
     using System.Globalization;
 
-    using VisualPlus.Enums;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
+    public enum BorderShape
+    {
+        /// <summary>Rectangle shape.</summary>
+        Rectangle,
+
+        /// <summary>Rounded shape.</summary>
+        Rounded
+    }
+
     [TypeConverter(typeof(BorderConverter))]
-    [Description(Localize.Description.Border)]
-    public class Border
+    public class Border : IBorder
     {
         #region Variables
 
-        private Color color = Settings.DefaultValue.Style.BorderColor(0);
-        private Color hoverColor = Settings.DefaultValue.Style.BorderColor(1);
+        private Color color = Settings.DefaultValue.Border.Color;
+        private Color hoverColor = Settings.DefaultValue.Border.HoverColor;
         private bool hoverVisible = true;
-        private int rounding = Settings.DefaultValue.BorderRounding;
+        private int rounding = Settings.DefaultValue.Rounding.Default;
         private BorderShape shape = Settings.DefaultValue.BorderShape;
         private int thickness = Settings.DefaultValue.BorderThickness;
         private bool visible = true;
@@ -32,7 +41,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border color.")]
+        [Description(Localize.Description.Common.Color)]
         public Color Color
         {
             get
@@ -48,7 +57,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The hover color.")]
+        [Description(Localize.Description.Common.Color)]
         public Color HoverColor
         {
             get
@@ -64,7 +73,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The hover visible toggle.")]
+        [Description(Localize.Description.Common.Visible)]
         public bool HoverVisible
         {
             get
@@ -80,7 +89,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border rounding.")]
+        [Description(Localize.Description.Border.Rounding)]
         public int Rounding
         {
             get
@@ -90,7 +99,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
+                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     rounding = value;
                 }
@@ -99,7 +108,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border shape.")]
+        [Description(Localize.Description.Border.Shape)]
         public BorderShape Shape
         {
             get
@@ -115,7 +124,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border thickness.")]
+        [Description(Localize.Description.Border.Thickness)]
         public int Thickness
         {
             get
@@ -125,7 +134,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
+                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     thickness = value;
                 }
@@ -134,7 +143,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description("The border visible toggle.")]
+        [Description(Localize.Description.Common.Visible)]
         public bool Visible
         {
             get

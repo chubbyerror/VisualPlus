@@ -15,6 +15,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
     using VisualPlus.Properties;
@@ -24,50 +25,10 @@
     [ToolboxItem(false)]
     [ToolboxBitmap(typeof(Form))]
     [Description("The Visual Form")]
+    [Designer(DesignManager.VisualForm)]
     public class VisualForm : Form
     {
         #region Variables
-
-        public const int HT_CAPTION = 0x2;
-        public const int WM_LBUTTONDBLCLK = 0x0203;
-        public const int WM_LBUTTONDOWN = 0x0201;
-        public const int WM_LBUTTONUP = 0x0202;
-        public const int WM_MOUSEMOVE = 0x0200;
-
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int WM_RBUTTONDOWN = 0x0204;
-
-        #endregion
-
-        #region Variables
-
-        private const int HTBOTTOM = 15;
-        private const int HTBOTTOMLEFT = 16;
-        private const int HTBOTTOMRIGHT = 17;
-        private const int HTLEFT = 10;
-        private const int HTRIGHT = 11;
-        private const int HTTOP = 12;
-        private const int HTTOPLEFT = 13;
-        private const int HTTOPRIGHT = 14;
-
-        private const int MONITOR_DEFAULTTONEAREST = 2;
-
-        private const uint TPM_LEFTALIGN = 0x0000;
-        private const uint TPM_RETURNCMD = 0x0100;
-
-        private const int WM_SYSCOMMAND = 0x0112;
-        private const int WMSZ_BOTTOM = 6;
-        private const int WMSZ_BOTTOMLEFT = 7;
-        private const int WMSZ_BOTTOMRIGHT = 8;
-        private const int WMSZ_LEFT = 1;
-        private const int WMSZ_RIGHT = 2;
-
-        private const int WMSZ_TOP = 3;
-        private const int WMSZ_TOPLEFT = 4;
-        private const int WMSZ_TOPRIGHT = 5;
-        private const int WS_MINIMIZEBOX = 0x20000;
-        private const int WS_SYSMENU = 0x00080000;
-        private static int controlBarHeight = 24;
 
         private readonly Dictionary<int, int> _resizingLocationsToCmd = new Dictionary<int, int>
             {
@@ -82,36 +43,26 @@
             };
 
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
-
         private Rectangle actionBarBounds;
-
         private Border border = new Border();
-
+        private Color buttonBackHoverColor = Settings.DefaultValue.Control.ControlHover.Colors[0];
+        private Color buttonBackPressedColor = Settings.DefaultValue.Control.ControlPressed.Colors[0];
+        private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+        private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
-        private Color controlBoxItemColor = Settings.DefaultValue.Style.ForeColor(0);
         private ControlState controlState = ControlState.Normal;
-        private int form_padding = 2;
-        private Color headerBackColor = Settings.DefaultValue.Style.ButtonNormalColor;
         private bool headerMouseDown;
-        private Color headerTextColor = Settings.DefaultValue.Style.ForeColor(0);
-
-        private Image icon = Resources.Icon;
-        private bool iconBorder;
-        private GraphicsPath iconGraphicsPath;
-        private Point iconPoint = new Point(0, 0);
-        private Rectangle iconRectangle;
-        private Size iconSize = new Size(16, 16);
         private Rectangle maxButtonBounds;
         private bool maximized;
         private Rectangle minButtonBounds;
         private Point previousLocation;
         private Size previousSize;
         private ResizeDirection resizeDir;
-
-        private int STATUS_BAR_BUTTON_WIDTH = controlBarHeight;
         private Rectangle statusBarBounds;
-
         private Size titleTextSize;
+        private VisualImage vsImage = new VisualImage(Resources.Icon, new Size(16, 16));
+        private Color windowBarColor = Settings.DefaultValue.Control.Background(1);
+        private int windowBarHeight = 30;
         private Rectangle xButtonBounds;
 
         #endregion
@@ -120,13 +71,15 @@
 
         public VisualForm()
         {
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             FormBorderStyle = FormBorderStyle.None;
             Sizable = true;
-            DoubleBuffered = true;
 
-            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+            // Padding-Left: 5 for icon
+            Padding = new Padding(5, 0, 0, 0);
 
-            Text = "Visual Form";
+            border.Thickness = 3;
+            border.Shape = BorderShape.Rectangle;
 
             // This enables the form to trigger the MouseMove event even when mouse is over another control
             Application.AddMessageFilter(new MouseMessageFilter());
@@ -178,119 +131,134 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color ButtonBackHoverColor
+        {
+            get
+            {
+                return buttonBackHoverColor;
+            }
+
+            set
+            {
+                buttonBackHoverColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color ButtonBackPressedColor
+        {
+            get
+            {
+                return buttonBackPressedColor;
+            }
+
+            set
+            {
+                buttonBackPressedColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color ButtonColor
+        {
+            get
+            {
+                return buttonColor;
+            }
+
+            set
+            {
+                buttonColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
-        public int ControlBarHeight
+        [Description(Localize.Description.Common.Size)]
+        public Size ButtonSize
         {
             get
             {
-                return controlBarHeight;
+                return buttonSize;
             }
 
             set
             {
-                controlBarHeight = value;
+                buttonSize = value;
                 Invalidate();
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color ControlBoxItemColor
-        {
-            get
-            {
-                return controlBoxItemColor;
-            }
-
-            set
-            {
-                controlBoxItemColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color HeaderBackColor
-        {
-            get
-            {
-                return headerBackColor;
-            }
-
-            set
-            {
-                headerBackColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color HeaderTextColor
-        {
-            get
-            {
-                return headerTextColor;
-            }
-
-            set
-            {
-                headerTextColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Icon)]
         public new Image Icon
         {
             get
             {
-                return icon;
+                return vsImage.Image;
             }
 
             set
             {
-                icon = value;
+                vsImage.Image = value;
                 Invalidate();
             }
         }
 
+        [TypeConverter(typeof(BorderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderVisible)]
-        public bool IconBorder
+        public VisualImage Image
         {
             get
             {
-                return iconBorder;
+                return vsImage;
             }
 
             set
             {
-                iconBorder = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.IconSize)]
-        public Size IconSize
-        {
-            get
-            {
-                return iconSize;
-            }
-
-            set
-            {
-                iconSize = value;
+                vsImage = value;
                 Invalidate();
             }
         }
 
         public bool Sizable { get; set; }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color WindowBarColor
+        {
+            get
+            {
+                return windowBarColor;
+            }
+
+            set
+            {
+                windowBarColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.Common.Size)]
+        public int WindowBarHeight
+        {
+            get
+            {
+                return windowBarHeight;
+            }
+
+            set
+            {
+                windowBarHeight = value;
+                Invalidate();
+            }
+        }
 
         protected override CreateParams CreateParams
         {
@@ -315,6 +283,8 @@
         [DllImport("user32.dll")]
         public static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
 
+        public const int HT_CAPTION = 0x2;
+
         [DllImport("user32.dll")]
         public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
 
@@ -327,6 +297,13 @@
         [DllImport("user32.dll")]
         public static extern int TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 
+        public const int WM_LBUTTONDBLCLK = 0x0203;
+        public const int WM_LBUTTONDOWN = 0x0201;
+        public const int WM_LBUTTONUP = 0x0202;
+        public const int WM_MOUSEMOVE = 0x0200;
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int WM_RBUTTONDOWN = 0x0204;
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (DesignMode)
@@ -336,7 +313,7 @@
 
             UpdateButtons(e);
 
-            if (e.Button == MouseButtons.Left && !maximized)
+            if ((e.Button == MouseButtons.Left) && !maximized)
             {
                 ResizeForm(resizeDir);
             }
@@ -344,15 +321,23 @@
             base.OnMouseDown(e);
         }
 
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            controlState = ControlState.Hover;
+            Invalidate();
+        }
+
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+
             if (DesignMode)
             {
                 return;
             }
 
             buttonState = ButtonState.None;
+            controlState = ControlState.Normal;
             Invalidate();
         }
 
@@ -370,27 +355,27 @@
                 // True if the mouse is hovering over a child control
                 bool isChildUnderMouse = GetChildAtPoint(e.Location) != null;
 
-                if (e.Location.X < border.Thickness && e.Location.Y > Height - border.Thickness && !isChildUnderMouse && !maximized)
+                if ((e.Location.X < border.Thickness) && (e.Location.Y > Height - border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.BottomLeft;
                     Cursor = Cursors.SizeNESW;
                 }
-                else if (e.Location.X < border.Thickness && !isChildUnderMouse && !maximized)
+                else if ((e.Location.X < border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.Left;
                     Cursor = Cursors.SizeWE;
                 }
-                else if (e.Location.X > Width - border.Thickness && e.Location.Y > Height - border.Thickness && !isChildUnderMouse && !maximized)
+                else if ((e.Location.X > Width - border.Thickness) && (e.Location.Y > Height - border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.BottomRight;
                     Cursor = Cursors.SizeNWSE;
                 }
-                else if (e.Location.X > Width - border.Thickness && !isChildUnderMouse && !maximized)
+                else if ((e.Location.X > Width - border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.Right;
                     Cursor = Cursors.SizeWE;
                 }
-                else if (e.Location.Y > Height - border.Thickness && !isChildUnderMouse && !maximized)
+                else if ((e.Location.Y > Height - border.Thickness) && !isChildUnderMouse && !maximized)
                 {
                     resizeDir = ResizeDirection.Bottom;
                     Cursor = Cursors.SizeNS;
@@ -426,150 +411,29 @@
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
+            graphics.Clear(BackColor);
             graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
-            graphics.Clear(BackColor);
-
-            // sub-header
-            // g.FillRectangle(new SolidBrush(Color.Blue), _actionBarBounds);
-
-            // Draw border
-            if (border.Visible)
-            {
-                using (Pen borderPen = new Pen(border.Color, border.Thickness))
-                {
-                    graphics.DrawLine(borderPen, new Point(0, actionBarBounds.Bottom), new Point(0, Height - 2));
-                    graphics.DrawLine(borderPen, new Point(Width - 1, actionBarBounds.Bottom), new Point(Width - 1, Height - 2));
-                    graphics.DrawLine(borderPen, new Point(0, Height - 1), new Point(Width - 1, Height - 1));
-                }
-            }
-
             // Title box
-            graphics.FillRectangle(new SolidBrush(headerBackColor), statusBarBounds);
+            graphics.FillRectangle(new SolidBrush(windowBarColor), statusBarBounds);
 
-            // Determine whether or not we even should be drawing the buttons.
-            bool showMin = MinimizeBox && ControlBox;
-            bool showMax = MaximizeBox && ControlBox;
-            SolidBrush hoverBrush = new SolidBrush(Settings.DefaultValue.Style.ButtonHoverColor);
-            SolidBrush downBrush = new SolidBrush(Settings.DefaultValue.Style.ButtonDownColor);
-
-            // When MaximizeButton == false, the minimize button will be painted in its place
-            if (buttonState == ButtonState.MinOver && showMin)
-            {
-                graphics.FillRectangle(hoverBrush, showMax ? minButtonBounds : maxButtonBounds);
-            }
-
-            if (buttonState == ButtonState.MinDown && showMin)
-            {
-                graphics.FillRectangle(downBrush, showMax ? minButtonBounds : maxButtonBounds);
-            }
-
-            if (buttonState == ButtonState.MaxOver && showMax)
-            {
-                graphics.FillRectangle(hoverBrush, maxButtonBounds);
-            }
-
-            if (buttonState == ButtonState.MaxDown && showMax)
-            {
-                graphics.FillRectangle(downBrush, maxButtonBounds);
-            }
-
-            if (buttonState == ButtonState.XOver && ControlBox)
-            {
-                graphics.FillRectangle(hoverBrush, xButtonBounds);
-            }
-
-            if (buttonState == ButtonState.XDown && ControlBox)
-            {
-                graphics.FillRectangle(downBrush, xButtonBounds);
-            }
-
-            using (Pen formButtonsPen = new Pen(ControlBoxItemColor, 2))
-            {
-                // Minimize button.
-                if (showMin)
-                {
-                    int x = showMax ? minButtonBounds.X : maxButtonBounds.X;
-                    int y = showMax ? minButtonBounds.Y : maxButtonBounds.Y;
-
-                    graphics.DrawLine(
-                        formButtonsPen,
-                        x + (int)(minButtonBounds.Width * 0.33),
-                        y + (int)(minButtonBounds.Height * 0.66),
-                        x + (int)(minButtonBounds.Width * 0.66),
-                        y + (int)(minButtonBounds.Height * 0.66));
-                }
-
-                // Maximize button
-                if (showMax)
-                {
-                    graphics.DrawRectangle(
-                        formButtonsPen,
-                        maxButtonBounds.X + (int)(maxButtonBounds.Width * 0.33),
-                        maxButtonBounds.Y + (int)(maxButtonBounds.Height * 0.36),
-                        (int)(maxButtonBounds.Width * 0.39),
-                        (int)(maxButtonBounds.Height * 0.31));
-                }
-
-                // Close button
-                if (ControlBox)
-                {
-                    graphics.DrawLine(
-                        formButtonsPen,
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
-
-                    graphics.DrawLine(
-                        formButtonsPen,
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
-                }
-            }
-
-            iconPoint = new Point(5, statusBarBounds.Height / 2 - iconSize.Height / 2);
-            iconRectangle = new Rectangle(iconPoint, iconSize);
-            iconGraphicsPath = new GraphicsPath();
-            iconGraphicsPath.AddRectangle(iconRectangle);
-            iconGraphicsPath.CloseAllFigures();
-
-            titleTextSize = GDI.GetTextSize(graphics, Text, Font);
-
-            if (ShowIcon)
-            {
-                if (icon != null)
-                {
-                    // Update point
-                    iconRectangle.Location = iconPoint;
-
-                    // Draw icon border
-                    if (iconBorder)
-                    {
-                        graphics.DrawPath(new Pen(border.Color), iconGraphicsPath);
-                    }
-
-                    // Draw icon
-                    graphics.DrawImage(Icon, iconRectangle);
-                }
-            }
-
-            // Form title
-            graphics.DrawString(Text, Font, new SolidBrush(HeaderTextColor), new Rectangle(5 + iconSize.Width + 5, statusBarBounds.X + statusBarBounds.Height / 2 - titleTextSize.Height / 2, Width, titleTextSize.Height), new StringFormat { LineAlignment = StringAlignment.Center });
+            DrawButtons(graphics);
+            DrawIcon(graphics);
+            DrawTitle(graphics);
+            DrawBorder(graphics);
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
-            minButtonBounds = new Rectangle(Width - form_padding / 2 - 3 * STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
-            maxButtonBounds = new Rectangle(Width - form_padding / 2 - 2 * STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
-            xButtonBounds = new Rectangle(Width - form_padding / 2 - STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, controlBarHeight);
-            statusBarBounds = new Rectangle(0, 0, Width, controlBarHeight);
+            minButtonBounds = new Rectangle(Width - Padding.Right - (3 * buttonSize.Width), (Padding.Top + (windowBarHeight / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
 
-            // _actionBarBounds = new Rectangle(0, STATUS_BAR_HEIGHT, Width, ACTION_BAR_HEIGHT);
+            maxButtonBounds = new Rectangle(Width - Padding.Right - (2 * buttonSize.Width), (Padding.Top + (windowBarHeight / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
+
+            xButtonBounds = new Rectangle(Width - Padding.Right - buttonSize.Width, (Padding.Top + (windowBarHeight / 2)) - (buttonSize.Height / 2), buttonSize.Width, buttonSize.Height);
+
+            statusBarBounds = new Rectangle(0, 0, Width, windowBarHeight);
         }
 
         protected override void WndProc(ref Message m)
@@ -584,7 +448,7 @@
             {
                 MaximizeWindow(!maximized);
             }
-            else if (m.Msg == WM_MOUSEMOVE && maximized &&
+            else if ((m.Msg == WM_MOUSEMOVE) && maximized &&
                      (statusBarBounds.Contains(PointToClient(Cursor.Position)) || actionBarBounds.Contains(PointToClient(Cursor.Position))) &&
                      !(minButtonBounds.Contains(PointToClient(Cursor.Position)) || maxButtonBounds.Contains(PointToClient(Cursor.Position)) || xButtonBounds.Contains(PointToClient(Cursor.Position))))
             {
@@ -596,11 +460,11 @@
                     Point mousePoint = PointToClient(Cursor.Position);
                     if (mousePoint.X < Width / 2)
                     {
-                        Location = mousePoint.X < previousSize.Width / 2 ? new Point(Cursor.Position.X - mousePoint.X, Cursor.Position.Y - mousePoint.Y) : new Point(Cursor.Position.X - previousSize.Width / 2, Cursor.Position.Y - mousePoint.Y);
+                        Location = mousePoint.X < previousSize.Width / 2 ? new Point(Cursor.Position.X - mousePoint.X, Cursor.Position.Y - mousePoint.Y) : new Point(Cursor.Position.X - (previousSize.Width / 2), Cursor.Position.Y - mousePoint.Y);
                     }
                     else
                     {
-                        Location = Width - mousePoint.X < previousSize.Width / 2 ? new Point(Cursor.Position.X - previousSize.Width + Width - mousePoint.X, Cursor.Position.Y - mousePoint.Y) : new Point(Cursor.Position.X - previousSize.Width / 2, Cursor.Position.Y - mousePoint.Y);
+                        Location = Width - mousePoint.X < previousSize.Width / 2 ? new Point(((Cursor.Position.X - previousSize.Width) + Width) - mousePoint.X, Cursor.Position.Y - mousePoint.Y) : new Point(Cursor.Position.X - (previousSize.Width / 2), Cursor.Position.Y - mousePoint.Y);
                     }
 
                     Size = previousSize;
@@ -608,7 +472,7 @@
                     SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
                 }
             }
-            else if (m.Msg == WM_LBUTTONDOWN &&
+            else if ((m.Msg == WM_LBUTTONDOWN) &&
                      (statusBarBounds.Contains(PointToClient(Cursor.Position)) || actionBarBounds.Contains(PointToClient(Cursor.Position))) &&
                      !(minButtonBounds.Contains(PointToClient(Cursor.Position)) || maxButtonBounds.Contains(PointToClient(Cursor.Position)) || xButtonBounds.Contains(PointToClient(Cursor.Position))))
             {
@@ -662,6 +526,148 @@
             {
                 headerMouseDown = false;
             }
+        }
+
+        private const int HTBOTTOM = 15;
+        private const int HTBOTTOMLEFT = 16;
+        private const int HTBOTTOMRIGHT = 17;
+        private const int HTLEFT = 10;
+        private const int HTRIGHT = 11;
+        private const int HTTOP = 12;
+        private const int HTTOPLEFT = 13;
+        private const int HTTOPRIGHT = 14;
+
+        private const int MONITOR_DEFAULTTONEAREST = 2;
+
+        private const uint TPM_LEFTALIGN = 0x0000;
+        private const uint TPM_RETURNCMD = 0x0100;
+
+        private const int WM_SYSCOMMAND = 0x0112;
+        private const int WMSZ_BOTTOM = 6;
+        private const int WMSZ_BOTTOMLEFT = 7;
+        private const int WMSZ_BOTTOMRIGHT = 8;
+        private const int WMSZ_LEFT = 1;
+        private const int WMSZ_RIGHT = 2;
+
+        private const int WMSZ_TOP = 3;
+        private const int WMSZ_TOPLEFT = 4;
+        private const int WMSZ_TOPRIGHT = 5;
+        private const int WS_MINIMIZEBOX = 0x20000;
+        private const int WS_SYSMENU = 0x00080000;
+
+        private void DrawBorder(Graphics graphics)
+        {
+            if (border.Visible)
+            {
+                GraphicsPath clientPath = new GraphicsPath();
+                clientPath.AddRectangle(ClientRectangle);
+
+                GDI.DrawBorderType(graphics, controlState, clientPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+            }
+        }
+
+        private void DrawButtons(Graphics graphics)
+        {
+            // Determine whether or not we even should be drawing the buttons.
+            bool showMin = MinimizeBox && ControlBox;
+            bool showMax = MaximizeBox && ControlBox;
+            SolidBrush hoverBrush = new SolidBrush(buttonBackHoverColor);
+            SolidBrush downBrush = new SolidBrush(buttonBackPressedColor);
+
+            // When MaximizeButton == false, the minimize button will be painted in its place
+            DrawMinimizeOverMaximizeButton(graphics, showMin, showMax, hoverBrush, downBrush);
+
+            using (Pen formButtonsPen = new Pen(buttonColor, 2))
+            {
+                // Minimize button.
+                if (showMin)
+                {
+                    int x = showMax ? minButtonBounds.X : maxButtonBounds.X;
+                    int y = showMax ? minButtonBounds.Y : maxButtonBounds.Y;
+
+                    graphics.DrawLine(
+                        formButtonsPen,
+                        x + (int)(minButtonBounds.Width * 0.33),
+                        y + (int)(minButtonBounds.Height * 0.66),
+                        x + (int)(minButtonBounds.Width * 0.66),
+                        y + (int)(minButtonBounds.Height * 0.66));
+                }
+
+                // Maximize button
+                if (showMax)
+                {
+                    graphics.DrawRectangle(
+                        formButtonsPen,
+                        maxButtonBounds.X + (int)(maxButtonBounds.Width * 0.33),
+                        maxButtonBounds.Y + (int)(maxButtonBounds.Height * 0.36),
+                        (int)(maxButtonBounds.Width * 0.39),
+                        (int)(maxButtonBounds.Height * 0.31));
+                }
+
+                // Close button
+                if (ControlBox)
+                {
+                    graphics.DrawLine(
+                        formButtonsPen,
+                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
+                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
+                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
+                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
+
+                    graphics.DrawLine(
+                        formButtonsPen,
+                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
+                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
+                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
+                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
+                }
+            }
+        }
+
+        private void DrawIcon(Graphics graphics)
+        {
+            vsImage.Point = new Point(Padding.Left, (statusBarBounds.Height / 2) - (vsImage.Size.Height / 2));
+            VisualImage.DrawImage(graphics, vsImage.Border, vsImage.Point, vsImage.Image, vsImage.Size, vsImage.Visible);
+        }
+
+        private void DrawMinimizeOverMaximizeButton(Graphics graphics, bool showMin, bool showMax, SolidBrush hoverBrush, SolidBrush downBrush)
+        {
+            if ((buttonState == ButtonState.MinOver) && showMin)
+            {
+                graphics.FillRectangle(hoverBrush, showMax ? minButtonBounds : maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.MinDown) && showMin)
+            {
+                graphics.FillRectangle(downBrush, showMax ? minButtonBounds : maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.MaxOver) && showMax)
+            {
+                graphics.FillRectangle(hoverBrush, maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.MaxDown) && showMax)
+            {
+                graphics.FillRectangle(downBrush, maxButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.XOver) && ControlBox)
+            {
+                graphics.FillRectangle(hoverBrush, xButtonBounds);
+            }
+
+            if ((buttonState == ButtonState.XDown) && ControlBox)
+            {
+                graphics.FillRectangle(downBrush, xButtonBounds);
+            }
+        }
+
+        private void DrawTitle(Graphics graphics)
+        {
+            titleTextSize = GDI.GetTextSize(graphics, Text, Font);
+            Rectangle textRectangle = new Rectangle(5 + vsImage.Size.Width + 5, (windowBarHeight / 2) - (titleTextSize.Height / 2), Width, titleTextSize.Height);
+            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textRectangle, new StringFormat { LineAlignment = StringAlignment.Center });
         }
 
         private void MaximizeWindow(bool maximize)
@@ -748,7 +754,7 @@
             bool showMin = MinimizeBox && ControlBox;
             bool showMax = MaximizeBox && ControlBox;
 
-            if (e.Button == MouseButtons.Left && !up)
+            if ((e.Button == MouseButtons.Left) && !up)
             {
                 if (showMin && !showMax && maxButtonBounds.Contains(e.Location))
                 {
@@ -777,7 +783,7 @@
                 {
                     buttonState = ButtonState.MinOver;
 
-                    if (oldState == ButtonState.MinDown && up)
+                    if ((oldState == ButtonState.MinDown) && up)
                     {
                         WindowState = FormWindowState.Minimized;
                     }
@@ -786,7 +792,7 @@
                 {
                     buttonState = ButtonState.MinOver;
 
-                    if (oldState == ButtonState.MinDown && up)
+                    if ((oldState == ButtonState.MinDown) && up)
                     {
                         WindowState = FormWindowState.Minimized;
                     }
@@ -795,7 +801,7 @@
                 {
                     buttonState = ButtonState.MaxOver;
 
-                    if (oldState == ButtonState.MaxDown && up)
+                    if ((oldState == ButtonState.MaxDown) && up)
                     {
                         MaximizeWindow(!maximized);
                     }
@@ -804,7 +810,7 @@
                 {
                     buttonState = ButtonState.XOver;
 
-                    if (oldState == ButtonState.XDown && up)
+                    if ((oldState == ButtonState.XDown) && up)
                     {
                         Close();
                     }
@@ -862,15 +868,15 @@
 
             #endregion
 
-            #region Variables
+            #region Constructors
 
-            private const int WM_MOUSEMOVE = 0x0200;
+            public static event MouseEventHandler MouseMove;
 
             #endregion
 
             #region Events
 
-            public static event MouseEventHandler MouseMove;
+            private const int WM_MOUSEMOVE = 0x0200;
 
             #endregion
         }

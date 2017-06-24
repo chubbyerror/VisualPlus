@@ -28,6 +28,10 @@ The [`VisualPlus`](https://github.com/DarkByte7/VisualPlus) repository is where 
 - Review [source code changes](https://github.com/DarkByte7/VisualPlus/pulls)
 - Review the [documentation](https://github.com/DarkByte7/VisualPlus/wiki) and make pull requests for anything from typos to new content
 
+## Build requirements
+- [.NET Framework 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
+- [Visual Studio 2017](https://www.visualstudio.com/downloads/)
+
 ## Contributing
 If you are interested in fixing issues and contributing directly to the code base, please see the document [How to Contribute](https://github.com/DarkByte7/VisualPlus/wiki/How-to-Contribute), which covers the following:
 - [How to build and run from source](https://github.com/DarkByte7/VisualPlus/wiki/How-to-Contribute#build-and-run-from-source)
@@ -45,12 +49,12 @@ BitCoin donations are also welcome: `1KKghRonJu6orcu7rf4r1wSnsnAPbnC8B7`
 - Vote for [popular feature requests](https://github.com/DarkByte7/VisualPlus/issues?q=is:open+is:issue+label:feature-request+sort:reactions-B1-desc).
 - File a bug in [GitHub Issues](https://github.com/DarkByte7/VisualPlus/issues?q=is:open+is:issue).
 
-## Build requirements
-- [.NET Framework 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981)
-- [Visual Studio 2017](https://www.visualstudio.com/downloads/)
+## Projects that use VisualPlus
+Send me a message to add a project to this list:
+- [VisualPlus](https://github.com/DarkByte7/VisualPlus)
 
 ## Screenshots
-![ToolBox](https://i.imgur.com/ekb1R9B.jpg)
+![ToolBox](http://i.imgur.com/EgBcSNg.jpg)
 
 ## License
 This repository is licensed with the [GPLv3](LICENSE) license.

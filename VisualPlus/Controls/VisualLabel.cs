@@ -11,8 +11,10 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -21,28 +23,12 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Text")]
     [Description("The Visual Label")]
-    [Designer(VSDesignerBinding.VisualLabel)]
+    [Designer(DesignManager.VisualLabel)]
     public sealed class VisualLabel : Label
     {
         #region Variables
 
-        private const int ShadowDepth = 4;
-        private const float ShadowSmooth = 1.5f;
-
-        private readonly Color[] textDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.TextDisabled),
-                Settings.DefaultValue.Style.TextDisabled
-            };
-
         private bool autoSize;
-
-        private Color[] foreColor =
-            {
-                Settings.DefaultValue.Style.ForeColor(0),
-                Settings.DefaultValue.Style.ForeColor(0)
-            };
-
         private Orientation orientation = Orientation.Horizontal;
         private bool outline;
         private Color outlineColor = Color.Red;
@@ -55,6 +41,8 @@
         private int shadowDirection = 315;
         private Point shadowLocation = new Point(0, 0);
         private int shadowOpacity = 100;
+
+        private StyleManager styleManager = new StyleManager();
         private Rectangle textBoxRectangle;
         private Gradient textDisabledGradient = new Gradient();
         private Gradient textGradient = new Gradient();
@@ -70,15 +58,9 @@
 
             UpdateStyles();
             BackColor = Color.Transparent;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
 
-            float[] gradientPosition = { 0, 1 };
-
-            textGradient.Colors = foreColor;
-            textGradient.Positions = gradientPosition;
-
-            textDisabledGradient.Colors = textDisabledColor;
-            textDisabledGradient.Positions = gradientPosition;
+            ConfigureStyleManager();
+            DefaultGradient();
         }
 
         #endregion
@@ -87,7 +69,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.AutoSize)]
+        [Description(Localize.Description.Common.AutoSize)]
         public override bool AutoSize
         {
             get
@@ -110,7 +92,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Orientation)]
+        [Description(Localize.Description.Common.Orientation)]
         public Orientation Orientation
         {
             get
@@ -127,7 +109,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Outline)]
+        [Description(Localize.Description.Common.Outline)]
         public bool Outline
         {
             get
@@ -143,7 +125,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color OutlineColor
         {
             get
@@ -159,7 +141,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentLocation)]
+        [Description(Localize.Description.Common.Point)]
         public Point OutlineLocation
         {
             get
@@ -176,7 +158,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Reflection)]
+        [Description(Localize.Description.Common.Toggle)]
         public bool Reflection
         {
             get
@@ -192,7 +174,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.MirrorColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ReflectionColor
         {
             get
@@ -208,7 +190,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ReflectionSpacing)]
+        [Description(Localize.Description.Common.Spacing)]
         public int ReflectionSpacing
         {
             get
@@ -225,7 +207,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Shadow)]
+        [Description(Localize.Description.Common.Toggle)]
         public bool Shadow
         {
             get
@@ -241,7 +223,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ShadowColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ShadowColor
         {
             get
@@ -257,7 +239,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ShadowDirection)]
+        [Description(Localize.Description.Common.Direction)]
         public int ShadowDirection
         {
             get
@@ -273,7 +255,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentLocation)]
+        [Description(Localize.Description.Common.Point)]
         public Point ShadowLocation
         {
             get
@@ -289,7 +271,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ShadowOpacity)]
+        [Description(Localize.Description.Common.Opacity)]
         public int ShadowOpacity
         {
             get
@@ -299,11 +281,28 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumAlpha, Settings.MaximumAlpha))
+                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumAlpha, Settings.MaximumAlpha))
                 {
                     shadowOpacity = value;
                 }
 
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(StyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
                 Invalidate();
             }
         }
@@ -343,7 +342,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -370,9 +369,14 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             Gradient foreGradient = Enabled ? textGradient : textDisabledGradient;
 
-            if (reflection && orientation == Orientation.Vertical)
+            if (reflection && (orientation == Orientation.Vertical))
             {
                 textBoxRectangle = new Rectangle(GDI.GetTextSize(graphics, Text, Font).Height, 0, ClientRectangle.Width, ClientRectangle.Height);
             }
@@ -406,6 +410,52 @@
             graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle, GetStringFormat());
         }
 
+        private const int ShadowDepth = 4;
+        private const float ShadowSmooth = 1.5f;
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+            }
+            else
+            {
+                // Load default settings
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+            }
+        }
+
+        private void DefaultGradient()
+        {
+            Color[] foreColor =
+                {
+                    Settings.DefaultValue.Font.ForeColor,
+                    Settings.DefaultValue.Font.ForeColor
+                };
+
+            Color[] textDisabledColor =
+                {
+                    ControlPaint.Light(Settings.DefaultValue.Font.ForeColorDisabled),
+                    Settings.DefaultValue.Font.ForeColorDisabled
+                };
+
+            float[] gradientPosition = { 0, 1 };
+
+            textGradient.Colors = foreColor;
+            textGradient.Positions = gradientPosition;
+
+            textDisabledGradient.Colors = textDisabledColor;
+            textDisabledGradient.Positions = gradientPosition;
+        }
+
         private void DrawOutline(Graphics graphics)
         {
             GraphicsPath outlinePath = new GraphicsPath();
@@ -418,7 +468,7 @@
                             Text,
                             Font.FontFamily,
                             (int)Font.Style,
-                            graphics.DpiY * Font.SizeInPoints / 72,
+                            (graphics.DpiY * Font.SizeInPoints) / 72,
                             outlineLocation,
                             new StringFormat());
 
@@ -431,7 +481,7 @@
                             Text,
                             Font.FontFamily,
                             (int)Font.Style,
-                            graphics.DpiY * Font.SizeInPoints / 72,
+                            (graphics.DpiY * Font.SizeInPoints) / 72,
                             outlineLocation,
                             new StringFormat(StringFormatFlags.DirectionVertical));
 
@@ -459,14 +509,14 @@
                         imageGraphics.TranslateTransform(0, GDI.GetTextSize(graphics, Text, Font).Height);
                         imageGraphics.ScaleTransform(1, -1);
 
-                        reflectionLocation = new Point(0, textBoxRectangle.Y - GDI.GetTextSize(graphics, Text, Font).Height / 2 - reflectionSpacing);
+                        reflectionLocation = new Point(0, textBoxRectangle.Y - (GDI.GetTextSize(graphics, Text, Font).Height / 2) - reflectionSpacing);
                         break;
                     }
 
                 case Orientation.Vertical:
                     {
                         imageGraphics.ScaleTransform(-1, 1);
-                        reflectionLocation = new Point(textBoxRectangle.X - GDI.GetTextSize(graphics, Text, Font).Width / 2 + reflectionSpacing, 0);
+                        reflectionLocation = new Point((textBoxRectangle.X - (GDI.GetTextSize(graphics, Text, Font).Width / 2)) + reflectionSpacing, 0);
                         break;
                     }
             }

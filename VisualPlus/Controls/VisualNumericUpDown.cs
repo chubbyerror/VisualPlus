@@ -12,58 +12,40 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(NumericUpDown))]
     [DefaultEvent("Click")]
-    [DefaultProperty("Text")]
+    [DefaultProperty("Value")]
     [Description("The Visual NumericUpDown")]
-    [Designer(VSDesignerBinding.VisualNumericUpDown)]
+    [Designer(DesignManager.VisualNumericUpDown)]
     public sealed class VisualNumericUpDown : Control
     {
         #region Variables
-
-        private Color[] backgroundColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0)
-            };
 
         private Gradient backgroundDisabledGradient = new Gradient();
         private Gradient backgroundGradient = new Gradient();
         private Border border = new Border();
         private Border buttonBorder = new Border();
-
-        private Color[] buttonColor =
-            {
-                Settings.DefaultValue.Style.ButtonNormalColor,
-                ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
-                Settings.DefaultValue.Style.ButtonNormalColor
-            };
-
         private Gradient buttonGradient = new Gradient();
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 19;
-
-        private Color[] controlDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled
-            };
-
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor;
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
         private long numericValue;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private StyleManager styleManager = new StyleManager();
+        private Color textDisabledColor;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private int xValue;
         private int yValue;
@@ -84,23 +66,13 @@
             maximumValue = 100;
             Size = new Size(70, 29);
             MinimumSize = new Size(62, 29);
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
 
             buttonBorder.HoverVisible = false;
             buttonBorder.Shape = BorderShape.Rectangle;
 
-            float[] backgroundGradientPosition = { 0, 1 };
-            float[] buttonGradientPosition = { 0, 1 / 2f, 1 };
-
-            buttonGradient.Colors = buttonColor;
-            buttonGradient.Positions = buttonGradientPosition;
-
-            backgroundGradient.Colors = backgroundColor;
-            backgroundGradient.Positions = backgroundGradientPosition;
-
-            backgroundDisabledGradient.Colors = controlDisabledColor;
-            backgroundDisabledGradient.Positions = backgroundGradientPosition;
+            ConfigureStyleManager();
+            DefaultGradient();
         }
 
         #endregion
@@ -193,7 +165,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int ButtonWidth
         {
             get
@@ -205,6 +177,21 @@
             {
                 buttonWidth = value;
                 UpdateLocationPoints();
+                Invalidate();
+            }
+        }
+
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
@@ -257,24 +244,25 @@
             }
         }
 
+        [TypeConverter(typeof(StyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
+        public StyleManager StyleManager
         {
             get
             {
-                return foreColor;
+                return styleManager;
             }
 
             set
             {
-                foreColor = value;
+                styleManager = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -290,7 +278,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -384,17 +372,17 @@
             OnMouseClick(e);
 
             // Check if mouse in X position.
-            if (xValue > Width - buttonRectangle.Width && xValue < Width)
+            if ((xValue > Width - buttonRectangle.Width) && (xValue < Width))
             {
                 // Determine the button middle separator by checking for the Y position.
-                if (yValue > buttonRectangle.Y && yValue < Height / 2)
+                if ((yValue > buttonRectangle.Y) && (yValue < Height / 2))
                 {
                     if (Value + 1 <= maximumValue)
                     {
                         numericValue++;
                     }
                 }
-                else if (yValue > Height / 2 && yValue < Height)
+                else if ((yValue > Height / 2) && (yValue < Height))
                 {
                     if (Value - 1 >= minimumValue)
                     {
@@ -474,6 +462,11 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
 
@@ -499,11 +492,11 @@
             graphics.ResetClip();
 
             // Draw string
-            graphics.DrawString("+", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2 - 2, Height / 4 - buttonRectangle.Height / 4));
-            graphics.DrawString("-", Font, new SolidBrush(foreColor), new Point(buttonRectangle.X + buttonRectangle.Width / 2 - (int)Font.SizeInPoints / 2, Height / 2));
+            graphics.DrawString("+", Font, new SolidBrush(foreColor), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2) - 2, (Height / 4) - (buttonRectangle.Height / 4)));
+            graphics.DrawString("-", Font, new SolidBrush(foreColor), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2), Height / 2));
 
             // Button separator
-            graphics.DrawLine(new Pen(Settings.DefaultValue.Style.BorderColor(0)), buttonRectangle.X, buttonRectangle.Y + buttonRectangle.Height / 2, buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + buttonRectangle.Height / 2);
+            graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), buttonRectangle.X, buttonRectangle.Y + (buttonRectangle.Height / 2), buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + (buttonRectangle.Height / 2));
 
             // Draw control border
             if (border.Visible)
@@ -533,6 +526,78 @@
         {
             base.OnSizeChanged(e);
             UpdateLocationPoints();
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+
+                buttonGradient.Colors = controlStyle.ControlEnabled.Colors;
+                buttonGradient.Positions = controlStyle.ControlEnabled.Positions;
+
+                float[] backgroundGradientPosition = { 0, 1 };
+
+                Color[] backgroundColor =
+                    {
+                        controlStyle.Background(0),
+                        controlStyle.Background(1)
+                    };
+
+                backgroundGradient.Colors = backgroundColor;
+                backgroundGradient.Positions = backgroundGradientPosition;
+                backgroundDisabledGradient.Colors = controlStyle.ControlDisabled.Colors;
+                backgroundDisabledGradient.Positions = controlStyle.ControlDisabled.Positions;
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.Rounding.Default;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+            }
+        }
+
+        private void DefaultGradient()
+        {
+            float[] backgroundGradientPosition = { 0, 1 };
+
+            Color[] backgroundColor =
+                {
+                    Settings.DefaultValue.Control.Background(0),
+                    ControlPaint.Light(Settings.DefaultValue.Control.Background(0))
+                };
+
+            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
+            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+
+            backgroundGradient.Colors = backgroundColor;
+            backgroundGradient.Positions = backgroundGradientPosition;
+
+            backgroundDisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
+            backgroundDisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
         }
 
         private void UpdateLocationPoints()

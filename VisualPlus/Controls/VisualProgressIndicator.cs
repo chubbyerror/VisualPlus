@@ -10,19 +10,18 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Localization;
 
     #endregion
 
     /// <summary>The visual ProgressIndicator.</summary>
     [ToolboxBitmap(typeof(ProgressBar))]
-    [Designer(VSDesignerBinding.VisualProgressIndicator)]
+    [Designer(DesignManager.VisualProgressIndicator)]
     public sealed class VisualProgressIndicator : Control
     {
         #region Variables
 
-        private static SolidBrush animationColor = new SolidBrush(Color.DimGray);
-        private static Size circleSize = new Size(15, 15);
         private Timer animationSpeed = new Timer();
         private SolidBrush baseColor = new SolidBrush(Color.DarkGray);
         private BufferedGraphics buffGraphics;
@@ -42,11 +41,9 @@
         public VisualProgressIndicator()
         {
             SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer
-                | ControlStyles.SupportsTransparentBackColor,
-                true);
+                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
 
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             Size = new Size(80, 80);
             MinimumSize = new Size(80, 80);
             SetPoints();
@@ -59,7 +56,7 @@
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color AnimationColor
         {
             get
@@ -74,7 +71,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.AnimationSpeed)]
+        [Description(Localize.Description.Common.AnimationSpeed)]
         public int AnimationSpeed
         {
             get
@@ -89,7 +86,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color BaseColor
         {
             get
@@ -105,7 +102,7 @@
 
         [DefaultValue(45F)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentDiameter)]
+        [Description(Localize.Description.Common.Amount)]
         public float Circles
         {
             get
@@ -122,7 +119,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size CircleSize
         {
             get
@@ -139,7 +136,7 @@
 
         [DefaultValue(7.5F)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentDiameter)]
+        [Description(Localize.Description.Common.Diameter)]
         public float Diameter
         {
             get
@@ -189,10 +186,8 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
 
-
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
-
 
             buffGraphics.Graphics.Clear(BackColor);
             int num2 = floatPoint.Length - 1;
@@ -221,11 +216,15 @@
             SetPoints();
         }
 
+        private static SolidBrush animationColor = new SolidBrush(Color.DimGray);
+
         private static X AssignValues<X>(ref X run, X length)
         {
             run = length;
             return length;
         }
+
+        private static Size circleSize = new Size(15, 15);
 
         private void AnimationSpeedTick(object sender, EventArgs e)
         {
@@ -247,7 +246,7 @@
             startingFloatPoint = new PointF(Width / 2f, Height / 2f);
             for (var i = 0f; i < 360f; i += circles)
             {
-                SetValue(startingFloatPoint, (int)Math.Round(Width / 2.0 - 15.0), i);
+                SetValue(startingFloatPoint, (int)Math.Round((Width / 2.0) - 15.0), i);
                 PointF endPoint = EndPoint;
                 endPoint = new PointF(endPoint.X - diameter, endPoint.Y - diameter);
                 stack.Push(endPoint);
@@ -264,7 +263,7 @@
 
         private void SetValue(PointF startFloatPoint, int length, double angle)
         {
-            double circleRadian = Math.PI * angle / 180.0;
+            double circleRadian = (Math.PI * angle) / 180.0;
 
             startingFloatPoint = startFloatPoint;
             rise = AssignValues(ref run, length);
@@ -274,7 +273,7 @@
 
         private void UpdateGraphics()
         {
-            if (Width <= 0 || Height <= 0)
+            if ((Width <= 0) || (Height <= 0))
             {
                 return;
             }

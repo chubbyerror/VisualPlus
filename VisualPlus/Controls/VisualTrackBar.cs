@@ -12,8 +12,10 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -22,7 +24,7 @@
     [DefaultEvent("ValueChanged")]
     [DefaultProperty("Value")]
     [Description("The Visual TrackBar")]
-    [Designer(VSDesignerBinding.VisualTrackBar)]
+    [Designer(DesignManager.VisualTrackBar)]
     public sealed class VisualTrackBar : TrackBar
     {
         #region Variables
@@ -33,56 +35,22 @@
 
         #region Variables
 
-        private static Color hatchBackColor = Settings.DefaultValue.Style.HatchColor;
-
-        private static Color[] progressColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ProgressColor),
-                Settings.DefaultValue.Style.ProgressColor
-            };
-
-        private static Rectangle trackerRectangle = Rectangle.Empty;
-
-        private Color[] backgroundColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0)
-            };
-
         private Gradient backgroundGradient = new Gradient();
-
         private int barThickness = 10;
         private int barTickSpacing = 8;
+        private bool buttonAutoSize = true;
         private Border buttonBorder = new Border();
-
-        private Color[] buttonColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ButtonNormalColor),
-                Settings.DefaultValue.Style.ButtonNormalColor
-            };
-
         private Gradient buttonGradient = new Gradient();
-
         private GraphicsPath buttonPath = new GraphicsPath();
         private Rectangle buttonRectangle;
         private Size buttonSize = new Size(27, 20);
-        private Color buttonTextColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color buttonTextColor = Settings.DefaultValue.Font.ForeColor;
         private bool buttonVisible = true;
-
         private ControlState controlState = ControlState.Normal;
         private int currentUsedPos;
-
-        private Color[] disabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled
-            };
-
         private ValueDivisor dividedValue = ValueDivisor.By1;
-
         private int fillingValue = 25;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Point[] gradientPoints;
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private float hatchSize = Settings.DefaultValue.HatchSize;
@@ -98,12 +66,13 @@
         private Gradient progressGradient = new Gradient();
         private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
+        private StyleManager styleManager = new StyleManager();
         private string suffix;
         private Size textAreaSize;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private Font textFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
+        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+        private Font textFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Color tickColor = Settings.DefaultValue.Style.LineColor;
+        private Color tickColor = Settings.DefaultValue.Control.Line;
         private int tickHeight = 4;
         private Border trackBarBorder = new Border();
         private Gradient trackBarDisabledGradient = new Gradient();
@@ -124,31 +93,16 @@
                 true);
 
             UpdateStyles();
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
+            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             BackColor = Color.Transparent;
             DoubleBuffered = true;
             UpdateStyles();
             AutoSize = false;
             Size = new Size(200, 50);
-            MinimumSize = new Size(200, 50);
+            MinimumSize = new Size(0, 0);
 
-            float[] gradientPositions = { 0, 1 };
-            float angle = 90;
-
-            backgroundGradient.Angle = angle;
-            backgroundGradient.Colors = backgroundColor;
-            backgroundGradient.Positions = gradientPositions;
-
-            trackBarDisabledGradient.Angle = angle;
-            trackBarDisabledGradient.Colors = disabledColor;
-            trackBarDisabledGradient.Positions = gradientPositions;
-
-            progressGradient.Angle = angle;
-            progressGradient.Colors = progressColor;
-            progressGradient.Positions = gradientPositions;
-
-            buttonGradient.Colors = buttonColor;
-            buttonGradient.Positions = gradientPositions;
+            DefaultGradient();
+            ConfigureStyleManager();
         }
 
         public enum ValueDivisor
@@ -188,7 +142,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int BarThickness
         {
             get
@@ -204,7 +158,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int BarTickSpacing
         {
             get
@@ -215,6 +169,23 @@
             set
             {
                 barTickSpacing = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(true)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Common.AutoSize)]
+        public bool ButtonAutoSize
+        {
+            get
+            {
+                return buttonAutoSize;
+            }
+
+            set
+            {
+                buttonAutoSize = value;
                 Invalidate();
             }
         }
@@ -254,7 +225,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size ButtonSize
         {
             get
@@ -270,7 +241,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ButtonTextColor
         {
             get
@@ -287,7 +258,7 @@
 
         [DefaultValue(true)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ButtonVisible
         {
             get
@@ -335,8 +306,38 @@
             }
         }
 
+        public new Font Font
+        {
+            get
+            {
+                return textFont;
+            }
+
+            set
+            {
+                base.Font = value;
+                textFont = value;
+                Invalidate();
+            }
+        }
+
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color HatchBackColor
         {
             get
@@ -352,7 +353,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color HatchForeColor
         {
             get
@@ -369,7 +370,7 @@
 
         [Category(Localize.Category.Layout)]
         [DefaultValue(Settings.DefaultValue.HatchSize)]
-        [Description(Localize.Description.HatchSize)]
+        [Description(Localize.Description.Common.Size)]
         public float HatchSize
         {
             get
@@ -385,7 +386,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.HatchStyle)]
+        [Description(Localize.Description.Common.Type)]
         public HatchStyle HatchStyle
         {
             get
@@ -402,7 +403,7 @@
 
         [DefaultValue(Settings.DefaultValue.HatchVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool HatchVisible
         {
             get
@@ -418,7 +419,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int IndentHeight
         {
             get
@@ -434,7 +435,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int IndentWidth
         {
             get
@@ -451,7 +452,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool LineTicksVisible
         {
             get
@@ -467,7 +468,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Orientation)]
+        [Description(Localize.Description.Common.Orientation)]
         public new Orientation Orientation
         {
             get
@@ -484,7 +485,7 @@
         }
 
         [Category(Localize.Category.Data)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public string Prefix
         {
             get
@@ -517,7 +518,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ProgressFilling
         {
             get
@@ -534,7 +535,7 @@
 
         [DefaultValue(false)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ProgressValueVisible
         {
             get
@@ -551,7 +552,7 @@
 
         [DefaultValue(true)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ProgressVisible
         {
             get
@@ -566,8 +567,25 @@
             }
         }
 
+        [TypeConverter(typeof(StyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public StyleManager StyleManager
+        {
+            get
+            {
+                return styleManager;
+            }
+
+            set
+            {
+                styleManager = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Data)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public string Suffix
         {
             get
@@ -583,23 +601,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                foreColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -615,23 +617,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
-        public Font TextFont
-        {
-            get
-            {
-                return textFont;
-            }
-
-            set
-            {
-                textFont = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -647,7 +633,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TickColor
         {
             get
@@ -663,7 +649,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int TickHeight
         {
             get
@@ -696,7 +682,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ValueDivisor)]
+        [Description(Localize.Description.Common.ValueDivisor)]
         public ValueDivisor ValueDivision
         {
             get
@@ -713,7 +699,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ValueTicksVisible
         {
             get
@@ -855,7 +841,7 @@
                             }
                             else
                             {
-                                offsetValue = (int)((currentPoint.X - indentWidth - buttonSize.Width) / 2 * (Maximum - Minimum) / (Width - 2 * indentWidth - buttonSize.Width) + 0.5);
+                                offsetValue = (int)(((((currentPoint.X - indentWidth - buttonSize.Width) / 2) * (Maximum - Minimum)) / (Width - (2 * indentWidth) - buttonSize.Width)) + 0.5);
                             }
 
                             break;
@@ -873,7 +859,7 @@
                             }
                             else
                             {
-                                offsetValue = (int)((Height - currentPoint.Y - indentHeight - buttonSize.Width) / 2 * (Maximum - Minimum) / (Height - 2 * indentHeight - buttonSize.Width) + 0.5);
+                                offsetValue = (int)(((((Height - currentPoint.Y - indentHeight - buttonSize.Width) / 2) * (Maximum - Minimum)) / (Height - (2 * indentHeight) - buttonSize.Width)) + 0.5);
                             }
 
                             break;
@@ -1003,6 +989,11 @@
 
             workingRectangle = Rectangle.Inflate(ClientRectangle, -indentWidth, -indentHeight);
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
 
@@ -1015,16 +1006,15 @@
                 DrawProgress(graphics);
             }
 
+            Size formattedProgressValue = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
+
             // Step 3 - Draw the Tracker
-            DrawButton(graphics);
+            DrawButton(graphics, formattedProgressValue);
 
             // Step 4 - Draw progress value
             if (progressValueVisible)
             {
                 string value = GetFormattedProgressValue();
-
-                // Size
-                Size formattedProgressValue = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
 
                 // Position
                 Point progressValueLocation = new Point();
@@ -1136,6 +1126,61 @@
             }
 
             return result;
+        }
+
+        private static Color hatchBackColor = Settings.DefaultValue.Progress.Hatch;
+
+        private static Rectangle trackerRectangle = Rectangle.Empty;
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                trackBarBorder.Color = borderStyle.Color;
+                trackBarBorder.HoverColor = borderStyle.HoverColor;
+                trackBarBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                trackBarBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                trackBarBorder.Shape = styleManager.VisualStylesManager.BorderShape;
+                trackBarBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                trackBarBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
+
+                buttonBorder.Color = borderStyle.Color;
+                buttonBorder.HoverColor = borderStyle.HoverColor;
+                buttonBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                buttonBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                buttonBorder.Shape = styleManager.VisualStylesManager.BorderShape;
+                buttonBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                buttonBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
+
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+
+                foreColor = fontStyle.ForeColor;
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+            }
+            else
+            {
+                // Load default settings
+                trackBarBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                trackBarBorder.Rounding = Settings.DefaultValue.Rounding.Default;
+                trackBarBorder.Shape = Settings.DefaultValue.BorderShape;
+                trackBarBorder.Thickness = Settings.DefaultValue.BorderThickness;
+                trackBarBorder.Visible = Settings.DefaultValue.BorderVisible;
+
+                buttonBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                buttonBorder.Rounding = Settings.DefaultValue.Rounding.Default;
+                buttonBorder.Shape = Settings.DefaultValue.BorderShape;
+                buttonBorder.Thickness = Settings.DefaultValue.BorderThickness;
+                buttonBorder.Visible = Settings.DefaultValue.BorderVisible;
+
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+            }
         }
 
         /// <summary>Configures the tick style.</summary>
@@ -1371,6 +1416,25 @@
             }
         }
 
+        private void DefaultGradient()
+        {
+            backgroundGradient.Angle = Settings.DefaultValue.Progress.Background.Angle;
+            backgroundGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
+            backgroundGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
+
+            trackBarDisabledGradient.Angle = Settings.DefaultValue.Progress.Background.Angle;
+            trackBarDisabledGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
+            trackBarDisabledGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
+
+            progressGradient.Angle = Settings.DefaultValue.Progress.Progress.Angle;
+            progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
+            progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
+
+            buttonGradient.Angle = Settings.DefaultValue.Control.ControlEnabled.Angle;
+            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
+            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+        }
+
         /// <summary>Draws the bar.</summary>
         /// <param name="graphics">Graphics input.</param>
         /// <param name="barRectangle">Bar rectangle.</param>
@@ -1404,7 +1468,8 @@
 
         /// <summary>Draws the button.</summary>
         /// <param name="graphics">Graphics input.</param>
-        private void DrawButton(Graphics graphics)
+        /// <param name="progressValue">The progress Value.</param>
+        private void DrawButton(Graphics graphics, Size progressValue)
         {
             Point buttonLocation = new Point();
             graphics.ResetClip();
@@ -1418,12 +1483,32 @@
                 case Orientation.Horizontal:
                     {
                         buttonLocation = new Point(trackerRectangle.X, (trackBarRectangle.Top + (barThickness / 2)) - (buttonSize.Height / 2));
+
+                        if (buttonAutoSize)
+                        {
+                            buttonSize = new Size(progressValue.Width, buttonSize.Height);
+                        }
+                        else
+                        {
+                            buttonSize = new Size(buttonSize.Width, buttonSize.Height);
+                        }
+
                         break;
                     }
 
                 case Orientation.Vertical:
                     {
                         buttonLocation = new Point((trackBarRectangle.Left + (barThickness / 2)) - (buttonSize.Width / 2), trackerRectangle.Y);
+
+                        if (buttonAutoSize)
+                        {
+                            buttonSize = new Size(buttonSize.Width, progressValue.Height);
+                        }
+                        else
+                        {
+                            buttonSize = new Size(buttonSize.Width, buttonSize.Height);
+                        }
+
                         break;
                     }
             }
@@ -1545,7 +1630,9 @@
                     tickRectangle = new Rectangle(location, size);
 
                     // Enlarge tick barRectangle
-                    tickRectangle.Inflate(-buttonSize.Width / 2, 0);
+                    // tickRectangle.Inflate(-buttonSize.Width / 2, 0);
+
+                    // tickRectangle.Inflate(-buttonSize.Width / 2, 0);
 
                     // Move next tick area
                     currentUsedPos += tickHeight;

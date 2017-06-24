@@ -5,73 +5,115 @@
     using System.Drawing;
 
     using VisualPlus.Enums;
+    using VisualPlus.Framework.Structure;
 
     #endregion
 
-    public interface IStyle
+    public interface IBorder
     {
         #region Properties
 
-        Color BackgroundProgressCircle { get; }
+        Color Color { get; }
 
-        Color ButtonDownColor { get; }
+        Color HoverColor { get; }
 
-        Color ButtonHoverColor { get; }
+        #endregion
+    }
 
-        Color ButtonNormalColor { get; }
+    public interface IWatermark
+    {
+        #region Properties
 
-        Color ControlDisabled { get; }
+        Color ActiveColor { get; }
 
-        Color DropDownButtonColor { get; }
+        Color InactiveColor { get; }
 
-        Color DropDownColor { get; }
+        #endregion
+    }
 
-        Color ForegroundProgressCircle { get; }
+    public interface IControl
+    {
+        #region Properties
 
-        Color HatchColor { get; }
+        Gradient BoxDisabled { get; }
 
-        Color ItemDisableBackgroundColor { get; }
+        Gradient BoxEnabled { get; }
 
-        Color LineColor { get; }
+        Gradient ControlDisabled { get; }
 
-        Color StyleColor { get; }
+        Gradient ControlEnabled { get; }
 
-        Color ProgressColor { get; }
+        Gradient ControlHover { get; }
 
-        Color ShadowColor { get; }
+        Gradient ControlPressed { get; }
 
-        Styles StyleManagement { get; }
+        Color FlatButtonEnabled { get; }
 
-        Color TabHover { get; }
+        Color FlatButtonDisabled { get; }
 
-        Color TabMenu { get; }
+        Color ItemEnabled { get; }
 
-        Color TabNormal { get; }
+        Color ItemHover { get; }
 
-        Color TabSelected { get; }
+        Color Line { get; }
 
-        Color TabTextNormal { get; }
-
-        Color TabTextSelected { get; }
-
-        Color TextDisabled { get; }
-
-        FontFamily FontFamily { get; }
+        Color Shadow { get; }
 
         #endregion
 
         #region Events
 
-        Color BackgroundColor(int depth);
-
-        Color BorderColor(int depth);
-
-        Color ForeColor(int depth);
-
-        Color ItemHover(int depth);
-
-        Color ItemNormal(int depth);
+        Color Background(int depth);
 
         #endregion
+    }
+
+    public interface IFont
+    {
+        #region Properties
+
+        FontFamily FontFamily { get; }
+
+        float FontSize { get; }
+
+        FontStyle FontStyle { get; }
+
+        Color ForeColor { get; }
+
+        Color ForeColorDisabled { get; }
+
+        Color ForeColorSelected { get; }
+
+        #endregion
+    }
+
+    public interface IProgress
+    {
+        #region Properties
+
+        Color BackCircle { get; }
+
+        Color Hatch { get; }
+
+        Gradient Background { get; }
+
+        Color ForeCircle { get; }
+
+        Gradient Progress { get; }
+
+        Gradient ProgressDisabled { get; }
+
+        #endregion
+    }
+
+    public interface ITab
+    {
+        Color TabEnabled { get; }
+
+        Color TabHover { get; }
+
+        Color TabSelected { get; }
+
+        Color Menu { get; }
     }
 }

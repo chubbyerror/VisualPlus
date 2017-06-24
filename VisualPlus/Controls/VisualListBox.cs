@@ -10,26 +10,30 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
     [ToolboxItem(true)]
-    [ToolboxBitmap(typeof(Button))]
+    [ToolboxBitmap(typeof(ListBox))]
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ListBox")]
-    [Designer(VSDesignerBinding.VisualListBox)]
+    [Designer(DesignManager.VisualListBox)]
     public sealed class VisualListBox : ListBox
     {
         #region Variables
 
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
-        private Color itemBackground = Settings.DefaultValue.Style.BackgroundColor(0);
-        private Color itemBackground2 = Settings.DefaultValue.Style.BorderColor(0);
-        private Color itemSelected = Settings.DefaultValue.Style.BorderColor(1);
+        private Color foreColor;
+        private Color itemBackground = Settings.DefaultValue.Control.Background(0);
+        private Color itemBackground2 = Settings.DefaultValue.Border.Color;
+        private Color itemSelected = Settings.DefaultValue.Border.HoverColor;
         private bool rotateItemColor = true;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private StyleManager styleManager = new StyleManager();
+        private Color textDisabledColor;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
@@ -51,15 +55,29 @@
             Size = new Size(250, 150);
             AutoSize = true;
             DrawMode = DrawMode.OwnerDrawVariable;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
         }
 
         #endregion
 
         #region Properties
 
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ItemBackground
         {
             get
@@ -75,7 +93,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ItemBackground2
         {
             get
@@ -91,7 +109,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ItemSelected
         {
             get
@@ -122,24 +140,25 @@
             }
         }
 
+        [TypeConverter(typeof(StyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
+        public StyleManager StyleManager
         {
             get
             {
-                return foreColor;
+                return styleManager;
             }
 
             set
             {
-                foreColor = value;
+                styleManager = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -155,7 +174,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -187,6 +206,11 @@
             graphics.TextRenderingHint = textRendererHint;
 
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
 
             if (e.Index > -1)
             {
@@ -238,6 +262,28 @@
 
                 // Draw the text
                 e.Graphics.DrawString(Items[e.Index].ToString(), e.Font, new SolidBrush(foreColor), e.Bounds, stringFormat);
+            }
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+            }
+            else
+            {
+                // Load default settings
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }
         }
 

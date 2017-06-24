@@ -9,12 +9,14 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
+    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
     using VisualPlus.Styles;
 
     #endregion
 
-    /// <summary>The visual Toggle.</summary>
+    [ToolboxItem(false)]
     [ToolboxBitmap(typeof(Component))]
     [DefaultEvent("StyleChanged")]
     [Description("The visual style manager.")]
@@ -22,7 +24,25 @@
     {
         #region Variables
 
+        [Browsable(false)]
+        public ITab TabStyle;
+
+        [Browsable(false)]
+        public IBorder BorderStyle;
+
+        [Browsable(false)]
+        public IControl ControlStyle;
+
+        [Browsable(false)]
+        public IFont FontStyle;
+
         public bool Initialized;
+
+        [Browsable(false)]
+        public IProgress ProgressStyle;
+
+        [Browsable(false)]
+        public IWatermark WatermarkStyle;
 
         #endregion
 
@@ -31,18 +51,19 @@
         private bool animation = Settings.DefaultValue.Animation;
         private int barAmount = Settings.DefaultValue.BarAmount;
         private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.BorderRounding;
+        private int borderRounding = Settings.DefaultValue.Rounding.Default;
         private BorderShape borderShape = Settings.DefaultValue.BorderShape;
         private int borderThickness = Settings.DefaultValue.BorderThickness;
         private bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private Styles currentStyle = Settings.DefaultValue.DefaultStyle;
         private float hatchSize = Settings.DefaultValue.HatchSize;
         private bool hatchVisible = Settings.DefaultValue.HatchVisible;
         private float progressSize = Settings.DefaultValue.ProgressSize;
-        private IStyle style = Settings.DefaultValue.Style;
-        private Color styleColor = Settings.DefaultValue.Style.StyleColor;
+        private Color styleColor = Color.Green;
         private TextRenderingHint textRenderingHint = Settings.DefaultValue.TextRenderingHint;
         private bool textVisible = Settings.DefaultValue.TextVisible;
+        private Styles visualStyle;
+        private string watermarkText = Settings.DefaultValue.WatermarkText;
+        private bool watermarkVisible = Settings.DefaultValue.WatermarkVisible;
 
         #endregion
 
@@ -50,10 +71,21 @@
 
         public VisualStylesManager()
         {
+            // Load default style
+            visualStyle = Settings.DefaultValue.DefaultStyle;
+
+            BorderStyle = GetBorderStyle(visualStyle);
+            ControlStyle = GetControlStyle(visualStyle);
+            FontStyle = GetFontStyle(visualStyle);
+            ProgressStyle = GetProgressStyle(visualStyle);
+            WatermarkStyle = GetWatermarkStyle(visualStyle);
+
             Initialized = true;
         }
 
-        public delegate void StyleChangedEventHandler();
+        public delegate void StyleChangedEventHandler(Styles newStyle);
+
+        public event StyleChangedEventHandler StyleChanged;
 
         #endregion
 
@@ -61,7 +93,7 @@
 
         [DefaultValue(Settings.DefaultValue.Animation)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Animation)]
+        [Description(Localize.Description.Common.Animation)]
         public bool Animation
         {
             get
@@ -77,7 +109,7 @@
 
         [DefaultValue(Settings.DefaultValue.BarAmount)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BarAmount)]
+        [Description(Localize.Description.Progressbar.Bars)]
         public int BarAmount
         {
             get
@@ -93,7 +125,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderHoverVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool BorderHoverVisible
         {
             get
@@ -107,9 +139,9 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderRounding)]
+        [DefaultValue(Settings.DefaultValue.Rounding.Default)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderRounding)]
+        [Description(Localize.Description.Border.Rounding)]
         public int BorderRounding
         {
             get
@@ -119,7 +151,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
+                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     borderRounding = value;
                 }
@@ -128,7 +160,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderShape)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentShape)]
+        [Description(Localize.Description.Common.Type)]
         public BorderShape BorderShape
         {
             get
@@ -144,7 +176,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.BorderThickness)]
+        [Description(Localize.Description.Border.Thickness)]
         public int BorderThickness
         {
             get
@@ -154,7 +186,7 @@
 
             set
             {
-                if (ExceptionHandler.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
+                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     borderThickness = value;
                 }
@@ -163,7 +195,7 @@
 
         [DefaultValue(Settings.DefaultValue.BorderVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.BorderVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool BorderVisible
         {
             get
@@ -179,7 +211,7 @@
 
         [Category(Localize.Category.Layout)]
         [DefaultValue(Settings.DefaultValue.HatchSize)]
-        [Description(Localize.Description.HatchSize)]
+        [Description(Localize.Description.Common.Size)]
         public float HatchSize
         {
             get
@@ -195,7 +227,7 @@
 
         [DefaultValue(Settings.DefaultValue.HatchVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool HatchVisible
         {
             get
@@ -211,7 +243,7 @@
 
         [DefaultValue(Settings.DefaultValue.ProgressSize)]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ProgressSize)]
+        [Description(Localize.Description.Common.Size)]
         public float ProgressSize
         {
             get
@@ -226,25 +258,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Style)]
-        public Styles Style
-        {
-            get
-            {
-                return currentStyle;
-            }
-
-            set
-            {
-                currentStyle = value;
-
-                // Change the style
-                StyleChanged?.Invoke();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.StyleColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color StyleColor
         {
             get
@@ -259,7 +273,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRenderingHint
         {
             get
@@ -275,7 +289,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool TextVisible
         {
             get
@@ -289,29 +303,245 @@
             }
         }
 
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Type)]
+        public Styles VisualStyle
+        {
+            get
+            {
+                return visualStyle;
+            }
+
+            set
+            {
+                visualStyle = value;
+                OnStyleChanged(visualStyle);
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description("The watermark text.")]
+        public string WatermarkText
+        {
+            get
+            {
+                return watermarkText;
+            }
+
+            set
+            {
+                watermarkText = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description("Watermark visible toggle.")]
+        public bool WatermarkVisible
+        {
+            get
+            {
+                return watermarkVisible;
+            }
+
+            set
+            {
+                watermarkVisible = value;
+            }
+        }
+
         #endregion
 
         #region Events
 
-        public event StyleChangedEventHandler StyleChanged;
-
-        #endregion
-
-        #region Methods
-
-        public interface IComponent : IDisposable
+        protected virtual void OnStyleChanged(Styles newStyle)
         {
-            #region Properties
+            BorderStyle = GetBorderStyle(newStyle);
+            ControlStyle = GetControlStyle(newStyle);
+            FontStyle = GetFontStyle(newStyle);
+            ProgressStyle = GetProgressStyle(newStyle);
+            WatermarkStyle = GetWatermarkStyle(newStyle);
+            TabStyle = GetTabStyle(newStyle);
 
-            ISite Site { get; set; }
+            StyleChangedEventHandler msc = VisualButton;
+            msc += VisualCheckBox;
+            msc(newStyle);
 
-            #endregion
+            StyleChanged?.Invoke(newStyle);
+        }
 
-            #region Events
+        private static ITab GetTabStyle(Styles styles)
+        {
+            ITab style;
 
-            event EventHandler Disposed;
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
 
-            #endregion
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IBorder GetBorderStyle(Styles styles)
+        {
+            IBorder style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IControl GetControlStyle(Styles styles)
+        {
+            IControl style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IFont GetFontStyle(Styles styles)
+        {
+            IFont style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IProgress GetProgressStyle(Styles styles)
+        {
+            IProgress style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static IWatermark GetWatermarkStyle(Styles styles)
+        {
+            IWatermark style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private void VisualButton(Styles newStyle)
+        {
+        }
+
+        private void VisualCheckBox(Styles newStyle)
+        {
+            // Todo
         }
 
         #endregion

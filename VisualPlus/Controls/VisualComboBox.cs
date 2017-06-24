@@ -13,8 +13,10 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -23,51 +25,36 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ComboBox")]
-    [Designer(VSDesignerBinding.VisualComboBox)]
+    [Designer(DesignManager.VisualComboBox)]
     public sealed class VisualComboBox : ComboBox
     {
         #region Variables
 
         private Border border = new Border();
-        private Color buttonColor = Settings.DefaultValue.Style.DropDownButtonColor;
-
-        private Color[] controlColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0),
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
-            };
-
-        private Color[] controlDisabledColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled),
-                Settings.DefaultValue.Style.ControlDisabled,
-                ControlPaint.Light(Settings.DefaultValue.Style.ControlDisabled)
-            };
-
+        private Color buttonColor;
+        private Alignment.Horizontal buttonHorizontal = Alignment.Horizontal.Right;
+        private DropDownButtons buttonStyles = DropDownButtons.Arrow;
+        private bool buttonVisible = Settings.DefaultValue.TextVisible;
+        private int buttonWidth = 30;
         private Gradient controlDisabledGradient = new Gradient();
         private Gradient controlGradient = new Gradient();
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private DropDownButtons dropDownButton = DropDownButtons.Arrow;
-        private bool dropDownButtonsVisible = Settings.DefaultValue.TextVisible;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor;
         private Border itemBorder = new Border();
-        private Color menuItemHover = Settings.DefaultValue.Style.ItemHover(0);
-        private Color menuItemNormal = Settings.DefaultValue.Style.BackgroundColor(0);
-        private Color menuTextColor = Settings.DefaultValue.Style.ForeColor(0);
-        private Color separatorColor = Settings.DefaultValue.Style.LineColor;
-        private Color separatorShadowColor = Settings.DefaultValue.Style.ShadowColor;
+        private Color menuItemHover;
+        private Color menuItemNormal;
+        private Color menuTextColor;
+        private Color separatorColor;
+        private Color separatorShadowColor;
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
         private int startIndex;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+
+        private StyleManager styleManager = new StyleManager();
+        private StringAlignment textAlignment = StringAlignment.Center;
+        private Color textDisabledColor;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Color waterMarkActiveColor = Color.Gray;
-        private SolidBrush waterMarkBrush;
-        private Color waterMarkColor = Color.LightGray;
-        private Font waterMarkFont;
-        private string waterMarkText = "Custom text...";
-        private bool watermarkVisible;
+        private Watermark watermark = new Watermark();
 
         #endregion
 
@@ -89,15 +76,10 @@
             UpdateStyles();
             DropDownHeight = 100;
             BackColor = Color.Transparent;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             itemBorder.HoverVisible = false;
-            float[] gradientPosition = { 0, 1 / 2f, 1 };
-            controlGradient.Colors = controlColor;
-            controlGradient.Positions = gradientPosition;
-            controlDisabledGradient.Colors = controlDisabledColor;
-            controlDisabledGradient.Positions = gradientPosition;
-            waterMarkFont = Font;
-            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+
+            DefaultGradient();
+            ConfigureStyleManager();
         }
 
         public enum DropDownButtons
@@ -148,7 +130,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ButtonColor
         {
             get
@@ -159,6 +141,71 @@
             set
             {
                 buttonColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.Common.Direction)]
+        public Alignment.Horizontal ButtonHorizontal
+        {
+            get
+            {
+                return buttonHorizontal;
+            }
+
+            set
+            {
+                buttonHorizontal = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Type)]
+        public DropDownButtons ButtonStyles
+        {
+            get
+            {
+                return buttonStyles;
+            }
+
+            set
+            {
+                buttonStyles = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.TextVisible)]
+        [Category(Localize.Category.Behavior)]
+        [Description(Localize.Description.Common.Visible)]
+        public bool ButtonVisible
+        {
+            get
+            {
+                return buttonVisible;
+            }
+
+            set
+            {
+                buttonVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Size)]
+        public int ButtonWidth
+        {
+            get
+            {
+                return buttonWidth;
+            }
+
+            set
+            {
+                buttonWidth = value;
                 Invalidate();
             }
         }
@@ -180,35 +227,17 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.DropDownButton)]
-        public DropDownButtons DropDownButton
+        public new Color ForeColor
         {
             get
             {
-                return dropDownButton;
+                return foreColor;
             }
 
             set
             {
-                dropDownButton = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(Settings.DefaultValue.TextVisible)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
-        public bool DropDownButtonVisible
-        {
-            get
-            {
-                return dropDownButtonsVisible;
-            }
-
-            set
-            {
-                dropDownButtonsVisible = value;
+                base.ForeColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
@@ -231,7 +260,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color MenuItemHover
         {
             get
@@ -247,7 +276,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color MenuItemNormal
         {
             get
@@ -263,7 +292,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color MenuTextColor
         {
             get
@@ -279,7 +308,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color SeparatorColor
         {
             get
@@ -295,7 +324,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color SeparatorShadowColor
         {
             get
@@ -312,7 +341,7 @@
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool SeparatorVisible
         {
             get
@@ -328,7 +357,7 @@
         }
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.StartIndex)]
+        [Description(Localize.Description.Common.StartIndex)]
         public int StartIndex
         {
             get
@@ -352,24 +381,41 @@
             }
         }
 
+        [TypeConverter(typeof(StyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
+        public StyleManager StyleManager
         {
             get
             {
-                return foreColor;
+                return styleManager;
             }
 
             set
             {
-                foreColor = value;
+                styleManager = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Alignment)]
+        public StringAlignment TextAlignment
+        {
+            get
+            {
+                return textAlignment;
+            }
+
+            set
+            {
+                textAlignment = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -385,7 +431,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -400,82 +446,19 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Watermark)]
-        public string WaterMark
+        [TypeConverter(typeof(WatermarkConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Behavior)]
+        public Watermark Watermark
         {
             get
             {
-                return waterMarkText;
+                return watermark;
             }
 
             set
             {
-                waterMarkText = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color WaterMarkActiveForeColor
-        {
-            get
-            {
-                return waterMarkActiveColor;
-            }
-
-            set
-            {
-                waterMarkActiveColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
-        public Font WaterMarkFont
-        {
-            get
-            {
-                return waterMarkFont;
-            }
-
-            set
-            {
-                waterMarkFont = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color WaterMarkForeColor
-        {
-            get
-            {
-                return waterMarkColor;
-            }
-
-            set
-            {
-                waterMarkColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
-        public bool WatermarkVisible
-        {
-            get
-            {
-                return watermarkVisible;
-            }
-
-            set
-            {
-                watermarkVisible = value;
+                watermark = value;
                 Invalidate();
             }
         }
@@ -512,13 +495,13 @@
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
-            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+            watermark.Brush = new SolidBrush(watermark.ActiveColor);
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-            waterMarkBrush = new SolidBrush(waterMarkColor);
+            watermark.Brush = new SolidBrush(watermark.InactiveColor);
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -552,38 +535,182 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
+
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
-            Gradient controlCheckTemp = Enabled ? controlGradient : controlDisabledGradient;
+            Gradient controlCheckTemp;
+
+            if (Enabled)
+            {
+                controlCheckTemp = controlGradient;
+            }
+            else
+            {
+                controlCheckTemp = controlDisabledGradient;
+            }
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
             LinearGradientBrush gradientBackgroundBrush = GDI.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
             graphics.FillPath(gradientBackgroundBrush, controlGraphicsPath);
 
-            // Create border
             if (border.Visible)
             {
                 GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
-            Rectangle buttonRectangle = new Rectangle(0, 0, 25, 25);
-            buttonRectangle = buttonRectangle.AlignCenterY(ClientRectangle);
-            buttonRectangle = buttonRectangle.AlignRight(ClientRectangle, 0);
+            Point textBoxPoint;
+            Point buttonPoint;
+            Size buttonSize = new Size(buttonWidth, Height);
 
-            if (dropDownButtonsVisible)
+            if (buttonHorizontal == Alignment.Horizontal.Right)
+            {
+                buttonPoint = new Point(Width - buttonWidth, 0);
+                textBoxPoint = new Point(0, 0);
+            }
+            else
+            {
+                buttonPoint = new Point(0, 0);
+                textBoxPoint = new Point(buttonWidth, 0);
+            }
+
+            Rectangle buttonRectangle = new Rectangle(buttonPoint, buttonSize);
+            Rectangle textBoxRectangle = new Rectangle(textBoxPoint.X, textBoxPoint.Y, Width - buttonWidth, Height);
+
+            DrawButton(graphics, buttonRectangle);
+            DrawSeparator(graphics, buttonRectangle);
+
+            StringFormat stringFormat = new StringFormat
+                {
+                    Alignment = textAlignment,
+                    LineAlignment = StringAlignment.Center
+                };
+
+            ConfigureDirection(textBoxRectangle, buttonRectangle);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
+
+            if (Text.Length == 0)
+            {
+                Watermark.DrawWatermark(graphics, textBoxRectangle, stringFormat, watermark);
+            }
+        }
+
+        protected override void OnSelectionChangeCommitted(EventArgs e)
+        {
+            OnLostFocus(e);
+        }
+
+        private void ConfigureDirection(Rectangle textBoxRectangle, Rectangle buttonRectangle)
+        {
+            if (buttonHorizontal == Alignment.Horizontal.Right)
+            {
+                if (textAlignment == StringAlignment.Far)
+                {
+                    textBoxRectangle.Width -= buttonRectangle.Width;
+                }
+                else if (textAlignment == StringAlignment.Near)
+                {
+                    textBoxRectangle.X = 0;
+                }
+            }
+            else
+            {
+                if (textAlignment == StringAlignment.Far)
+                {
+                    textBoxRectangle.Width -= buttonRectangle.Width;
+                    textBoxRectangle.X = Width - textBoxRectangle.Width;
+                }
+                else if (textAlignment == StringAlignment.Near)
+                {
+                    textBoxRectangle.X = buttonWidth;
+                }
+            }
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                buttonColor = controlStyle.FlatButtonEnabled;
+                menuTextColor = fontStyle.ForeColor;
+
+                menuItemNormal = controlStyle.ItemEnabled;
+                menuItemHover = controlStyle.ItemHover;
+
+                separatorColor = controlStyle.Line;
+                separatorShadowColor = controlStyle.Shadow;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+
+                controlGradient.Colors = controlStyle.BoxEnabled.Colors;
+                controlGradient.Positions = controlStyle.BoxEnabled.Positions;
+                controlDisabledGradient.Colors = controlStyle.BoxDisabled.Colors;
+                controlDisabledGradient.Positions = controlStyle.BoxDisabled.Positions;
+            }
+            else
+            {
+                // Load default settings
+                buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+                menuTextColor = Settings.DefaultValue.Font.ForeColor;
+
+                menuItemNormal = Settings.DefaultValue.Control.ItemEnabled;
+                menuItemHover = Settings.DefaultValue.Control.ItemHover;
+
+                separatorColor = Settings.DefaultValue.Control.Line;
+                separatorShadowColor = Settings.DefaultValue.Control.Shadow;
+
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.Rounding.Default;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+            }
+        }
+
+        private void DefaultGradient()
+        {
+            controlGradient.Colors = Settings.DefaultValue.Control.BoxEnabled.Colors;
+            controlGradient.Positions = Settings.DefaultValue.Control.BoxEnabled.Positions;
+            controlDisabledGradient.Colors = Settings.DefaultValue.Control.BoxDisabled.Colors;
+            controlDisabledGradient.Positions = Settings.DefaultValue.Control.BoxDisabled.Positions;
+        }
+
+        private void DrawButton(Graphics graphics, Rectangle buttonRectangle)
+        {
+            if (buttonVisible)
             {
                 Point buttonImagePoint;
                 Size buttonImageSize;
 
-                // Draw drop down button
-                switch (dropDownButton)
+                switch (buttonStyles)
                 {
                     case DropDownButtons.Arrow:
                         {
                             buttonImageSize = new Size(25, 25);
-                            buttonImagePoint = new Point(buttonRectangle.X, buttonRectangle.Y);
-
+                            buttonImagePoint = new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - (buttonImageSize.Width / 2), (buttonRectangle.Y + (buttonRectangle.Height / 2)) - (buttonImageSize.Height / 2));
                             Arrow.DrawArrow(graphics, buttonImagePoint, buttonImageSize, buttonColor, 13);
                             break;
                         }
@@ -591,41 +718,29 @@
                     case DropDownButtons.Bars:
                         {
                             buttonImageSize = new Size(18, 10);
-                            buttonImagePoint = new Point(buttonRectangle.X + 2, buttonRectangle.Y + buttonRectangle.Width / 2 - buttonImageSize.Height);
+                            buttonImagePoint = new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - (buttonImageSize.Width / 2), (buttonRectangle.Y + (buttonRectangle.Height / 2)) - buttonImageSize.Height);
                             Bars.DrawBars(graphics, buttonImagePoint, buttonImageSize, buttonColor, 3, 5);
                             break;
                         }
                 }
             }
-
-            if (separatorVisible)
-            {
-                // Draw the separator
-                graphics.DrawLine(new Pen(separatorColor), buttonRectangle.X - 2, 4, buttonRectangle.X - 2, Height - 5);
-                graphics.DrawLine(new Pen(separatorShadowColor), buttonRectangle.X - 1, 4, buttonRectangle.X - 1, Height - 5);
-            }
-
-            // Draw string
-            Rectangle textBoxRectangle = new Rectangle(3, 0, Width - 20, Height);
-
-            StringFormat stringFormat = new StringFormat
-                {
-                    // Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle, stringFormat);
-
-            // Draw the watermark
-            if (watermarkVisible && Text.Length == 0)
-            {
-                graphics.DrawString(waterMarkText, WaterMarkFont, waterMarkBrush, textBoxRectangle, stringFormat);
-            }
         }
 
-        protected override void OnSelectionChangeCommitted(EventArgs e)
+        private void DrawSeparator(Graphics graphics, Rectangle buttonRectangle)
         {
-            OnLostFocus(e);
+            if (separatorVisible)
+            {
+                if (buttonHorizontal == Alignment.Horizontal.Right)
+                {
+                    graphics.DrawLine(new Pen(separatorColor), buttonRectangle.X - 1, 4, buttonRectangle.X - 1, Height - 5);
+                    graphics.DrawLine(new Pen(separatorShadowColor), buttonRectangle.X, 4, buttonRectangle.X, Height - 5);
+                }
+                else
+                {
+                    graphics.DrawLine(new Pen(separatorColor), buttonRectangle.Width - 1, 4, buttonRectangle.Width - 1, Height - 5);
+                    graphics.DrawLine(new Pen(separatorShadowColor), buttonRectangle.Width, 4, buttonRectangle.Width, Height - 5);
+                }
+            }
         }
 
         #endregion

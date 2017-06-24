@@ -3,12 +3,15 @@
     #region Namespace
 
     using System;
+    using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Drawing.Text;
+    using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
+    using VisualPlus.Framework.Structure;
 
     #endregion
 
@@ -89,12 +92,12 @@
                         newPosition.Y = outerBounds.Height / 2;
 
                         // Set image
-                        newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
-                        newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
+                        newImagePoint.X = newPosition.X - (imageRectangle.Width / 2);
+                        newImagePoint.Y = newPosition.Y - (imageRectangle.Height / 2);
 
                         // Set text
-                        newTextPoint.X = newPosition.X - textSize.Width / 2;
-                        newTextPoint.Y = newPosition.Y - textSize.Height / 2;
+                        newTextPoint.X = newPosition.X - (textSize.Width / 2);
+                        newTextPoint.Y = newPosition.Y - (textSize.Height / 2);
                         break;
                     }
 
@@ -105,11 +108,11 @@
 
                         // Set image
                         newImagePoint.X = newPosition.X + 4;
-                        newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
+                        newImagePoint.Y = newPosition.Y - (imageRectangle.Height / 2);
 
                         // Set text
                         newTextPoint.X = newImagePoint.X + imageRectangle.Width;
-                        newTextPoint.Y = newPosition.Y - textSize.Height / 2;
+                        newTextPoint.Y = newPosition.Y - (textSize.Height / 2);
                         break;
                     }
 
@@ -120,11 +123,11 @@
 
                         // Set text
                         newTextPoint.X = newPosition.X + 4;
-                        newTextPoint.Y = newPosition.Y - textSize.Height / 2;
+                        newTextPoint.Y = newPosition.Y - (textSize.Height / 2);
 
                         // Set image
                         newImagePoint.X = newTextPoint.X + textSize.Width;
-                        newImagePoint.Y = newPosition.Y - imageRectangle.Height / 2;
+                        newImagePoint.Y = newPosition.Y - (imageRectangle.Height / 2);
                         break;
                     }
 
@@ -134,11 +137,11 @@
                         newPosition.X = outerBounds.Width / 2;
 
                         // Set image
-                        newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
+                        newImagePoint.X = newPosition.X - (imageRectangle.Width / 2);
                         newImagePoint.Y = newPosition.Y + 4;
 
                         // Set text
-                        newTextPoint.X = newPosition.X - textSize.Width / 2;
+                        newTextPoint.X = newPosition.X - (textSize.Width / 2);
                         newTextPoint.Y = newImagePoint.Y + imageRectangle.Height;
                         break;
                     }
@@ -149,11 +152,11 @@
                         newPosition.X = outerBounds.Width / 2;
 
                         // Set text
-                        newTextPoint.X = newPosition.X - textSize.Width / 2;
+                        newTextPoint.X = newPosition.X - (textSize.Width / 2);
                         newTextPoint.Y = newImagePoint.Y + 4;
 
                         // Set image
-                        newImagePoint.X = newPosition.X - imageRectangle.Width / 2;
+                        newImagePoint.X = newPosition.X - (imageRectangle.Width / 2);
                         newImagePoint.Y = newPosition.Y + textSize.Height + 4;
                         break;
                     }
@@ -211,9 +214,30 @@
         /// <param name="borderColor">Normal border color.</param>
         /// <param name="borderHoverColor">Hover border color.</param>
         /// <param name="borderHoverVisible">Hover visible.</param>
+        public static void DrawBorderType(Graphics graphics, MouseStates controlState, GraphicsPath controlPath, float borderThickness, Color borderColor, Color borderHoverColor, bool borderHoverVisible)
+        {
+            if ((controlState == MouseStates.Hover) && borderHoverVisible)
+            {
+                DrawBorder(graphics, controlPath, borderThickness, borderHoverColor);
+            }
+            else
+            {
+                DrawBorder(graphics, controlPath, borderThickness, borderColor);
+            }
+        }
+
+
+        /// <summary>Handles and draws a border on the control depending on it's current focus.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="controlState">The control state.</param>
+        /// <param name="controlPath">The border path.</param>
+        /// <param name="borderThickness">The border size.</param>
+        /// <param name="borderColor">Normal border color.</param>
+        /// <param name="borderHoverColor">Hover border color.</param>
+        /// <param name="borderHoverVisible">Hover visible.</param>
         public static void DrawBorderType(Graphics graphics, ControlState controlState, GraphicsPath controlPath, float borderThickness, Color borderColor, Color borderHoverColor, bool borderHoverVisible)
         {
-            if (controlState == ControlState.Hover && borderHoverVisible)
+            if ((controlState == ControlState.Hover) && borderHoverVisible)
             {
                 DrawBorder(graphics, controlPath, borderThickness, borderHoverColor);
             }
@@ -295,12 +319,12 @@
             if (orientation == Orientation.Horizontal)
             {
                 // Calculate tick's setting
-                tickFrequencySize = drawRect.Width * tickFrequency / (maximum - minimum);
+                tickFrequencySize = (drawRect.Width * tickFrequency) / (maximum - minimum);
 
                 // Draw each tick
                 for (var i = 0; i <= tickCount; i++)
                 {
-                    graphics.DrawLine(pen, drawRect.Left + tickFrequencySize * i, drawRect.Top, drawRect.Left + tickFrequencySize * i, drawRect.Bottom);
+                    graphics.DrawLine(pen, drawRect.Left + (tickFrequencySize * i), drawRect.Top, drawRect.Left + (tickFrequencySize * i), drawRect.Bottom);
                 }
 
                 // Draw last tick at Maximum
@@ -309,12 +333,12 @@
             else
             {
                 // Calculate tick's setting
-                tickFrequencySize = drawRect.Height * tickFrequency / (maximum - minimum);
+                tickFrequencySize = (drawRect.Height * tickFrequency) / (maximum - minimum);
 
                 // Draw each tick
                 for (var i = 0; i <= tickCount; i++)
                 {
-                    graphics.DrawLine(pen, drawRect.Left, drawRect.Bottom - tickFrequencySize * i, drawRect.Right, drawRect.Bottom - tickFrequencySize * i);
+                    graphics.DrawLine(pen, drawRect.Left, drawRect.Bottom - (tickFrequencySize * i), drawRect.Right, drawRect.Bottom - (tickFrequencySize * i));
                 }
 
                 // Draw last tick at Maximum
@@ -363,34 +387,34 @@
             if (orientation == Orientation.Horizontal)
             {
                 // Calculate tick's setting
-                tickFrequencySize = drawRect.Width * tickFrequency / (maximum - minimum);
+                tickFrequencySize = (drawRect.Width * tickFrequency) / (maximum - minimum);
 
                 // Draw each tick text
                 for (var i = 0; i <= tickCount; i++)
                 {
-                    text = Convert.ToString(minimum + tickFrequency * i, 10);
-                    graphics.DrawString(text, font, brush, drawRect.Left + tickFrequencySize * i, drawRect.Top + drawRect.Height / 2, stringFormat);
+                    text = Convert.ToString(minimum + (tickFrequency * i), 10);
+                    graphics.DrawString(text, font, brush, drawRect.Left + (tickFrequencySize * i), drawRect.Top + (drawRect.Height / 2), stringFormat);
                 }
 
                 // Draw last tick text at Maximum
                 text = Convert.ToString(maximum, 10);
-                graphics.DrawString(text, font, brush, drawRect.Right, drawRect.Top + drawRect.Height / 2, stringFormat);
+                graphics.DrawString(text, font, brush, drawRect.Right, drawRect.Top + (drawRect.Height / 2), stringFormat);
             }
             else
             {
                 // Calculate tick's setting
-                tickFrequencySize = drawRect.Height * tickFrequency / (maximum - minimum);
+                tickFrequencySize = (drawRect.Height * tickFrequency) / (maximum - minimum);
 
                 // Draw each tick text
                 for (var i = 0; i <= tickCount; i++)
                 {
-                    text = Convert.ToString(minimum + tickFrequency * i, 10);
-                    graphics.DrawString(text, font, brush, drawRect.Left + drawRect.Width / 2, drawRect.Bottom - tickFrequencySize * i, stringFormat);
+                    text = Convert.ToString(minimum + (tickFrequency * i), 10);
+                    graphics.DrawString(text, font, brush, drawRect.Left + (drawRect.Width / 2), drawRect.Bottom - (tickFrequencySize * i), stringFormat);
                 }
 
                 // Draw last tick text at Maximum
                 text = Convert.ToString(maximum, 10);
-                graphics.DrawString(text, font, brush, drawRect.Left + drawRect.Width / 2, drawRect.Top, stringFormat);
+                graphics.DrawString(text, font, brush, drawRect.Left + (drawRect.Width / 2), drawRect.Top, stringFormat);
             }
         }
 
@@ -461,6 +485,10 @@
 
             return newShape;
         }
+
+        [DllImport("user32.dll")]
+        [Description("Gets the cursor position on the screen.")]
+        public static extern bool GetCursorPos(ref Point lpPoint);
 
         /// <summary>Measures the specified string when draw with the specified font.</summary>
         /// <param name="graphics">Graphics input.</param>

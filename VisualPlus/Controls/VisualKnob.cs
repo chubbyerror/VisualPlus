@@ -12,6 +12,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -28,6 +29,24 @@
     {
         #region Variables
 
+        private readonly Color[] knobColor =
+            {
+                Color.LightGray,
+                Color.White
+            };
+
+        private readonly Color[] knobTopColor =
+            {
+                Color.White,
+                Color.LightGray
+            };
+
+        private readonly Color[] scaleColor =
+            {
+                Color.LightGray,
+                Color.White
+            };
+
         private int _value;
         private int buttonDivisions = 30;
         private Container components = null;
@@ -40,13 +59,6 @@
         private Point[] gradientPoints;
         private Gradient knob = new Gradient();
         private Border knobBorder = new Border();
-
-        private Color[] knobColor =
-            {
-                Color.LightGray,
-                Color.White
-            };
-
         private int knobDistance = 35;
         private Font knobFont;
         private Point knobPoint;
@@ -55,13 +67,6 @@
         private Size knobTickSize = new Size(86, 86);
         private Gradient knobTop = new Gradient();
         private Border knobTopBorder = new Border();
-
-        private Color[] knobTopColor =
-            {
-                Color.White,
-                Color.LightGray
-            };
-
         private Size knobTopSize = new Size(75, 75);
         private int largeChange = 5;
         private Size lineSize = new Size(1, 1);
@@ -70,17 +75,10 @@
         private int mouseWheelBarPartitions = 10;
         private Graphics offGraphics;
         private Image offScreenImage;
-        private Color pointerColor = Settings.DefaultValue.Style.ProgressColor;
+        private Color pointerColor = Settings.DefaultValue.Progress.Progress.Colors[0];
         private PointerStyle pointerStyle = PointerStyle.Circle;
         private bool rotating;
         private Gradient scale = new Gradient();
-
-        private Color[] scaleColor =
-            {
-                Color.LightGray,
-                Color.White
-            };
-
         private int scaleDivisions = 11;
         private int scaleSubDivisions = 4;
         private bool showLargeScale = true;
@@ -132,6 +130,8 @@
             deltaAngle = endAngle - startAngle;
             ConfigureDimensions();
         }
+
+        public event ValueChangedEventHandler ValueChanged;
 
         public enum PointerStyle
         {
@@ -190,7 +190,7 @@
 
             set
             {
-                if (value <= 450 && value > startAngle)
+                if ((value <= 450) && (value > startAngle))
                 {
                     endAngle = value;
                     deltaAngle = endAngle - startAngle;
@@ -233,7 +233,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         [Category(Localize.Category.Layout)]
         public int KnobDistance
         {
@@ -249,7 +249,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         [Category(Localize.Category.Layout)]
         public Size KnobSize
         {
@@ -281,7 +281,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         [Category(Localize.Category.Layout)]
         public Size KnobTickSize
         {
@@ -331,7 +331,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         [Category(Localize.Category.Layout)]
         public Size KnobTopSize
         {
@@ -378,7 +378,7 @@
                 {
                     maximum = value;
 
-                    if (scaleSubDivisions > 0 && scaleDivisions > 0 && (maximum - minimum) / (scaleSubDivisions * scaleDivisions) <= 0)
+                    if ((scaleSubDivisions > 0) && (scaleDivisions > 0) && ((maximum - minimum) / (scaleSubDivisions * scaleDivisions) <= 0))
                     {
                         showSmallScale = false;
                     }
@@ -428,7 +428,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         [Category(Localize.Category.Appearance)]
         public Color PointerColor
         {
@@ -440,6 +440,22 @@
             set
             {
                 pointerColor = value;
+                Invalidate();
+            }
+        }
+
+        [Description("Set the number of intervals between minimum and maximum")]
+        [Category(Localize.Category.Behavior)]
+        public int ScaleDivisions
+        {
+            get
+            {
+                return scaleDivisions;
+            }
+
+            set
+            {
+                scaleDivisions = value;
                 Invalidate();
             }
         }
@@ -461,22 +477,6 @@
             }
         }
 
-        [Description("Set the number of intervals between minimum and maximum")]
-        [Category(Localize.Category.Behavior)]
-        public int ScaleDivisions
-        {
-            get
-            {
-                return scaleDivisions;
-            }
-
-            set
-            {
-                scaleDivisions = value;
-                Invalidate();
-            }
-        }
-
         [Description("Set the number of subdivisions between main divisions of graduation.")]
         [Category(Localize.Category.Behavior)]
         public int ScaleSubDivisions
@@ -488,7 +488,7 @@
 
             set
             {
-                if (value > 0 && scaleDivisions > 0 && (maximum - minimum) / (value * scaleDivisions) > 0)
+                if ((value > 0) && (scaleDivisions > 0) && ((maximum - minimum) / (value * scaleDivisions) > 0))
                 {
                     scaleSubDivisions = value;
                     Invalidate();
@@ -529,7 +529,7 @@
             {
                 if (value)
                 {
-                    if (scaleDivisions > 0 && scaleSubDivisions > 0 && (maximum - minimum) / (scaleSubDivisions * scaleDivisions) > 0)
+                    if ((scaleDivisions > 0) && (scaleSubDivisions > 0) && ((maximum - minimum) / (scaleSubDivisions * scaleDivisions) > 0))
                     {
                         showSmallScale = value;
                         Invalidate();
@@ -573,7 +573,7 @@
 
             set
             {
-                if (value >= 90 && value < endAngle)
+                if ((value >= 90) && (value < endAngle))
                 {
                     startAngle = value;
                     deltaAngle = endAngle - StartAngle;
@@ -582,7 +582,7 @@
             }
         }
 
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         [Category(Localize.Category.Behavior)]
         public Color TickColor
         {
@@ -639,8 +639,6 @@
 
         #region Events
 
-        public event ValueChangedEventHandler ValueChanged;
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -674,7 +672,7 @@
                 // --------------------------------------------------------
                 // Handles knob rotation with up,down,left and right keys 
                 // --------------------------------------------------------
-                if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Right)
+                if ((e.KeyCode == Keys.Up) || (e.KeyCode == Keys.Right))
                 {
                     if (_value < maximum)
                     {
@@ -683,7 +681,7 @@
 
                     Refresh();
                 }
-                else if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Left)
+                else if ((e.KeyCode == Keys.Down) || (e.KeyCode == Keys.Left))
                 {
                     if (_value > minimum)
                     {
@@ -747,7 +745,7 @@
             // --------------------------------------
             // Following Handles Knob Rotating     
             // --------------------------------------
-            if (e.Button == MouseButtons.Left && rotating)
+            if ((e.Button == MouseButtons.Left) && rotating)
             {
                 Cursor = Cursors.Hand;
                 Point p = new Point(e.X, e.Y);
@@ -783,7 +781,7 @@
             if (focused && rotating && GDI.IsMouseInBounds(e.Location, knobRectangle))
             {
                 // the Delta value is always 120, as explained in MSDN
-                int v = e.Delta / 120 * (maximum - minimum) / mouseWheelBarPartitions;
+                int v = ((e.Delta / 120) * (maximum - minimum)) / mouseWheelBarPartitions;
                 SetValue(Value + v);
 
                 // Avoid to send MouseWheel event to the parent container
@@ -811,7 +809,7 @@
             {
                 string value = _value.ToString("0");
                 Size textAreaSize = GDI.GetTextSize(e.Graphics, value, Font);
-                graphics.DrawString(value, Font, new SolidBrush(ForeColor), Width / 2 - textAreaSize.Width / 2, Height / 2 - textAreaSize.Height / 2);
+                graphics.DrawString(value, Font, new SolidBrush(ForeColor), (Width / 2) - (textAreaSize.Width / 2), (Height / 2) - (textAreaSize.Height / 2));
             }
         }
 
@@ -862,7 +860,7 @@
 
                 // y = x;
                 y = 2 * strh;
-                w = size - 2 * strw;
+                w = size - (2 * strw);
                 if (w <= 0)
                 {
                     w = 1;
@@ -878,7 +876,7 @@
             }
 
             // Center of knob
-            knobPoint = new Point(knobRectangle.X + knobRectangle.Width / 2, knobRectangle.Y + knobRectangle.Height / 2);
+            knobPoint = new Point(knobRectangle.X + (knobRectangle.Width / 2), knobRectangle.Y + (knobRectangle.Height / 2));
 
             offScreenImage = new Bitmap(Width, Height);
             offGraphics = Graphics.FromImage(offScreenImage);
@@ -900,8 +898,8 @@
             float tx;
             float ty;
 
-            float incr = MathHelper.DegreeToRadian((endAngle - startAngle) / ((scaleDivisions - 1) * (scaleSubDivisions + 1)));
-            float currentAngle = MathHelper.DegreeToRadian(startAngle);
+            float incr = MathManager.DegreeToRadian((endAngle - startAngle) / ((scaleDivisions - 1) * (scaleSubDivisions + 1)));
+            float currentAngle = MathManager.DegreeToRadian(startAngle);
 
             float radius = knobRectangle.Width / 2;
             float rulerValue = minimum;
@@ -920,11 +918,11 @@
                 for (; n < scaleDivisions; n++)
                 {
                     // draw divisions
-                    ptStart.X = (float)(cx + radius * Math.Cos(currentAngle));
-                    ptStart.Y = (float)(cy + radius * Math.Sin(currentAngle));
+                    ptStart.X = (float)(cx + (radius * Math.Cos(currentAngle)));
+                    ptStart.Y = (float)(cy + (radius * Math.Sin(currentAngle)));
 
-                    ptEnd.X = (float)(cx + (radius + w / 50) * Math.Cos(currentAngle));
-                    ptEnd.Y = (float)(cy + (radius + w / 50) * Math.Sin(currentAngle));
+                    ptEnd.X = (float)(cx + ((radius + (w / 50)) * Math.Cos(currentAngle)));
+                    ptEnd.Y = (float)(cy + ((radius + (w / 50)) * Math.Sin(currentAngle)));
 
                     graphics.DrawLine(penL, ptStart, ptEnd);
 
@@ -944,14 +942,14 @@
                     if (drawDivInside)
                     {
                         // graduations strings inside the knob
-                        tx = (float)(cx + (radius - 11 * drawRatio) * Math.Cos(currentAngle));
-                        ty = (float)(cy + (radius - 11 * drawRatio) * Math.Sin(currentAngle));
+                        tx = (float)(cx + ((radius - (11 * drawRatio)) * Math.Cos(currentAngle)));
+                        ty = (float)(cy + ((radius - (11 * drawRatio)) * Math.Sin(currentAngle)));
                     }
                     else
                     {
                         // graduation strings outside the knob
-                        tx = (float)(cx + (radius + 11 * drawRatio) * Math.Cos(currentAngle));
-                        ty = (float)(cy + (radius + 11 * drawRatio) * Math.Sin(currentAngle));
+                        tx = (float)(cx + ((radius + (11 * drawRatio)) * Math.Cos(currentAngle)));
+                        ty = (float)(cy + ((radius + (11 * drawRatio)) * Math.Sin(currentAngle)));
                     }
 
                     graphics.DrawString(str,
@@ -982,10 +980,10 @@
                             // if user want to display small graduations
                             if (showSmallScale)
                             {
-                                ptStart.X = (float)(cx + radius * Math.Cos(currentAngle));
-                                ptStart.Y = (float)(cy + radius * Math.Sin(currentAngle));
-                                ptEnd.X = (float)(cx + (radius + w / 50) * Math.Cos(currentAngle));
-                                ptEnd.Y = (float)(cy + (radius + w / 50) * Math.Sin(currentAngle));
+                                ptStart.X = (float)(cx + (radius * Math.Cos(currentAngle)));
+                                ptStart.Y = (float)(cy + (radius * Math.Sin(currentAngle)));
+                                ptEnd.X = (float)(cx + ((radius + (w / 50)) * Math.Cos(currentAngle)));
+                                ptEnd.Y = (float)(cy + ((radius + (w / 50)) * Math.Sin(currentAngle)));
 
                                 graphics.DrawLine(penS, ptStart, ptEnd);
                             }
@@ -1001,7 +999,7 @@
 
         private void DrawKnob()
         {
-            Point knobPoint = new Point(this.knobRectangle.X + this.knobRectangle.Width / 2 - KnobSize.Width / 2, this.knobRectangle.Y + this.knobRectangle.Height / 2 - KnobSize.Height / 2);
+            Point knobPoint = new Point((this.knobRectangle.X + (this.knobRectangle.Width / 2)) - (KnobSize.Width / 2), (this.knobRectangle.Y + (this.knobRectangle.Height / 2)) - (KnobSize.Height / 2));
             Rectangle knobRectangle = new Rectangle(knobPoint, KnobSize);
 
             LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knob.Colors, gradientPoints, knob.Angle, knob.Positions);
@@ -1017,7 +1015,7 @@
 
         private void DrawKnobTop()
         {
-            Point knobTopPoint = new Point(knobRectangle.X + knobRectangle.Width / 2 - KnobTopSize.Width / 2, knobRectangle.Y + knobRectangle.Height / 2 - KnobTopSize.Height / 2);
+            Point knobTopPoint = new Point((knobRectangle.X + (knobRectangle.Width / 2)) - (KnobTopSize.Width / 2), (knobRectangle.Y + (knobRectangle.Height / 2)) - (KnobTopSize.Height / 2));
             Rectangle knobTopRectangle = new Rectangle(knobTopPoint, KnobTopSize);
 
             LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knobTop.Colors, gradientPoints, knobTop.Angle, knobTop.Positions);
@@ -1036,8 +1034,8 @@
             float w = KnobTopSize.Width;
 
             // TODO: Adjust
-            float incr = MathHelper.DegreeToRadian((startAngle - endAngle) / ((buttonDivisions - 1) * (scaleSubDivisions + 1)));
-            float currentAngle = MathHelper.DegreeToRadian(0);
+            float incr = MathManager.DegreeToRadian((startAngle - endAngle) / ((buttonDivisions - 1) * (scaleSubDivisions + 1)));
+            float currentAngle = MathManager.DegreeToRadian(0);
 
             float radius = KnobTickSize.Width / 2;
 
@@ -1050,11 +1048,11 @@
             for (; n < buttonDivisions; n++)
             {
                 // draw divisions
-                ptStart.X = (float)(cx + radius * Math.Cos(currentAngle));
-                ptStart.Y = (float)(cy + radius * Math.Sin(currentAngle));
+                ptStart.X = (float)(cx + (radius * Math.Cos(currentAngle)));
+                ptStart.Y = (float)(cy + (radius * Math.Sin(currentAngle)));
 
-                ptEnd.X = (float)(cx + (radius + w / 50) * Math.Cos(currentAngle));
-                ptEnd.Y = (float)(cy + (radius + w / 50) * Math.Sin(currentAngle));
+                ptEnd.X = (float)(cx + ((radius + (w / 50)) * Math.Cos(currentAngle)));
+                ptEnd.Y = (float)(cy + ((radius + (w / 50)) * Math.Sin(currentAngle)));
 
                 // TODO: draw lines along button border
                 // gOffScreen.DrawLine(penL, ptStart, ptEnd);
@@ -1099,8 +1097,8 @@
                 {
                     float radius = knobRectangle.Width / 2;
 
-                    int l = (int)radius / 2 + lineSize.Height;
-                    int w = l / 4 + lineSize.Width;
+                    int l = ((int)radius / 2) + lineSize.Height;
+                    int w = (l / 4) + lineSize.Width;
                     var pt = GetKnobLine(l);
 
                     graphics.DrawLine(new Pen(pointerColor, w), pt[0], pt[1]);
@@ -1119,7 +1117,7 @@
                     h = w;
 
                     Point Arrow = GetKnobPosition(w);
-                    Rectangle rPointer = new Rectangle(Arrow.X - w / 2, Arrow.Y - w / 2, w, h);
+                    Rectangle rPointer = new Rectangle(Arrow.X - (w / 2), Arrow.Y - (w / 2), w, h);
                     graphics.FillEllipse(new SolidBrush(pointerColor), rPointer);
                 }
             }
@@ -1148,18 +1146,18 @@
 
             float radius = knobRectangle.Width / 2;
 
-            float degree = deltaAngle * Value / (maximum - minimum);
-            degree = MathHelper.DegreeToRadian(degree + startAngle);
+            float degree = (deltaAngle * Value) / (maximum - minimum);
+            degree = MathManager.DegreeToRadian(degree + startAngle);
 
             Point Pos = new Point(0, 0);
 
-            Pos.X = (int)(cx + (radius - drawRatio * 10) * Math.Cos(degree));
-            Pos.Y = (int)(cy + (radius - drawRatio * 10) * Math.Sin(degree));
+            Pos.X = (int)(cx + ((radius - (drawRatio * 10)) * Math.Cos(degree)));
+            Pos.Y = (int)(cy + ((radius - (drawRatio * 10)) * Math.Sin(degree)));
 
             pret[0] = new Point(Pos.X, Pos.Y);
 
-            Pos.X = (int)(cx + (radius - drawRatio * 10 - l) * Math.Cos(degree));
-            Pos.Y = (int)(cy + (radius - drawRatio * 10 - l) * Math.Sin(degree));
+            Pos.X = (int)(cx + ((radius - (drawRatio * 10) - l) * Math.Cos(degree)));
+            Pos.Y = (int)(cy + ((radius - (drawRatio * 10) - l) * Math.Sin(degree)));
 
             pret[1] = new Point(Pos.X, Pos.Y);
 
@@ -1173,13 +1171,13 @@
 
             float radius = knobRectangle.Width / 2;
 
-            float degree = deltaAngle * Value / (maximum - minimum);
-            degree = MathHelper.DegreeToRadian(degree + startAngle);
+            float degree = (deltaAngle * Value) / (maximum - minimum);
+            degree = MathManager.DegreeToRadian(degree + startAngle);
 
             Point Pos = new Point(0, 0)
                 {
-                    X = (int)(cx + (radius - KnobDistance * drawRatio) * Math.Cos(degree)),
-                    Y = (int)(cy + (radius - KnobDistance * drawRatio) * Math.Sin(degree))
+                    X = (int)(cx + ((radius - (KnobDistance * drawRatio)) * Math.Cos(degree))),
+                    Y = (int)(cy + ((radius - (KnobDistance * drawRatio)) * Math.Sin(degree)))
                 };
 
             return Pos;
@@ -1195,18 +1193,18 @@
                 degree = (knobPoint.Y - point.Y) / (float)(knobPoint.X - point.X);
                 degree = (float)Math.Atan(degree);
 
-                degree = degree * (float)(180 / Math.PI) + (180 - startAngle);
+                degree = (degree * (float)(180 / Math.PI)) + (180 - startAngle);
             }
             else if (point.X > knobPoint.X)
             {
                 degree = (point.Y - knobPoint.Y) / (float)(point.X - knobPoint.X);
                 degree = (float)Math.Atan(degree);
 
-                degree = degree * (float)(180 / Math.PI) + 360 - startAngle;
+                degree = ((degree * (float)(180 / Math.PI)) + 360) - startAngle;
             }
 
             // round to the nearest value (when you click just before or after a graduation!)
-            v = (int)Math.Round(degree * (maximum - minimum) / deltaAngle);
+            v = (int)Math.Round((degree * (maximum - minimum)) / deltaAngle);
 
             if (v > maximum)
             {

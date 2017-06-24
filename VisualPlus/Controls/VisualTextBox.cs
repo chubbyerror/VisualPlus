@@ -12,9 +12,11 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
     using VisualPlus.Properties;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -23,7 +25,7 @@
     [DefaultEvent("TextChanged")]
     [DefaultProperty("Text")]
     [Description("The Visual TextBox")]
-    [Designer(VSDesignerBinding.VisualTextBox)]
+    [Designer(DesignManager.VisualTextBox)]
     public sealed class VisualTextBox : TextBox
     {
         #region Variables
@@ -34,32 +36,27 @@
 
         #region Variables
 
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(3);
-
+        private Color backgroundColor;
         private Border border = new Border();
         private Border buttonBorder = new Border();
-        private Color buttonColor = Settings.DefaultValue.Style.ButtonNormalColor;
+        private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private Image buttonImage = Resources.search;
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private bool buttonVisible;
         private int buttonWidth = 19;
-        private Color controlDisabledColor = Settings.DefaultValue.Style.TextDisabled;
+        private Color controlDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private GraphicsPath controlGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Color foreColor;
         private Size iconSize = new Size(13, 13);
-        private int textboxHeight = 20;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Color waterMarkActiveColor;
-        private SolidBrush waterMarkBrush;
-        private Color waterMarkColor;
-        private Panel waterMarkContainer;
-        private Font waterMarkFont;
-        private string waterMarkText = "Custom text...";
 
-        private bool watermarkVisible;
+        private StyleManager styleManager = new StyleManager();
+        private int textBoxHeight = 20;
+        private Color textDisabledColor;
+        private TextRenderingHint textRendererHint;
+        private Watermark watermark = new Watermark();
+        private Panel waterMarkContainer;
         private int xValue;
         private int yValue;
 
@@ -76,22 +73,17 @@
 
             BorderStyle = BorderStyle.None;
             AutoSize = false;
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             Size = new Size(135, 25);
             CreateTextBox();
             Controls.Add(TextBoxObject);
             BackColor = Color.Transparent;
             UpdateStyles();
 
-            // Sets some default values to the watermark properties
-            waterMarkColor = Color.LightGray;
-            waterMarkActiveColor = Color.Gray;
-            waterMarkFont = Font;
-            waterMarkBrush = new SolidBrush(waterMarkActiveColor);
             waterMarkContainer = null;
 
-            // Draw the watermark, for design time
-            if (watermarkVisible)
+            ConfigureStyleManager();
+
+            if (watermark.Visible)
             {
                 DrawWaterMark();
             }
@@ -99,12 +91,14 @@
 
         public delegate void ButtonClickedEventHandler();
 
+        public event ButtonClickedEventHandler ButtonClicked;
+
         #endregion
 
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color BackgroundColor
         {
             get
@@ -154,7 +148,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color ButtonColor
         {
             get
@@ -170,7 +164,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ButtonImage)]
+        [Description(Localize.Description.Common.Image)]
         public Image ButtonImage
         {
             get
@@ -186,7 +180,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool ButtonVisible
         {
             get
@@ -202,7 +196,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int ButtonWidth
         {
             get
@@ -220,7 +214,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ControlDisabled)]
+        [Description(Localize.Description.Common.Color)]
         public Color ControlDisabledColor
         {
             get
@@ -235,8 +229,23 @@
             }
         }
 
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size IconSize
         {
             get
@@ -251,24 +260,25 @@
             }
         }
 
+        [TypeConverter(typeof(StyleManagerConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
+        public StyleManager StyleManager
         {
             get
             {
-                return foreColor;
+                return styleManager;
             }
 
             set
             {
-                foreColor = value;
+                styleManager = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -284,7 +294,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -299,82 +309,19 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Watermark)]
-        public string WaterMark
+        [TypeConverter(typeof(WatermarkConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Behavior)]
+        public Watermark Watermark
         {
             get
             {
-                return waterMarkText;
+                return watermark;
             }
 
             set
             {
-                waterMarkText = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color WaterMarkActiveForeColor
-        {
-            get
-            {
-                return waterMarkActiveColor;
-            }
-
-            set
-            {
-                waterMarkActiveColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
-        public Font WaterMarkFont
-        {
-            get
-            {
-                return waterMarkFont;
-            }
-
-            set
-            {
-                waterMarkFont = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
-        public Color WaterMarkForeColor
-        {
-            get
-            {
-                return waterMarkColor;
-            }
-
-            set
-            {
-                waterMarkColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
-        public bool WatermarkVisible
-        {
-            get
-            {
-                return watermarkVisible;
-            }
-
-            set
-            {
-                watermarkVisible = value;
+                watermark = value;
                 Invalidate();
             }
         }
@@ -382,8 +329,6 @@
         #endregion
 
         #region Events
-
-        public event ButtonClickedEventHandler ButtonClicked;
 
         public void CreateTextBox()
         {
@@ -409,10 +354,10 @@
             controlState = ControlState.Hover;
             Invalidate();
 
-            if (watermarkVisible)
+            if (watermark.Visible)
             {
                 // If focused use focus color
-                waterMarkBrush = new SolidBrush(waterMarkActiveColor);
+                watermark.Brush = new SolidBrush(watermark.ActiveColor);
 
                 // Don't draw watermark if contains text.
                 if (TextLength <= 0)
@@ -461,7 +406,7 @@
             controlState = ControlState.Normal;
             Invalidate();
 
-            if (watermarkVisible)
+            if (watermark.Visible)
             {
                 // If the user has written something and left the control
                 if (TextLength > 0)
@@ -484,10 +429,10 @@
             if (buttonVisible)
             {
                 // Check if mouse in X position.
-                if (xValue > buttonRectangle.X && xValue < Width)
+                if ((xValue > buttonRectangle.X) && (xValue < Width))
                 {
                     // Determine the button middle separator by checking for the Y position.
-                    if (yValue > buttonRectangle.Y && yValue < Height)
+                    if ((yValue > buttonRectangle.Y) && (yValue < Height))
                     {
                         ButtonClicked?.Invoke();
                     }
@@ -521,7 +466,11 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = textRendererHint;
+
+            if (styleManager.LockedStyle)
+            {
+                ConfigureStyleManager();
+            }
 
             UpdateLocationPoints();
             graphics.SetClip(controlGraphicsPath);
@@ -547,7 +496,7 @@
                 graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
 
                 Size imageSize = new Size(iconSize.Width, iconSize.Height);
-                Point imagePoint = new Point(buttonRectangle.X + buttonRectangle.Width / 2 - imageSize.Width / 2, buttonRectangle.Y + buttonRectangle.Height / 2 - imageSize.Height / 2);
+                Point imagePoint = new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - (imageSize.Width / 2), (buttonRectangle.Y + (buttonRectangle.Height / 2)) - (imageSize.Height / 2));
 
                 Rectangle imageRectangle = new Rectangle(imagePoint, imageSize);
 
@@ -572,7 +521,7 @@
             // Draw border
             if (border.Visible)
             {
-                if (controlState == ControlState.Hover && border.HoverVisible)
+                if ((controlState == ControlState.Hover) && border.HoverVisible)
                 {
                     GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
                 }
@@ -582,7 +531,7 @@
                 }
             }
 
-            if (watermarkVisible)
+            if (watermark.Visible)
             {
                 DrawWaterMark();
             }
@@ -600,7 +549,7 @@
             else
             {
                 // Auto adjust the text box height depending on the font size.
-                textboxHeight = Convert.ToInt32(Font.Size) * 2 + 1;
+                textBoxHeight = (Convert.ToInt32(Font.Size) * 2) + 1;
             }
 
             UpdateLocationPoints();
@@ -618,7 +567,7 @@
             TextBoxObject.Text = Text;
             Invalidate();
 
-            if (watermarkVisible)
+            if (watermark.Visible)
             {
                 // If the text of the text box is not empty.
                 if (TextLength > 0)
@@ -634,14 +583,50 @@
             }
         }
 
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                backgroundColor = controlStyle.Background(0);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.Rounding.Default;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                backgroundColor = Settings.DefaultValue.Control.Background(3);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+            }
+        }
+
         private void DrawWaterMark()
         {
-            if (waterMarkContainer == null && TextLength <= 0)
+            if ((waterMarkContainer == null) && (TextLength <= 0))
             {
                 waterMarkContainer = new Panel(); // Creates the new panel instance
-                waterMarkContainer.Paint += waterMarkContainer_Paint;
+                waterMarkContainer.Paint += WaterMarkContainer_Paint;
                 waterMarkContainer.Invalidate();
-                waterMarkContainer.Click += waterMarkContainer_Click;
+                waterMarkContainer.Click += WaterMarkContainer_Click;
                 Controls.Add(waterMarkContainer); // adds the control
                 waterMarkContainer.BringToFront();
             }
@@ -655,14 +640,14 @@
         private void OnKeyDown(object obj, KeyEventArgs e)
         {
             // Select all
-            if (e.Control && e.KeyCode == Keys.A)
+            if (e.Control && (e.KeyCode == Keys.A))
             {
                 TextBoxObject.SelectAll();
                 e.SuppressKeyPress = true;
             }
 
             // Copy
-            if (e.Control && e.KeyCode == Keys.C)
+            if (e.Control && (e.KeyCode == Keys.C))
             {
                 TextBoxObject.Copy();
                 e.SuppressKeyPress = true;
@@ -682,7 +667,7 @@
         {
             if (!Multiline)
             {
-                Height = textboxHeight;
+                Height = textBoxHeight;
             }
 
             controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
@@ -693,12 +678,12 @@
             buttonPath.CloseAllFigures();
         }
 
-        private void waterMarkContainer_Click(object sender, EventArgs e)
+        private void WaterMarkContainer_Click(object sender, EventArgs e)
         {
             Focus();
         }
 
-        private void waterMarkContainer_Paint(object sender, PaintEventArgs e)
+        private void WaterMarkContainer_Paint(object sender, PaintEventArgs e)
         {
             // Configure the watermark
             waterMarkContainer.Location = new Point(2, 0);
@@ -709,10 +694,10 @@
             waterMarkContainer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
 
             // Set color
-            waterMarkBrush = ContainsFocus ? new SolidBrush(waterMarkActiveColor) : new SolidBrush(waterMarkColor);
+            watermark.Brush = ContainsFocus ? new SolidBrush(watermark.ActiveColor) : new SolidBrush(watermark.InactiveColor);
 
             // Draws the string on the panel
-            e.Graphics.DrawString(waterMarkText, waterMarkFont, waterMarkBrush, new PointF(-2f, 1f));
+            e.Graphics.DrawString(watermark.Text, watermark.Font, watermark.Brush, new PointF(-2f, 1f));
         }
 
         #endregion

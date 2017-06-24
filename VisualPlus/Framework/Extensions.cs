@@ -1,13 +1,18 @@
 ﻿namespace VisualPlus.Framework
 {
+    #region Namespace
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Globalization;
+
+    #endregion
 
     public static class Extensions
     {
-        #region ${0} Methods
+        #region Events
 
         /// <summary>Returns the center point of the rectangle.</summary>
         /// <param name="rect">This rectangle.</param>
@@ -52,7 +57,7 @@
 
     public static class RectangleAlignment
     {
-        #region ${0} Methods
+        #region Events
 
         /// <summary>Aligns the rectangle to the bottom.</summary>
         /// <param name="rectangle">The rectangle.</param>
@@ -117,7 +122,7 @@
 
     public class CustomNumberTypeConverter : TypeConverter
     {
-        #region ${0} Methods
+        #region Events
 
         public override bool CanConvertFrom(
             ITypeDescriptorContext context,

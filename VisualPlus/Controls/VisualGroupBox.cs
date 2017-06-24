@@ -13,8 +13,10 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
@@ -28,28 +30,25 @@
     {
         #region Variables
 
-        private Color backgroundColor = Settings.DefaultValue.Style.BackgroundColor(0);
+        private Color backgroundColor;
         private Border border = new Border();
-        private GraphicsPath controlGraphicsPath;
+        private GraphicsPath borderGraphicsPath;
         private ControlState controlState = ControlState.Normal;
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Expander expander;
+        private Color foreColor;
+        private GroupBoxStyle groupBoxStyle = GroupBoxStyle.Default;
         private StringAlignment stringAlignment = StringAlignment.Center;
-        private Color textDisabledColor = Settings.DefaultValue.Style.TextDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+
+        private StyleManager styleManager = new StyleManager();
+        private Color textDisabledColor;
+        private TextRenderingHint textRendererHint;
+        private TitleAlignments titleAlign = TitleAlignments.Top;
         private Border titleBorder = new Border();
-
-        private Color[] titleBoxColor =
-            {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0)
-            };
-
         private int titleBoxHeight = 25;
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
         private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
         private Gradient titleGradient = new Gradient();
-        private VerticalDirection vertDirection = VerticalDirection.Top;
 
         #endregion
 
@@ -62,20 +61,34 @@
                 | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            ForeColor = Settings.DefaultValue.Style.ForeColor(0);
             Size = new Size(220, 180);
-            MinimumSize = new Size(136, 50);
             Padding = new Padding(5, 28, 5, 5);
-            Font = new Font(Settings.DefaultValue.Style.FontFamily, Font.Size);
             UpdateStyles();
 
-            float[] gradientPosition = { 0, 1 };
+            expander = new Expander(this, 25)
+                {
+                    Visible = false
+                };
 
-            titleGradient.Colors = titleBoxColor;
-            titleGradient.Positions = gradientPosition;
+            ConfigureStyleManager();
+            DefaultGradient();
         }
 
-        public enum VerticalDirection
+        [Description("Occours when the expander toggle has changed.")]
+        public delegate void ToggleChangedEventHandler();
+
+        public event ToggleChangedEventHandler ToggleExpanderChanged;
+
+        public enum GroupBoxStyle
+        {
+            /// <summary>The default.</summary>
+            Default,
+
+            /// <summary>The classic.</summary>
+            Classic
+        }
+
+        public enum TitleAlignments
         {
             /// <summary>The bottom.</summary>
             Bottom,
@@ -89,7 +102,7 @@
         #region Properties
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color BackgroundColor
         {
             get
@@ -100,7 +113,7 @@
             set
             {
                 backgroundColor = value;
-                ExceptionHandler.ApplyContainerBackColorChange(this, backgroundColor);
+                ExceptionManager.ApplyContainerBackColorChange(this, backgroundColor);
                 Invalidate();
             }
         }
@@ -122,25 +135,57 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentNoName)]
-        public VerticalDirection Direction
+        [Category(Localize.Category.Appearance)]
+        [Description("The group box type.")]
+        public GroupBoxStyle BoxStyle
         {
             get
             {
-                return vertDirection;
+                return groupBoxStyle;
             }
 
             set
             {
-                vertDirection = value;
+                groupBoxStyle = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(ExpanderConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public Expander Expander
+        {
+            get
+            {
+                return expander;
+            }
+
+            set
+            {
+                expander = value;
+                Invalidate();
+            }
+        }
+
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
                 Invalidate();
             }
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.StringAlignment)]
-        public StringAlignment StringAlignment
+        [Description(Localize.Description.Common.Alignment)]
+        public StringAlignment TextAlignment
         {
             get
             {
@@ -155,23 +200,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                foreColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
             get
@@ -187,7 +216,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -198,6 +227,22 @@
             set
             {
                 textRendererHint = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Layout)]
+        [Description(Localize.Description.Common.Alignment)]
+        public TitleAlignments TitleAlignment
+        {
+            get
+            {
+                return titleAlign;
+            }
+
+            set
+            {
+                titleAlign = value;
                 Invalidate();
             }
         }
@@ -221,7 +266,7 @@
 
         [DefaultValue("25")]
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int TitleBoxHeight
         {
             get
@@ -238,7 +283,7 @@
 
         [DefaultValue(Settings.DefaultValue.TitleBoxVisible)]
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.TitleBoxVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool TitleBoxVisible
         {
             get
@@ -276,12 +321,35 @@
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
-            ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, false);
+            ExceptionManager.SetControlBackColor(e.Control, backgroundColor, false);
         }
 
         protected override void OnControlRemoved(ControlEventArgs e)
         {
-            ExceptionHandler.SetControlBackColor(e.Control, backgroundColor, true);
+            ExceptionManager.SetControlBackColor(e.Control, backgroundColor, true);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (expander.MouseOnButton)
+            {
+                if (expander.Expanded)
+                {
+                    expander.Expanded = false;
+                }
+                else
+                {
+                    expander.Expanded = true;
+                }
+
+                ToggleExpanderChanged?.Invoke();
+            }
+            else
+            {
+                Focus();
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -298,6 +366,25 @@
             Invalidate();
         }
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            if (expander.Visible)
+            {
+                expander.GetMouseOnButton(e.Location);
+
+                if (expander.MouseOnButton)
+                {
+                    Cursor = expander.Cursor;
+                }
+                else
+                {
+                    Cursor = Cursors.Default;
+                }
+            }
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
@@ -307,28 +394,26 @@
             graphics.TextRenderingHint = textRendererHint;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
-            Point titlePoint;
-
-            if (vertDirection == VerticalDirection.Top)
+            if (styleManager.LockedStyle)
             {
-                titlePoint = new Point(0, 0);
-            }
-            else
-            {
-                titlePoint = new Point(0, Height - titleBoxHeight - 1);
+                ConfigureStyleManager();
             }
 
-            titleBoxRectangle = new Rectangle(titlePoint.X, titlePoint.Y, Width, titleBoxHeight);
+            Size textArea = GDI.GetTextSize(graphics, Text, Font);
+            Rectangle group = ConfigureStyleBox(textArea);
+            Rectangle title = ConfigureStyleTitleBox(textArea);
 
+            titleBoxRectangle = new Rectangle(title.X, title.Y, title.Width, title.Height);
             titleBoxPath = GDI.GetBorderShape(titleBoxRectangle, titleBorder.Shape, titleBorder.Rounding);
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Shape, border.Rounding);
+
+            borderGraphicsPath = GDI.GetBorderShape(group, border.Shape, border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
-            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(backgroundColor), borderGraphicsPath);
 
             if (border.Visible)
             {
-                GDI.DrawBorderType(graphics, controlState, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
+                GDI.DrawBorderType(graphics, controlState, borderGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
             }
 
             if (titleBoxVisible)
@@ -340,7 +425,7 @@
 
                 if (titleBorder.Visible)
                 {
-                    if (controlState == ControlState.Hover && titleBorder.HoverVisible)
+                    if ((controlState == ControlState.Hover) && titleBorder.HoverVisible)
                     {
                         GDI.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.HoverColor);
                     }
@@ -351,13 +436,186 @@
                 }
             }
 
-            StringFormat stringFormat = new StringFormat
-                {
-                    Alignment = stringAlignment,
-                    LineAlignment = StringAlignment.Center
-                };
+            if (groupBoxStyle == GroupBoxStyle.Classic)
+            {
+                graphics.FillRectangle(new SolidBrush(backgroundColor), titleBoxRectangle);
+                graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle);
+            }
+            else
+            {
+                StringFormat stringFormat = new StringFormat
+                    {
+                        Alignment = stringAlignment,
+                        LineAlignment = StringAlignment.Center
+                    };
 
-            graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
+                graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
+            }
+
+            if (expander.Visible)
+            {
+                Point buttonPoint = expander.GetAlignmentPoint(Size);
+                expander.Draw(graphics, buttonPoint);
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            expander?.UpdateOriginal(Size);
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            expander?.UpdateOriginal(Size);
+        }
+
+        private Rectangle ConfigureStyleBox(Size textArea)
+        {
+            Size groupBoxSize = new Size(Width, Height);
+            Point groupBoxPoint = new Point(0, 0);
+
+            switch (groupBoxStyle)
+            {
+                case GroupBoxStyle.Default:
+                    {
+                        break;
+                    }
+
+                case GroupBoxStyle.Classic:
+                    {
+                        if (titleAlign == TitleAlignments.Top)
+                        {
+                            groupBoxPoint = new Point(0, textArea.Height / 2);
+                            groupBoxSize = new Size(Width, Height - (textArea.Height / 2));
+                        }
+                        else
+                        {
+                            groupBoxPoint = new Point(0, 0);
+                            groupBoxSize = new Size(Width, Height - (textArea.Height / 2));
+                        }
+
+                        break;
+                    }
+            }
+
+            Rectangle groupBoxRectangle = new Rectangle(groupBoxPoint, groupBoxSize);
+
+            return groupBoxRectangle;
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (styleManager.VisualStylesManager != null)
+            {
+                // Load style manager settings 
+                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+
+                border.Color = borderStyle.Color;
+                border.HoverColor = borderStyle.HoverColor;
+                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
+                border.Shape = styleManager.VisualStylesManager.BorderShape;
+                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
+                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+
+                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                foreColor = fontStyle.ForeColor;
+                textDisabledColor = fontStyle.ForeColorDisabled;
+                backgroundColor = controlStyle.Background(0);
+            }
+            else
+            {
+                // Load default settings
+                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
+                border.Rounding = Settings.DefaultValue.Rounding.Default;
+                border.Shape = Settings.DefaultValue.BorderShape;
+                border.Thickness = Settings.DefaultValue.BorderThickness;
+                border.Visible = Settings.DefaultValue.BorderVisible;
+                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                foreColor = Settings.DefaultValue.Font.ForeColor;
+                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+                backgroundColor = Settings.DefaultValue.Control.Background(0);
+            }
+        }
+
+        private Rectangle ConfigureStyleTitleBox(Size textArea)
+        {
+            Size titleSize = new Size(Width, titleBoxHeight);
+            Point titlePoint = new Point(0, 0);
+
+            switch (groupBoxStyle)
+            {
+                case GroupBoxStyle.Default:
+                    {
+                        // Declare Y
+                        if (titleAlign == TitleAlignments.Top)
+                        {
+                            titlePoint = new Point(titlePoint.X, 0);
+                        }
+                        else
+                        {
+                            titlePoint = new Point(titlePoint.X, Height - titleBoxHeight);
+                        }
+
+                        break;
+                    }
+
+                case GroupBoxStyle.Classic:
+                    {
+                        titleBoxVisible = false;
+                        var spacing = 5;
+
+                        if (titleAlign == TitleAlignments.Top)
+                        {
+                            titlePoint = new Point(titlePoint.X, 0);
+                        }
+                        else
+                        {
+                            titlePoint = new Point(titlePoint.X, Height - textArea.Height);
+                        }
+
+                        // +1 extra whitespace in case of FontStyle=Bold
+                        titleSize = new Size(textArea.Width + 1, textArea.Height);
+
+                        switch (stringAlignment)
+                        {
+                            case StringAlignment.Near:
+                                {
+                                    titlePoint.X += 5;
+                                    break;
+                                }
+
+                            case StringAlignment.Center:
+                                {
+                                    titlePoint.X = (Width / 2) - (textArea.Width / 2);
+                                    break;
+                                }
+
+                            case StringAlignment.Far:
+                                {
+                                    titlePoint.X = Width - textArea.Width - spacing;
+                                    break;
+                                }
+                        }
+
+                        break;
+                    }
+            }
+
+            Rectangle titleRectangle = new Rectangle(titlePoint, titleSize);
+            return titleRectangle;
+        }
+
+        private void DefaultGradient()
+        {
+            titleGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
+            titleGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
         }
 
         #endregion

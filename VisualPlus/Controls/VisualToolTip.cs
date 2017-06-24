@@ -10,6 +10,7 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -20,33 +21,30 @@
     [DefaultEvent("Popup")]
     [DefaultProperty("Text")]
     [Description("The Visual ToolTip")]
-    [Designer(VSDesignerBinding.VisualToolTip)]
+    [Designer(DesignManager.VisualToolTip)]
     public sealed class VisualToolTip : ToolTip
     {
         #region Variables
 
-        private bool autoSize = true;
-
-        private Color[] backgroundColor =
+        private readonly Color[] backgroundColor =
             {
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0)),
-                Settings.DefaultValue.Style.BackgroundColor(0),
-                ControlPaint.Light(Settings.DefaultValue.Style.BackgroundColor(0))
+                ControlPaint.Light(Settings.DefaultValue.Control.Background(0)),
+                Settings.DefaultValue.Control.Background(0),
+                ControlPaint.Light(Settings.DefaultValue.Control.Background(0))
             };
 
+        private bool autoSize = true;
         private Gradient backgroundGradient = new Gradient();
-
         private Border border = new Border();
-
-        private Font font = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Regular);
-        private Color foreColor = Settings.DefaultValue.Style.ForeColor(0);
+        private Font font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Image icon;
         private bool iconBorder;
         private GraphicsPath iconGraphicsPath;
         private Point iconPoint = new Point(0, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-        private Color lineColor = Settings.DefaultValue.Style.BorderColor(0);
+        private Color lineColor = Settings.DefaultValue.Border.Color;
         private Padding padding = new Padding(4, 4, 4, 4);
         private Rectangle separator;
         private int separatorThickness = 1;
@@ -57,11 +55,10 @@
         private bool textShadow;
         private string title;
         private Color titleColor = Color.Gray;
-        private Font titleFont = new Font(Settings.DefaultValue.Style.FontFamily, 8.25F, FontStyle.Bold);
+        private Font titleFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
         private Point titlePoint;
         private Size toolTipSize = new Size(100, 40);
         private ToolTipType toolTipType = ToolTipType.Default;
-
         private int xWidth;
         private int yHeight;
 
@@ -99,7 +96,7 @@
         #region Properties
 
         [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.AutoSize)]
+        [Description(Localize.Description.Common.AutoSize)]
         public bool AutoSize
         {
             get
@@ -146,7 +143,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
+        [Description(Localize.Description.Strings.Font)]
         public Font Font
         {
             get
@@ -160,8 +157,22 @@
             }
         }
 
+        public new Color ForeColor
+        {
+            get
+            {
+                return foreColor;
+            }
+
+            set
+            {
+                base.ForeColor = value;
+                foreColor = value;
+            }
+        }
+
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Icon)]
+        [Description(Localize.Description.Common.Image)]
         public Image Icon
         {
             get
@@ -176,7 +187,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.BorderVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool IconBorder
         {
             get
@@ -191,7 +202,7 @@
         }
 
         [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.IconSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size IconSize
         {
             get
@@ -206,7 +217,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color LineColor
         {
             get
@@ -221,7 +232,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentNoName)]
+        [Description(Localize.Description.Common.Padding)]
         public Padding Padding
         {
             get
@@ -236,7 +247,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public int SeparatorThickness
         {
             get
@@ -251,7 +262,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Spacing)]
         public int Spacing
         {
             get
@@ -266,7 +277,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentNoName)]
+        [Description(Localize.Description.Strings.Text)]
         public string Text
         {
             get
@@ -281,22 +292,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
-        public Color TextColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                foreColor = value;
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextRenderingHint)]
+        [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
             get
@@ -311,7 +307,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentVisible)]
+        [Description(Localize.Description.Common.Visible)]
         public bool TextShadow
         {
             get
@@ -326,7 +322,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentNoName)]
+        [Description(Localize.Description.Common.Type)]
         public ToolTipType TipType
         {
             get
@@ -341,7 +337,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentNoName)]
+        [Description(Localize.Description.Strings.Text)]
         public string Title
         {
             get
@@ -356,7 +352,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.TextColor)]
+        [Description(Localize.Description.Common.Color)]
         public Color TitleColor
         {
             get
@@ -371,7 +367,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentFont)]
+        [Description(Localize.Description.Strings.Font)]
         public Font TitleFont
         {
             get
@@ -386,7 +382,7 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.ComponentSize)]
+        [Description(Localize.Description.Common.Size)]
         public Size ToolTipSize
         {
             get
