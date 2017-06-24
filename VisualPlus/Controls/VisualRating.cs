@@ -21,8 +21,8 @@
     {
         #region Variables
 
-        private readonly BufferedGraphicsContext _bufContext = BufferedGraphicsManager.Current;
-        private bool allowHalfStar;
+        private readonly BufferedGraphicsContext _bufferedContext = BufferedGraphicsManager.Current;
+        private bool allowHalfStar = true;
         private BufferedGraphics bufferedGraphics;
         private int maximum = 5;
         private float mouseOverIndex = -1;
@@ -753,8 +753,8 @@
         {
             if ((Width > 0) && (Height > 0))
             {
-                _bufContext.MaximumBuffer = new Size(Width + 1, Height + 1);
-                bufferedGraphics = _bufContext.Allocate(CreateGraphics(), ClientRectangle);
+                _bufferedContext.MaximumBuffer = new Size(Width + 1, Height + 1);
+                bufferedGraphics = _bufferedContext.Allocate(CreateGraphics(), ClientRectangle);
                 bufferedGraphics.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             }
         }
