@@ -564,13 +564,10 @@
             else
             {
                 // Load default settings
-                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Type = Settings.DefaultValue.BorderShape;
-                border.Thickness = Settings.DefaultValue.BorderThickness;
-                border.Visible = Settings.DefaultValue.BorderVisible;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
-                progressFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                border = new Border();
+
+                Font = Settings.DefaultValue.DefaultFont;
+                progressFont = Settings.DefaultValue.DefaultFont;
                 hatchBackColor = Settings.DefaultValue.Progress.Hatch;
                 hatchForeColor = Color.FromArgb(40, hatchBackColor);
 
@@ -777,7 +774,7 @@
         /// <param name="colored">Toggle coloring.</param>
         private void DrawStyledProgress(Graphics graphics, int barCount, bool colored)
         {
-            GraphicsPath barStyle = new GraphicsPath();
+            GraphicsPath barStylePath = new GraphicsPath();
 
             for (var i = 0; i < barCount; i++)
             {
@@ -788,7 +785,7 @@
                 }
 
                 // Create Bar
-                switch (this.barStyle)
+                switch (barStyle)
                 {
                     case BarTypes.Bars:
                         {
@@ -796,30 +793,30 @@
                             if (border.Type == BorderType.Rounded)
                             {
                                 // Rounded rectangle - makes it possible to make circles with full roundness.
-                                barStyle.AddPath(
+                                barStylePath.AddPath(
                                     GDI.DrawRoundedRectangle(barLocation.X, barLocation.Y, barSize.X, barSize.Y, border.Rounding),
                                     true);
                             }
                             else
                             {
                                 // Rectangle
-                                barStyle.AddRectangle(new Rectangle(barLocation.X, barLocation.Y, barSize.X, barSize.Y));
+                                barStylePath.AddRectangle(new Rectangle(barLocation.X, barLocation.Y, barSize.X, barSize.Y));
                             }
 
-                            barStyle.CloseAllFigures();
+                            barStylePath.CloseAllFigures();
                             break;
                         }
 
                     case BarTypes.Horizontal:
                         {
                             // Default progress bar
-                            barStyle = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+                            barStylePath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
                             break;
                         }
 
                     case BarTypes.Vertical:
                         {
-                            barStyle = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+                            barStylePath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
                             break;
                         }
 
@@ -834,7 +831,7 @@
                     LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
 
                     // Draw the progress
-                    graphics.FillPath(progressGradientBrush, barStyle);
+                    graphics.FillPath(progressGradientBrush, barStylePath);
                 }
                 else
                 {
@@ -842,7 +839,7 @@
                     LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
 
                     // Draw the background
-                    graphics.FillPath(backgroundGradientBrush, barStyle);
+                    graphics.FillPath(backgroundGradientBrush, barStylePath);
                 }
 
                 // Draw border
@@ -850,17 +847,17 @@
                 {
                     if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
                     {
-                        GDI.DrawBorder(graphics, barStyle, border.Thickness, border.HoverColor);
+                        GDI.DrawBorder(graphics, barStylePath, border.Thickness, border.HoverColor);
                     }
                     else
                     {
-                        GDI.DrawBorder(graphics, barStyle, border.Thickness, border.Color);
+                        GDI.DrawBorder(graphics, barStylePath, border.Thickness, border.Color);
                     }
                 }
             }
         }
 
-        private void marqueeTimer_Tick(object sender, EventArgs e)
+        private void MarqueeTimer_Tick(object sender, EventArgs e)
         {
             if (barStyle == BarTypes.Horizontal)
             {
@@ -921,7 +918,7 @@
             if (marqueeTimer == null)
             {
                 marqueeTimer = new Timer { Interval = 10 };
-                marqueeTimer.Tick += marqueeTimer_Tick;
+                marqueeTimer.Tick += MarqueeTimer_Tick;
             }
 
             if (barStyle == BarTypes.Horizontal)

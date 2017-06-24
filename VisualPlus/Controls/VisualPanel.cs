@@ -281,12 +281,8 @@
             else
             {
                 // Load default settings
-                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Type = Settings.DefaultValue.BorderShape;
-                border.Thickness = Settings.DefaultValue.BorderThickness;
-                border.Visible = Settings.DefaultValue.BorderVisible;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                border = new Border();
+                Font = Settings.DefaultValue.DefaultFont;
                 backgroundColor = Settings.DefaultValue.Control.Background(0);
             }
         }

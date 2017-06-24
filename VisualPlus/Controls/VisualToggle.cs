@@ -70,7 +70,7 @@
 
             BackColor = Color.Transparent;
             Size = new Size(50, 25);
-            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+            Font = Settings.DefaultValue.DefaultFont;
             animationTimer.Tick += AnimationTimerTick;
 
             DefaultGradient();
@@ -458,19 +458,17 @@
             else
             {
                 // Load default settings
-                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.Rounding.ToggleBorder;
-                border.Type = Settings.DefaultValue.BorderShape;
-                border.Thickness = Settings.DefaultValue.BorderThickness;
-                border.Visible = Settings.DefaultValue.BorderVisible;
+                border = new Border
+                    {
+                        Rounding = Settings.DefaultValue.Rounding.ToggleBorder,
+                    };
 
-                buttonBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                buttonBorder.Rounding = Settings.DefaultValue.Rounding.ToggleButton;
-                buttonBorder.Type = Settings.DefaultValue.BorderShape;
-                buttonBorder.Thickness = Settings.DefaultValue.BorderThickness;
-                buttonBorder.Visible = Settings.DefaultValue.BorderVisible;
-
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                buttonBorder = new Border
+                    {
+                        Rounding = Settings.DefaultValue.Rounding.ToggleButton,
+                    };
+                
+                Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
             }

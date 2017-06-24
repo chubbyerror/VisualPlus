@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
     using VisualPlus.Styles;
 
@@ -23,9 +22,6 @@
     public class VisualStylesManager : Component
     {
         #region Variables
-
-        [Browsable(false)]
-        public ITab TabStyle;
 
         [Browsable(false)]
         public IBorder BorderStyle;
@@ -42,28 +38,30 @@
         public IProgress ProgressStyle;
 
         [Browsable(false)]
+        public ITab TabStyle;
+
+        [Browsable(false)]
         public IWatermark WatermarkStyle;
 
         #endregion
 
         #region Variables
 
-        private bool animation = Settings.DefaultValue.Animation;
-        private int barAmount = Settings.DefaultValue.BarAmount;
-        private bool borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
-        private int borderRounding = Settings.DefaultValue.Rounding.Default;
-        private BorderType borderType = Settings.DefaultValue.BorderShape;
-        private int borderThickness = Settings.DefaultValue.BorderThickness;
-        private bool borderVisible = Settings.DefaultValue.BorderVisible;
-        private float hatchSize = Settings.DefaultValue.HatchSize;
-        private bool hatchVisible = Settings.DefaultValue.HatchVisible;
-        private float progressSize = Settings.DefaultValue.ProgressSize;
-        private Color styleColor = Color.Green;
-        private TextRenderingHint textRenderingHint = Settings.DefaultValue.TextRenderingHint;
-        private bool textVisible = Settings.DefaultValue.TextVisible;
+        private bool animation;
+        private int barAmount;
+        private bool borderHoverVisible;
+        private int borderRounding;
+        private int borderThickness;
+        private BorderType borderType;
+        private bool borderVisible;
+        private float hatchSize;
+        private bool hatchVisible;
+        private float progressSize;
+        private TextRenderingHint textRenderingHint;
+        private bool textVisible;
         private Styles visualStyle;
-        private string watermarkText = Settings.DefaultValue.WatermarkText;
-        private bool watermarkVisible = Settings.DefaultValue.WatermarkVisible;
+        private string watermarkText;
+        private bool watermarkVisible;
 
         #endregion
 
@@ -74,11 +72,30 @@
             // Load default style
             visualStyle = Settings.DefaultValue.DefaultStyle;
 
+            // Load settings
             BorderStyle = GetBorderStyle(visualStyle);
             ControlStyle = GetControlStyle(visualStyle);
             FontStyle = GetFontStyle(visualStyle);
             ProgressStyle = GetProgressStyle(visualStyle);
+            TabStyle = GetTabStyle(visualStyle);
             WatermarkStyle = GetWatermarkStyle(visualStyle);
+
+            // Apply settings
+            animation = Settings.DefaultValue.Animation;
+            barAmount = Settings.DefaultValue.BarAmount;
+            borderHoverVisible = Settings.DefaultValue.BorderHoverVisible;
+            borderRounding = Settings.DefaultValue.Rounding.Default;
+            borderThickness = Settings.DefaultValue.BorderThickness;
+            borderType = Settings.DefaultValue.BorderType;
+            borderVisible = Settings.DefaultValue.BorderVisible;
+            hatchSize = Settings.DefaultValue.HatchSize;
+            hatchVisible = Settings.DefaultValue.HatchVisible;
+            progressSize = Settings.DefaultValue.ProgressSize;
+            textRenderingHint = Settings.DefaultValue.TextRenderingHint;
+            textVisible = Settings.DefaultValue.TextVisible;
+
+            watermarkText = Settings.DefaultValue.WatermarkText;
+            watermarkVisible = Settings.DefaultValue.WatermarkVisible;
 
             Initialized = true;
         }
@@ -158,22 +175,6 @@
             }
         }
 
-        [DefaultValue(Settings.DefaultValue.BorderShape)]
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Common.Type)]
-        public BorderType BorderType
-        {
-            get
-            {
-                return borderType;
-            }
-
-            set
-            {
-                borderType = value;
-            }
-        }
-
         [DefaultValue(Settings.DefaultValue.BorderThickness)]
         [Category(Localize.Category.Layout)]
         [Description(Localize.Description.Border.Thickness)]
@@ -190,6 +191,22 @@
                 {
                     borderThickness = value;
                 }
+            }
+        }
+
+        [DefaultValue(Settings.DefaultValue.BorderType)]
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Type)]
+        public BorderType BorderType
+        {
+            get
+            {
+                return borderType;
+            }
+
+            set
+            {
+                borderType = value;
             }
         }
 
@@ -254,21 +271,6 @@
             set
             {
                 progressSize = value;
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color StyleColor
-        {
-            get
-            {
-                return styleColor;
-            }
-
-            set
-            {
-                styleColor = value;
             }
         }
 
@@ -373,33 +375,6 @@
             StyleChanged?.Invoke(newStyle);
         }
 
-        private static ITab GetTabStyle(Styles styles)
-        {
-            ITab style;
-
-            switch (styles)
-            {
-                case Styles.Visual:
-                    {
-                        style = new Visual();
-                        break;
-                    }
-
-                case Styles.BlackAndYellow:
-                    {
-                        style = new BlackAndYellow();
-                        break;
-                    }
-
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException();
-                    }
-            }
-
-            return style;
-        }
-
         private static IBorder GetBorderStyle(Styles styles)
         {
             IBorder style;
@@ -484,6 +459,33 @@
         private static IProgress GetProgressStyle(Styles styles)
         {
             IProgress style;
+
+            switch (styles)
+            {
+                case Styles.Visual:
+                    {
+                        style = new Visual();
+                        break;
+                    }
+
+                case Styles.BlackAndYellow:
+                    {
+                        style = new BlackAndYellow();
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            return style;
+        }
+
+        private static ITab GetTabStyle(Styles styles)
+        {
+            ITab style;
 
             switch (styles)
             {

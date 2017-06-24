@@ -77,6 +77,7 @@
             checkMark.Shape.Type = BorderType.Rounded;
             checkMark.ShapeSize = new Size(8, 8);
             checkMark.Shape.Rounding = 2;
+
             boxShape.Size = new Size(14, 14);
             boxShape.ImageSize = new Size(19, 16);
 
@@ -412,13 +413,10 @@
             {
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
-                boxShape.Border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                boxShape.Border.Rounding = Settings.DefaultValue.Rounding.Default;
-                boxShape.Border.Type = Settings.DefaultValue.BorderShape;
-                boxShape.Border.Thickness = Settings.DefaultValue.BorderThickness;
-                boxShape.Border.Visible = Settings.DefaultValue.BorderVisible;
+                boxShape.Border = new Border();
+
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }

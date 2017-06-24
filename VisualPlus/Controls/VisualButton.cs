@@ -409,13 +409,11 @@
             {
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
-                buttonShape.Border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                buttonShape.Border.Rounding = Settings.DefaultValue.Rounding.Default;
-                buttonShape.Border.Type = Settings.DefaultValue.BorderShape;
-                buttonShape.Border.Thickness = Settings.DefaultValue.BorderThickness;
-                buttonShape.Border.Visible = Settings.DefaultValue.BorderVisible;
+
+                buttonShape.Border = new Border();
+
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }

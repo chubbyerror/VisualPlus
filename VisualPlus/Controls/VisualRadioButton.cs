@@ -428,11 +428,12 @@
             {
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
-                boxShape.Border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                boxShape.Border.Rounding = Settings.DefaultValue.Rounding.Default;
-                boxShape.Border.Type = Settings.DefaultValue.BorderShape;
-                boxShape.Border.Thickness = Settings.DefaultValue.BorderThickness;
-                boxShape.Border.Visible = Settings.DefaultValue.BorderVisible;
+
+                boxShape.Border = new Border
+                    {
+                        Rounding = Settings.DefaultValue.Rounding.RoundedRectangle,
+                        };
+
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
                 Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
                 foreColor = Settings.DefaultValue.Font.ForeColor;
@@ -444,9 +445,10 @@
                 checkMark.Shape.Type = BorderType.Rounded;
                 checkMark.ShapeSize = new Size(8, 8);
                 checkMark.Shape.Rounding = 6;
+
+
                 boxShape.Size = new Size(14, 14);
                 boxShape.ImageSize = new Size(19, 16);
-                boxShape.Border.Rounding = 12;
             }
         }
 

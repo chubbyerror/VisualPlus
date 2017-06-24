@@ -15,6 +15,22 @@
     {
         #region Variables
 
+        private readonly Color defaultBackgroundColorNoDepth = Color.White;
+        private readonly float[] triplePosition = { 0, 1 / 2f, 1 };
+        private readonly float[] twoPosition = { 0, 1 };
+
+        #endregion
+
+        #region Properties
+
+        public Styles StyleManagement
+        {
+            get
+            {
+                return Styles.Visual;
+            }
+        }
+
         public Color Color
         {
             get
@@ -29,6 +45,16 @@
             {
                 return Color.FromArgb(120, 183, 230);
             }
+        }
+
+        Color IControl.Background(int depth)
+        {
+            if (depth < GetBackgroundColor().Count)
+            {
+                return GetBackgroundColor()[depth];
+            }
+
+            return defaultBackgroundColorNoDepth;
         }
 
         public Gradient BoxDisabled
@@ -380,36 +406,6 @@
             get
             {
                 return Color.LightGray;
-            }
-        }
-
-        #endregion
-
-        #region Variables
-
-        private readonly Color defaultBackgroundColorNoDepth = Color.White;
-        private readonly float[] triplePosition = { 0, 1 / 2f, 1 };
-        private readonly float[] twoPosition = { 0, 1 };
-
-        Color IControl.Background(int depth)
-        {
-            if (depth < GetBackgroundColor().Count)
-            {
-                return GetBackgroundColor()[depth];
-            }
-
-            return defaultBackgroundColorNoDepth;
-        }
-
-        #endregion
-
-        #region Properties
-
-        public Styles StyleManagement
-        {
-            get
-            {
-                return Styles.Visual;
             }
         }
 

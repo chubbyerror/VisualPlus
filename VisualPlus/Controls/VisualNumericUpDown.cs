@@ -40,7 +40,6 @@
         private Rectangle buttonRectangle;
         private int buttonWidth = 19;
         private GraphicsPath controlGraphicsPath;
-
         private Color foreColor;
         private bool keyboardNum;
         private long maximumValue;
@@ -48,7 +47,7 @@
         private long numericValue;
         private StyleManager styleManager = new StyleManager();
         private Color textDisabledColor;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private TextRenderingHint textRendererHint;
         private int xValue;
         private int yValue;
 
@@ -586,13 +585,10 @@
             else
             {
                 // Load default settings
-                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Type = Settings.DefaultValue.BorderShape;
-                border.Thickness = Settings.DefaultValue.BorderThickness;
-                border.Visible = Settings.DefaultValue.BorderVisible;
+                border = new Border();
+
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }

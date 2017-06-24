@@ -36,6 +36,7 @@
     [Description("The Visual Shape")]
     public sealed class VisualShape : Control
     {
+        // TODO: Add rotation
         #region Variables
 
         private readonly MouseState mouseState;
@@ -46,8 +47,7 @@
         private GraphicsPath controlGraphicsPath;
         private VFXManager effectsManager;
         private VFXManager hoverEffectsManager;
-        private int rotation;
-        private ShapeType shapeType = ShapeType.Rectangle;
+        private ShapeType shapeType;
         private StyleManager styleManager = new StyleManager();
 
         #endregion
@@ -62,7 +62,7 @@
                 true);
 
             UpdateStyles();
-
+            shapeType = ShapeType.Rectangle;
             BackColor = Color.Transparent;
             Size = new Size(100, 100);
 
@@ -252,7 +252,6 @@
             }
 
             DrawBackground(graphics);
-
             DrawAnimation(graphics);
         }
 
@@ -263,6 +262,7 @@
                     Increment = 0.03,
                     EffectType = EffectType.EaseOut
                 };
+
             hoverEffectsManager = new VFXManager
                 {
                     Increment = 0.07,
@@ -362,11 +362,8 @@
             {
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
-                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Type = Settings.DefaultValue.BorderShape;
-                border.Thickness = Settings.DefaultValue.BorderThickness;
-                border.Visible = Settings.DefaultValue.BorderVisible;
+
+                border = new Border();
             }
         }
 

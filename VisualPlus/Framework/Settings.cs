@@ -6,7 +6,6 @@ namespace VisualPlus.Framework
     using System.Drawing.Text;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework.Structure;
     using VisualPlus.Styles;
 
     #endregion
@@ -35,7 +34,7 @@ namespace VisualPlus.Framework
             public const bool Animation = true;
             public const int BorderThickness = 1;
             public const bool BorderHoverVisible = true;
-            public const BorderType BorderShape = Enums.BorderType.Rounded;
+            public const BorderType BorderType = Enums.BorderType.Rounded;
             public const bool BorderVisible = true;
             public const bool TextVisible = true;
             public const float ProgressSize = 5F;
@@ -62,6 +61,7 @@ namespace VisualPlus.Framework
             public struct Rounding
             {
                 public const int Default = 6;
+                public const int RoundedRectangle = 12;
                 public const int ToggleBorder = 20;
                 public const int ToggleButton = 18;
             }

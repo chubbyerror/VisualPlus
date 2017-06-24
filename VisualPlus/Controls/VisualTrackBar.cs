@@ -70,7 +70,7 @@
         private string suffix;
         private Size textAreaSize;
         private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-        private Font textFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+        private Font textFont = Settings.DefaultValue.DefaultFont;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color tickColor = Settings.DefaultValue.Control.Line;
         private int tickHeight = 4;
@@ -94,7 +94,7 @@
 
             mouseState = new MouseState(this);
             UpdateStyles();
-            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+            Font = Settings.DefaultValue.DefaultFont;
             BackColor = Color.Transparent;
             DoubleBuffered = true;
             UpdateStyles();
@@ -1180,20 +1180,10 @@
             else
             {
                 // Load default settings
-                trackBarBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                trackBarBorder.Rounding = Settings.DefaultValue.Rounding.Default;
-                trackBarBorder.Type = Settings.DefaultValue.BorderShape;
-                trackBarBorder.Thickness = Settings.DefaultValue.BorderThickness;
-                trackBarBorder.Visible = Settings.DefaultValue.BorderVisible;
+                trackBarBorder = new Border();
+                buttonBorder = new Border();
 
-                buttonBorder.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                buttonBorder.Rounding = Settings.DefaultValue.Rounding.Default;
-                buttonBorder.Type = Settings.DefaultValue.BorderShape;
-                buttonBorder.Thickness = Settings.DefaultValue.BorderThickness;
-                buttonBorder.Visible = Settings.DefaultValue.BorderVisible;
-
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
-
+                Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
             }

@@ -19,49 +19,28 @@
     {
         #region Variables
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Color)]
-        public Color Color
-        {
-            get
-            {
-                return color;
-            }
-
-            set
-            {
-                color = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Color)]
-        public Color HoverColor
-        {
-            get
-            {
-                return hoverColor;
-            }
-
-            set
-            {
-                hoverColor = value;
-            }
-        }
+        private Color color;
+        private Color hoverColor;
+        private bool hoverVisible;
+        private int rounding;
+        private int thickness;
+        private BorderType type;
+        private bool visible;
 
         #endregion
 
-        #region Variables
+        #region Constructors
 
-        private Color color = Settings.DefaultValue.Border.Color;
-        private Color hoverColor = Settings.DefaultValue.Border.HoverColor;
-        private bool hoverVisible = true;
-        private int rounding = Settings.DefaultValue.Rounding.Default;
-        private BorderType type = Settings.DefaultValue.BorderShape;
-        private int thickness = Settings.DefaultValue.BorderThickness;
-        private bool visible = true;
+        public Border()
+        {
+            color = Settings.DefaultValue.Border.Color;
+            hoverColor = Settings.DefaultValue.Border.HoverColor;
+            rounding = Settings.DefaultValue.Rounding.Default;
+            thickness = Settings.DefaultValue.BorderThickness;
+            type = Settings.DefaultValue.BorderType;
+            hoverVisible = true;
+            visible = true;
+        }
 
         #endregion
 
@@ -104,22 +83,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Border.Shape)]
-        public BorderType Type
-        {
-            get
-            {
-                return type;
-            }
-
-            set
-            {
-                type = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Border.Thickness)]
         public int Thickness
         {
@@ -139,6 +102,22 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Border.Shape)]
+        public BorderType Type
+        {
+            get
+            {
+                return type;
+            }
+
+            set
+            {
+                type = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Visible)]
         public bool Visible
         {
@@ -150,6 +129,38 @@
             set
             {
                 visible = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Color)]
+        public Color Color
+        {
+            get
+            {
+                return color;
+            }
+
+            set
+            {
+                color = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Color)]
+        public Color HoverColor
+        {
+            get
+            {
+                return hoverColor;
+            }
+
+            set
+            {
+                hoverColor = value;
             }
         }
 

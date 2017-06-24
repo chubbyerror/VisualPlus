@@ -623,13 +623,10 @@
             else
             {
                 // Load default settings
-                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Type = Settings.DefaultValue.BorderShape;
-                border.Thickness = Settings.DefaultValue.BorderThickness;
-                border.Visible = Settings.DefaultValue.BorderVisible;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                border = new Border();
                 backgroundColor = Settings.DefaultValue.Control.Background(3);
+
+                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }

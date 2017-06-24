@@ -50,11 +50,10 @@
         private Color separatorShadowColor;
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
         private int startIndex;
-
         private StyleManager styleManager = new StyleManager();
         private StringAlignment textAlignment = StringAlignment.Center;
         private Color textDisabledColor;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private TextRenderingHint textRendererHint;
         private Watermark watermark = new Watermark();
 
         #endregion
@@ -683,13 +682,10 @@
                 separatorColor = Settings.DefaultValue.Control.Line;
                 separatorShadowColor = Settings.DefaultValue.Control.Shadow;
 
-                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Type = Settings.DefaultValue.BorderShape;
-                border.Thickness = Settings.DefaultValue.BorderThickness;
-                border.Visible = Settings.DefaultValue.BorderVisible;
+                border = new Border();
+
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }

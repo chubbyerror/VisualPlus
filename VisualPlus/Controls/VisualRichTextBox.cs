@@ -37,7 +37,7 @@
 
         private Color backgroundColor;
         private Border border = new Border();
-        private Color controlDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+        private Color backgroundDisabledColor;
         private GraphicsPath controlGraphicsPath;
         private Color foreColor;
         private StyleManager styleManager = new StyleManager();
@@ -108,16 +108,16 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.Common.Color)]
-        public Color ControlDisabledColor
+        public Color BackgroundDisabledColor
         {
             get
             {
-                return controlDisabledColor;
+                return backgroundDisabledColor;
             }
 
             set
             {
-                controlDisabledColor = value;
+                backgroundDisabledColor = value;
                 Invalidate();
             }
         }
@@ -265,12 +265,12 @@
 
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
-            Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
+            Color controlTempColor = Enabled ? backgroundColor : backgroundDisabledColor;
 
             RichObject.BackColor = controlTempColor;
             RichObject.ForeColor = foreColor;
 
-            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(controlTempColor), controlGraphicsPath);
 
             if (border.Visible)
             {
@@ -318,19 +318,19 @@
                 border.Visible = styleManager.VisualStylesManager.BorderVisible;
                 Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
                 backgroundColor = controlStyle.Background(0);
+                backgroundDisabledColor = controlStyle.FlatButtonDisabled;
                 foreColor = fontStyle.ForeColor;
                 textDisabledColor = fontStyle.ForeColorDisabled;
             }
             else
             {
                 // Load default settings
-                border.HoverVisible = Settings.DefaultValue.BorderHoverVisible;
-                border.Rounding = Settings.DefaultValue.Rounding.Default;
-                border.Type = Settings.DefaultValue.BorderShape;
-                border.Thickness = Settings.DefaultValue.BorderThickness;
-                border.Visible = Settings.DefaultValue.BorderVisible;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                border = new Border();
+
                 backgroundColor = Settings.DefaultValue.Control.Background(3);
+                backgroundDisabledColor = Settings.DefaultValue.Control.FlatButtonDisabled;
+
+                Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }
