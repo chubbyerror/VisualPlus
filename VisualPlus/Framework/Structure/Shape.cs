@@ -18,16 +18,28 @@
         #region Variables
 
         private Border border = new Border();
-        private Gradient disabledGradient = new Gradient();
+        private Gradient disabledGradient;
         private Image disabledImage = Resources.Icon;
-        private Gradient enabledGradient = new Gradient();
+        private Gradient enabledGradient;
         private Image enabledImage = Resources.Icon;
-        private Gradient hoverGradient = new Gradient();
+        private Gradient hoverGradient;
         private Point imagePoint = new Point(0, 0);
         private Size imageSize = new Size(0, 0);
         private bool imageVisible;
-        private Gradient pressedGradient = new Gradient();
+        private Gradient pressedGradient;
         private Size size = new Size(25, 25);
+
+        #endregion
+
+        #region Constructors
+
+        public Shape()
+        {
+            disabledGradient = Settings.DefaultValue.Control.ControlDisabled;
+            enabledGradient = Settings.DefaultValue.Control.ControlEnabled;
+            hoverGradient = Settings.DefaultValue.Control.ControlHover;
+            pressedGradient = Settings.DefaultValue.Control.ControlPressed;
+        }
 
         #endregion
 
