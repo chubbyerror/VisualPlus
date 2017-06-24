@@ -18,14 +18,25 @@
 
         private float angle;
 
-        private Color[] colors =
-            {
-                Color.Red,
-                Color.Green,
-                Color.Blue
-            };
+        private Color[] colors;
 
-        private float[] positions = { 0, 1 / 2f, 1 };
+        private float[] positions;
+
+        #endregion
+
+        #region Constructors
+
+        public Gradient()
+        {
+            colors = new[]
+                {
+                    Color.Red,
+                    Color.Green,
+                    Color.Blue
+                };
+
+            positions = new[] { 0, 1 / 2f, 1 };
+        }
 
         #endregion
 
