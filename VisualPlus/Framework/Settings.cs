@@ -2,6 +2,7 @@ namespace VisualPlus.Framework
 {
     #region Namespace
 
+    using System.Drawing;
     using System.Drawing.Text;
 
     using VisualPlus.Enums;
@@ -52,9 +53,11 @@ namespace VisualPlus.Framework
             public static readonly IControl Control = new Visual();
             public static readonly IProgress Progress = new Visual();
             public static readonly ITab Tab = new Visual();
-            
+
             public static readonly string WatermarkText = "Watermark text";
             public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+            public static Font DefaultFont = new Font(Font.FontFamily, Font.FontSize, Font.FontStyle);
 
             public struct Rounding
             {
