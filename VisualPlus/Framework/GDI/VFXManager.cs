@@ -15,8 +15,6 @@ namespace VisualPlus.Framework.GDI
     {
         #region Variables
 
-        private const double MaxValue = 1.00;
-        private const double MinValue = 0.00;
         private readonly List<AnimationDirection> animationDirections;
         private readonly Timer animationTimer = new Timer { Interval = 5, Enabled = false };
         private readonly List<object[]> effectsData;
@@ -58,6 +56,10 @@ namespace VisualPlus.Framework.GDI
         public delegate void AnimationFinished(object sender);
 
         public delegate void AnimationProgress(object sender);
+
+        public event AnimationFinished OnAnimationFinished;
+
+        public event AnimationProgress OnAnimationProgress;
 
         #endregion
 
@@ -199,10 +201,6 @@ namespace VisualPlus.Framework.GDI
             return animationTimer.Enabled;
         }
 
-        public event AnimationFinished OnAnimationFinished;
-
-        public event AnimationProgress OnAnimationProgress;
-
         public void SetData(object[] data)
         {
             if (!Singular)
@@ -257,7 +255,7 @@ namespace VisualPlus.Framework.GDI
         {
             if (!IsAnimating() || CancelAnimation)
             {
-                if (Singular && animationDirections.Count > 0)
+                if (Singular && (animationDirections.Count > 0))
                 {
                     animationDirections[0] = animationDirection;
                 }
@@ -266,7 +264,7 @@ namespace VisualPlus.Framework.GDI
                     animationDirections.Add(animationDirection);
                 }
 
-                if (Singular && effectsSources.Count > 0)
+                if (Singular && (effectsSources.Count > 0))
                 {
                     effectsSources[0] = animationSource;
                 }
@@ -275,7 +273,7 @@ namespace VisualPlus.Framework.GDI
                     effectsSources.Add(animationSource);
                 }
 
-                if (!(Singular && effectsProgression.Count > 0))
+                if (!(Singular && (effectsProgression.Count > 0)))
                 {
                     switch (animationDirections[animationDirections.Count - 1])
                     {
@@ -294,7 +292,7 @@ namespace VisualPlus.Framework.GDI
                     }
                 }
 
-                if (Singular && effectsData.Count > 0)
+                if (Singular && (effectsData.Count > 0))
                 {
                     effectsData[0] = data ?? new object[] { };
                 }
@@ -326,6 +324,9 @@ namespace VisualPlus.Framework.GDI
             }
         }
 
+        private const double MaxValue = 1.00;
+        private const double MinValue = 0.00;
+
         private void AnimationTimerOnTick(object sender, EventArgs eventArgs)
         {
             for (var i = 0; i < effectsProgression.Count; i++)
@@ -334,21 +335,21 @@ namespace VisualPlus.Framework.GDI
 
                 if (!Singular)
                 {
-                    if (animationDirections[i] == AnimationDirection.InOutIn && effectsProgression[i] == MaxValue)
+                    if ((animationDirections[i] == AnimationDirection.InOutIn) && (effectsProgression[i] == MaxValue))
                     {
                         animationDirections[i] = AnimationDirection.InOutOut;
                     }
-                    else if (animationDirections[i] == AnimationDirection.InOutRepeatingIn && effectsProgression[i] == MinValue)
+                    else if ((animationDirections[i] == AnimationDirection.InOutRepeatingIn) && (effectsProgression[i] == MinValue))
                     {
                         animationDirections[i] = AnimationDirection.InOutRepeatingOut;
                     }
-                    else if (animationDirections[i] == AnimationDirection.InOutRepeatingOut && effectsProgression[i] == MinValue)
+                    else if ((animationDirections[i] == AnimationDirection.InOutRepeatingOut) && (effectsProgression[i] == MinValue))
                     {
                         animationDirections[i] = AnimationDirection.InOutRepeatingIn;
                     }
-                    else if (animationDirections[i] == AnimationDirection.In && effectsProgression[i] == MaxValue
-                             || animationDirections[i] == AnimationDirection.Out && effectsProgression[i] == MinValue
-                             || animationDirections[i] == AnimationDirection.InOutOut && effectsProgression[i] == MinValue)
+                    else if (((animationDirections[i] == AnimationDirection.In) && (effectsProgression[i] == MaxValue))
+                             || ((animationDirections[i] == AnimationDirection.Out) && (effectsProgression[i] == MinValue))
+                             || ((animationDirections[i] == AnimationDirection.InOutOut) && (effectsProgression[i] == MinValue)))
                     {
                         effectsProgression.RemoveAt(i);
                         effectsSources.RemoveAt(i);
@@ -358,15 +359,15 @@ namespace VisualPlus.Framework.GDI
                 }
                 else
                 {
-                    if (animationDirections[i] == AnimationDirection.InOutIn && effectsProgression[i] == MaxValue)
+                    if ((animationDirections[i] == AnimationDirection.InOutIn) && (effectsProgression[i] == MaxValue))
                     {
                         animationDirections[i] = AnimationDirection.InOutOut;
                     }
-                    else if (animationDirections[i] == AnimationDirection.InOutRepeatingIn && effectsProgression[i] == MaxValue)
+                    else if ((animationDirections[i] == AnimationDirection.InOutRepeatingIn) && (effectsProgression[i] == MaxValue))
                     {
                         animationDirections[i] = AnimationDirection.InOutRepeatingOut;
                     }
-                    else if (animationDirections[i] == AnimationDirection.InOutRepeatingOut && effectsProgression[i] == MinValue)
+                    else if ((animationDirections[i] == AnimationDirection.InOutRepeatingOut) && (effectsProgression[i] == MinValue))
                     {
                         animationDirections[i] = AnimationDirection.InOutRepeatingIn;
                     }
@@ -378,8 +379,8 @@ namespace VisualPlus.Framework.GDI
 
         private void DecrementProgress(int index)
         {
-            effectsProgression[index] -= animationDirections[index] == AnimationDirection.InOutOut
-                                         || animationDirections[index] == AnimationDirection.InOutRepeatingOut
+            effectsProgression[index] -= (animationDirections[index] == AnimationDirection.InOutOut)
+                                         || (animationDirections[index] == AnimationDirection.InOutRepeatingOut)
                                              ? SecondaryIncrement
                                              : Increment;
             if (effectsProgression[index] < MinValue)
@@ -403,12 +404,12 @@ namespace VisualPlus.Framework.GDI
                         return;
                     }
 
-                    if (animationDirections[i] == AnimationDirection.InOutOut && effectsProgression[i] != MinValue)
+                    if ((animationDirections[i] == AnimationDirection.InOutOut) && (effectsProgression[i] != MinValue))
                     {
                         return;
                     }
 
-                    if (animationDirections[i] == AnimationDirection.Out && effectsProgression[i] != MinValue)
+                    if ((animationDirections[i] == AnimationDirection.Out) && (effectsProgression[i] != MinValue))
                     {
                         return;
                     }
@@ -443,12 +444,12 @@ namespace VisualPlus.Framework.GDI
                         return;
                     }
 
-                    if (animationDirections[i] == AnimationDirection.InOutOut && effectsProgression[i] != MaxValue)
+                    if ((animationDirections[i] == AnimationDirection.InOutOut) && (effectsProgression[i] != MaxValue))
                     {
                         return;
                     }
 
-                    if (animationDirections[i] == AnimationDirection.In && effectsProgression[i] != MaxValue)
+                    if ((animationDirections[i] == AnimationDirection.In) && (effectsProgression[i] != MaxValue))
                     {
                         return;
                     }
