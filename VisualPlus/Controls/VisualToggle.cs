@@ -230,7 +230,7 @@
             }
         }
 
-        [TypeConverter(typeof(VisualStyleManagerConverter))]
+        [TypeConverter(typeof(StyleManagerConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
         public StyleManager StyleManager

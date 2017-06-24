@@ -10,7 +10,7 @@
 
     #endregion
 
-    [TypeConverter(typeof(VisualStyleManagerConverter))]
+    [TypeConverter(typeof(StyleManagerConverter))]
     public class StyleManager
     {
         #region Variables
@@ -57,7 +57,7 @@
         #endregion
     }
 
-    public class VisualStyleManagerConverter : ExpandableObjectConverter
+    public class StyleManagerConverter : ExpandableObjectConverter
     {
         #region Events
 
@@ -72,7 +72,7 @@
 
             if (stringValue != null)
             {
-                return new ObjectVisualStyleManagerWrapper(stringValue);
+                return new ObjectStyleManagerWrapper(stringValue);
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -80,31 +80,33 @@
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            object result = null;
-            VisualStylesManager visualStyleManager = value as VisualStylesManager;
+            StyleManager styleManager;
+            object result;
 
-            if ((visualStyleManager != null) && (destinationType == typeof(string)))
+            result = null;
+            styleManager = value as StyleManager;
+
+            if (styleManager != null && destinationType == typeof(string))
             {
                 // result = borderStyle.ToString();
-                result = "StyleManager Settings";
+                result = "Style Manager Settings";
             }
 
             return result ?? base.ConvertTo(context, culture, value, destinationType);
         }
-
         #endregion
     }
 
-    [TypeConverter(typeof(VisualStyleManagerConverter))]
-    public class ObjectVisualStyleManagerWrapper
+    [TypeConverter(typeof(StyleManagerConverter))]
+    public class ObjectStyleManagerWrapper
     {
         #region Constructors
 
-        public ObjectVisualStyleManagerWrapper()
+        public ObjectStyleManagerWrapper()
         {
         }
 
-        public ObjectVisualStyleManagerWrapper(string value)
+        public ObjectStyleManagerWrapper(string value)
         {
             Value = value;
         }
