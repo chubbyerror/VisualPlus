@@ -40,7 +40,7 @@
                 };
 
             imagePoint = new Point();
-            visible = true;
+            visible = false;
 
             image = bitmap;
             imageSize = bitmapSize;
@@ -169,7 +169,7 @@
 
             if (stringValue != null)
             {
-                return new ObjectVisualImageWrapper(stringValue);
+                return new ObjectVisualBitmapWrapper(stringValue);
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -177,13 +177,15 @@
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            object result = null;
-            Expander expander = value as Expander;
+            VisualBitmap visualBitmap;
+            object result;
 
-            if ((expander != null) && (destinationType == typeof(string)))
+            result = null;
+            visualBitmap = value as VisualBitmap;
+
+            if ((visualBitmap != null) && (destinationType == typeof(string)))
             {
-                // result = borderStyle.ToString();
-                result = "Visual Image Settings";
+                result = "Image Settings";
             }
 
             return result ?? base.ConvertTo(context, culture, value, destinationType);
@@ -193,15 +195,15 @@
     }
 
     [TypeConverter(typeof(VisualBitmapConverter))]
-    public class ObjectVisualImageWrapper
+    public class ObjectVisualBitmapWrapper
     {
         #region Constructors
 
-        public ObjectVisualImageWrapper()
+        public ObjectVisualBitmapWrapper()
         {
         }
 
-        public ObjectVisualImageWrapper(string value)
+        public ObjectVisualBitmapWrapper(string value)
         {
             Value = value;
         }

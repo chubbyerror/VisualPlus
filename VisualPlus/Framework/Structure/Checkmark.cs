@@ -6,9 +6,11 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
     using System.Globalization;
     using System.IO;
 
+    using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
     using VisualPlus.Styles;
 
@@ -20,26 +22,16 @@
     {
         #region Variables
 
-        private char checkCharacter;
-
-        private Font checkCharacterFont;
-
-        private Point checkLocation;
-
         private Border checkBorder;
-
+        private char checkCharacter;
+        private Font checkCharacterFont;
+        private Point checkLocation;
         private CheckType checkType;
-
         private Gradient disabledGradient;
-
         private Bitmap disabledImage;
-
         private Gradient enabledGradient;
-
         private Bitmap enabledImage;
-
         private Size imageSize;
-
         private Size shapeSize;
 
         #endregion
@@ -57,8 +49,8 @@
             checkCharacterFont = Settings.DefaultValue.DefaultFont;
             checkType = CheckType.Character;
 
-            Bitmap bitmap = new Bitmap(Image.FromStream(new MemoryStream(Convert.FromBase64String(GetBase64CheckImage()))));        
-            
+            Bitmap bitmap = new Bitmap(Image.FromStream(new MemoryStream(Convert.FromBase64String(GetBase64CheckImage()))));
+
             disabledImage = bitmap.FilterGrayScale();
             enabledImage = bitmap;
 
@@ -85,6 +77,21 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
+        public Border Border
+        {
+            get
+            {
+                return checkBorder;
+            }
+
+            set
+            {
+                checkBorder = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Checkmark.Character)]
         public char Character
         {
@@ -101,22 +108,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.ColorGradient)]
-        public Gradient DisabledGradient
-        {
-            get
-            {
-                return disabledGradient;
-            }
-
-            set
-            {
-                disabledGradient = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Image)]
         public Bitmap DisabledImage
         {
@@ -128,22 +119,6 @@
             set
             {
                 disabledImage = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.ColorGradient)]
-        public Gradient EnabledGradient
-        {
-            get
-            {
-                return enabledGradient;
-            }
-
-            set
-            {
-                enabledGradient = value;
             }
         }
 
@@ -213,21 +188,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        public Border Border
-        {
-            get
-            {
-                return checkBorder;
-            }
-
-            set
-            {
-                checkBorder = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Size)]
         public Size ShapeSize
         {
@@ -258,9 +218,90 @@
             }
         }
 
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.ColorGradient)]
+        public Gradient DisabledGradient
+        {
+            get
+            {
+                return disabledGradient;
+            }
+
+            set
+            {
+                disabledGradient = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.ColorGradient)]
+        public Gradient EnabledGradient
+        {
+            get
+            {
+                return enabledGradient;
+            }
+
+            set
+            {
+                enabledGradient = value;
+            }
+        }
+
         #endregion
 
         #region Events
+
+        /// <summary>Draws the checkmark.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="checkmark">Checkmark type.</param>
+        /// <param name="box">Shape type.</param>
+        /// <param name="enabled">Control Enabled state.</param>
+        /// <param name="textRendererHint">Text rendering hint.</param>
+        public static void DrawCheckmark(Graphics graphics, Checkmark checkmark, Shape box, bool enabled, TextRenderingHint textRendererHint)
+        {
+            Gradient checkGradient = enabled ? checkmark.EnabledGradient : checkmark.DisabledGradient;
+            Bitmap checkImage = enabled ? checkmark.EnabledImage : checkmark.DisabledImage;
+
+            var boxGradientPoints = GDI.GetGradientPoints(new Rectangle(box.Location, box.Size));
+            LinearGradientBrush checkmarkBrush = GDI.CreateGradientBrush(checkGradient.Colors, boxGradientPoints, checkGradient.Angle, checkGradient.Positions);
+
+            GraphicsPath checkPath = GDI.GetBorderShape(new Rectangle(checkmark.Location, checkmark.ShapeSize), checkmark.Border.Type, checkmark.Border.Rounding);
+            GraphicsPath boxPath = GDI.GetBorderShape(new Rectangle(box.Location, box.Size), box.Border.Type, box.Border.Rounding);
+
+            graphics.SetClip(boxPath);
+
+            switch (checkmark.Style)
+            {
+                case CheckType.Character:
+                    {
+                        graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+                        DrawCharacter(graphics, checkmark.Character, checkmark.Font, checkmarkBrush, checkmark.Location);
+                        graphics.TextRenderingHint = textRendererHint;
+                        break;
+                    }
+
+                case CheckType.Shape:
+                    {
+                        DrawShape(graphics, checkmarkBrush, checkPath);
+                        break;
+                    }
+
+                case CheckType.Image:
+                    {
+                        Rectangle checkImageRectangle = new Rectangle(checkmark.Location, checkmark.ImageSize);
+                        DrawImage(graphics, checkImage, checkImageRectangle);
+                        break;
+                    }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            graphics.ResetClip();
+        }
 
         /// <summary>Draws the checkmark character.</summary>
         /// <param name="graphics">The graphics.</param>
@@ -268,7 +309,7 @@
         /// <param name="font">The font.</param>
         /// <param name="linearGradientBrush">The linear gradient brush.</param>
         /// <param name="location">The location.</param>
-        public static void DrawCharacter(Graphics graphics, char checkMark, Font font, LinearGradientBrush linearGradientBrush, PointF location)
+        private static void DrawCharacter(Graphics graphics, char checkMark, Font font, Brush linearGradientBrush, PointF location)
         {
             graphics.DrawString(checkMark.ToString(), font, linearGradientBrush, location);
         }
@@ -277,7 +318,7 @@
         /// <param name="graphics">The graphics.</param>
         /// <param name="image">The image.</param>
         /// <param name="imageRectangle">The image rectangle.</param>
-        public static void DrawImage(Graphics graphics, Image image, Rectangle imageRectangle)
+        private static void DrawImage(Graphics graphics, Image image, Rectangle imageRectangle)
         {
             graphics.DrawImage(image, imageRectangle);
         }
@@ -286,12 +327,12 @@
         /// <param name="graphics">The graphics.</param>
         /// <param name="linearGradientBrush">The linear Gradient Brush.</param>
         /// <param name="graphicsPath">The graphics Path.</param>
-        public static void DrawShape(Graphics graphics, LinearGradientBrush linearGradientBrush, GraphicsPath graphicsPath)
+        private static void DrawShape(Graphics graphics, Brush linearGradientBrush, GraphicsPath graphicsPath)
         {
             graphics.FillPath(linearGradientBrush, graphicsPath);
         }
 
-        public static string GetBase64CheckImage()
+        private static string GetBase64CheckImage()
         {
             return
                 "iVBORw0KGgoAAAANSUhEUgAAABMAAAAQCAYAAAD0xERiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEySURBVDhPY/hPRUBdw/79+/efVHz77bf/X37+wRAn2bDff/7+91l+83/YmtsYBpJs2ITjz/8rTbrwP2Dlrf9XXn5FkSPJsD13P/y3nHsVbNjyy28w5Ik27NWXX//TNt8DG1S19zFWNRiGvfzy8//ccy9RxEB4wvFnYIMMZl7+//brLwx5EEYx7MP33/9dF18Ha1py8RVcHBR7mlMvgsVXX8X0Hgwz/P379z8yLtz5AKxJdcpFcBj9+v3nf/CqW2Cx5E13UdSiYwzDvv36/d9/BUSzzvRL/0t2PQSzQd57+vEHilp0jGEYCJ9+8hnuGhiee+4Vhjp0jNUwEN566/1/m/mQZJC/48H/zz9+YVWHjHEaBsKgwAZ59eH771jl0TFew0D48osvWMWxYYKGEY///gcAqiuA6kEmfEMAAAAASUVORK5CYII=";

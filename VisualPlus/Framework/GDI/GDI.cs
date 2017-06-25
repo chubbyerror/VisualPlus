@@ -225,7 +225,7 @@
                 DrawBorder(graphics, controlPath, borderThickness, borderColor);
             }
         }
-        
+
         /// <summary>Draws the rounded rectangle from specific values.</summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
@@ -468,6 +468,14 @@
         [DllImport("user32.dll")]
         [Description("Gets the cursor position on the screen.")]
         public static extern bool GetCursorPos(ref Point lpPoint);
+
+        /// <summary>Gets the gradients points from the rectangle.</summary>
+        /// <param name="rectangle">Rectangle points to set.</param>
+        /// <returns>Gradient points.</returns>
+        public static Point[] GetGradientPoints(Rectangle rectangle)
+        {
+            return new[] { new Point { X = rectangle.Width, Y = 0 }, new Point { X = rectangle.Width, Y = rectangle.Height } };
+        }
 
         /// <summary>Measures the specified string when draw with the specified font.</summary>
         /// <param name="graphics">Graphics input.</param>

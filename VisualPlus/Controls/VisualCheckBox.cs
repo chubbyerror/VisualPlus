@@ -31,23 +31,15 @@
         private readonly MouseState mouseState;
 
         private bool animation;
-        private Image backgroundImage;
         private Gradient boxGradient = new Gradient();
         private LinearGradientBrush boxGradientBrush;
         private GraphicsPath boxPath;
-        private Point boxPoint = new Point(0, 0);
         private Rectangle boxRectangle;
-        private Shape boxShape = new Shape();
+        private Shape boxShape;
         private int boxSpacing = 2;
-        private Gradient checkGradient;
-        private LinearGradientBrush checkGradientBrush;
-        private Image checkImage;
-        private Rectangle checkImageRectangle;
-        private Checkmark checkMark = new Checkmark();
-        private GraphicsPath checkPath;
-        private Rectangle checkRectangle;
+        private Checkmark checkMark;
         private Color foreColor;
-        private Point mouseLocation = new Point(0, 0);
+        private Point mouseLocation;
         private VFXManager rippleEffectsManager;
         private StyleManager styleManager = new StyleManager();
         private Color textDisabledColor;
@@ -64,24 +56,13 @@
                 | ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint,
                 true);
 
+            UpdateStyles();
+
             Cursor = Cursors.Hand;
             Width = 132;
 
             mouseState = new MouseState(this);
 
-            UpdateStyles();
-
-            checkMark.Style = Checkmark.CheckType.Character;
-            checkMark.Location = new Point(-1, 5);
-            checkMark.ImageSize = new Size(19, 16);
-            checkMark.Border.Type = BorderType.Rounded;
-            checkMark.ShapeSize = new Size(8, 8);
-            checkMark.Border.Rounding = 2;
-
-            boxShape.Size = new Size(14, 14);
-            boxShape.ImageSize = new Size(19, 16);
-
-            DefaultGradient();
             ConfigureStyleManager();
             ConfigureControlState();
             ConfigureComponents();
@@ -307,12 +288,31 @@
                 ConfigureStyleManager();
             }
 
-            DrawCheckBoxState(graphics);
+            // Draw box background
+            if (boxShape.Image.Visible)
+            {
+                graphics.DrawImage(boxShape.Image.Image, new Rectangle(boxShape.Image.Point, boxShape.Image.Size));
+            }
+            else
+            {
+                graphics.FillPath(boxGradientBrush, boxPath);
+            }
+
+            if (Checked)
+            {
+                Checkmark.DrawCheckmark(graphics, checkMark, boxShape, Enabled, textRendererHint);
+            }
+
+            // Draw border
+            if (boxShape.Border.Visible)
+            {
+                GDI.DrawBorderType(graphics, mouseState.State, boxPath, boxShape.Border.Thickness, boxShape.Border.Color, boxShape.Border.HoverColor, boxShape.Border.HoverVisible);
+            }
+
             DrawText(graphics);
             DrawAnimation(graphics);
 
             boxGradientBrush.Dispose();
-            checkGradientBrush.Dispose();
         }
 
         private void ConfigureAnimation()
@@ -342,38 +342,18 @@
 
         private void ConfigureComponents()
         {
-            boxPoint = new Point(0, (ClientRectangle.Height / 2) - (boxShape.Size.Height / 2));
-            boxPath = GDI.GetBorderShape(boxRectangle, boxShape.Border.Type, boxShape.Border.Rounding);
-            boxRectangle = new Rectangle(boxPoint, boxShape.Size);
-
-            checkPath = GDI.GetBorderShape(checkRectangle, checkMark.Border.Type, checkMark.Border.Rounding);
-            checkRectangle = new Rectangle(checkMark.Location, checkMark.ShapeSize);
+            boxShape.Location = new Point(0, (ClientRectangle.Height / 2) - (boxShape.Size.Height / 2));
+            boxRectangle = new Rectangle(boxShape.Location, boxShape.Size);
+            boxPath = GDI.GetBorderShape(new Rectangle(boxShape.Location, boxShape.Size), boxShape.Border.Type, boxShape.Border.Rounding);
 
             var boxGradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
             boxGradientBrush = GDI.CreateGradientBrush(boxGradient.Colors, boxGradientPoints, boxGradient.Angle, boxGradient.Positions);
-            checkGradientBrush = GDI.CreateGradientBrush(checkGradient.Colors, boxGradientPoints, checkGradient.Angle, checkGradient.Positions);
         }
 
         private void ConfigureControlState()
         {
             foreColor = Enabled ? foreColor : textDisabledColor;
-
-            if (Enabled)
-            {
-                boxGradient = boxShape.EnabledGradient;
-                backgroundImage = boxShape.EnabledImage;
-
-                checkGradient = checkMark.EnabledGradient;
-                checkImage = checkMark.EnabledImage;
-            }
-            else
-            {
-                boxGradient = boxShape.DisabledGradient;
-                backgroundImage = boxShape.DisabledImage;
-
-                checkGradient = checkMark.DisabledGradient;
-                checkImage = checkMark.DisabledImage;
-            }
+            boxGradient = Enabled ? boxShape.EnabledGradient : boxShape.DisabledGradient;
         }
 
         private void ConfigureStyleManager()
@@ -394,7 +374,7 @@
                 boxShape.Border.Type = styleManager.VisualStylesManager.BorderType;
                 boxShape.Border.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 boxShape.Border.Visible = styleManager.VisualStylesManager.BorderVisible;
-                
+
                 textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
                 Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
                 foreColor = fontStyle.ForeColor;
@@ -412,21 +392,35 @@
             {
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
-                boxShape.Border = new Border();
+
+                checkMark = new Checkmark
+                    {
+                        Style = Checkmark.CheckType.Character,
+                        Location = new Point(-1, 5),
+                        ImageSize = new Size(19, 16),
+                        Border =
+                            {
+                                Type = BorderType.Rounded,
+                                Rounding = 2
+                            },
+                        ShapeSize = new Size(8, 8)
+                    };
+
+                boxShape = new Shape
+                    {
+                        Size = new Size(14, 14),
+                        Image =
+                            {
+                                Size = new Size(19, 16),
+                                Point = new Point(-3, 3)
+                            }
+                    };
 
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
                 Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }
-        }
-
-        private void DefaultGradient()
-        {
-            boxShape.EnabledGradient.Colors = Settings.DefaultValue.Control.BoxEnabled.Colors;
-            boxShape.EnabledGradient.Positions = Settings.DefaultValue.Control.BoxEnabled.Positions;
-            boxShape.DisabledGradient.Colors = Settings.DefaultValue.Control.BoxDisabled.Colors;
-            boxShape.DisabledGradient.Positions = Settings.DefaultValue.Control.BoxDisabled.Positions;
         }
 
         private void DrawAnimation(Graphics graphics)
@@ -450,58 +444,10 @@
             }
         }
 
-        private void DrawCheckBoxState(Graphics graphics)
-        {
-            if (boxShape.ImageVisible)
-            {
-                graphics.DrawImage(backgroundImage, new Rectangle(boxShape.ImageLocation, boxShape.ImageSize));
-            }
-            else
-            {
-                graphics.FillPath(boxGradientBrush, boxPath);
-            }
-
-            if (Checked)
-            {
-                graphics.SetClip(boxPath);
-
-                switch (checkMark.Style)
-                {
-                    case Checkmark.CheckType.Character:
-                        {
-                            graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-                            Checkmark.DrawCharacter(graphics, checkMark.Character, checkMark.Font, checkGradientBrush, checkMark.Location);
-                            graphics.TextRenderingHint = textRendererHint;
-                            break;
-                        }
-
-                    case Checkmark.CheckType.Shape:
-                        {
-                            Checkmark.DrawShape(graphics, checkGradientBrush, checkPath);
-                            break;
-                        }
-
-                    case Checkmark.CheckType.Image:
-                        {
-                            checkImageRectangle = new Rectangle(checkMark.Location, checkMark.ImageSize);
-                            Checkmark.DrawImage(graphics, checkImage, checkImageRectangle);
-                            break;
-                        }
-                }
-
-                graphics.ResetClip();
-            }
-
-            if (boxShape.Border.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, boxPath, boxShape.Border.Thickness, boxShape.Border.Color, boxShape.Border.HoverColor, boxShape.Border.HoverVisible);
-            }
-        }
-
         private void DrawText(Graphics graphics)
         {
             StringFormat stringFormat = new StringFormat { LineAlignment = StringAlignment.Center };
-            Point textPoint = new Point(boxPoint.X + boxShape.Size.Width + boxSpacing, ClientRectangle.Height / 2);
+            Point textPoint = new Point(boxShape.Location.X + boxShape.Size.Width + boxSpacing, ClientRectangle.Height / 2);
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 

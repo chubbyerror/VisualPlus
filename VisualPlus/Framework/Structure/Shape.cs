@@ -18,16 +18,16 @@
         #region Variables
 
         private Border border = new Border();
+
+        // iShape < -- >
         private Gradient disabledGradient;
-        private Image disabledImage = Resources.Icon;
         private Gradient enabledGradient;
-        private Image enabledImage = Resources.Icon;
         private Gradient hoverGradient;
-        private Point imagePoint = new Point(0, 0);
-        private Size imageSize = new Size(0, 0);
-        private bool imageVisible;
         private Gradient pressedGradient;
-        private Size size = new Size(25, 25);
+
+        private Size size;
+        private Point point;
+        private VisualBitmap visualBitmap;
 
         #endregion
 
@@ -39,6 +39,8 @@
             enabledGradient = Settings.DefaultValue.Control.ControlEnabled;
             hoverGradient = Settings.DefaultValue.Control.ControlHover;
             pressedGradient = Settings.DefaultValue.Control.ControlPressed;
+
+            visualBitmap = new VisualBitmap(Resources.Icon, new Size(25, 25));
         }
 
         #endregion
@@ -78,22 +80,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Image)]
-        public Image DisabledImage
-        {
-            get
-            {
-                return disabledImage;
-            }
-
-            set
-            {
-                disabledImage = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         public Gradient EnabledGradient
         {
@@ -105,22 +91,6 @@
             set
             {
                 enabledGradient = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Image)]
-        public Image EnabledImage
-        {
-            get
-            {
-                return enabledImage;
-            }
-
-            set
-            {
-                enabledImage = value;
             }
         }
 
@@ -142,49 +112,16 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Point)]
-        public Point ImageLocation
+        public VisualBitmap Image
         {
             get
             {
-                return imagePoint;
+                return visualBitmap;
             }
 
             set
             {
-                imagePoint = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Size)]
-        public Size ImageSize
-        {
-            get
-            {
-                return imageSize;
-            }
-
-            set
-            {
-                imageSize = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Visible)]
-        public bool ImageVisible
-        {
-            get
-            {
-                return imageVisible;
-            }
-
-            set
-            {
-                imageVisible = value;
+                visualBitmap = value;
             }
         }
 
@@ -201,6 +138,22 @@
             set
             {
                 pressedGradient = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Point)]
+        public Point Location
+        {
+            get
+            {
+                return point;
+            }
+
+            set
+            {
+                point = value;
             }
         }
 
