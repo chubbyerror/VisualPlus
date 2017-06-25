@@ -71,7 +71,7 @@
 
             UpdateStyles();
 
-            checkMark.Style = CheckType.Character;
+            checkMark.Style = Checkmark.CheckType.Character;
             checkMark.Location = new Point(-1, 5);
             checkMark.ImageSize = new Size(19, 16);
             checkMark.Shape.Type = BorderType.Rounded;
@@ -468,7 +468,7 @@
 
                 switch (checkMark.Style)
                 {
-                    case CheckType.Character:
+                    case Checkmark.CheckType.Character:
                         {
                             graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
                             Checkmark.DrawCharacter(graphics, checkMark.Character, checkMark.Font, checkGradientBrush, checkMark.Location);
@@ -476,13 +476,13 @@
                             break;
                         }
 
-                    case CheckType.Shape:
+                    case Checkmark.CheckType.Shape:
                         {
                             Checkmark.DrawShape(graphics, checkGradientBrush, checkPath);
                             break;
                         }
 
-                    case CheckType.Image:
+                    case Checkmark.CheckType.Image:
                         {
                             checkImageRectangle = new Rectangle(checkMark.Location, checkMark.ImageSize);
                             Checkmark.DrawImage(graphics, checkImage, checkImageRectangle);

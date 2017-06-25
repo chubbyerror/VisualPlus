@@ -13,18 +13,6 @@
 
     #endregion
 
-    public enum CheckType
-    {
-        /// <summary>The character.</summary>
-        Character,
-
-        /// <summary>The image.</summary>
-        Image,
-
-        /// <summary>The shape.</summary>
-        Shape
-    }
-
     [TypeConverter(typeof(CheckMarkConverter))]
     [Description("The checkmark class.")]
     public class Checkmark
@@ -33,13 +21,13 @@
 
         private char checkCharacter = '✔';
 
-        private Font checkCharacterFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+        private Font checkCharacterFont;
 
         private Point checkLocation = new Point(0, 0);
 
         private Border checkShape = new Border();
 
-        private CheckType checkType = CheckType.Character;
+        private CheckType checkType;
 
         private Gradient disabledGradient = new Gradient();
 
@@ -55,13 +43,32 @@
 
         #endregion
 
+        #region Constructors
+
         public Checkmark()
         {
             enabledGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
             enabledGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
             disabledGradient.Colors = Settings.DefaultValue.Progress.ProgressDisabled.Colors;
             disabledGradient.Positions = Settings.DefaultValue.Progress.ProgressDisabled.Positions;
+
+            checkCharacterFont = Settings.DefaultValue.DefaultFont;
+            checkType = CheckType.Character;
         }
+
+        public enum CheckType
+        {
+            /// <summary>The character.</summary>
+            Character,
+
+            /// <summary>The image.</summary>
+            Image,
+
+            /// <summary>The shape.</summary>
+            Shape
+        }
+
+        #endregion
 
         #region Properties
 
@@ -255,15 +262,6 @@
             graphics.DrawString(checkMark.ToString(), font, linearGradientBrush, location);
         }
 
-        /// <summary>Draws the checkmark shape.</summary>
-        /// <param name="graphics">The graphics.</param>
-        /// <param name="linearGradientBrush">The linear Gradient Brush.</param>
-        /// <param name="graphicsPath">The graphics Path.</param>
-        public static void DrawShape(Graphics graphics, LinearGradientBrush linearGradientBrush, GraphicsPath graphicsPath)
-        {
-            graphics.FillPath(linearGradientBrush, graphicsPath);
-        }
-
         /// <summary>Draws the checkmark image.</summary>
         /// <param name="graphics">The graphics.</param>
         /// <param name="image">The image.</param>
@@ -271,6 +269,15 @@
         public static void DrawImage(Graphics graphics, Image image, Rectangle imageRectangle)
         {
             graphics.DrawImage(image, imageRectangle);
+        }
+
+        /// <summary>Draws the checkmark shape.</summary>
+        /// <param name="graphics">The graphics.</param>
+        /// <param name="linearGradientBrush">The linear Gradient Brush.</param>
+        /// <param name="graphicsPath">The graphics Path.</param>
+        public static void DrawShape(Graphics graphics, LinearGradientBrush linearGradientBrush, GraphicsPath graphicsPath)
+        {
+            graphics.FillPath(linearGradientBrush, graphicsPath);
         }
 
         public static string GetBase64CheckImage()
