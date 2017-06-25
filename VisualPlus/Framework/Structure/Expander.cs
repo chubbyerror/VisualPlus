@@ -20,16 +20,16 @@
     {
         #region Variables
 
-        private Alignment.Horizontal horizontal = Enums.Alignment.Horizontal.Left;
-        private Size buttonSize = new Size(12, 10);
-        private Color color = Settings.DefaultValue.Control.FlatButtonEnabled;
+        private Size buttonSize;
+        private Color color;
         private int contractedHeight;
-        private Cursor cursor = Cursors.Hand;
-        private bool expanded = true;
+        private Cursor cursor;
+        private bool expanded;
         private Control hookedControl;
+        private Alignment.Horizontal horizontal;
         private Size originalSize;
-        private int spacing = 3;
-        private bool visible = true;
+        private int spacing;
+        private bool visible;
 
         #endregion
 
@@ -40,6 +40,14 @@
             hookedControl = control;
             originalSize = hookedControl.Size;
             contractedHeight = contractHeight;
+
+            horizontal = Enums.Alignment.Horizontal.Left;
+            buttonSize = new Size(12, 10);
+            color = Settings.DefaultValue.Control.FlatButtonEnabled;
+            cursor = Cursors.Hand;
+            expanded = true;
+            spacing = 3;
+            visible = true;
         }
 
         #endregion
