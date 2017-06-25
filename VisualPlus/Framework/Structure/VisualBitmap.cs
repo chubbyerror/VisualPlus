@@ -129,23 +129,34 @@
 
         #region Events
 
-        public static void DrawImage(Graphics graphics, Border _border, Point _imagePoint, Image _image, Size _imageSize, bool _visible)
+        /// <summary>Draws the bitmap image.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="_border">The border.</param>
+        /// <param name="_imagePoint">The location.</param>
+        /// <param name="_image">The image.</param>
+        /// <param name="_imageSize">The size.</param>
+        /// <param name="_visible">The visibility.</param>
+        public static void DrawImage(Graphics graphics, Border _border, Point _imagePoint, Bitmap _image, Size _imageSize, bool _visible)
         {
-            Rectangle imageRectangle = new Rectangle(_imagePoint, _imageSize);
-            GraphicsPath imagePath = new GraphicsPath();
-            imagePath.AddRectangle(imageRectangle);
-
-            if (_border.Visible)
+            using (GraphicsPath imagePath = new GraphicsPath())
             {
-                GDI.DrawBorder(graphics, imagePath, _border.Thickness, _border.Color);
+                imagePath.AddRectangle(new Rectangle(_imagePoint, _imageSize));
+
+                if (_border.Visible)
+                {
+                    GDI.DrawBorder(graphics, imagePath, _border.Thickness, _border.Color);
+                }
             }
 
             if (_visible)
             {
-                graphics.DrawImage(_image, imageRectangle);
+                graphics.DrawImage(_image, new Rectangle(_imagePoint, _imageSize));
             }
         }
 
+        /// <summary>Returns the size of the image.</summary>
+        /// <param name="_image">The image.</param>
+        /// <returns>The size.</returns>
         public Size GetOriginalSize(Image _image)
         {
             return _image.Size;
