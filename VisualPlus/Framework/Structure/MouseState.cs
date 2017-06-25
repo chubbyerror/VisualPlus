@@ -4,7 +4,6 @@
 
     using System;
     using System.ComponentModel;
-    using System.Globalization;
     using System.Windows.Forms;
 
     using VisualPlus.Controls;
@@ -28,7 +27,7 @@
     {
         #region Variables
 
-        private MouseStates mouseState = MouseStates.Normal;
+        private MouseStates mouseState;
 
         #endregion
 
@@ -36,6 +35,8 @@
 
         public MouseState(Control control)
         {
+            mouseState = MouseStates.Normal;
+
             if (control is VisualButton)
             {
                 control.MouseDown += OnMouseDown;
@@ -88,32 +89,32 @@
             }
 
             // Specific controls might need to ignore some events
-            //if (!(control is VisualCheckBox))
-            //{
-            //    // Add here
-            //}
+            // if (!(control is VisualCheckBox))
+            // {
+            // // Add here
+            // }
 
-            //if (control is VisualNumericUpDown)
-            //{
-            //    control.MouseEnter += OnMouseEnter;
-            //    control.MouseLeave += OnMouseLeave;
+            // if (control is VisualNumericUpDown)
+            // {
+            // control.MouseEnter += OnMouseEnter;
+            // control.MouseLeave += OnMouseLeave;
 
             // //   control.Invalidate();
 
-            //    // TODO: Doesn't seem to be registering the OnMouseLeave() event Invalidate() after on the control properly.
-            //}
+            // // TODO: Doesn't seem to be registering the OnMouseLeave() event Invalidate() after on the control properly.
+            // }
 
-            //if (control is VisualRichTextBox)
-            //{
-            //    control.Enter += OnMouseEnter;
-            //  //  control.Leave += OnMouseLeave;
-            //}
+            // if (control is VisualRichTextBox)
+            // {
+            // control.Enter += OnMouseEnter;
+            // //  control.Leave += OnMouseLeave;
+            // }
 
-            //if (control is VisualTextBox)
-            //{
-            //    control.Enter += OnMouseEnter;
-            //   // control.Leave += OnMouseLeave;
-            //}
+            // if (control is VisualTextBox)
+            // {
+            // control.Enter += OnMouseEnter;
+            // // control.Leave += OnMouseLeave;
+            // }
         }
 
         #endregion
@@ -140,6 +141,11 @@
 
         #region Events
 
+        protected virtual void OnLostFocus(object sender, EventArgs e)
+        {
+            mouseState = MouseStates.Normal;
+        }
+
         protected virtual void OnMouseDown(object sender, MouseEventArgs e)
         {
             mouseState = MouseStates.Down;
@@ -160,10 +166,6 @@
             mouseState = MouseStates.Hover;
         }
 
-        protected virtual void OnLostFocus(object sender, EventArgs e)
-        {
-            mouseState = MouseStates.Normal;
-        }
         #endregion
     }
 }

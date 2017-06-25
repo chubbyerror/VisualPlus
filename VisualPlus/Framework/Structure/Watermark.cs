@@ -21,47 +21,15 @@
         [Browsable(false)]
         public SolidBrush Brush;
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Color)]
-        public Color ActiveColor
-        {
-            get
-            {
-                return activeColor;
-            }
-
-            set
-            {
-                activeColor = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Color)]
-        public Color InactiveColor
-        {
-            get
-            {
-                return inactiveColor;
-            }
-
-            set
-            {
-                inactiveColor = value;
-            }
-        }
-
         #endregion
 
         #region Variables
 
-        private Color activeColor = Settings.DefaultValue.Watermark.ActiveColor;
-        private Font font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
-        private Color inactiveColor = Settings.DefaultValue.Watermark.InactiveColor;
-        private string text = Settings.DefaultValue.WatermarkText;
-        private bool visible = Settings.DefaultValue.WatermarkVisible;
+        private Color activeColor;
+        private Font font;
+        private Color inactiveColor;
+        private string text;
+        private bool visible;
 
         #endregion
 
@@ -69,6 +37,12 @@
 
         public Watermark()
         {
+            activeColor = Settings.DefaultValue.Watermark.ActiveColor;
+            font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+            inactiveColor = Settings.DefaultValue.Watermark.InactiveColor;
+            text = Settings.DefaultValue.WatermarkText;
+            visible = Settings.DefaultValue.WatermarkVisible;
+
             Brush = new SolidBrush(inactiveColor);
         }
 
@@ -121,6 +95,38 @@
             set
             {
                 visible = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Color)]
+        public Color ActiveColor
+        {
+            get
+            {
+                return activeColor;
+            }
+
+            set
+            {
+                activeColor = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Color)]
+        public Color InactiveColor
+        {
+            get
+            {
+                return inactiveColor;
+            }
+
+            set
+            {
+                inactiveColor = value;
             }
         }
 
