@@ -22,7 +22,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Value")]
     [Description("The Visual Circle ProgressBar")]
-    [Designer(DesignManager.VisualCircleProgressBar)]
+    [Designer(ControlManager.FilterProperties.VisualCircleProgressBar)]
     public sealed class VisualCircleProgressBar : ProgressBar
     {
         #region Variables

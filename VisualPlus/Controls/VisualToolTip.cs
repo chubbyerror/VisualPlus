@@ -22,7 +22,7 @@
     [DefaultEvent("Popup")]
     [DefaultProperty("Text")]
     [Description("The Visual ToolTip")]
-    [Designer(DesignManager.VisualToolTip)]
+    [Designer(ControlManager.FilterProperties.VisualToolTip)]
     public sealed class VisualToolTip : ToolTip
     {
         #region Variables

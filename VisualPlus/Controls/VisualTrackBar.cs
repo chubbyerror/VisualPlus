@@ -23,7 +23,7 @@
     [DefaultEvent("ValueChanged")]
     [DefaultProperty("Value")]
     [Description("The Visual TrackBar")]
-    [Designer(DesignManager.VisualTrackBar)]
+    [Designer(ControlManager.FilterProperties.VisualTrackBar)]
     public sealed class VisualTrackBar : TrackBar
     {
         #region Variables

@@ -25,7 +25,7 @@
     [ToolboxItem(false)]
     [ToolboxBitmap(typeof(Form))]
     [Description("The Visual Form")]
-    [Designer(DesignManager.VisualForm)]
+    [Designer(ControlManager.FilterProperties.VisualForm)]
     public class VisualForm : Form
     {
         #region Variables

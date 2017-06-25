@@ -22,7 +22,7 @@
     [DefaultEvent("TextChanged")]
     [DefaultProperty("Text")]
     [Description("The Visual RichTextBox")]
-    [Designer(DesignManager.VisualRichTextBox)]
+    [Designer(ControlManager.FilterProperties.VisualRichTextBox)]
     public sealed class VisualRichTextBox : RichTextBox
     {
         #region Variables

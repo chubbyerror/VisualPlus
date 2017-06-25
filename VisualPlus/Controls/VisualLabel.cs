@@ -23,7 +23,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Text")]
     [Description("The Visual Label")]
-    [Designer(DesignManager.VisualLabel)]
+    [Designer(ControlManager.FilterProperties.VisualLabel)]
     public sealed class VisualLabel : Label
     {
         #region Variables

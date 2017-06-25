@@ -24,7 +24,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Value")]
     [Description("The Visual NumericUpDown")]
-    [Designer(DesignManager.VisualNumericUpDown)]
+    [Designer(ControlManager.FilterProperties.VisualNumericUpDown)]
     public sealed class VisualNumericUpDown : Control
     {
         #region Variables

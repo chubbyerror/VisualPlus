@@ -22,18 +22,18 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ListBox")]
-    [Designer(DesignManager.VisualListBox)]
+    [Designer(ControlManager.FilterProperties.VisualListBox)]
     public sealed class VisualListBox : ListBox
     {
         #region Variables
 
-        private Color foreColor;
+        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Color itemBackground = Settings.DefaultValue.Control.Background(0);
         private Color itemBackground2 = Settings.DefaultValue.Border.Color;
         private Color itemSelected = Settings.DefaultValue.Border.HoverColor;
         private bool rotateItemColor = true;
         private StyleManager styleManager = new StyleManager();
-        private Color textDisabledColor;
+        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion

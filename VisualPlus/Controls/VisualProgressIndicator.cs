@@ -17,7 +17,7 @@
 
     /// <summary>The visual ProgressIndicator.</summary>
     [ToolboxBitmap(typeof(ProgressBar))]
-    [Designer(DesignManager.VisualProgressIndicator)]
+    [Designer(ControlManager.FilterProperties.VisualProgressIndicator)]
     public sealed class VisualProgressIndicator : Control
     {
         #region Variables

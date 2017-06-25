@@ -3,10 +3,12 @@
     #region Namespace
 
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
-    using System.Drawing.Drawing2D;
     using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
 
     #endregion
 
@@ -15,11 +17,11 @@
         #region Events
 
         /// <summary>Returns the center point of the rectangle.</summary>
-        /// <param name="rect">This rectangle.</param>
+        /// <param name="rectangle">This rectangle.</param>
         /// <returns>Center point.</returns>
-        public static Point Center(this Rectangle rect)
+        public static Point Center(this Rectangle rectangle)
         {
-            return new Point(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
+            return new Point(rectangle.Left + (rectangle.Width / 2), rectangle.Top + (rectangle.Height / 2));
         }
 
         /// <summary>Check if the value is in range.</summary>
@@ -29,7 +31,7 @@
         /// <returns>Returns value.</returns>
         public static bool IsInRange(this int value, int minimum, int maximum)
         {
-            return value >= minimum && value <= maximum;
+            return (value >= minimum) && (value <= maximum);
         }
 
         /// <summary>Limits the number exclusively to only what is in range.</summary>
@@ -55,6 +57,105 @@
         #endregion
     }
 
+    public static class EnumExtensions
+    {
+        #region Events
+
+        /// <summary>Returns the count length.</summary>
+        /// <param name="enumerator">The enumerator.</param>
+        /// <returns>The count length.</returns>
+        public static int Count(this Enum enumerator)
+        {
+            return Enum.GetNames(enumerator.GetType()).Length;
+        }
+
+        /// <summary>Gets the enumerator index from the value.</summary>
+        /// <param name="enumerator">The enumerator.</param>
+        /// <param name="value">Value to search.</param>
+        /// <returns>The value index.</returns>
+        public static int GetIndexByValue(this Enum enumerator, string value)
+        {
+            try
+            {
+                var indexCount = (int)Enum.Parse(enumerator.GetType(), value);
+                return indexCount;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return 0;
+            }
+        }
+
+        /// <summary>Gets the enumerator value from the index.</summary>
+        /// <typeparam name="T">Type parameter.</typeparam>
+        /// <param name="enumerator">The enumerator.</param>
+        /// <param name="index">The index to search.</param>
+        /// <returns>The value string.</returns>
+        public static string GetValueByIndex<T>(this Enum enumerator, int index)
+            where T : struct
+        {
+            Type type = typeof(T);
+            if (type.IsEnum && Enum.IsDefined(enumerator.GetType(), index))
+            {
+                return Enum.GetName(enumerator.GetType(), index);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>Returns the string as an enumerator.</summary>
+        /// <typeparam name="T">Type parameter.</typeparam>
+        /// <param name="enumeratorString">The string.</param>
+        /// <returns>The enumerator.</returns>
+        public static Enum ToEnum<T>(this string enumeratorString)
+            where T : struct
+        {
+            Type type = typeof(T);
+
+            try
+            {
+                return (Enum)Enum.Parse(type, enumeratorString);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+
+        /// <summary>Converts enumerator to a list type.</summary>
+        /// <typeparam name="T">Type parameter.</typeparam>
+        /// <param name="enumerator">The enumerator.</param>
+        /// <returns>Returns enumerated list.</returns>
+        public static List<T> ToList<T>(this Enum enumerator)
+            where T : struct
+        {
+            Type type = typeof(T);
+            return !type.IsEnum ? null : Enum.GetValues(type).Cast<T>().ToList();
+        }
+
+        /// <summary>Returns the value.</summary>
+        /// <param name="enumerator">The enumerator.</param>
+        /// <returns>The enumerator description.</returns>
+        public static string Value(this Enum enumerator)
+        {
+            try
+            {
+                DescriptionAttribute attribute = enumerator.GetType().GetField(enumerator.ToString()).GetCustomAttribute<DescriptionAttribute>(false);
+                return attribute != null ? attribute.Description : enumerator.ToString();
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        #endregion
+    }
+
     public static class RectangleAlignment
     {
         #region Events
@@ -75,7 +176,7 @@
         /// <returns>Aligned rectangle.</returns>
         public static Rectangle AlignCenterX(this Rectangle rectangle, Rectangle outerBounds)
         {
-            return new Rectangle(outerBounds.Width / 2 - rectangle.Width / 2, rectangle.Y, rectangle.Width, rectangle.Height);
+            return new Rectangle((outerBounds.Width / 2) - (rectangle.Width / 2), rectangle.Y, rectangle.Width, rectangle.Height);
         }
 
         /// <summary>Aligns the rectangle to the center height.</summary>
@@ -84,7 +185,7 @@
         /// <returns>Aligned rectangle.</returns>
         public static Rectangle AlignCenterY(this Rectangle rectangle, Rectangle outerBounds)
         {
-            return new Rectangle(rectangle.X, outerBounds.Height / 2 - rectangle.Height / 2, rectangle.Width, rectangle.Height);
+            return new Rectangle(rectangle.X, (outerBounds.Height / 2) - (rectangle.Height / 2), rectangle.Width, rectangle.Height);
         }
 
         /// <summary>Aligns the rectangle to the left.</summary>

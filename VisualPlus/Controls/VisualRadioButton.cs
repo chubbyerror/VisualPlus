@@ -24,7 +24,7 @@
     [DefaultEvent("CheckedChanged")]
     [DefaultProperty("Checked")]
     [Description("The Visual RadioButton")]
-    [Designer(DesignManager.VisualRadioButton)]
+    [Designer(ControlManager.FilterProperties.VisualRadioButton)]
     public sealed class VisualRadioButton : RadioButton
     {
         #region Variables

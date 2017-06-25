@@ -23,7 +23,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Text")]
     [Description("The Visual Button")]
-    [Designer(DesignManager.VisualButton)]
+    [Designer(ControlManager.FilterProperties.VisualButton)]
     public sealed class VisualButton : Button
     {
         #region Variables
@@ -284,31 +284,31 @@
 
             mouseState.State = MouseStates.Normal;
             MouseEnter += (sender, args) =>
-            {
-                mouseState.State = MouseStates.Hover;
-                hoverEffectsManager.StartNewAnimation(AnimationDirection.In);
-                Invalidate();
-            };
-            MouseLeave += (sender, args) =>
-            {
-                mouseState.State = MouseStates.Normal;
-                hoverEffectsManager.StartNewAnimation(AnimationDirection.Out);
-                Invalidate();
-            };
-            MouseDown += (sender, args) =>
-            {
-                if (args.Button == MouseButtons.Left)
                 {
-                    mouseState.State = MouseStates.Down;
-                    effectsManager.StartNewAnimation(AnimationDirection.In, args.Location);
+                    mouseState.State = MouseStates.Hover;
+                    hoverEffectsManager.StartNewAnimation(AnimationDirection.In);
                     Invalidate();
-                }
-            };
+                };
+            MouseLeave += (sender, args) =>
+                {
+                    mouseState.State = MouseStates.Normal;
+                    hoverEffectsManager.StartNewAnimation(AnimationDirection.Out);
+                    Invalidate();
+                };
+            MouseDown += (sender, args) =>
+                {
+                    if (args.Button == MouseButtons.Left)
+                    {
+                        mouseState.State = MouseStates.Down;
+                        effectsManager.StartNewAnimation(AnimationDirection.In, args.Location);
+                        Invalidate();
+                    }
+                };
             MouseUp += (sender, args) =>
-            {
-                mouseState.State = MouseStates.Hover;
-                Invalidate();
-            };
+                {
+                    mouseState.State = MouseStates.Hover;
+                    Invalidate();
+                };
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -348,15 +348,15 @@
         private void ConfigureAnimation()
         {
             effectsManager = new VFXManager(false)
-            {
-                Increment = 0.03,
-                EffectType = EffectType.EaseOut
-            };
+                {
+                    Increment = 0.03,
+                    EffectType = EffectType.EaseOut
+                };
             hoverEffectsManager = new VFXManager
-            {
-                Increment = 0.07,
-                EffectType = EffectType.Linear
-            };
+                {
+                    Increment = 0.07,
+                    EffectType = EffectType.Linear
+                };
 
             hoverEffectsManager.OnAnimationProgress += sender => Invalidate();
             effectsManager.OnAnimationProgress += sender => Invalidate();

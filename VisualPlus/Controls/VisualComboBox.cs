@@ -25,7 +25,7 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ComboBox")]
-    [Designer(DesignManager.VisualComboBox)]
+    [Designer(ControlManager.FilterProperties.VisualComboBox)]
     public sealed class VisualComboBox : ComboBox
     {
         #region Variables

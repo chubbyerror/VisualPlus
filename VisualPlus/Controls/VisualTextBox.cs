@@ -24,7 +24,7 @@
     [DefaultEvent("TextChanged")]
     [DefaultProperty("Text")]
     [Description("The Visual TextBox")]
-    [Designer(DesignManager.VisualTextBox)]
+    [Designer(ControlManager.FilterProperties.VisualTextBox)]
     public sealed class VisualTextBox : TextBox
     {
         #region Variables

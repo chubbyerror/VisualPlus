@@ -19,252 +19,6 @@
 
     #endregion
 
-    [Serializable]
-    public struct HslColorManager
-    {
-        public static readonly HslColorManager Empty;
-
-        private int alpha;
-        private double hue;
-        private bool isEmpty;
-        private double lightness;
-        private double saturation;
-
-        static HslColorManager()
-        {
-            Empty = new HslColorManager
-                {
-                    IsEmpty = true
-                };
-        }
-
-        public HslColorManager(double hue, double saturation, double lightness)
-            : this(255, hue, saturation, lightness)
-        {
-        }
-
-        public HslColorManager(int alpha, double hue, double saturation, double lightness)
-        {
-            this.hue = Math.Min(359, hue);
-            this.saturation = Math.Min(1, saturation);
-            this.lightness = Math.Min(1, lightness);
-            this.alpha = alpha;
-            isEmpty = false;
-        }
-
-        public HslColorManager(Color color)
-        {
-            alpha = color.A;
-            hue = color.GetHue();
-            saturation = color.GetSaturation();
-            lightness = color.GetBrightness();
-            isEmpty = false;
-        }
-
-        public static bool operator ==(HslColorManager a, HslColorManager b)
-        {
-            return (a.H == b.H) && (a.L == b.L) && (a.S == b.S) && (a.A == b.A);
-        }
-
-        public static implicit operator HslColorManager(Color color)
-        {
-            return new HslColorManager(color);
-        }
-
-        public static implicit operator Color(HslColorManager colorManager)
-        {
-            return colorManager.ToRgbColor();
-        }
-
-        public static bool operator !=(HslColorManager a, HslColorManager b)
-        {
-            return !(a == b);
-        }
-
-        public int A
-        {
-            get
-            {
-                return alpha;
-            }
-
-            set
-            {
-                alpha = Math.Min(0, Math.Max(255, value));
-            }
-        }
-
-        public double H
-        {
-            get
-            {
-                return hue;
-            }
-
-            set
-            {
-                hue = value;
-
-                if (hue > 359)
-                {
-                    hue = 0;
-                }
-
-                if (hue < 0)
-                {
-                    hue = 359;
-                }
-            }
-        }
-
-        public bool IsEmpty
-        {
-            get
-            {
-                return isEmpty;
-            }
-
-            internal set
-            {
-                isEmpty = value;
-            }
-        }
-
-        public double L
-        {
-            get
-            {
-                return lightness;
-            }
-
-            set
-            {
-                lightness = Math.Min(1, Math.Max(0, value));
-            }
-        }
-
-        public double S
-        {
-            get
-            {
-                return saturation;
-            }
-
-            set
-            {
-                saturation = Math.Min(1, Math.Max(0, value));
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            bool result;
-
-            if (obj is HslColorManager)
-            {
-                HslColorManager colorManager = (HslColorManager)obj;
-                result = this == colorManager;
-            }
-            else
-            {
-                result = false;
-            }
-
-            return result;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public Color ToRgbColor()
-        {
-            return ToRgbColor(A);
-        }
-
-        public Color ToRgbColor(int alphaRGB)
-        {
-            double q;
-            if (L < 0.5)
-            {
-                q = L * (1 + S);
-            }
-            else
-            {
-                q = (L + S) - (L * S);
-            }
-
-            double p = (2 * L) - q;
-            double hk = H / 360;
-
-            // R, G, B colors
-            double[] tc =
-                {
-                    hk + (1d / 3d),
-                    hk,
-                    hk - (1d / 3d)
-                };
-            double[] colors =
-                {
-                    0.0,
-                    0.0,
-                    0.0
-                };
-
-            for (var color = 0; color < colors.Length; color++)
-            {
-                if (tc[color] < 0)
-                {
-                    tc[color] += 1;
-                }
-
-                if (tc[color] > 1)
-                {
-                    tc[color] -= 1;
-                }
-
-                if (tc[color] < 1d / 6d)
-                {
-                    colors[color] = p + ((q - p) * 6 * tc[color]);
-                }
-                else if ((tc[color] >= 1d / 6d) && (tc[color] < 1d / 2d))
-                {
-                    colors[color] = q;
-                }
-                else if ((tc[color] >= 1d / 2d) && (tc[color] < 2d / 3d))
-                {
-                    colors[color] = p + ((q - p) * 6 * ((2d / 3d) - tc[color]));
-                }
-                else
-                {
-                    colors[color] = p;
-                }
-
-                colors[color] *= 255;
-            }
-
-            return Color.FromArgb(alphaRGB, (int)colors[0], (int)colors[1], (int)colors[2]);
-        }
-
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(GetType().
-                Name);
-            builder.Append(" [");
-            builder.Append("H=");
-            builder.Append(H);
-            builder.Append(", S=");
-            builder.Append(S);
-            builder.Append(", L=");
-            builder.Append(L);
-            builder.Append("]");
-
-            return builder.ToString();
-        }
-    }
-
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(ColorDialog))]
     [DefaultEvent("ColorChanged")]
@@ -281,7 +35,6 @@
         private static readonly object EventSelectionSizeChanged = new object();
         private static readonly object EventSmallChangeChanged = new object();
         private readonly Color buttonColor = Settings.DefaultValue.Control.ControlEnabled.Colors[0];
-
         private readonly MouseState mouseState;
         private LinearGradientBrush _blackBottomGradient;
         private Bitmap _canvas;
@@ -292,7 +45,7 @@
         private Brush brush;
         private PointF centerPoint;
         private Color color;
-        private HslColorManager colorManagement;
+        private HslColorManagerStructure colorManagement;
         private int colorStep;
         private bool drag;
         private bool drawFocusRectangle;
@@ -457,10 +210,10 @@
         }
 
         [Category(Localize.Category.Appearance)]
-        [DefaultValue(typeof(HslColorManager), "0, 0, 0")]
+        [DefaultValue(typeof(HslColorManagerStructure), "0, 0, 0")]
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public HslColorManager HslColorManager
+        public HslColorManagerStructure HslColorManager
         {
             get
             {
@@ -853,7 +606,7 @@
                     PointF location = GetColorLocation(angleR, radius);
 
                     points.Add(location);
-                    colors.Add(new HslColorManager(angle, 1, 0.5).ToRgbColor());
+                    colors.Add(new HslColorManagerStructure(angle, 1, 0.5).ToRgbColor());
                 }
             }
 
@@ -923,7 +676,7 @@
             return image;
         }
 
-        private void DrawColorPicker(PaintEventArgs e, HslColorManager colorManager, bool includeFocus)
+        private void DrawColorPicker(PaintEventArgs e, HslColorManagerStructure colorManager, bool includeFocus)
         {
             var x = 0;
             var y = 0;
@@ -970,7 +723,7 @@
             }
         }
 
-        private PointF GetColorLocation(HslColorManager colorManager)
+        private PointF GetColorLocation(HslColorManagerStructure colorManager)
         {
             double angle = (colorManager.H * Math.PI) / 180;
             double locationRadius = radius * colorManager.S;
@@ -1006,7 +759,7 @@
         {
             if (!LockUpdates)
             {
-                HslColorManager = new HslColorManager(Color);
+                HslColorManager = new HslColorManagerStructure(Color);
             }
 
             Refresh();
@@ -1109,7 +862,7 @@
                 }
 
                 LockUpdates = true;
-                HslColorManager = new HslColorManager(angle, saturation, 0.5);
+                HslColorManager = new HslColorManagerStructure(angle, saturation, 0.5);
                 Color = HslColorManager.ToRgbColor();
                 LockUpdates = false;
             }
@@ -1138,6 +891,256 @@
             _blackBottomGradient = new LinearGradientBrush(rect, Color.Transparent, Color.Black, 90f);
             rect = new RectangleF(Point.Empty, new SizeF(Width, Height * 0.3F));
             _whiteTopGradient = new LinearGradientBrush(rect, Color.White, Color.Transparent, 90f);
+        }
+
+        #endregion
+
+        #region Methods
+
+        [Serializable]
+        public struct HslColorManagerStructure
+        {
+            public static readonly HslColorManagerStructure Empty;
+
+            private int alpha;
+            private double hue;
+            private bool isEmpty;
+            private double lightness;
+            private double saturation;
+
+            static HslColorManagerStructure()
+            {
+                Empty = new HslColorManagerStructure
+                    {
+                        IsEmpty = true
+                    };
+            }
+
+            public HslColorManagerStructure(double hue, double saturation, double lightness)
+                : this(255, hue, saturation, lightness)
+            {
+            }
+
+            public HslColorManagerStructure(int alpha, double hue, double saturation, double lightness)
+            {
+                this.hue = Math.Min(359, hue);
+                this.saturation = Math.Min(1, saturation);
+                this.lightness = Math.Min(1, lightness);
+                this.alpha = alpha;
+                isEmpty = false;
+            }
+
+            public HslColorManagerStructure(Color color)
+            {
+                alpha = color.A;
+                hue = color.GetHue();
+                saturation = color.GetSaturation();
+                lightness = color.GetBrightness();
+                isEmpty = false;
+            }
+
+            public static bool operator ==(HslColorManagerStructure a, HslColorManagerStructure b)
+            {
+                return (a.H == b.H) && (a.L == b.L) && (a.S == b.S) && (a.A == b.A);
+            }
+
+            public static implicit operator HslColorManagerStructure(Color color)
+            {
+                return new HslColorManagerStructure(color);
+            }
+
+            public static implicit operator Color(HslColorManagerStructure colorManager)
+            {
+                return colorManager.ToRgbColor();
+            }
+
+            public static bool operator !=(HslColorManagerStructure a, HslColorManagerStructure b)
+            {
+                return !(a == b);
+            }
+
+            public int A
+            {
+                get
+                {
+                    return alpha;
+                }
+
+                set
+                {
+                    alpha = Math.Min(0, Math.Max(255, value));
+                }
+            }
+
+            public double H
+            {
+                get
+                {
+                    return hue;
+                }
+
+                set
+                {
+                    hue = value;
+
+                    if (hue > 359)
+                    {
+                        hue = 0;
+                    }
+
+                    if (hue < 0)
+                    {
+                        hue = 359;
+                    }
+                }
+            }
+
+            public bool IsEmpty
+            {
+                get
+                {
+                    return isEmpty;
+                }
+
+                internal set
+                {
+                    isEmpty = value;
+                }
+            }
+
+            public double L
+            {
+                get
+                {
+                    return lightness;
+                }
+
+                set
+                {
+                    lightness = Math.Min(1, Math.Max(0, value));
+                }
+            }
+
+            public double S
+            {
+                get
+                {
+                    return saturation;
+                }
+
+                set
+                {
+                    saturation = Math.Min(1, Math.Max(0, value));
+                }
+            }
+
+            public override bool Equals(object obj)
+            {
+                bool result;
+
+                if (obj is HslColorManagerStructure)
+                {
+                    HslColorManagerStructure colorManager = (HslColorManagerStructure)obj;
+                    result = this == colorManager;
+                }
+                else
+                {
+                    result = false;
+                }
+
+                return result;
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+
+            public Color ToRgbColor()
+            {
+                return ToRgbColor(A);
+            }
+
+            public Color ToRgbColor(int alphaRGB)
+            {
+                double q;
+                if (L < 0.5)
+                {
+                    q = L * (1 + S);
+                }
+                else
+                {
+                    q = (L + S) - (L * S);
+                }
+
+                double p = (2 * L) - q;
+                double hk = H / 360;
+
+                // R, G, B colors
+                double[] tc =
+                    {
+                        hk + (1d / 3d),
+                        hk,
+                        hk - (1d / 3d)
+                    };
+                double[] colors =
+                    {
+                        0.0,
+                        0.0,
+                        0.0
+                    };
+
+                for (var color = 0; color < colors.Length; color++)
+                {
+                    if (tc[color] < 0)
+                    {
+                        tc[color] += 1;
+                    }
+
+                    if (tc[color] > 1)
+                    {
+                        tc[color] -= 1;
+                    }
+
+                    if (tc[color] < 1d / 6d)
+                    {
+                        colors[color] = p + ((q - p) * 6 * tc[color]);
+                    }
+                    else if ((tc[color] >= 1d / 6d) && (tc[color] < 1d / 2d))
+                    {
+                        colors[color] = q;
+                    }
+                    else if ((tc[color] >= 1d / 2d) && (tc[color] < 2d / 3d))
+                    {
+                        colors[color] = p + ((q - p) * 6 * ((2d / 3d) - tc[color]));
+                    }
+                    else
+                    {
+                        colors[color] = p;
+                    }
+
+                    colors[color] *= 255;
+                }
+
+                return Color.FromArgb(alphaRGB, (int)colors[0], (int)colors[1], (int)colors[2]);
+            }
+
+            public override string ToString()
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.Append(GetType().
+                    Name);
+                builder.Append(" [");
+                builder.Append("H=");
+                builder.Append(H);
+                builder.Append(", S=");
+                builder.Append(S);
+                builder.Append(", L=");
+                builder.Append(L);
+                builder.Append("]");
+
+                return builder.ToString();
+            }
         }
 
         #endregion

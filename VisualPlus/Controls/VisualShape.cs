@@ -17,18 +17,6 @@
 
     #endregion
 
-    public enum ShapeType
-    {
-        /// <summary>The circle.</summary>
-        Circle,
-
-        /// <summary>The rectangle.</summary>
-        Rectangle,
-
-        /// <summary>The triangle.</summary>
-        Triangle
-    }
-
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(Control))]
     [DefaultEvent("Click")]
@@ -36,7 +24,6 @@
     [Description("The Visual Shape")]
     public sealed class VisualShape : Control
     {
-        // TODO: Add rotation
         #region Variables
 
         private readonly MouseState mouseState;
@@ -71,6 +58,18 @@
             DefaultGradient();
             ConfigureStyleManager();
             ConfigureAnimation();
+        }
+
+        public enum ShapeType
+        {
+            /// <summary>The circle.</summary>
+            Circle,
+
+            /// <summary>The rectangle.</summary>
+            Rectangle,
+
+            /// <summary>The triangle.</summary>
+            Triangle
         }
 
         #endregion
@@ -400,5 +399,7 @@
         }
 
         #endregion
+
+        // TODO: Add rotation
     }
 }

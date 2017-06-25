@@ -21,7 +21,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Enabled")]
     [Description("The Visual Separator")]
-    [Designer(DesignManager.VisualSeparator)]
+    [Designer(ControlManager.FilterProperties.VisualSeparator)]
     public sealed class VisualSeparator : Control
     {
         #region Variables

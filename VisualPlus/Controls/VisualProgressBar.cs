@@ -24,7 +24,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Value")]
     [Description("The Visual ProgressBar")]
-    [Designer(DesignManager.VisualProgressBar)]
+    [Designer(ControlManager.FilterProperties.VisualProgressBar)]
     public sealed class VisualProgressBar : ProgressBar
     {
         #region Variables

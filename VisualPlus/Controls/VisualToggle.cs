@@ -23,7 +23,7 @@
     [DefaultEvent("ToggledChanged")]
     [DefaultProperty("Toggled")]
     [Description("The Visual Toggle")]
-    [Designer(DesignManager.VisualToggle)]
+    [Designer(ControlManager.FilterProperties.VisualToggle)]
     public sealed class VisualToggle : Control
     {
         #region Variables

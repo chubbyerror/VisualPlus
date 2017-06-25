@@ -63,7 +63,7 @@
     <Compile Include="Controls\FilterProperties\VisualTrackBarDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualToggleDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualTextBoxDesigner.cs" />
-    <Compile Include="Controls\FilterProperties\VisualTabDesigner.cs" />
+    <Compile Include="Controls\FilterProperties\VisualTabControlDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualSeparatorDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualRichTextBoxDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualRadioButtonDesigner.cs" />
@@ -119,6 +119,7 @@
     </Compile>
     <Compile Include="Enums\Alignment.cs" />
     <Compile Include="Enums\BorderType.cs" />
+    <Compile Include="Framework\Handlers\ControlManager.cs" />
     <Compile Include="Framework\Structure\Checkmark.cs" />
     <Compile Include="Framework\Structure\Expander.cs" />
     <Compile Include="Framework\Structure\MouseState.cs" />
@@ -185,7 +186,6 @@
     </Compile>
     <Compile Include="Framework\GDI\GDI.cs" />
     <Compile Include="Localization\Localization.cs" />
-    <Compile Include="Framework\Handlers\DesignManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

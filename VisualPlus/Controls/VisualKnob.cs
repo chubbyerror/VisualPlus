@@ -17,8 +17,6 @@
 
     #endregion
 
-    public delegate void ValueChangedEventHandler(object Sender);
-
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(Control))]
     [DefaultEvent("Click")]
@@ -130,6 +128,8 @@
             deltaAngle = endAngle - startAngle;
             ConfigureDimensions();
         }
+
+        public delegate void ValueChangedEventHandler(object Sender);
 
         public event ValueChangedEventHandler ValueChanged;
 
