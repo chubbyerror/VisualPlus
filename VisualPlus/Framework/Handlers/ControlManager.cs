@@ -142,8 +142,7 @@
         /// <returns>Returns namespace name.</returns>
         public static string GetControlNamespace(Control controlName)
         {
-            Type controlType = controlName.GetType();
-            return controlType.Namespace;
+            return controlName.GetType().Namespace;
         }
 
         /// <summary>Gets a registered control object.</summary>

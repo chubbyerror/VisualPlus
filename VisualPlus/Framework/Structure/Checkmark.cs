@@ -10,12 +10,13 @@
     using System.IO;
 
     using VisualPlus.Localization;
+    using VisualPlus.Styles;
 
     #endregion
 
     [TypeConverter(typeof(CheckMarkConverter))]
     [Description("The checkmark class.")]
-    public class Checkmark
+    public class Checkmark : ICheckmark
     {
         #region Variables
 
@@ -25,7 +26,7 @@
 
         private Point checkLocation;
 
-        private Border checkShape;
+        private Border checkBorder;
 
         private CheckType checkType;
 
@@ -47,19 +48,10 @@
 
         public Checkmark()
         {
-            checkShape = new Border();
+            checkBorder = new Border();
 
-            enabledGradient = new Gradient
-                {
-                    Colors = Settings.DefaultValue.Progress.Progress.Colors,
-                    Positions = Settings.DefaultValue.Progress.Progress.Positions
-                };
-
-            disabledGradient = new Gradient
-                {
-                    Colors = Settings.DefaultValue.Progress.ProgressDisabled.Colors,
-                    Positions = Settings.DefaultValue.Progress.ProgressDisabled.Positions
-                };
+            enabledGradient = Settings.DefaultValue.Checkmark.EnabledGradient;
+            disabledGradient = Settings.DefaultValue.Checkmark.DisabledGradient;
 
             checkCharacter = '✔';
             checkCharacterFont = Settings.DefaultValue.DefaultFont;
@@ -221,16 +213,16 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        public Border Shape
+        public Border Border
         {
             get
             {
-                return checkShape;
+                return checkBorder;
             }
 
             set
             {
-                checkShape = value;
+                checkBorder = value;
             }
         }
 

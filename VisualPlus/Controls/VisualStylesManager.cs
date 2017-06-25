@@ -2,7 +2,6 @@
 {
     #region Namespace
 
-    using System;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Text;
@@ -25,6 +24,9 @@
 
         [Browsable(false)]
         public IBorder BorderStyle;
+
+        [Browsable(false)]
+        public ICheckmark CheckmarkStyle;
 
         [Browsable(false)]
         public IControl ControlStyle;
@@ -57,7 +59,7 @@
         private float progressSize;
         private TextRenderingHint textRenderingHint;
         private bool textVisible;
-        private Styles visualStyle;
+        private Styles.Style visualStyle;
         private string watermarkText;
         private bool watermarkVisible;
 
@@ -92,7 +94,7 @@
             Initialized = true;
         }
 
-        public delegate void StyleChangedEventHandler(Styles newStyle);
+        public delegate void StyleChangedEventHandler(Styles.Style newStyle);
 
         public event StyleChangedEventHandler StyleChanged;
 
@@ -303,7 +305,7 @@
         [RefreshProperties(RefreshProperties.Repaint)]
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.Common.Type)]
-        public Styles VisualStyle
+        public Styles.Style VisualStyle
         {
             get
             {
@@ -353,7 +355,7 @@
 
         #region Events
 
-        protected virtual void OnStyleChanged(Styles newStyle)
+        protected virtual void OnStyleChanged(Styles.Style newStyle)
         {
             LoadStyleSettings(newStyle);
 
@@ -364,53 +366,24 @@
             StyleChanged?.Invoke(newStyle);
         }
 
-        /// <summary>Returns the interface style</summary>
-        /// <param name="styles">The Style.</param>
-        /// <returns>The interface style.</returns>
-        private static object GetInterfaceStyle(Styles styles)
-        {
-            object style;
-
-            switch (styles)
-            {
-                case Styles.Visual:
-                    {
-                        style = new Visual();
-                        break;
-                    }
-
-                case Styles.BlackAndYellow:
-                    {
-                        style = new BlackAndYellow();
-                        break;
-                    }
-
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException();
-                    }
-            }
-
-            return style;
-        }
-
         /// <summary>Loads the themes style.</summary>
         /// <param name="style">The style.</param>
-        private void LoadStyleSettings(Styles style)
+        private void LoadStyleSettings(Styles.Style style)
         {
-            BorderStyle = (IBorder)GetInterfaceStyle(style);
-            ControlStyle = (IControl)GetInterfaceStyle(style);
-            FontStyle = (IFont)GetInterfaceStyle(style);
-            ProgressStyle = (IProgress)GetInterfaceStyle(style);
-            TabStyle = (ITab)GetInterfaceStyle(style);
-            WatermarkStyle = (IWatermark)GetInterfaceStyle(style);
+            BorderStyle = (IBorder)Styles.GetInterfaceObject(style);
+            CheckmarkStyle = (ICheckmark)Styles.GetInterfaceObject(style);
+            ControlStyle = (IControl)Styles.GetInterfaceObject(style);
+            FontStyle = (IFont)Styles.GetInterfaceObject(style);
+            ProgressStyle = (IProgress)Styles.GetInterfaceObject(style);
+            TabStyle = (ITab)Styles.GetInterfaceObject(style);
+            WatermarkStyle = (IWatermark)Styles.GetInterfaceObject(style);
         }
 
-        private void VisualButton(Styles newStyle)
+        private void VisualButton(Styles.Style newStyle)
         {
         }
 
-        private void VisualCheckBox(Styles newStyle)
+        private void VisualCheckBox(Styles.Style newStyle)
         {
             // Todo
         }

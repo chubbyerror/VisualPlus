@@ -11,9 +11,25 @@
 
     #endregion
 
-    public class BlackAndYellow : IBorder, IControl, IFont, IProgress, ITab, IWatermark
+    public class BlackAndYellow : IBorder, ICheckmark, IControl, IFont, IProgress, ITab, IWatermark
     {
         #region Variables
+
+        private readonly Color defaultBackgroundColorNoDepth = Color.White;
+        private readonly float[] triplePosition = { 0, 1 / 2f, 1 };
+        private readonly float[] twoPosition = { 0, 1 };
+
+        #endregion
+
+        #region Properties
+
+        public Styles.Style StyleManagement
+        {
+            get
+            {
+                return Styles.Style.BlackAndYellow;
+            }
+        }
 
         public Color Color
         {
@@ -29,6 +45,56 @@
             {
                 return Color.FromArgb(120, 183, 230);
             }
+        }
+
+        public Gradient DisabledGradient
+        {
+            get
+            {
+                Color[] disabledColors =
+                    {
+                        ControlPaint.Light(Color.FromArgb(131, 129, 129)),
+                        Color.FromArgb(131, 129, 129)
+                    };
+
+                Gradient disabledGradient = new Gradient
+                    {
+                        Colors = disabledColors,
+                        Positions = twoPosition
+                    };
+
+                return disabledGradient;
+            }
+        }
+
+        public Gradient EnabledGradient
+        {
+            get
+            {
+                Color[] enabledColors =
+                    {
+                        ControlPaint.Light(ColorTranslator.FromHtml("#2D882D")),
+                        ColorTranslator.FromHtml("#2D882D")
+                    };
+
+                Gradient enabledGradient = new Gradient
+                    {
+                        Colors = enabledColors,
+                        Positions = twoPosition
+                    };
+
+                return enabledGradient;
+            }
+        }
+
+        Color IControl.Background(int depth)
+        {
+            if (depth < GetBackgroundColor().Count)
+            {
+                return GetBackgroundColor()[depth];
+            }
+
+            return defaultBackgroundColorNoDepth;
         }
 
         public Gradient BoxDisabled
@@ -380,36 +446,6 @@
             get
             {
                 return Color.LightGray;
-            }
-        }
-
-        #endregion
-
-        #region Variables
-
-        private readonly Color defaultBackgroundColorNoDepth = Color.White;
-        private readonly float[] triplePosition = { 0, 1 / 2f, 1 };
-        private readonly float[] twoPosition = { 0, 1 };
-
-        Color IControl.Background(int depth)
-        {
-            if (depth < GetBackgroundColor().Count)
-            {
-                return GetBackgroundColor()[depth];
-            }
-
-            return defaultBackgroundColorNoDepth;
-        }
-
-        #endregion
-
-        #region Properties
-
-        public Styles StyleManagement
-        {
-            get
-            {
-                return Styles.BlackAndYellow;
             }
         }
 

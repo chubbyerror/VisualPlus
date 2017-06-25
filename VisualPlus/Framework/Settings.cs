@@ -5,6 +5,7 @@ namespace VisualPlus.Framework
     using System.Drawing;
     using System.Drawing.Text;
 
+    using VisualPlus.Controls;
     using VisualPlus.Enums;
     using VisualPlus.Styles;
 
@@ -41,17 +42,18 @@ namespace VisualPlus.Framework
             public const bool TitleBoxVisible = true;
             public const bool HatchVisible = true;
             public const int BarAmount = 5;
-            public const Styles DefaultStyle = Styles.Visual;
+            public const Styles.Style DefaultStyle = Styles.Style.Visual;
             public const float HatchSize = 2F;
             public const bool Moveable = false;
             public const bool WatermarkVisible = false;
 
-            public static readonly IBorder Border = new Visual();
-            public static readonly IWatermark Watermark = new Visual();
-            public static readonly IFont Font = new Visual();
-            public static readonly IControl Control = new Visual();
-            public static readonly IProgress Progress = new Visual();
-            public static readonly ITab Tab = new Visual();
+            public static readonly IBorder Border = (IBorder)Styles.GetInterfaceObject(DefaultStyle);
+            public static readonly ICheckmark Checkmark = (ICheckmark)Styles.GetInterfaceObject(DefaultStyle);
+            public static readonly IControl Control = (IControl)Styles.GetInterfaceObject(DefaultStyle);
+            public static readonly IFont Font = (IFont)Styles.GetInterfaceObject(DefaultStyle);
+            public static readonly IProgress Progress = (IProgress)Styles.GetInterfaceObject(DefaultStyle);
+            public static readonly ITab Tab = (ITab)Styles.GetInterfaceObject(DefaultStyle);
+            public static readonly IWatermark Watermark = (IWatermark)Styles.GetInterfaceObject(DefaultStyle);
 
             public static readonly string WatermarkText = "Watermark text";
             public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;

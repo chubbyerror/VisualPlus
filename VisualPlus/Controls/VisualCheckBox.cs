@@ -74,9 +74,9 @@
             checkMark.Style = Checkmark.CheckType.Character;
             checkMark.Location = new Point(-1, 5);
             checkMark.ImageSize = new Size(19, 16);
-            checkMark.Shape.Type = BorderType.Rounded;
+            checkMark.Border.Type = BorderType.Rounded;
             checkMark.ShapeSize = new Size(8, 8);
-            checkMark.Shape.Rounding = 2;
+            checkMark.Border.Rounding = 2;
 
             boxShape.Size = new Size(14, 14);
             boxShape.ImageSize = new Size(19, 16);
@@ -346,7 +346,7 @@
             boxPath = GDI.GetBorderShape(boxRectangle, boxShape.Border.Type, boxShape.Border.Rounding);
             boxRectangle = new Rectangle(boxPoint, boxShape.Size);
 
-            checkPath = GDI.GetBorderShape(checkRectangle, checkMark.Shape.Type, checkMark.Shape.Rounding);
+            checkPath = GDI.GetBorderShape(checkRectangle, checkMark.Border.Type, checkMark.Border.Rounding);
             checkRectangle = new Rectangle(checkMark.Location, checkMark.ShapeSize);
 
             var boxGradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
@@ -382,9 +382,9 @@
             {
                 // Load style manager settings 
                 IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
+                ICheckmark checkmarkStyle = StyleManager.VisualStylesManager.CheckmarkStyle;
                 IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
                 IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
-                IProgress progressStyle = StyleManager.VisualStylesManager.ProgressStyle;
 
                 animation = styleManager.VisualStylesManager.Animation;
                 boxShape.Border.Color = borderStyle.Color;
@@ -394,6 +394,7 @@
                 boxShape.Border.Type = styleManager.VisualStylesManager.BorderType;
                 boxShape.Border.Thickness = styleManager.VisualStylesManager.BorderThickness;
                 boxShape.Border.Visible = styleManager.VisualStylesManager.BorderVisible;
+                
                 textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
                 Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
                 foreColor = fontStyle.ForeColor;
@@ -404,10 +405,8 @@
                 boxShape.DisabledGradient.Colors = controlStyle.BoxDisabled.Colors;
                 boxShape.DisabledGradient.Positions = controlStyle.BoxDisabled.Positions;
 
-                checkMark.EnabledGradient.Colors = progressStyle.Progress.Colors;
-                checkMark.EnabledGradient.Positions = progressStyle.Progress.Positions;
-                checkMark.DisabledGradient.Colors = progressStyle.ProgressDisabled.Colors;
-                checkMark.DisabledGradient.Positions = progressStyle.ProgressDisabled.Positions;
+                checkMark.EnabledGradient = checkmarkStyle.EnabledGradient;
+                checkMark.DisabledGradient = checkmarkStyle.DisabledGradient;
             }
             else
             {
