@@ -13,29 +13,37 @@
 
     #endregion
 
-    [TypeConverter(typeof(VisualImageConverter))]
-    [Description("Visual Image.")]
-    public class VisualImage
+    [TypeConverter(typeof(VisualBitmapConverter))]
+    public class VisualBitmap
     {
         #region Variables
 
-        private Border border = new Border();
-        private Image image;
-        private Point imagePoint = new Point(0, 0);
+        private Border border;
+        private Bitmap image;
+        private Point imagePoint;
         private Size imageSize;
-        private bool visible = true;
+        private bool visible;
 
         #endregion
 
         #region Constructors
 
-        public VisualImage(Image _image, Size _size)
+        /// <summary>Initializes a new instance of the <see cref="VisualBitmap" /> class.</summary>
+        /// <param name="bitmap">The image bitmap.</param>
+        /// <param name="bitmapSize">The size of the bitmap.</param>
+        public VisualBitmap(Bitmap bitmap, Size bitmapSize)
         {
-            border.Visible = false;
-            border.HoverVisible = false;
+            border = new Border
+                {
+                    Visible = false,
+                    HoverVisible = false
+                };
 
-            image = _image;
-            imageSize = _size;
+            imagePoint = new Point();
+            visible = true;
+
+            image = bitmap;
+            imageSize = bitmapSize;
         }
 
         #endregion
@@ -59,7 +67,7 @@
 
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Image)]
-        public Image Image
+        public Bitmap Image
         {
             get
             {
@@ -146,7 +154,7 @@
         #endregion
     }
 
-    public class VisualImageConverter : ExpandableObjectConverter
+    public class VisualBitmapConverter : ExpandableObjectConverter
     {
         #region Events
 
@@ -184,7 +192,7 @@
         #endregion
     }
 
-    [TypeConverter(typeof(VisualImageConverter))]
+    [TypeConverter(typeof(VisualBitmapConverter))]
     public class ObjectVisualImageWrapper
     {
         #region Constructors

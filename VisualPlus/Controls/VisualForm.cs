@@ -75,7 +75,7 @@
         private ResizeDirection resizeDir;
         private Rectangle statusBarBounds;
         private Size titleTextSize;
-        private VisualImage vsImage = new VisualImage(Resources.Icon, new Size(16, 16));
+        private VisualBitmap vsImage = new VisualBitmap(Resources.Icon, new Size(16, 16));
         private Color windowBarColor = Settings.DefaultValue.Control.Background(1);
         private int windowBarHeight = 30;
         private Rectangle xButtonBounds;
@@ -210,7 +210,7 @@
             }
         }
 
-        public new Image Icon
+        public new Bitmap Icon
         {
             get
             {
@@ -227,7 +227,7 @@
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
-        public VisualImage Image
+        public VisualBitmap Image
         {
             get
             {
@@ -642,7 +642,7 @@
         private void DrawIcon(Graphics graphics)
         {
             vsImage.Point = new Point(Padding.Left, (statusBarBounds.Height / 2) - (vsImage.Size.Height / 2));
-            VisualImage.DrawImage(graphics, vsImage.Border, vsImage.Point, vsImage.Image, vsImage.Size, vsImage.Visible);
+            VisualBitmap.DrawImage(graphics, vsImage.Border, vsImage.Point, vsImage.Image, vsImage.Size, vsImage.Visible);
         }
 
         private void DrawMinimizeOverMaximizeButton(Graphics graphics, bool showMin, bool showMax, SolidBrush hoverBrush, SolidBrush downBrush)
