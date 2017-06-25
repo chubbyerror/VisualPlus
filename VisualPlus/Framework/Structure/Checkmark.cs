@@ -19,27 +19,27 @@
     {
         #region Variables
 
-        private char checkCharacter = '✔';
+        private char checkCharacter;
 
         private Font checkCharacterFont;
 
-        private Point checkLocation = new Point(0, 0);
+        private Point checkLocation;
 
-        private Border checkShape = new Border();
+        private Border checkShape;
 
         private CheckType checkType;
 
-        private Gradient disabledGradient = new Gradient();
+        private Gradient disabledGradient;
 
-        private Image disabledImage = Image.FromStream(new MemoryStream(Convert.FromBase64String(GetBase64CheckImage())));
+        private Bitmap disabledImage;
 
-        private Gradient enabledGradient = new Gradient();
+        private Gradient enabledGradient;
 
-        private Image enabledImage = Image.FromStream(new MemoryStream(Convert.FromBase64String(GetBase64CheckImage())));
+        private Bitmap enabledImage;
 
-        private Size imageSize = new Size(0, 0);
+        private Size imageSize;
 
-        private Size shapeSize = new Size(0, 0);
+        private Size shapeSize;
 
         #endregion
 
@@ -47,13 +47,32 @@
 
         public Checkmark()
         {
-            enabledGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
-            enabledGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
-            disabledGradient.Colors = Settings.DefaultValue.Progress.ProgressDisabled.Colors;
-            disabledGradient.Positions = Settings.DefaultValue.Progress.ProgressDisabled.Positions;
+            checkShape = new Border();
 
+            enabledGradient = new Gradient
+                {
+                    Colors = Settings.DefaultValue.Progress.Progress.Colors,
+                    Positions = Settings.DefaultValue.Progress.Progress.Positions
+                };
+
+            disabledGradient = new Gradient
+                {
+                    Colors = Settings.DefaultValue.Progress.ProgressDisabled.Colors,
+                    Positions = Settings.DefaultValue.Progress.ProgressDisabled.Positions
+                };
+
+            checkCharacter = '✔';
             checkCharacterFont = Settings.DefaultValue.DefaultFont;
             checkType = CheckType.Character;
+
+            Bitmap bitmap = new Bitmap(Image.FromStream(new MemoryStream(Convert.FromBase64String(GetBase64CheckImage()))));        
+            
+            disabledImage = bitmap.FilterGrayScale();
+            enabledImage = bitmap;
+
+            checkLocation = new Point();
+            imageSize = new Size();
+            shapeSize = new Size();
         }
 
         public enum CheckType
@@ -107,7 +126,7 @@
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Image)]
-        public Image DisabledImage
+        public Bitmap DisabledImage
         {
             get
             {
@@ -139,7 +158,7 @@
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Image)]
-        public Image EnabledImage
+        public Bitmap EnabledImage
         {
             get
             {
