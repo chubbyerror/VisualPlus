@@ -1,11 +1,15 @@
 ﻿namespace VisualPlus.Controls.FilterProperties
 {
+    #region Namespace
+
     using System.Collections;
     using System.Windows.Forms.Design;
 
+    #endregion
+
     internal class VisualCircleProgressBarDesigner : ControlDesigner
     {
-        #region ${0} Events
+        #region Events
 
         protected override void PreFilterProperties(IDictionary properties)
         {
@@ -22,8 +26,8 @@
             properties.Remove("ImageIndex");
             properties.Remove("ImageKey");
             properties.Remove("ImageList");
-            // properties.Remove("TextImageRelation");
 
+            // properties.Remove("TextImageRelation");
             properties.Remove("BackColor");
             properties.Remove("BackgroundImage");
             properties.Remove("BackgroundImageLayout");

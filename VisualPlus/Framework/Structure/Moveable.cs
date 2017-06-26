@@ -10,15 +10,6 @@
 
     public static class Moveable
     {
-        #region Variables
-
-        private static Size mouseOffset;
-
-        // TKey is control to drag, TValue is a flag used while dragging
-        private static Dictionary<Control, bool> moveableDictionary = new Dictionary<Control, bool>();
-
-        #endregion
-
         #region Events
 
         /// <summary>Toggle move for control.</summary>
@@ -89,6 +80,11 @@
             // Disable move
             moveableDictionary[(Control)sender] = false;
         }
+
+        private static Size mouseOffset;
+
+        // TKey is control to drag, TValue is a flag used while dragging
+        private static Dictionary<Control, bool> moveableDictionary = new Dictionary<Control, bool>();
 
         #endregion
     }

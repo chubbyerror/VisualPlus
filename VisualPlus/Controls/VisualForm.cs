@@ -29,21 +29,6 @@
     public class VisualForm : Form
     {
         #region Variables
-        private readonly MouseState mouseState;
-        [Category(Localize.Category.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
 
         private readonly Dictionary<int, int> _resizingLocationsToCmd = new Dictionary<int, int>
             {
@@ -57,15 +42,16 @@
                 { HTBOTTOMRIGHT, WMSZ_BOTTOMRIGHT }
             };
 
+        private readonly MouseState mouseState;
+
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
         private Rectangle actionBarBounds;
-        private Border border = new Border();
+        private Border border;
         private Color buttonBackHoverColor = Settings.DefaultValue.Control.ControlHover.Colors[0];
         private Color buttonBackPressedColor = Settings.DefaultValue.Control.ControlPressed.Colors[0];
         private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
-        // private ControlState controlState = ControlState.Normal;
         private bool headerMouseDown;
         private Rectangle maxButtonBounds;
         private bool maximized;
@@ -90,11 +76,15 @@
             FormBorderStyle = FormBorderStyle.None;
             Sizable = true;
             mouseState = new MouseState(this);
+
             // Padding-Left: 5 for icon
             Padding = new Padding(5, 0, 0, 0);
 
-            border.Thickness = 3;
-            border.Type = BorderType.Rectangle;
+            border = new Border
+                {
+                    Thickness = 3,
+                    Type = BorderType.Rectangle
+                };
 
             // This enables the form to trigger the MouseMove event even when mouse is over another control
             Application.AddMessageFilter(new MouseMessageFilter());
@@ -237,6 +227,21 @@
             set
             {
                 vsImage = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        public MouseStates MouseState
+        {
+            get
+            {
+                return mouseState.State;
+            }
+
+            set
+            {
+                mouseState.State = value;
                 Invalidate();
             }
         }
@@ -572,13 +577,9 @@
 
         private void DrawBorder(Graphics graphics)
         {
-            if (border.Visible)
-            {
-                GraphicsPath clientPath = new GraphicsPath();
-                clientPath.AddRectangle(ClientRectangle);
-
-                GDI.DrawBorderType(graphics, mouseState.State, clientPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-            }
+            GraphicsPath clientRectangle = new GraphicsPath();
+            clientRectangle.AddRectangle(ClientRectangle);
+            Border.DrawBorderStyle(graphics, border, mouseState.State, clientRectangle);
         }
 
         private void DrawButtons(Graphics graphics)
@@ -864,7 +865,13 @@
 
         public class MouseMessageFilter : IMessageFilter
         {
-            #region Variables
+            #region Constructors
+
+            public static event MouseEventHandler MouseMove;
+
+            #endregion
+
+            #region Properties
 
             public bool PreFilterMessage(ref Message m)
             {
@@ -880,12 +887,6 @@
 
                 return false;
             }
-
-            #endregion
-
-            #region Constructors
-
-            public static event MouseEventHandler MouseMove;
 
             #endregion
 

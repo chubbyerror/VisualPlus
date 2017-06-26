@@ -10,7 +10,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -30,7 +29,7 @@
 
         private readonly MouseState mouseState;
         private Color backgroundColor;
-        private Border border = new Border();
+        private Border border;
         private GraphicsPath controlGraphicsPath;
         private Expander expander;
         private StyleManager styleManager = new StyleManager();
@@ -232,13 +231,10 @@
                 ConfigureStyleManager();
             }
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
             graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
 
-            if (border.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
 
             if (expander.Visible)
             {

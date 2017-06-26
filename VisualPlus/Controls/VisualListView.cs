@@ -13,7 +13,6 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
 
@@ -30,8 +29,10 @@
 
         private readonly MouseState mouseState;
 
-        private Border columnBorder = new Border();
+        private Border columnBorder;
         private Color columnHeaderBackground = Settings.DefaultValue.Control.FlatButtonDisabled;
+
+        private Size columnSize;
         private bool drawFocusRectangle;
         private bool drawStandardHeader;
         private Font headerFont = new Font("Helvetica", 10, FontStyle.Regular);
@@ -74,8 +75,11 @@
             Font = new Font(Settings.DefaultValue.Font.FontFamily, Font.Size);
             MouseLocation = new Point(-1, -1);
 
-            columnBorder.Type = BorderType.Rectangle;
-            columnBorder.HoverVisible = false;
+            columnBorder = new Border
+                {
+                    Type = BorderType.Rectangle,
+                    HoverVisible = false
+                };
 
             ConfigureAnimation();
         }
@@ -292,7 +296,9 @@
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = textRendererHint;
 
-            Rectangle columnHeaderRectangle = new Rectangle(e.Bounds.X, e.Bounds.Y, Width, e.Bounds.Height);
+            columnSize = new Size(Width, e.Bounds.Height);
+
+            Rectangle columnHeaderRectangle = new Rectangle(e.Bounds.X, e.Bounds.Y, columnSize.Width, columnSize.Height);
             GraphicsPath columnHeaderPath = new GraphicsPath();
             columnHeaderPath.AddRectangle(columnHeaderRectangle);
             columnHeaderPath.CloseAllFigures();
@@ -308,11 +314,7 @@
                 e.Graphics.FillRectangle(new SolidBrush(columnHeaderBackground), columnHeaderRectangle);
             }
 
-            if (columnBorder.Visible)
-            {
-                GDI.DrawBorder(graphics, columnHeaderPath, columnBorder.Thickness, columnBorder.Color);
-                GDI.DrawBorderType(graphics, mouseState.State, columnHeaderPath, columnBorder.Thickness, columnBorder.Color, columnBorder.HoverColor, columnBorder.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, columnBorder, mouseState.State, columnHeaderPath);
 
             StringFormat stringFormat = new StringFormat
                 {

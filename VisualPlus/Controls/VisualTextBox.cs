@@ -10,7 +10,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -38,8 +37,8 @@
         private readonly MouseState mouseState;
 
         private Color backgroundColor;
-        private Border border = new Border();
-        private Border buttonBorder = new Border();
+        private Border border;
+        private Border buttonBorder;
         private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private Image buttonImage = Resources.search;
         private GraphicsPath buttonPath;
@@ -520,10 +519,7 @@
                 graphics.DrawImage(buttonImage, imageRectangle);
                 graphics.SetClip(controlGraphicsPath);
 
-                if (buttonBorder.Visible)
-                {
-                    GDI.DrawBorderType(graphics, mouseState.State, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
-                }
+                Border.DrawBorderStyle(graphics, buttonBorder, mouseState.State, buttonPath);
 
                 TextBoxObject.Width = buttonRectangle.X - 10;
             }
@@ -539,11 +535,11 @@
             {
                 if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
+                    Border.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
                 }
                 else
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.Color);
+                    Border.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.Color);
                 }
             }
 
@@ -624,6 +620,7 @@
             {
                 // Load default settings
                 border = new Border();
+                buttonBorder = new Border();
                 backgroundColor = Settings.DefaultValue.Control.Background(3);
 
                 Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
@@ -683,7 +680,7 @@
                 Height = textBoxHeight;
             }
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
             buttonPath = new GraphicsPath();

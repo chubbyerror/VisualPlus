@@ -1,10 +1,16 @@
 ﻿namespace VisualPlus.Components.Symbols
 {
+    #region Namespace
+
     using System;
     using System.Drawing;
 
+    #endregion
+
     public class Star
     {
+        #region Events
+
         /// <summary>Calculates a 5 point star.</summary>
         /// <param name="originF"> The originF is the middle of the star.</param>
         /// <param name="outerRadius">Radius of the surrounding circle.</param>
@@ -50,5 +56,7 @@
 
             return pointsArray;
         }
+
+        #endregion
     }
 }

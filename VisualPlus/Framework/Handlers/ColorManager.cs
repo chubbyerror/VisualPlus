@@ -13,12 +13,6 @@
 
     internal class ColorManager
     {
-        #region Variables
-        
-        private static Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
-
-        #endregion
-
         #region Constructors
 
         public enum Brightness
@@ -370,6 +364,8 @@
 
             return Color.FromArgb(a, r, g, b);
         }
+
+        private static Bitmap screenPixel = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
 
         /// <summary>
         /// </summary>

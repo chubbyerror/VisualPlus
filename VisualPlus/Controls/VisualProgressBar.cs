@@ -41,7 +41,7 @@
         private Point barLocation = new Point(0, 0);
         private Point barSize = new Point(15, 15);
         private BarTypes barStyle = BarTypes.Horizontal;
-        private Border border = new Border();
+        private Border border;
         private Color foreColor;
         private Point[] gradientPoints;
         private GraphicsPath graphicsDefaultBorderPath;
@@ -587,7 +587,7 @@
 
         private void DrawDefaultProgress(BarTypes style, Graphics graphics)
         {
-            graphicsDefaultBorderPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            graphicsDefaultBorderPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
             GraphicsPath progressPath = null;
 
             if (Style == ProgressBarStyle.Marquee)
@@ -654,13 +654,13 @@
                         break;
                 }
 
-                LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+                LinearGradientBrush backgroundGradientBrush = Gradient.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
                 graphics.FillPath(backgroundGradientBrush, graphicsDefaultBorderPath);
 
                 // Draw progress
                 if (i1 > 1)
                 {
-                    LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+                    LinearGradientBrush progressGradientBrush = Gradient.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
                     graphics.FillPath(progressGradientBrush, progressPath);
 
                     hatchPath = progressPath;
@@ -686,11 +686,11 @@
             {
                 if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
                 {
-                    GDI.DrawBorder(graphics, graphicsDefaultBorderPath, border.Thickness, border.HoverColor);
+                    Border.DrawBorder(graphics, graphicsDefaultBorderPath, border.Thickness, border.HoverColor);
                 }
                 else
                 {
-                    GDI.DrawBorder(graphics, graphicsDefaultBorderPath, border.Thickness, border.Color);
+                    Border.DrawBorder(graphics, graphicsDefaultBorderPath, border.Thickness, border.Color);
                 }
             }
 
@@ -717,12 +717,12 @@
 
         private void DrawProgressContinuous(Graphics graphics)
         {
-            LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+            LinearGradientBrush backgroundGradientBrush = Gradient.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
             graphics.FillPath(backgroundGradientBrush, graphicsDefaultBorderPath);
 
             graphics.SetClip(graphicsDefaultBorderPath);
 
-            LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+            LinearGradientBrush progressGradientBrush = Gradient.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
             graphics.FillRectangle(progressGradientBrush, 0, 0, (int)ProgressBarWidth, ClientRectangle.Height);
 
             graphics.ResetClip();
@@ -730,12 +730,12 @@
 
         private void DrawProgressMarquee(Graphics graphics)
         {
-            LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+            LinearGradientBrush backgroundGradientBrush = Gradient.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
             graphics.FillPath(backgroundGradientBrush, graphicsDefaultBorderPath);
 
             graphics.SetClip(graphicsDefaultBorderPath);
 
-            LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+            LinearGradientBrush progressGradientBrush = Gradient.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
 
             Rectangle progressRectangle = new Rectangle();
 
@@ -810,13 +810,13 @@
                     case BarTypes.Horizontal:
                         {
                             // Default progress bar
-                            barStylePath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+                            barStylePath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
                             break;
                         }
 
                     case BarTypes.Vertical:
                         {
-                            barStylePath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+                            barStylePath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
                             break;
                         }
 
@@ -828,7 +828,7 @@
                 if (colored)
                 {
                     // Draw progress
-                    LinearGradientBrush progressGradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+                    LinearGradientBrush progressGradientBrush = Gradient.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
 
                     // Draw the progress
                     graphics.FillPath(progressGradientBrush, barStylePath);
@@ -836,7 +836,7 @@
                 else
                 {
                     // Draw background
-                    LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+                    LinearGradientBrush backgroundGradientBrush = Gradient.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
 
                     // Draw the background
                     graphics.FillPath(backgroundGradientBrush, barStylePath);
@@ -847,11 +847,11 @@
                 {
                     if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
                     {
-                        GDI.DrawBorder(graphics, barStylePath, border.Thickness, border.HoverColor);
+                        Border.DrawBorder(graphics, barStylePath, border.Thickness, border.HoverColor);
                     }
                     else
                     {
-                        GDI.DrawBorder(graphics, barStylePath, border.Thickness, border.Color);
+                        Border.DrawBorder(graphics, barStylePath, border.Thickness, border.Color);
                     }
                 }
             }

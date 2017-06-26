@@ -10,7 +10,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -37,8 +36,8 @@
 
         private Gradient backgroundDisabledGradient = new Gradient();
         private Gradient backgroundEnabledGradient = new Gradient();
-        private Border border = new Border();
-        private Border buttonBorder = new Border();
+        private Border border;
+        private Border buttonBorder;
         private Gradient buttonDisabledGradient = new Gradient();
         private Gradient buttonGradient = new Gradient();
         private Rectangle buttonRectangle;
@@ -372,7 +371,7 @@
                 ConfigureStyleManager();
             }
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
 
             // Update button location points
             startPoint = new Point(0 + 2, (ClientRectangle.Height / 2) - (buttonSize.Height / 2));
@@ -382,15 +381,12 @@
             Gradient backTemp = Enabled ? backgroundEnabledGradient : backgroundDisabledGradient;
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
-            LinearGradientBrush buttonGradientBrush = GDI.CreateGradientBrush(buttonTemp.Colors, gradientPoints, buttonTemp.Angle, buttonTemp.Positions);
-            LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backTemp.Colors, gradientPoints, backTemp.Angle, backTemp.Positions);
+            LinearGradientBrush buttonGradientBrush = Gradient.CreateGradientBrush(buttonTemp.Colors, gradientPoints, buttonTemp.Angle, buttonTemp.Positions);
+            LinearGradientBrush backgroundGradientBrush = Gradient.CreateGradientBrush(backTemp.Colors, gradientPoints, backTemp.Angle, backTemp.Positions);
 
             graphics.FillPath(backgroundGradientBrush, controlGraphicsPath);
 
-            if (border.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
 
             // Determines button state to draw
             Point buttonPoint = toggled ? endPoint : startPoint;
@@ -398,13 +394,10 @@
 
             DrawToggleType(graphics);
 
-            GraphicsPath buttonPath = GDI.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
+            GraphicsPath buttonPath = Border.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
             graphics.FillPath(buttonGradientBrush, buttonPath);
 
-            if (buttonBorder.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, buttonBorder, mouseState.State, buttonPath);
         }
 
         private void AnimationTimerTick(object sender, EventArgs e)
@@ -460,14 +453,14 @@
                 // Load default settings
                 border = new Border
                     {
-                        Rounding = Settings.DefaultValue.Rounding.ToggleBorder,
+                        Rounding = Settings.DefaultValue.Rounding.ToggleBorder
                     };
 
                 buttonBorder = new Border
                     {
-                        Rounding = Settings.DefaultValue.Rounding.ToggleButton,
+                        Rounding = Settings.DefaultValue.Rounding.ToggleButton
                     };
-                
+
                 Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;

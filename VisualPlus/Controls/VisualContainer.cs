@@ -16,9 +16,6 @@
     {
         #region Variables
 
-        private const int frameduration = totalduration / frames;
-        private const int frames = 5;
-        private const int totalduration = 100;
         private bool m_fade = true;
         private ToolStripControlHost m_host;
         private Control mContextContainer;
@@ -128,6 +125,10 @@
 
             Opacity = opacity;
         }
+
+        private const int frameduration = totalduration / frames;
+        private const int frames = 5;
+        private const int totalduration = 100;
 
         private void Show(Control control, Rectangle area)
         {

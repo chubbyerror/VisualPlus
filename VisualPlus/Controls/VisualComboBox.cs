@@ -12,7 +12,6 @@
     using VisualPlus.Components.Symbols;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -32,7 +31,7 @@
 
         private readonly MouseState mouseState;
 
-        private Border border = new Border();
+        private Border border;
         private Color buttonColor;
         private Alignment.Horizontal buttonHorizontal = Alignment.Horizontal.Right;
         private DropDownButtons buttonStyles = DropDownButtons.Arrow;
@@ -42,7 +41,9 @@
         private Gradient controlGradient = new Gradient();
         private GraphicsPath controlGraphicsPath;
         private Color foreColor;
-        private Border itemBorder = new Border();
+        private Border itemBorder;
+
+        private Size itemSize;
         private Color menuItemHover;
         private Color menuItemNormal;
         private Color menuTextColor;
@@ -79,7 +80,6 @@
             UpdateStyles();
             DropDownHeight = 100;
             BackColor = Color.Transparent;
-            itemBorder.HoverVisible = false;
 
             DefaultGradient();
             ConfigureStyleManager();
@@ -493,7 +493,8 @@
                     : new SolidBrush(menuItemNormal),
                 e.Bounds);
 
-            Size itemSize = new Size(e.Bounds.Width - itemBorder.Thickness, e.Bounds.Height - itemBorder.Thickness);
+            itemSize = GetItemSize(e.Bounds);
+
             Point itemPoint = new Point(e.Bounds.X, e.Bounds.Y);
             Rectangle itemBorderRectangle = new Rectangle(itemPoint, itemSize);
             GraphicsPath itemBorderPath = new GraphicsPath();
@@ -501,7 +502,7 @@
 
             if (itemBorder.Visible)
             {
-                GDI.DrawBorder(e.Graphics, itemBorderPath, itemBorder.Thickness, border.Color);
+                Border.DrawBorder(e.Graphics, itemBorderPath, itemBorder.Thickness, border.Color);
             }
 
             if (e.Index != -1)
@@ -544,7 +545,7 @@
                 ConfigureStyleManager();
             }
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
             Gradient controlCheckTemp;
@@ -559,13 +560,10 @@
             }
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
-            LinearGradientBrush gradientBackgroundBrush = GDI.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
+            LinearGradientBrush gradientBackgroundBrush = Gradient.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
             graphics.FillPath(gradientBackgroundBrush, controlGraphicsPath);
 
-            if (border.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
 
             Point textBoxPoint;
             Point buttonPoint;
@@ -673,6 +671,9 @@
             else
             {
                 // Load default settings
+                border = new Border();
+                itemBorder = new Border { HoverVisible = false };
+
                 buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
                 menuTextColor = Settings.DefaultValue.Font.ForeColor;
 
@@ -681,8 +682,6 @@
 
                 separatorColor = Settings.DefaultValue.Control.Line;
                 separatorShadowColor = Settings.DefaultValue.Control.Shadow;
-
-                border = new Border();
 
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
                 Font = Settings.DefaultValue.DefaultFont;
@@ -742,6 +741,14 @@
                     graphics.DrawLine(new Pen(separatorShadowColor), buttonRectangle.Width, 4, buttonRectangle.Width, Height - 5);
                 }
             }
+        }
+
+        /// <summary>Gets the item size.</summary>
+        /// <param name="itemBounds">Item bounds.</param>
+        /// <returns>Item size.</returns>
+        private Size GetItemSize(Rectangle itemBounds)
+        {
+            return new Size(itemBounds.Width - itemBorder.Thickness, itemBounds.Height - itemBorder.Thickness);
         }
 
         #endregion

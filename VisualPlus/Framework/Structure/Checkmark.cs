@@ -10,6 +10,7 @@
     using System.Globalization;
     using System.IO;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
     using VisualPlus.Styles;
@@ -22,7 +23,7 @@
     {
         #region Variables
 
-        private Border checkBorder;
+        private bool autoSize;
         private char checkCharacter;
         private Font checkCharacterFont;
         private Point checkLocation;
@@ -32,22 +33,28 @@
         private Gradient enabledGradient;
         private Bitmap enabledImage;
         private Size imageSize;
+        private int shapeRounding;
         private Size shapeSize;
+        private BorderType shapeType;
 
         #endregion
 
         #region Constructors
 
-        public Checkmark()
+        /// <summary>Initializes a new instance of the <see cref="Checkmark" /> class.</summary>
+        /// <param name="boundary">The boundary.</param>
+        public Checkmark(Rectangle boundary)
         {
-            checkBorder = new Border();
-
             enabledGradient = Settings.DefaultValue.Checkmark.EnabledGradient;
             disabledGradient = Settings.DefaultValue.Checkmark.DisabledGradient;
 
+            autoSize = true;
             checkCharacter = '✔';
             checkCharacterFont = Settings.DefaultValue.DefaultFont;
             checkType = CheckType.Character;
+
+            shapeRounding = Settings.DefaultValue.Rounding.BoxRounding;
+            shapeType = Settings.DefaultValue.BorderType;
 
             Bitmap bitmap = new Bitmap(Image.FromStream(new MemoryStream(Convert.FromBase64String(GetBase64CheckImage()))));
 
@@ -55,8 +62,8 @@
             enabledImage = bitmap;
 
             checkLocation = new Point();
-            imageSize = new Size();
-            shapeSize = new Size();
+            imageSize = boundary.Size;
+            shapeSize = boundary.Size;
         }
 
         public enum CheckType
@@ -77,16 +84,17 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        public Border Border
+        [Description(Localize.Description.Common.AutoSize)]
+        public bool AutoSize
         {
             get
             {
-                return checkBorder;
+                return autoSize;
             }
 
             set
             {
-                checkBorder = value;
+                autoSize = value;
             }
         }
 
@@ -188,6 +196,22 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Border.Rounding)]
+        public int ShapeRounding
+        {
+            get
+            {
+                return shapeRounding;
+            }
+
+            set
+            {
+                shapeRounding = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Size)]
         public Size ShapeSize
         {
@@ -199,6 +223,22 @@
             set
             {
                 shapeSize = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Type)]
+        public BorderType ShapeType
+        {
+            get
+            {
+                return shapeType;
+            }
+
+            set
+            {
+                shapeType = value;
             }
         }
 
@@ -265,34 +305,56 @@
             Gradient checkGradient = enabled ? checkmark.EnabledGradient : checkmark.DisabledGradient;
             Bitmap checkImage = enabled ? checkmark.EnabledImage : checkmark.DisabledImage;
 
-            var boxGradientPoints = GDI.GetGradientPoints(new Rectangle(box.Location, box.Size));
-            LinearGradientBrush checkmarkBrush = GDI.CreateGradientBrush(checkGradient.Colors, boxGradientPoints, checkGradient.Angle, checkGradient.Positions);
+            Rectangle boxRectangle = new Rectangle(box.Location, box.Size);
 
-            GraphicsPath checkPath = GDI.GetBorderShape(new Rectangle(checkmark.Location, checkmark.ShapeSize), checkmark.Border.Type, checkmark.Border.Rounding);
-            GraphicsPath boxPath = GDI.GetBorderShape(new Rectangle(box.Location, box.Size), box.Border.Type, box.Border.Rounding);
+            var boxGradientPoints = GDI.GetGradientPoints(boxRectangle);
+            LinearGradientBrush checkmarkBrush = Gradient.CreateGradientBrush(checkGradient.Colors, boxGradientPoints, checkGradient.Angle, checkGradient.Positions);
+
+            GraphicsPath boxPath = Border.GetBorderShape(boxRectangle, box.Border.Type, box.Border.Rounding);
+
+            Size characterSize = GDI.GetTextSize(graphics, checkmark.Character.ToString(), checkmark.Font);
+
+            int stylesCount = checkmark.Style.Count();
+            var autoLocations = new Point[stylesCount];
+            autoLocations[0] = new Point((box.Location.X + (box.Size.Width / 2)) - (characterSize.Width / 2), (box.Location.Y + (box.Size.Height / 2)) - (characterSize.Height / 2));
+            autoLocations[1] = new Point((box.Location.X + (box.Size.Width / 2)) - (checkmark.ImageSize.Width / 2), (box.Location.Y + (box.Size.Height / 2)) - (checkmark.ImageSize.Height / 2));
+            autoLocations[2] = new Point((box.Location.X + (box.Size.Width / 2)) - (checkmark.ShapeSize.Width / 2), (box.Location.Y + (box.Size.Height / 2)) - (checkmark.ShapeSize.Height / 2));
+
+            Point tempPoint;
+            if (checkmark.AutoSize)
+            {
+                int styleIndex = checkmark.Style.GetIndexByValue(checkmark.Style.ToString());
+                tempPoint = autoLocations[styleIndex];
+            }
+            else
+            {
+                tempPoint = checkmark.Location;
+            }
 
             graphics.SetClip(boxPath);
-
             switch (checkmark.Style)
             {
                 case CheckType.Character:
                     {
                         graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-                        DrawCharacter(graphics, checkmark.Character, checkmark.Font, checkmarkBrush, checkmark.Location);
+                        DrawCharacter(graphics, checkmark.Character, checkmark.Font, checkmarkBrush, tempPoint);
                         graphics.TextRenderingHint = textRendererHint;
-                        break;
-                    }
-
-                case CheckType.Shape:
-                    {
-                        DrawShape(graphics, checkmarkBrush, checkPath);
                         break;
                     }
 
                 case CheckType.Image:
                     {
-                        Rectangle checkImageRectangle = new Rectangle(checkmark.Location, checkmark.ImageSize);
+                        Rectangle checkImageRectangle = new Rectangle(tempPoint, checkmark.ImageSize);
                         DrawImage(graphics, checkImage, checkImageRectangle);
+                        break;
+                    }
+
+                case CheckType.Shape:
+                    {
+                        Rectangle shapeRectangle = new Rectangle(tempPoint, checkmark.ShapeSize);
+                        GraphicsPath shapePath = Border.GetBorderShape(shapeRectangle, checkmark.ShapeType, checkmark.ShapeRounding);
+
+                        DrawShape(graphics, checkmarkBrush, shapePath);
                         break;
                     }
 
@@ -326,7 +388,7 @@
         /// <summary>Draws the checkmark shape.</summary>
         /// <param name="graphics">The graphics.</param>
         /// <param name="linearGradientBrush">The linear Gradient Brush.</param>
-        /// <param name="graphicsPath">The graphics Path.</param>
+        /// <param name="graphicsPath">The graphics path.</param>
         private static void DrawShape(Graphics graphics, Brush linearGradientBrush, GraphicsPath graphicsPath)
         {
             graphics.FillPath(linearGradientBrush, graphicsPath);

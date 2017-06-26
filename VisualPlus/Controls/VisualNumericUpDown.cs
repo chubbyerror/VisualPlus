@@ -11,7 +11,6 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -33,8 +32,8 @@
 
         private Gradient backgroundDisabledGradient = new Gradient();
         private Gradient backgroundGradient = new Gradient();
-        private Border border = new Border();
-        private Border buttonBorder = new Border();
+        private Border border;
+        private Border buttonBorder;
         private Gradient buttonGradient = new Gradient();
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
@@ -494,17 +493,13 @@
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
 
-            LinearGradientBrush backgroundGradientBrush = GDI.CreateGradientBrush(backgroundCheckTemp.Colors, gradientPoints, backgroundCheckTemp.Angle, backgroundCheckTemp.Positions);
+            LinearGradientBrush backgroundGradientBrush = Gradient.CreateGradientBrush(backgroundCheckTemp.Colors, gradientPoints, backgroundCheckTemp.Angle, backgroundCheckTemp.Positions);
             graphics.FillPath(backgroundGradientBrush, controlGraphicsPath);
 
-            LinearGradientBrush buttonGradientBrush = GDI.CreateGradientBrush(buttonCheckTemp.Colors, gradientPoints, buttonCheckTemp.Angle, buttonCheckTemp.Positions);
+            LinearGradientBrush buttonGradientBrush = Gradient.CreateGradientBrush(buttonCheckTemp.Colors, gradientPoints, buttonCheckTemp.Angle, buttonCheckTemp.Positions);
             graphics.FillPath(buttonGradientBrush, buttonPath);
 
-            // Setup buttons border
-            if (buttonBorder.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, buttonBorder, mouseState.State, buttonPath);
 
             graphics.ResetClip();
 
@@ -515,11 +510,7 @@
             // Button separator
             graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), buttonRectangle.X, buttonRectangle.Y + (buttonRectangle.Height / 2), buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + (buttonRectangle.Height / 2));
 
-            // Draw control border
-            if (border.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
 
             // Draw value string
             Rectangle textboxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
@@ -587,6 +578,8 @@
                 // Load default settings
                 border = new Border();
 
+                buttonBorder = new Border();
+
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
                 Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
@@ -616,7 +609,7 @@
 
         private void UpdateLocationPoints()
         {
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
             buttonPath = new GraphicsPath();

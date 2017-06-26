@@ -32,7 +32,7 @@
         private readonly MouseState mouseState;
 
         private Color backgroundColor;
-        private Border border = new Border();
+        private Border border;
 
         private GraphicsPath borderGraphicsPath;
 
@@ -45,7 +45,7 @@
         private Color textDisabledColor;
         private TextRenderingHint textRendererHint;
         private TitleAlignments titleAlign = TitleAlignments.Top;
-        private Border titleBorder = new Border();
+        private Border titleBorder;
         private int titleBoxHeight = 25;
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
@@ -420,22 +420,19 @@
             Rectangle title = ConfigureStyleTitleBox(textArea);
 
             titleBoxRectangle = new Rectangle(title.X, title.Y, title.Width, title.Height);
-            titleBoxPath = GDI.GetBorderShape(titleBoxRectangle, titleBorder.Type, titleBorder.Rounding);
+            titleBoxPath = Border.GetBorderShape(titleBoxRectangle, titleBorder.Type, titleBorder.Rounding);
 
-            borderGraphicsPath = GDI.GetBorderShape(group, border.Type, border.Rounding);
+            borderGraphicsPath = Border.GetBorderShape(group, border.Type, border.Rounding);
 
             foreColor = Enabled ? foreColor : textDisabledColor;
             graphics.FillPath(new SolidBrush(backgroundColor), borderGraphicsPath);
 
-            if (border.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, borderGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, border, mouseState.State, borderGraphicsPath);
 
             if (titleBoxVisible)
             {
                 var gradientPoints = new[] { new Point { X = titleBoxRectangle.Width, Y = 0 }, new Point { X = titleBoxRectangle.Width, Y = titleBoxRectangle.Height } };
-                LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(titleGradient.Colors, gradientPoints, titleGradient.Angle, titleGradient.Positions);
+                LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(titleGradient.Colors, gradientPoints, titleGradient.Angle, titleGradient.Positions);
 
                 graphics.FillPath(gradientBrush, titleBoxPath);
 
@@ -443,11 +440,11 @@
                 {
                     if ((mouseState.State == MouseStates.Hover) && titleBorder.HoverVisible)
                     {
-                        GDI.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.HoverColor);
+                        Border.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.HoverColor);
                     }
                     else
                     {
-                        GDI.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.Color);
+                        Border.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.Color);
                     }
                 }
             }
@@ -548,7 +545,7 @@
             {
                 // Load default settings
                 border = new Border();
-
+                titleBorder = new Border();
 
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
                 Font = Settings.DefaultValue.DefaultFont;

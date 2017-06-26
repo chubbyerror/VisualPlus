@@ -5,7 +5,6 @@ namespace VisualPlus.Framework
     using System.Drawing;
     using System.Drawing.Text;
 
-    using VisualPlus.Controls;
     using VisualPlus.Enums;
     using VisualPlus.Styles;
 
@@ -63,6 +62,7 @@ namespace VisualPlus.Framework
             public struct Rounding
             {
                 public const int Default = 6;
+                public const int BoxRounding = 3;
                 public const int RoundedRectangle = 12;
                 public const int ToggleBorder = 20;
                 public const int ToggleButton = 18;

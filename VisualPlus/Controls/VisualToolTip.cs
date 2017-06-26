@@ -9,7 +9,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -29,7 +28,7 @@
 
         private bool autoSize = true;
         private Gradient backgroundGradient = new Gradient();
-        private Border border = new Border();
+        private Border border;
         private Font font = Settings.DefaultValue.DefaultFont;
         private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Image icon = Resources.Icon;
@@ -64,6 +63,8 @@
         {
             backgroundGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
             backgroundGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+
+            border = new Border();
 
             IsBalloon = false;
             OwnerDraw = true;
@@ -419,7 +420,7 @@
 
             var gradientPoints = new[] { new Point { X = e.Bounds.Width, Y = 0 }, new Point { X = e.Bounds.Width, Y = e.Bounds.Height } };
 
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
             graphics.FillRectangle(gradientBrush, e.Bounds);
 
             if (border.Visible)

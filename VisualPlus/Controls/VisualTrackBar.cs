@@ -40,7 +40,7 @@
         private int barThickness = 10;
         private int barTickSpacing = 8;
         private bool buttonAutoSize = true;
-        private Border buttonBorder = new Border();
+        private Border buttonBorder;
         private Gradient buttonGradient = new Gradient();
         private GraphicsPath buttonPath = new GraphicsPath();
         private Rectangle buttonRectangle;
@@ -74,7 +74,7 @@
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private Color tickColor = Settings.DefaultValue.Control.Line;
         private int tickHeight = 4;
-        private Border trackBarBorder = new Border();
+        private Border trackBarBorder;
         private Gradient trackBarDisabledGradient = new Gradient();
         private GraphicsPath trackBarPath;
         private Rectangle trackBarRectangle;
@@ -1461,15 +1461,12 @@
             }
 
             trackBarRectangle = new Rectangle(trackLocation, trackSize);
-            trackBarPath = GDI.GetBorderShape(trackBarRectangle, trackBarBorder.Type, trackBarBorder.Rounding);
+            trackBarPath = Border.GetBorderShape(trackBarRectangle, trackBarBorder.Type, trackBarBorder.Rounding);
 
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
             graphics.FillPath(gradientBrush, trackBarPath);
 
-            if (trackBarBorder.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, trackBarPath, trackBarBorder.Thickness, trackBarBorder.Color, trackBarBorder.HoverColor, trackBarBorder.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, trackBarBorder, mouseState.State, trackBarPath);
         }
 
         /// <summary>Draws the button.</summary>
@@ -1523,14 +1520,11 @@
 
             if (buttonVisible)
             {
-                LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
-                buttonPath = GDI.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
+                LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
+                buttonPath = Border.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
                 graphics.FillPath(gradientBrush, buttonPath);
 
-                if (buttonBorder.Visible)
-                {
-                    GDI.DrawBorderType(graphics, mouseState.State, buttonPath, buttonBorder.Thickness, buttonBorder.Color, buttonBorder.HoverColor, buttonBorder.HoverVisible);
-                }
+                Border.DrawBorderStyle(graphics, buttonBorder, mouseState.State, buttonPath);
             }
         }
 
@@ -1567,7 +1561,7 @@
                         }
 
                         progressRectangle = new Rectangle(progressLocation, progressSize);
-                        progressPath = GDI.GetBorderShape(progressRectangle, trackBarBorder.Type, trackBarBorder.Rounding);
+                        progressPath = Border.GetBorderShape(progressRectangle, trackBarBorder.Type, trackBarBorder.Rounding);
                     }
 
                     break;
@@ -1590,7 +1584,7 @@
 
                         progressSize = new Size(Width, Height + textAreaSize.Height);
                         progressRectangle = new Rectangle(progressLocation, progressSize);
-                        progressPath = GDI.GetBorderShape(progressRectangle, trackBarBorder.Type, trackBarBorder.Rounding);
+                        progressPath = Border.GetBorderShape(progressRectangle, trackBarBorder.Type, trackBarBorder.Rounding);
                     }
 
                     break;
@@ -1600,7 +1594,7 @@
 
             if (barProgress > 1)
             {
-                LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
+                LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(progressGradient.Colors, gradientPoints, progressGradient.Angle, progressGradient.Positions);
                 graphics.FillPath(gradientBrush, progressPath);
 
                 if (hatchVisible)

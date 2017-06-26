@@ -30,7 +30,7 @@
 
         private bool animation;
         private Gradient background = new Gradient();
-        private Border border = new Border();
+        private Border border;
         private GraphicsPath controlGraphicsPath;
         private VFXManager effectsManager;
         private VFXManager hoverEffectsManager;
@@ -275,7 +275,7 @@
         private void ConfigureComponents(Graphics graphics)
         {
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(background.Colors, gradientPoints, background.Angle, background.Positions);
+            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(background.Colors, gradientPoints, background.Angle, background.Positions);
             controlGraphicsPath = new GraphicsPath();
 
             switch (shapeType)
@@ -287,23 +287,13 @@
                         graphics.FillEllipse(gradientBrush, circleRectangle);
                         controlGraphicsPath.AddEllipse(circleRectangle);
 
-                        if (border.Visible)
-                        {
-                            GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-                        }
-
                         break;
                     }
 
                 case ShapeType.Rectangle:
                     {
-                        controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+                        controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
                         graphics.FillPath(gradientBrush, controlGraphicsPath);
-
-                        if (border.Visible)
-                        {
-                            GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-                        }
 
                         break;
                     }
@@ -327,14 +317,11 @@
 
                         controlGraphicsPath.AddPolygon(points);
 
-                        if (border.Visible)
-                        {
-                            GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-                        }
-
                         break;
                     }
             }
+
+            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
         }
 
         private void ConfigureStyleManager()

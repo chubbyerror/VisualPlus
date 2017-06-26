@@ -35,7 +35,6 @@
         private GraphicsPath controlGraphicsPath;
         private VFXManager effectsManager;
         private Color foreColor;
-        private LinearGradientBrush gradientBrush;
         private VFXManager hoverEffectsManager;
         private GraphicsPath iconGraphicsPath;
         private Point imagePoint = new Point(0, 0);
@@ -72,7 +71,6 @@
             Padding = new Padding(0);
             Size = new Size(140, 45);
 
-            DefaultGradient();
             ConfigureStyleManager();
             ConfigureAnimation();
         }
@@ -371,7 +369,8 @@
             iconGraphicsPath = new GraphicsPath();
             iconGraphicsPath.AddRectangle(imageRectangle);
             iconGraphicsPath.CloseAllFigures();
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, buttonShape.Border.Type, buttonShape.Border.Rounding);
+
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, buttonShape.Border.Type, buttonShape.Border.Rounding);
         }
 
         private void ConfigureStyleManager()
@@ -410,28 +409,13 @@
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
 
-                buttonShape.Border = new Border();
+                buttonShape = new Shape();
 
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
                 Font = Settings.DefaultValue.DefaultFont;
                 foreColor = Settings.DefaultValue.Font.ForeColor;
                 textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }
-        }
-
-        private void DefaultGradient()
-        {
-            buttonShape.EnabledGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
-            buttonShape.EnabledGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
-
-            buttonShape.DisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
-            buttonShape.DisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
-
-            buttonShape.HoverGradient.Colors = Settings.DefaultValue.Control.ControlHover.Colors;
-            buttonShape.HoverGradient.Positions = Settings.DefaultValue.Control.ControlHover.Positions;
-
-            buttonShape.PressedGradient.Colors = Settings.DefaultValue.Control.ControlPressed.Colors;
-            buttonShape.PressedGradient.Positions = Settings.DefaultValue.Control.ControlPressed.Positions;
         }
 
         private void DrawAnimation(Graphics graphics)
@@ -458,9 +442,8 @@
 
         private void DrawBackground(Graphics graphics)
         {
-            Color[] controlTempColor;
-            float gradientAngle;
-            float[] gradientPositions;
+            Gradient tempGradient;
+
             foreColor = Enabled ? foreColor : textDisabledColor;
 
             if (Enabled)
@@ -469,52 +452,40 @@
                 {
                     case MouseStates.Normal:
                         {
-                            controlTempColor = buttonShape.EnabledGradient.Colors;
-                            gradientAngle = buttonShape.EnabledGradient.Angle;
-                            gradientPositions = buttonShape.EnabledGradient.Positions;
+                            tempGradient = buttonShape.EnabledGradient;
                             break;
                         }
 
                     case MouseStates.Hover:
                         {
-                            controlTempColor = buttonShape.HoverGradient.Colors;
-                            gradientAngle = buttonShape.HoverGradient.Angle;
-                            gradientPositions = buttonShape.HoverGradient.Positions;
+                            tempGradient = buttonShape.HoverGradient;
                             break;
                         }
 
                     case MouseStates.Down:
                         {
-                            controlTempColor = buttonShape.PressedGradient.Colors;
-                            gradientAngle = buttonShape.PressedGradient.Angle;
-                            gradientPositions = buttonShape.PressedGradient.Positions;
+                            tempGradient = buttonShape.PressedGradient;
                             break;
                         }
 
                     default:
                         {
-                            controlTempColor = buttonShape.EnabledGradient.Colors;
-                            gradientAngle = buttonShape.EnabledGradient.Angle;
-                            gradientPositions = buttonShape.EnabledGradient.Positions;
+                            tempGradient = buttonShape.EnabledGradient;
                             break;
                         }
                 }
             }
             else
             {
-                controlTempColor = buttonShape.DisabledGradient.Colors;
-                gradientAngle = buttonShape.DisabledGradient.Angle;
-                gradientPositions = buttonShape.DisabledGradient.Positions;
+                tempGradient = buttonShape.DisabledGradient;
             }
 
-            var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
-            gradientBrush = GDI.CreateGradientBrush(controlTempColor, gradientPoints, gradientAngle, gradientPositions);
+            var gradientPoints = GDI.GetGradientPoints(ClientRectangle);
+            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(tempGradient.Colors, gradientPoints, tempGradient.Angle, tempGradient.Positions);
+
             graphics.FillPath(gradientBrush, controlGraphicsPath);
 
-            if (buttonShape.Border.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, buttonShape.Border.Thickness, buttonShape.Border.Color, buttonShape.Border.HoverColor, buttonShape.Border.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, buttonShape.Border, mouseState.State, controlGraphicsPath);
         }
 
         private void DrawImage(Graphics graphics)

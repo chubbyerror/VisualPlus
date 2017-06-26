@@ -10,7 +10,7 @@
     internal class VisualTabControlDesigner : ControlDesigner
     {
         #region Events
-        
+
         protected override void PreFilterProperties(IDictionary properties)
         {
             // properties.Remove("ImeMode");

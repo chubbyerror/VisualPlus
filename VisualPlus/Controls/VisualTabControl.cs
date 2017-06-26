@@ -50,7 +50,7 @@
         private float separatorThickness = 2F;
         private bool separatorVisible;
         private Color tabMenu = Color.FromArgb(55, 61, 73);
-        private Border tabPageBorder = new Border();
+        private Border tabPageBorder;
         private Rectangle tabPageRectangle;
         private Color tabSelector = Color.Green;
         private StringAlignment textAlignment = StringAlignment.Center;
@@ -79,6 +79,8 @@
             LineAlignment = StringAlignment.Center;
             Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             ItemSize = itemSize;
+
+            tabPageBorder = new Border();
 
             float[] gradientPosition = { 0, 1 };
 
@@ -670,9 +672,9 @@
 
                 var gradientPoints = new[] { new Point { X = GetTabRect(tabIndex).Width, Y = 0 }, new Point { X = GetTabRect(tabIndex).Width, Y = GetTabRect(tabIndex).Height } };
 
-                LinearGradientBrush normalBrush = GDI.CreateGradientBrush(normal.Colors, gradientPoints, normal.Angle, normal.Positions);
-                LinearGradientBrush hoverBrush = GDI.CreateGradientBrush(hover.Colors, gradientPoints, hover.Angle, hover.Positions);
-                LinearGradientBrush selectedBrush = GDI.CreateGradientBrush(selected.Colors, gradientPoints, selected.Angle, selected.Positions);
+                LinearGradientBrush normalBrush = Gradient.CreateGradientBrush(normal.Colors, gradientPoints, normal.Angle, normal.Positions);
+                LinearGradientBrush hoverBrush = Gradient.CreateGradientBrush(hover.Colors, gradientPoints, hover.Angle, hover.Positions);
+                LinearGradientBrush selectedBrush = Gradient.CreateGradientBrush(selected.Colors, gradientPoints, selected.Angle, selected.Positions);
 
                 // Draws the TabSelector
                 Rectangle selectorRectangle = GDI.ApplyAnchor(selectorAlignment, GetTabRect(tabIndex), selectorThickness);
@@ -700,12 +702,9 @@
                         graphics.FillRectangle(new SolidBrush(tabSelector), selectorRectangle2);
                     }
 
-                    if (tabPageBorder.Visible)
-                    {
-                        GraphicsPath borderPath = new GraphicsPath();
-                        borderPath.AddRectangle(tabPageRectangle);
-                        GDI.DrawBorderType(graphics, mouseState.State, borderPath, tabPageBorder.Thickness, tabPageBorder.Color, tabPageBorder.HoverColor, tabPageBorder.HoverVisible);
-                    }
+                    GraphicsPath borderPath = new GraphicsPath();
+                    borderPath.AddRectangle(tabPageRectangle);
+                    Border.DrawBorderStyle(graphics, tabPageBorder, mouseState.State, borderPath);
 
                     if (arrowSelectorVisible)
                     {
@@ -749,12 +748,9 @@
                             graphics.FillRectangle(new SolidBrush(tabSelector), selectorRectangle2);
                         }
 
-                        if (tabPageBorder.Visible)
-                        {
-                            GraphicsPath borderPath = new GraphicsPath();
-                            borderPath.AddRectangle(tabPageRectangle);
-                            GDI.DrawBorderType(graphics, mouseState.State, borderPath, tabPageBorder.Thickness, tabPageBorder.Color, tabPageBorder.HoverColor, tabPageBorder.HoverVisible);
-                        }
+                        GraphicsPath borderPath = new GraphicsPath();
+                        borderPath.AddRectangle(tabPageRectangle);
+                        Border.DrawBorderStyle(graphics, tabPageBorder, mouseState.State, borderPath);
                     }
 
                     graphics.DrawString(

@@ -1,10 +1,14 @@
 ﻿namespace VisualPlus.Components.Symbols
 {
+    #region Namespace
+
     using System.Drawing;
+
+    #endregion
 
     public class Bars
     {
-        #region ${0} Methods
+        #region Events
 
         /// <summary>Draws bars.</summary>
         /// <param name="graphics">The graphics.</param>
@@ -16,7 +20,7 @@
         public static void DrawBars(Graphics graphics, Point point, Size size, Color color, int bars, int spacing)
         {
             // TODO: Add orientation, auto align in middle (to avoid drawing from top down since size can change depending on # bars.)
-            var bump = spacing;
+            int bump = spacing;
             for (var i = 0; i < bars; i++)
             {
                 // Construct bar

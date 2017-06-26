@@ -5,6 +5,7 @@
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Globalization;
 
     using VisualPlus.Localization;
@@ -17,28 +18,36 @@
     {
         #region Variables
 
-        private Border border = new Border();
+        private Border border;
+
+        private bool centerImage;
 
         // iShape < -- >
         private Gradient disabledGradient;
+
         private Gradient enabledGradient;
         private Gradient hoverGradient;
+
+        private Point point;
         private Gradient pressedGradient;
 
         private Size size;
-        private Point point;
         private VisualBitmap visualBitmap;
 
         #endregion
 
         #region Constructors
 
+        /// <summary>Initializes a new instance of the <see cref="Shape" /> class.</summary>
         public Shape()
         {
+            border = new Border();
             disabledGradient = Settings.DefaultValue.Control.ControlDisabled;
             enabledGradient = Settings.DefaultValue.Control.ControlEnabled;
             hoverGradient = Settings.DefaultValue.Control.ControlHover;
             pressedGradient = Settings.DefaultValue.Control.ControlPressed;
+
+            centerImage = true;
 
             visualBitmap = new VisualBitmap(Resources.Icon, new Size(25, 25));
         }
@@ -59,6 +68,22 @@
             set
             {
                 border = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Toggle)]
+        public bool CenteredImage
+        {
+            get
+            {
+                return centerImage;
+            }
+
+            set
+            {
+                centerImage = value;
             }
         }
 
@@ -127,22 +152,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.ColorGradient)]
-        public Gradient PressedGradient
-        {
-            get
-            {
-                return pressedGradient;
-            }
-
-            set
-            {
-                pressedGradient = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Point)]
         public Point Location
         {
@@ -159,6 +168,22 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.ColorGradient)]
+        public Gradient PressedGradient
+        {
+            get
+            {
+                return pressedGradient;
+            }
+
+            set
+            {
+                pressedGradient = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Size)]
         public Size Size
         {
@@ -170,6 +195,28 @@
             set
             {
                 size = value;
+            }
+        }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>Draws the background.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="linearGradientBrush">The brush.</param>
+        /// <param name="backgroundPath">The path.</param>
+        public static void DrawBackground(Graphics graphics, Shape shape, Brush linearGradientBrush, GraphicsPath backgroundPath)
+        {
+            if (shape.Image.Visible)
+            {
+                Point tempLocation = shape.CenteredImage ? new Point((shape.Location.X + (shape.Size.Width / 2)) - (shape.Image.Size.Width / 2), (shape.Location.Y + (shape.Size.Height / 2)) - (shape.Image.Size.Height / 2)) : shape.Image.Point;
+                graphics.DrawImage(shape.Image.Image, new Rectangle(tempLocation, shape.Image.Size));
+            }
+            else
+            {
+                graphics.FillPath(linearGradientBrush, backgroundPath);
             }
         }
 

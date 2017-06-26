@@ -38,7 +38,7 @@
         private bool focused;
         private Point[] gradientPoints;
         private Gradient knob = new Gradient();
-        private Border knobBorder = new Border();
+        private Border knobBorder;
         private int knobDistance = 35;
         private Font knobFont;
         private Point knobPoint;
@@ -46,7 +46,7 @@
         private Size knobSize = new Size(90, 90);
         private Size knobTickSize = new Size(86, 86);
         private Gradient knobTop = new Gradient();
-        private Border knobTopBorder = new Border();
+        private Border knobTopBorder;
         private Size knobTopSize = new Size(75, 75);
         private int largeChange = 5;
         private Size lineSize = new Size(1, 1);
@@ -82,7 +82,10 @@
             mouseState = new MouseState(this);
             knobFont = Font;
             ForeColor = Color.DimGray;
-            knobTopBorder.HoverVisible = false;
+
+            knobBorder = new Border();
+
+            knobTopBorder = new Border { HoverVisible = false };
 
             float[] gradientPosition = { 0, 1 };
 
@@ -1017,15 +1020,12 @@
             Point knobPoint = new Point((this.knobRectangle.X + (this.knobRectangle.Width / 2)) - (KnobSize.Width / 2), (this.knobRectangle.Y + (this.knobRectangle.Height / 2)) - (KnobSize.Height / 2));
             Rectangle knobRectangle = new Rectangle(knobPoint, KnobSize);
 
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knob.Colors, gradientPoints, knob.Angle, knob.Positions);
+            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(knob.Colors, gradientPoints, knob.Angle, knob.Positions);
             offGraphics.FillEllipse(gradientBrush, knobRectangle);
 
-            if (knobBorder.Visible)
-            {
-                GraphicsPath borderPath = new GraphicsPath();
-                borderPath.AddEllipse(knobRectangle);
-                GDI.DrawBorderType(offGraphics, mouseState.State, borderPath, knobBorder.Thickness, knobBorder.Color, knobBorder.HoverColor, knobBorder.Visible);
-            }
+            GraphicsPath borderPath = new GraphicsPath();
+            borderPath.AddEllipse(knobRectangle);
+            Border.DrawBorderStyle(offGraphics, knobBorder, mouseState.State, borderPath);
         }
 
         private void DrawKnobTop()
@@ -1033,15 +1033,12 @@
             Point knobTopPoint = new Point((knobRectangle.X + (knobRectangle.Width / 2)) - (KnobTopSize.Width / 2), (knobRectangle.Y + (knobRectangle.Height / 2)) - (KnobTopSize.Height / 2));
             Rectangle knobTopRectangle = new Rectangle(knobTopPoint, KnobTopSize);
 
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(knobTop.Colors, gradientPoints, knobTop.Angle, knobTop.Positions);
+            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(knobTop.Colors, gradientPoints, knobTop.Angle, knobTop.Positions);
             offGraphics.FillEllipse(gradientBrush, knobTopRectangle);
 
-            if (knobTopBorder.Visible)
-            {
-                GraphicsPath borderPath = new GraphicsPath();
-                borderPath.AddEllipse(knobTopRectangle);
-                GDI.DrawBorderType(offGraphics, mouseState.State, borderPath, knobTopBorder.Thickness, knobTopBorder.Color, knobTopBorder.HoverColor, knobTopBorder.HoverVisible);
-            }
+            GraphicsPath borderPath = new GraphicsPath();
+            borderPath.AddEllipse(knobTopRectangle);
+            Border.DrawBorderStyle(offGraphics, knobTopBorder, mouseState.State, borderPath);
 
             float cx = knobPoint.X;
             float cy = knobPoint.Y;
@@ -1148,7 +1145,7 @@
             Point scalePoint = new Point(knobRectangle.X, knobRectangle.Y);
             Rectangle scaleRectangle = new Rectangle(scalePoint, scaleSize);
 
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(scale.Colors, gradientPoints, scale.Angle, scale.Positions);
+            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(scale.Colors, gradientPoints, scale.Angle, scale.Positions);
             offGraphics.FillEllipse(gradientBrush, scaleRectangle);
         }
 

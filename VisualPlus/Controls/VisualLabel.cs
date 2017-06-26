@@ -386,7 +386,7 @@
             }
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
-            LinearGradientBrush gradientBrush = GDI.CreateGradientBrush(foreGradient.Colors, gradientPoints, textGradient.Angle, textGradient.Positions);
+            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(foreGradient.Colors, gradientPoints, textGradient.Angle, textGradient.Positions);
 
             // Draw the text outline
             if (outline)

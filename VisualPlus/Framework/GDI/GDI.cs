@@ -10,9 +10,6 @@
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
-    using VisualPlus.Framework.Structure;
-
     #endregion
 
     internal class GDI
@@ -169,60 +166,6 @@
             else
             {
                 return newTextPoint;
-            }
-        }
-
-        /// <summary>Creates a gradient brush.</summary>
-        /// <param name="colors">The colors.</param>
-        /// <param name="points">The points.</param>
-        /// <param name="angle">The angle.</param>
-        /// <param name="positions">The positions.</param>
-        /// <returns>Returns a custom gradient brush.</returns>
-        public static LinearGradientBrush CreateGradientBrush(Color[] colors, Point[] points, float angle, float[] positions)
-        {
-            LinearGradientBrush linearGradientBrush = new LinearGradientBrush(points[0], points[1], Color.Black, Color.Black);
-
-            ColorBlend colorBlend = new ColorBlend
-                {
-                    Positions = positions,
-                    Colors = colors
-                };
-
-            // Define brush color blend
-            linearGradientBrush.InterpolationColors = colorBlend;
-            linearGradientBrush.RotateTransform(angle);
-
-            return linearGradientBrush;
-        }
-
-        /// <summary>Draws a border around the path.</summary>
-        /// <param name="graphics">Graphics controller.</param>
-        /// <param name="borderPath">The border path.</param>
-        /// <param name="borderThickness">The border size.</param>
-        /// <param name="color">The color.</param>
-        public static void DrawBorder(Graphics graphics, GraphicsPath borderPath, float borderThickness, Color color)
-        {
-            Pen borderPen = new Pen(color, borderThickness);
-            graphics.DrawPath(borderPen, borderPath);
-        }
-
-        /// <summary>Handles and draws a border on the control depending on it's current focus.</summary>
-        /// <param name="graphics">Graphics controller.</param>
-        /// <param name="controlState">The control state.</param>
-        /// <param name="controlPath">The border path.</param>
-        /// <param name="borderThickness">The border size.</param>
-        /// <param name="borderColor">Normal border color.</param>
-        /// <param name="borderHoverColor">Hover border color.</param>
-        /// <param name="borderHoverVisible">Hover visible.</param>
-        public static void DrawBorderType(Graphics graphics, MouseStates controlState, GraphicsPath controlPath, float borderThickness, Color borderColor, Color borderHoverColor, bool borderHoverVisible)
-        {
-            if ((controlState == MouseStates.Hover) && borderHoverVisible)
-            {
-                DrawBorder(graphics, controlPath, borderThickness, borderHoverColor);
-            }
-            else
-            {
-                DrawBorder(graphics, controlPath, borderThickness, borderColor);
             }
         }
 
@@ -422,47 +365,6 @@
             }
 
             return newSize;
-        }
-
-        /// <summary>Draws the border shape.</summary>
-        /// <param name="rectangle">The rectangle.</param>
-        /// <param name="borderType">The border Shape.</param>
-        /// <param name="borderRounding">The border Rounding.</param>
-        /// <returns>The <see cref="GraphicsPath" />.</returns>
-        public static GraphicsPath GetBorderShape(Rectangle rectangle, BorderType borderType, int borderRounding)
-        {
-            Rectangle newRectangle = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width - 1, rectangle.Height - 1);
-            GraphicsPath newShape = new GraphicsPath();
-
-            switch (borderType)
-            {
-                case BorderType.Rectangle:
-                    {
-                        newShape = new GraphicsPath();
-                        newShape.AddRectangle(newRectangle);
-                        newShape.CloseAllFigures();
-                        break;
-                    }
-
-                case BorderType.Rounded:
-                    {
-                        newShape = new GraphicsPath();
-                        newShape.AddArc(newRectangle.X, newRectangle.Y, borderRounding, borderRounding, 180.0F, 90.0F);
-                        newShape.AddArc(newRectangle.Right - borderRounding, newRectangle.Y, borderRounding, borderRounding, 270.0F, 90.0F);
-                        newShape.AddArc(
-                            newRectangle.Right - borderRounding,
-                            newRectangle.Bottom - borderRounding,
-                            borderRounding,
-                            borderRounding,
-                            0.0F,
-                            90.0F);
-                        newShape.AddArc(newRectangle.X, newRectangle.Bottom - borderRounding, borderRounding, borderRounding, 90.0F, 90.0F);
-                        newShape.CloseAllFigures();
-                        break;
-                    }
-            }
-
-            return newShape;
         }
 
         [DllImport("user32.dll")]

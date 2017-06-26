@@ -21,9 +21,13 @@
 
     public interface ICheckmark
     {
-        Gradient EnabledGradient { get; }
+        #region Properties
 
         Gradient DisabledGradient { get; }
+
+        Gradient EnabledGradient { get; }
+
+        #endregion
     }
 
     public interface IControl

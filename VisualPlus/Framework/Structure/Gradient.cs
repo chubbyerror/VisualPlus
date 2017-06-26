@@ -5,6 +5,7 @@
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Globalization;
 
     using VisualPlus.Localization;
@@ -88,6 +89,32 @@
             {
                 positions = value;
             }
+        }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>Creates a gradient brush.</summary>
+        /// <param name="colors">The colors.</param>
+        /// <param name="points">The points.</param>
+        /// <param name="angle">The angle.</param>
+        /// <param name="positions">The positions.</param>
+        /// <returns>Returns a custom gradient brush.</returns>
+        public static LinearGradientBrush CreateGradientBrush(Color[] colors, Point[] points, float angle, float[] positions)
+        {
+            LinearGradientBrush linearGradientBrush = new LinearGradientBrush(points[0], points[1], Color.Black, Color.Black);
+
+            ColorBlend colorBlend = new ColorBlend
+                {
+                    Positions = positions,
+                    Colors = colors
+                };
+
+            linearGradientBrush.InterpolationColors = colorBlend;
+            linearGradientBrush.RotateTransform(angle);
+
+            return linearGradientBrush;
         }
 
         #endregion

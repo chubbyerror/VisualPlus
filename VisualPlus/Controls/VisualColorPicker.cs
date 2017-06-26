@@ -41,7 +41,7 @@
         private Graphics _graphicsBuffer;
         private LinearGradientBrush _spectrumGradient;
         private LinearGradientBrush _whiteTopGradient;
-        private Border border = new Border();
+        private Border border;
         private Brush brush;
         private PointF centerPoint;
         private Color color;
@@ -51,7 +51,7 @@
         private bool drawFocusRectangle;
         private int largeChange;
         private Point mousePosition;
-        private Border pickerBorder = new Border();
+        private Border pickerBorder;
         private bool pickerVisible = true;
         private PickerType pickType = PickerType.Rectangle;
         private float radius;
@@ -74,13 +74,15 @@
             SmallChange = 1;
             LargeChange = 5;
 
+            border = new Border();
+            pickerBorder = new Border();
+
             // SelectionGlyph = CreateSelectionGlyph();
             MinimumSize = new Size(130, 130);
             Size = new Size(130, 130);
 
             pickerBorder.HoverVisible = false;
 
-            // pickerBorder.HoverVisible = false;
             Size = new Size(200, 100);
 
             UpdateLinearGradientBrushes();
@@ -560,10 +562,7 @@
                     }
             }
 
-            if (border.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, controlGraphicsPath, border.Thickness, border.Color, border.HoverColor, border.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
 
             // Draws the button
             if (!Color.IsEmpty && pickerVisible)
@@ -712,10 +711,7 @@
             e.Graphics.FillPath(new SolidBrush(buttonColor), buttonGraphicsPath);
 
             // Draw border
-            if (pickerBorder.Visible)
-            {
-                GDI.DrawBorderType(e.Graphics, mouseState.State, buttonGraphicsPath, pickerBorder.Thickness, pickerBorder.Color, pickerBorder.HoverColor, pickerBorder.HoverVisible);
-            }
+            Border.DrawBorderStyle(e.Graphics, pickerBorder, mouseState.State, buttonGraphicsPath);
 
             if (Focused && includeFocus)
             {

@@ -6,9 +6,12 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
+
+    using VisualPlus.Framework.Structure;
 
     #endregion
 
@@ -74,6 +77,33 @@
             }
 
             return value;
+        }
+
+        /// <summary>Converts the GraphicsPath to a border path.</summary>
+        /// <param name="borderPath">The border path.</param>
+        /// <param name="border">The border.</param>
+        /// <returns>Converted border path.</returns>
+        public static GraphicsPath ToBorderPath(this GraphicsPath borderPath, Border border)
+        {
+            return Border.GetBorderShape(borderPath.GetBounds().ToRectangle(), border.Type, border.Rounding);
+        }
+
+        /// <summary>Converts the Rectangle to a GraphicsPath.</summary>
+        /// <param name="rectangle">The rectangle.</param>
+        /// <returns>The graphics path.</returns>
+        public static GraphicsPath ToGraphicsPath(this Rectangle rectangle)
+        {
+            GraphicsPath convertedPath = new GraphicsPath();
+            convertedPath.AddRectangle(rectangle);
+            return convertedPath;
+        }
+
+        /// <summary>Rounds a RectangleF to a Rectangle.</summary>
+        /// <param name="rectangleF">The rectangleF.</param>
+        /// <returns>Rounded rectangle.</returns>
+        public static Rectangle ToRectangle(this RectangleF rectangleF)
+        {
+            return Rectangle.Round(rectangleF);
         }
 
         #endregion

@@ -26,8 +26,6 @@
     {
         #region Variables
 
-        private static Color background;
-
         private ToolStripItemClickedEventArgs clickedEventArgs;
 
         private StyleManager styleManager = new StyleManager();
@@ -236,7 +234,9 @@
         private static Color arrowColor;
         private static Color arrowDisabledColor;
         private static bool arrowVisible = Settings.DefaultValue.TextVisible;
-        private static Border border = new Border();
+
+        private static Color background;
+        private static Border border;
         private static Font contextMenuFont;
         private static Color foreColor;
         private static Color textDisabledColor;
@@ -272,8 +272,11 @@
             else
             {
                 // Load default settings
-                border.HoverVisible = false;
-                border.Type = BorderType.Rectangle;
+                border = new Border
+                    {
+                        HoverVisible = false,
+                        Type = BorderType.Rectangle
+                    };
 
                 Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
                 foreColor = Settings.DefaultValue.Font.ForeColor;

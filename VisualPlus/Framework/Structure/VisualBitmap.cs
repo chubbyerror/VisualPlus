@@ -8,7 +8,6 @@
     using System.Drawing.Drawing2D;
     using System.Globalization;
 
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Localization;
 
     #endregion
@@ -144,7 +143,7 @@
 
                 if (_border.Visible)
                 {
-                    GDI.DrawBorder(graphics, imagePath, _border.Thickness, _border.Color);
+                    Border.DrawBorder(graphics, imagePath, _border.Thickness, _border.Color);
                 }
             }
 

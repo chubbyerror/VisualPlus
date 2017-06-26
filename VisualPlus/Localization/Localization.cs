@@ -87,8 +87,7 @@
             public const string Layout = "VisualExtension";
         }
 
-#else 
-        /// <summary>Property group categories.</summary>
+#else /// <summary>Property group categories.</summary>
         public struct Category
         {
             public const string Accessibility = "Accessibility";

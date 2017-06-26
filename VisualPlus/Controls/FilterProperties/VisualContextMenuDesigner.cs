@@ -1,11 +1,15 @@
 ﻿namespace VisualPlus.Controls.FilterProperties
 {
+    #region Namespace
+
     using System.Collections;
     using System.Windows.Forms.Design;
 
+    #endregion
+
     internal class VisualContextMenuDesigner : ControlDesigner
     {
-        #region ${0} Events
+        #region Events
 
         protected override void PreFilterProperties(IDictionary properties)
         {

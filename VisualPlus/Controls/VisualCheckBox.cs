@@ -288,26 +288,14 @@
                 ConfigureStyleManager();
             }
 
-            // Draw box background
-            if (boxShape.Image.Visible)
-            {
-                graphics.DrawImage(boxShape.Image.Image, new Rectangle(boxShape.Image.Point, boxShape.Image.Size));
-            }
-            else
-            {
-                graphics.FillPath(boxGradientBrush, boxPath);
-            }
+            Shape.DrawBackground(graphics, boxShape, boxGradientBrush, boxPath);
 
             if (Checked)
             {
                 Checkmark.DrawCheckmark(graphics, checkMark, boxShape, Enabled, textRendererHint);
             }
 
-            // Draw border
-            if (boxShape.Border.Visible)
-            {
-                GDI.DrawBorderType(graphics, mouseState.State, boxPath, boxShape.Border.Thickness, boxShape.Border.Color, boxShape.Border.HoverColor, boxShape.Border.HoverVisible);
-            }
+            Border.DrawBorderStyle(graphics, boxShape.Border, mouseState.State, boxPath);
 
             DrawText(graphics);
             DrawAnimation(graphics);
@@ -343,11 +331,12 @@
         private void ConfigureComponents()
         {
             boxShape.Location = new Point(0, (ClientRectangle.Height / 2) - (boxShape.Size.Height / 2));
-            boxRectangle = new Rectangle(boxShape.Location, boxShape.Size);
-            boxPath = GDI.GetBorderShape(new Rectangle(boxShape.Location, boxShape.Size), boxShape.Border.Type, boxShape.Border.Rounding);
 
-            var boxGradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
-            boxGradientBrush = GDI.CreateGradientBrush(boxGradient.Colors, boxGradientPoints, boxGradient.Angle, boxGradient.Positions);
+            boxRectangle = new Rectangle(boxShape.Location, boxShape.Size);
+            boxPath = Border.GetBorderShape(boxRectangle, boxShape.Border.Type, boxShape.Border.Rounding);
+
+            var boxGradientPoints = GDI.GetGradientPoints(ClientRectangle);
+            boxGradientBrush = Gradient.CreateGradientBrush(boxGradient.Colors, boxGradientPoints, boxGradient.Angle, boxGradient.Positions);
         }
 
         private void ConfigureControlState()
@@ -393,16 +382,11 @@
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
 
-                checkMark = new Checkmark
+                checkMark = new Checkmark(ClientRectangle)
                     {
                         Style = Checkmark.CheckType.Character,
                         Location = new Point(-1, 5),
                         ImageSize = new Size(19, 16),
-                        Border =
-                            {
-                                Type = BorderType.Rounded,
-                                Rounding = 2
-                            },
                         ShapeSize = new Size(8, 8)
                     };
 

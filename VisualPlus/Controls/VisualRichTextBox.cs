@@ -9,7 +9,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -36,8 +35,8 @@
         private readonly MouseState mouseState;
 
         private Color backgroundColor;
-        private Border border = new Border();
         private Color backgroundDisabledColor;
+        private Border border;
         private GraphicsPath controlGraphicsPath;
         private Color foreColor;
         private StyleManager styleManager = new StyleManager();
@@ -89,6 +88,22 @@
             }
         }
 
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color BackgroundDisabledColor
+        {
+            get
+            {
+                return backgroundDisabledColor;
+            }
+
+            set
+            {
+                backgroundDisabledColor = value;
+                Invalidate();
+            }
+        }
+
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
@@ -102,22 +117,6 @@
             set
             {
                 border = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.Category.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color BackgroundDisabledColor
-        {
-            get
-            {
-                return backgroundDisabledColor;
-            }
-
-            set
-            {
-                backgroundDisabledColor = value;
                 Invalidate();
             }
         }
@@ -276,11 +275,11 @@
             {
                 if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
+                    Border.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
                 }
                 else
                 {
-                    GDI.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.Color);
+                    Border.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.Color);
                 }
             }
 
@@ -291,7 +290,7 @@
         {
             base.OnResize(e);
 
-            controlGraphicsPath = GDI.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
         }
 
         protected override void OnSizeChanged(EventArgs e)

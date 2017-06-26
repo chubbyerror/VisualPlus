@@ -9,7 +9,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
@@ -211,13 +210,13 @@
 
             lineRectangle = new Rectangle(linePosition, lineSize);
 
-            LinearGradientBrush lineBrush = GDI.CreateGradientBrush(lineGradient.Colors, gradientPoints, lineGradient.Angle, lineGradient.Positions);
+            LinearGradientBrush lineBrush = Gradient.CreateGradientBrush(lineGradient.Colors, gradientPoints, lineGradient.Angle, lineGradient.Positions);
             graphics.DrawRectangle(new Pen(lineBrush), lineRectangle);
 
             if (shadowVisible)
             {
                 shadowRectangle = new Rectangle(shadowPosition, shadowSize);
-                LinearGradientBrush shadowBrush = GDI.CreateGradientBrush(lineGradient.Colors, gradientPoints, lineGradient.Angle, lineGradient.Positions);
+                LinearGradientBrush shadowBrush = Gradient.CreateGradientBrush(lineGradient.Colors, gradientPoints, lineGradient.Angle, lineGradient.Positions);
                 graphics.DrawRectangle(new Pen(shadowBrush), shadowRectangle);
             }
         }
