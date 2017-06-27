@@ -31,7 +31,7 @@
         private readonly MouseState mouseState;
 
         private bool animation;
-        private Shape buttonShape = new Shape();
+        private Shape buttonShape;
         private GraphicsPath controlGraphicsPath;
         private VFXManager effectsManager;
         private Color foreColor;
@@ -409,7 +409,7 @@
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
 
-                buttonShape = new Shape();
+                buttonShape = new Shape(ClientRectangle);
 
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
                 Font = Settings.DefaultValue.DefaultFont;

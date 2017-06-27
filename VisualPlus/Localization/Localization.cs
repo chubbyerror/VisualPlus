@@ -33,6 +33,7 @@
                 public const string MouseState = "The state of the mouse on the control.";
                 public const string Padding = "Represents padding or margin information associated with a user interface (UI) element.";
                 public const string Point = "Gets or sets the point.";
+                public const string Rectangle = "Gets or set the rectangle.";
                 public const string Rotation = "Applies the specified rotation to the transformation matrix of this Graphics.";
                 public const string StartIndex = "Gets or sets the starting index.";
                 public const string Size = "Gets or sets the size.";
@@ -75,7 +76,6 @@
 
 #if DEBUG
 
-        /// <summary>Property group categories.</summary>
         public struct Category
         {
             public const string Accessibility = "VisualExtension";
@@ -87,7 +87,7 @@
             public const string Layout = "VisualExtension";
         }
 
-#else /// <summary>Property group categories.</summary>
+#else
         public struct Category
         {
             public const string Accessibility = "Accessibility";

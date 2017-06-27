@@ -28,18 +28,19 @@
         private Gradient enabledGradient;
         private Gradient hoverGradient;
 
-        private Point point;
         private Gradient pressedGradient;
 
-        private Size size;
+        private Rectangle rectangle;
+
         private VisualBitmap visualBitmap;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>Initializes a new instance of the <see cref="Shape" /> class.</summary>
-        public Shape()
+        /// <summary>Initializes a new instance of the <see cref="Shape"/> class.</summary>
+        /// <param name="shapeRectangle">The shape Rectangle.</param>
+        public Shape(Rectangle shapeRectangle)
         {
             border = new Border();
             disabledGradient = Settings.DefaultValue.Control.ControlDisabled;
@@ -48,6 +49,7 @@
             pressedGradient = Settings.DefaultValue.Control.ControlPressed;
 
             centerImage = true;
+            rectangle = shapeRectangle;
 
             visualBitmap = new VisualBitmap(Resources.Icon, new Size(25, 25));
         }
@@ -152,22 +154,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Point)]
-        public Point Location
-        {
-            get
-            {
-                return point;
-            }
-
-            set
-            {
-                point = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         public Gradient PressedGradient
         {
@@ -185,16 +171,16 @@
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Size)]
-        public Size Size
+        public Rectangle Rectangle
         {
             get
             {
-                return size;
+                return rectangle;
             }
 
             set
             {
-                size = value;
+                rectangle = value;
             }
         }
 
@@ -211,7 +197,7 @@
         {
             if (shape.Image.Visible)
             {
-                Point tempLocation = shape.CenteredImage ? new Point((shape.Location.X + (shape.Size.Width / 2)) - (shape.Image.Size.Width / 2), (shape.Location.Y + (shape.Size.Height / 2)) - (shape.Image.Size.Height / 2)) : shape.Image.Point;
+                Point tempLocation = shape.CenteredImage ? new Point((shape.Rectangle.X + (shape.Rectangle.Width / 2)) - (shape.Image.Size.Width / 2), (shape.Rectangle.Y + (shape.Rectangle.Height / 2)) - (shape.Image.Size.Height / 2)) : shape.Image.Point;
                 graphics.DrawImage(shape.Image.Image, new Rectangle(tempLocation, shape.Image.Size));
             }
             else

@@ -35,7 +35,6 @@
         private LinearGradientBrush boxGradientBrush;
         private GraphicsPath boxPath;
         private Point boxPoint = new Point(0, 0);
-        private Rectangle boxRectangle;
         private Shape boxShape;
         private int boxSpacing = 2;
         private Checkmark checkMark;
@@ -254,7 +253,7 @@
                 {
                     mouseState.State = MouseStates.Down;
 
-                    if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(mouseLocation, boxRectangle))
+                    if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(mouseLocation, boxShape.Rectangle))
                     {
                         rippleEffectsManager.SecondaryIncrement = 0;
                         rippleEffectsManager.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
@@ -268,7 +267,7 @@
             MouseMove += (sender, args) =>
                 {
                     mouseLocation = args.Location;
-                    Cursor = GDI.IsMouseInBounds(mouseLocation, boxRectangle) ? Cursors.Hand : Cursors.Default;
+                    Cursor = GDI.IsMouseInBounds(mouseLocation, boxShape.Rectangle) ? Cursors.Hand : Cursors.Default;
                 };
         }
 
@@ -354,10 +353,11 @@
 
         private void ConfigureComponents()
         {
-            boxShape.Location = new Point(0, (ClientRectangle.Height / 2) - (boxShape.Size.Height / 2));
+            // boxShape.Location = new Point(0, (ClientRectangle.Height / 2) - (boxShape.Size.Height / 2));
+            boxShape.Rectangle = new Rectangle(new Point(0, (ClientRectangle.Height / 2) - (boxShape.Rectangle.Height / 2)), boxShape.Rectangle.Size);
 
-            boxRectangle = new Rectangle(boxShape.Location, boxShape.Size);
-            boxPath = Border.GetBorderShape(boxRectangle, boxShape.Border.Type, boxShape.Border.Rounding);
+            // boxRectangle = new Rectangle(boxShape.Location, boxShape.Size);
+            boxPath = Border.GetBorderShape(boxShape.Rectangle, boxShape.Border.Type, boxShape.Border.Rounding);
 
             var boxGradientPoints = GDI.GetGradientPoints(ClientRectangle);
             boxGradientBrush = Gradient.CreateGradientBrush(boxGradient.Colors, boxGradientPoints, boxGradient.Angle, boxGradient.Positions);
@@ -405,13 +405,12 @@
                 // Load default settings
                 animation = Settings.DefaultValue.Animation;
 
-                boxShape = new Shape
+                boxShape = new Shape(new Rectangle(new Point(0, 0), new Size(14, 14)))
                     {
                         Border = new Border
                             {
                                 Rounding = Settings.DefaultValue.Rounding.RoundedRectangle
                             },
-                        Size = new Size(14, 14),
                         Image =
                             {
                                 Size = new Size(19, 16)
@@ -441,10 +440,10 @@
                 {
                     double animationValue = rippleEffectsManager.GetProgress(i);
 
-                    Point animationSource = new Point(boxRectangle.X + (boxRectangle.Width / 2), boxRectangle.Y + (boxRectangle.Height / 2));
+                    Point animationSource = new Point(boxShape.Rectangle.X + (boxShape.Rectangle.Width / 2), boxShape.Rectangle.Y + (boxShape.Rectangle.Height / 2));
                     SolidBrush animationBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), (bool)rippleEffectsManager.GetData(i)[0] ? Color.Black : checkMark.EnabledGradient.Colors[0]));
 
-                    int height = boxRectangle.Height;
+                    int height = boxShape.Rectangle.Height;
                     int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + (0.2d * animationValue))) : height;
 
                     GraphicsPath path = GDI.DrawRoundedRectangle(animationSource.X - (size / 2), animationSource.Y - (size / 2), size, size, size / 2);
@@ -457,7 +456,7 @@
         private void DrawText(Graphics graphics)
         {
             StringFormat stringFormat = new StringFormat { LineAlignment = StringAlignment.Center };
-            Point textPoint = new Point(boxPoint.X + boxShape.Size.Width + boxSpacing, ClientRectangle.Height / 2);
+            Point textPoint = new Point(boxPoint.X + boxShape.Rectangle.Width + boxSpacing, ClientRectangle.Height / 2);
             graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint, stringFormat);
         }
 
