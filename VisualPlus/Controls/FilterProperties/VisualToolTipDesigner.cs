@@ -3,11 +3,12 @@
     #region Namespace
 
     using System.Collections;
+    using System.ComponentModel.Design;
     using System.Windows.Forms.Design;
 
     #endregion
 
-    internal class VisualToolTipDesigner : ControlDesigner
+    internal class VisualToolTipDesigner : ComponentDesigner
     {
         #region Events
 
