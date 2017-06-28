@@ -269,6 +269,7 @@
             RichObject.BackColor = controlTempColor;
             RichObject.ForeColor = foreColor;
 
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
             graphics.FillPath(new SolidBrush(controlTempColor), controlGraphicsPath);
 
             if (border.Visible)
@@ -284,13 +285,6 @@
             }
 
             graphics.SetClip(controlGraphicsPath);
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-
-            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
         }
 
         protected override void OnSizeChanged(EventArgs e)
