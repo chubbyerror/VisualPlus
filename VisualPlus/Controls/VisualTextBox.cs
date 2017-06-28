@@ -207,8 +207,6 @@
             set
             {
                 buttonWidth = value;
-
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -487,7 +485,18 @@
                 ConfigureStyleManager();
             }
 
-            UpdateLocationPoints();
+            if (!Multiline)
+            {
+                Height = textBoxHeight;
+            }
+
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
+
+            buttonPath = new GraphicsPath();
+            buttonPath.AddRectangle(buttonRectangle);
+            buttonPath.CloseAllFigures();
+
             graphics.SetClip(controlGraphicsPath);
 
             // Set control state color
@@ -564,13 +573,7 @@
                 textBoxHeight = (Convert.ToInt32(Font.Size) * 2) + 1;
             }
 
-            UpdateLocationPoints();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
+            // TODO Invalidate();
         }
 
         protected override void OnTextChanged(EventArgs e)
@@ -671,21 +674,6 @@
                 Controls.Remove(waterMarkContainer);
                 waterMarkContainer = null;
             }
-        }
-
-        private void UpdateLocationPoints()
-        {
-            if (!Multiline)
-            {
-                Height = textBoxHeight;
-            }
-
-            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
-            buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
-
-            buttonPath = new GraphicsPath();
-            buttonPath.AddRectangle(buttonRectangle);
-            buttonPath.CloseAllFigures();
         }
 
         private void WaterMarkContainer_Click(object sender, EventArgs e)
