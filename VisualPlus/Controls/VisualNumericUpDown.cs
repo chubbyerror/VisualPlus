@@ -38,7 +38,7 @@
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 19;
-        private GraphicsPath controlGraphicsPath;
+        private GraphicsPath controlGraphicsPath = new GraphicsPath();
         private Color foreColor;
         private bool keyboardNum;
         private long maximumValue;
@@ -68,9 +68,6 @@
             Size = new Size(70, 29);
             MinimumSize = new Size(62, 29);
             UpdateStyles();
-
-            buttonBorder.HoverVisible = false;
-            buttonBorder.Type = BorderType.Rectangle;
 
             ConfigureStyleManager();
             DefaultGradient();
@@ -177,7 +174,6 @@
             set
             {
                 buttonWidth = value;
-                UpdateLocationPoints();
                 Invalidate();
             }
         }
@@ -483,6 +479,13 @@
                 ConfigureStyleManager();
             }
 
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
+
+            buttonPath = new GraphicsPath();
+            buttonPath.AddRectangle(buttonRectangle);
+            buttonPath.CloseAllFigures();
+
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
 
@@ -522,18 +525,6 @@
                 };
 
             graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(foreColor), textboxRectangle, stringFormat);
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            UpdateLocationPoints();
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateLocationPoints();
         }
 
         private void ConfigureStyleManager()
@@ -578,7 +569,11 @@
                 // Load default settings
                 border = new Border();
 
-                buttonBorder = new Border();
+                buttonBorder = new Border
+                    {
+                        HoverVisible = false,
+                        Type = BorderType.Rectangle
+                    };
 
                 textRendererHint = Settings.DefaultValue.TextRenderingHint;
                 Font = Settings.DefaultValue.DefaultFont;
@@ -605,16 +600,6 @@
 
             backgroundDisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
             backgroundDisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
-        }
-
-        private void UpdateLocationPoints()
-        {
-            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
-            buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
-
-            buttonPath = new GraphicsPath();
-            buttonPath.AddRectangle(buttonRectangle);
-            buttonPath.CloseAllFigures();
         }
 
         #endregion
