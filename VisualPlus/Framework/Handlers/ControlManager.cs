@@ -7,15 +7,13 @@
     using System.ComponentModel;
     using System.Windows.Forms;
 
-    using VisualPlus.Controls;
-
     #endregion
 
     internal class ControlManager
     {
         #region Variables
 
-        private static readonly Dictionary<ToolboxControl, string> toolboxControls = LoadControls();
+        private static readonly Dictionary<ToolboxControl, string> ToolBoxControlsContainer = LoadControls();
 
         #endregion
 
@@ -124,12 +122,12 @@
         {
             get
             {
-                return toolboxControls;
+                return ToolBoxControlsContainer;
             }
 
             protected set
             {
-                ToolboxControls = toolboxControls;
+                ToolboxControls = ToolBoxControlsContainer;
             }
         }
 
@@ -145,172 +143,13 @@
             return controlName.GetType().Namespace;
         }
 
-        /// <summary>Gets a registered control object.</summary>
-        /// <param name="controlName">Name of the control.</param>
-        /// <returns>Returns the object of the control.</returns>
-        private static Control GetControlObject(ToolboxControl controlName)
+        /// <summary>Gets the control type.</summary>
+        /// <typeparam name="T">The type.</typeparam>
+        /// <param name="controlName">The control name.</param>
+        /// <returns>The control type.</returns>
+        private static T ControlType<T>(string controlName)
         {
-            Control controlObject;
-
-            switch (controlName)
-            {
-                case ToolboxControl.VisualButton:
-                    {
-                        controlObject = new VisualButton();
-                        break;
-                    }
-
-                case ToolboxControl.VisualCheckBox:
-                    {
-                        controlObject = new VisualCheckBox();
-                        break;
-                    }
-
-                case ToolboxControl.VisualCircleProgressBar:
-                    {
-                        controlObject = new VisualCircleProgressBar();
-                        break;
-                    }
-
-                case ToolboxControl.VisualColorPicker:
-                    {
-                        controlObject = new VisualColorPicker();
-                        break;
-                    }
-
-                case ToolboxControl.VisualComboBox:
-                    {
-                        controlObject = new VisualComboBox();
-                        break;
-                    }
-
-                case ToolboxControl.VisualContextMenu:
-                    {
-                        controlObject = new VisualContextMenuStrip();
-                        break;
-                    }
-
-                case ToolboxControl.VisualDrag:
-                    {
-                        controlObject = new VisualDrag();
-                        break;
-                    }
-
-                case ToolboxControl.VisualGroupBox:
-                    {
-                        controlObject = new VisualGroupBox();
-                        break;
-                    }
-
-                case ToolboxControl.VisualKnob:
-                    {
-                        controlObject = new VisualKnob();
-                        break;
-                    }
-
-                case ToolboxControl.VisualLabel:
-                    {
-                        controlObject = new VisualLabel();
-                        break;
-                    }
-
-                case ToolboxControl.VisualListBox:
-                    {
-                        controlObject = new VisualListBox();
-                        break;
-                    }
-
-                case ToolboxControl.VisualListView:
-                    {
-                        controlObject = new VisualListView();
-                        break;
-                    }
-
-                case ToolboxControl.VisualNumericUpDown:
-                    {
-                        controlObject = new VisualNumericUpDown();
-                        break;
-                    }
-
-                case ToolboxControl.VisualPanel:
-                    {
-                        controlObject = new VisualPanel();
-                        break;
-                    }
-
-                case ToolboxControl.VisualProgressBar:
-                    {
-                        controlObject = new VisualProgressBar();
-                        break;
-                    }
-
-                case ToolboxControl.VisualProgressIndicator:
-                    {
-                        controlObject = new VisualProgressIndicator();
-                        break;
-                    }
-
-                case ToolboxControl.VisualRadioButton:
-                    {
-                        controlObject = new VisualRadioButton();
-                        break;
-                    }
-
-                case ToolboxControl.VisualRating:
-                    {
-                        controlObject = new VisualRating();
-                        break;
-                    }
-
-                case ToolboxControl.VisualRichTextBox:
-                    {
-                        controlObject = new VisualRichTextBox();
-                        break;
-                    }
-
-                case ToolboxControl.VisualSeparator:
-                    {
-                        controlObject = new VisualSeparator();
-                        break;
-                    }
-
-                case ToolboxControl.VisualShape:
-                    {
-                        controlObject = new VisualShape();
-                        break;
-                    }
-
-                case ToolboxControl.VisualTabControl:
-                    {
-                        controlObject = new VisualTabControl();
-                        break;
-                    }
-
-                case ToolboxControl.VisualTextBox:
-                    {
-                        controlObject = new VisualTextBox();
-                        break;
-                    }
-
-                case ToolboxControl.VisualToggle:
-                    {
-                        controlObject = new VisualToggle();
-                        break;
-                    }
-
-                case ToolboxControl.VisualTrackBar:
-                    {
-                        controlObject = new VisualTrackBar();
-                        break;
-                    }
-
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(controlName), controlName, null);
-                    }
-            }
-
-            return controlObject;
+            return (T)Activator.CreateInstance(Type.GetType(controlName));
         }
 
         /// <summary>Get the location to the control designer file.</summary>
@@ -319,6 +158,14 @@
         private static string GetControlPropertyFilterPath(ToolboxControl control)
         {
             return NamespaceLocations.FilterPropertiesLocation + control + "Designer";
+        }
+
+        /// <summary>Gets a registered control object.</summary>
+        /// <param name="controlName">Name of the control.</param>
+        /// <returns>Returns the object of the control.</returns>
+        private static Control GetControlType(ToolboxControl controlName)
+        {
+            return ControlType<Control>(controlName.ToString());
         }
 
         /// <summary>Initializes all the controls.</summary>
