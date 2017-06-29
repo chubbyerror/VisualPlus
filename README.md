@@ -5,7 +5,7 @@
 [![Issues](https://img.shields.io/github/issues/DarkByte7/VisualPlus.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/issues)
 [![All Releases](https://img.shields.io/github/downloads/DarkByte7/VisualPlus/total.svg?style=flat)](https://github.com/DarkByte7/VisualPlus/releases)
 
-VisualPlus allows you the developer to quickly build professional looking .NET applications. With these clean and easily customizable controls to meet your development needs.
+VisualPlus allows you the developer to quickly build professional looking .NET applications. With these easily customizable controls to meet your development needs.
 
 | Service | Stable | Beta |
 | :---- | :---- | :------ |
