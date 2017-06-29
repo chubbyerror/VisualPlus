@@ -13,8 +13,8 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -137,6 +137,7 @@
     <Compile Include="Framework\Structure\StyleManager.cs" />
     <Compile Include="Framework\Structure\VisualBitmap.cs" />
     <Compile Include="Framework\Structure\Watermark.cs" />
+    <Compile Include="Framework\Native.cs" />
     <Compile Include="Styles\BlackAndYellow.cs" />
     <Compile Include="Styles\IStyle.cs" />
     <Compile Include="Framework\Settings.cs" />

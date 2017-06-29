@@ -3,11 +3,9 @@
     #region Namespace
 
     using System;
-    using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Drawing.Text;
-    using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
     #endregion
@@ -366,10 +364,6 @@
 
             return newSize;
         }
-
-        [DllImport("user32.dll")]
-        [Description("Gets the cursor position on the screen.")]
-        public static extern bool GetCursorPos(ref Point lpPoint);
 
         /// <summary>Gets the gradients points from the rectangle.</summary>
         /// <param name="rectangle">Rectangle points to set.</param>

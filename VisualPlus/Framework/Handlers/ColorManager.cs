@@ -28,9 +28,6 @@
 
         #region Events
 
-        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-        public static extern int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
-
         public static double BlendColor(double foreColor, double backgroundColor, double alpha)
         {
             double result = backgroundColor + alpha * (foreColor - backgroundColor);
@@ -123,8 +120,9 @@
         /// <returns>The color.</returns>
         public static Color CurrentPointerColor()
         {
+
             Point cursor = new Point();
-            GDI.GetCursorPos(ref cursor);
+            Native.GetCursorPos(ref cursor);
             return GetColorFromPosition(cursor);
         }
 
@@ -139,7 +137,7 @@
                 {
                     IntPtr handleContextSource = graphicsSource.GetHdc();
                     IntPtr handleContextDestination = graphicsDestination.GetHdc();
-                    int retrieval = BitBlt(handleContextDestination, 0, 0, 1, 1, handleContextSource, location.X, location.Y, (int)CopyPixelOperation.SourceCopy);
+                    int retrieval = Native.BitBlt(handleContextDestination, 0, 0, 1, 1, handleContextSource, location.X, location.Y, (int)CopyPixelOperation.SourceCopy);
                     graphicsDestination.ReleaseHdc();
                     graphicsSource.ReleaseHdc();
                 }

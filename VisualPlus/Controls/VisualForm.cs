@@ -297,25 +297,7 @@
 
         #region Events
 
-        [DllImport("User32.dll", CharSet = CharSet.Auto)]
-        public static extern bool GetMonitorInfo(HandleRef hmonitor, [In] [Out] MonitorInfo info);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
-
         public const int HT_CAPTION = 0x2;
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
-
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
-
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-
-        [DllImport("user32.dll")]
-        public static extern int TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 
         public const int WM_LBUTTONDBLCLK = 0x0203;
         public const int WM_LBUTTONDOWN = 0x0201;
@@ -425,7 +407,7 @@
             UpdateButtons(e, true);
 
             base.OnMouseUp(e);
-            ReleaseCapture();
+            Native.ReleaseCapture();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -488,8 +470,8 @@
                     }
 
                     Size = previousSize;
-                    ReleaseCapture();
-                    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                    Native.ReleaseCapture();
+                    Native.SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
                 }
             }
             else if ((m.Msg == WM_LBUTTONDOWN) &&
@@ -498,8 +480,8 @@
             {
                 if (!maximized)
                 {
-                    ReleaseCapture();
-                    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                    Native.ReleaseCapture();
+                    Native.SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
                 }
                 else
                 {
@@ -514,10 +496,10 @@
                     !maxButtonBounds.Contains(cursorPos) && !xButtonBounds.Contains(cursorPos))
                 {
                     // Show default system menu when right clicking titlebar
-                    int id = TrackPopupMenuEx(GetSystemMenu(Handle, false), TPM_LEFTALIGN | TPM_RETURNCMD, Cursor.Position.X, Cursor.Position.Y, Handle, IntPtr.Zero);
+                    int id = Native.TrackPopupMenuEx(Native.GetSystemMenu(Handle, false), TPM_LEFTALIGN | TPM_RETURNCMD, Cursor.Position.X, Cursor.Position.Y, Handle, IntPtr.Zero);
 
                     // Pass the command as a WM_SYSCOMMAND message
-                    SendMessage(Handle, WM_SYSCOMMAND, id, 0);
+                    Native.SendMessage(Handle, WM_SYSCOMMAND, id, 0);
                 }
             }
             else if (m.Msg == WM_NCLBUTTONDOWN)
@@ -539,7 +521,7 @@
 
                 if (bFlag != 0)
                 {
-                    SendMessage(Handle, WM_SYSCOMMAND, 0xF000 | bFlag, (int)m.LParam);
+                    Native.SendMessage(Handle, WM_SYSCOMMAND, 0xF000 | bFlag, (int)m.LParam);
                 }
             }
             else if (m.Msg == WM_LBUTTONUP)
@@ -697,9 +679,9 @@
 
             if (maximize)
             {
-                IntPtr monitorHandle = MonitorFromWindow(Handle, MONITOR_DEFAULTTONEAREST);
+                IntPtr monitorHandle = Native.MonitorFromWindow(Handle, MONITOR_DEFAULTTONEAREST);
                 MonitorInfo monitorInfo = new MonitorInfo();
-                GetMonitorInfo(new HandleRef(null, monitorHandle), monitorInfo);
+                Native.GetMonitorInfo(new HandleRef(null, monitorHandle), monitorInfo);
                 previousSize = Size;
                 previousLocation = Location;
                 Size = new Size(monitorInfo.rcWork.Width(), monitorInfo.rcWork.Height());
@@ -752,10 +734,10 @@
                     break;
             }
 
-            ReleaseCapture();
+            Native.ReleaseCapture();
             if (dir != -1)
             {
-                SendMessage(Handle, WM_NCLBUTTONDOWN, dir, 0);
+                Native.SendMessage(Handle, WM_NCLBUTTONDOWN, dir, 0);
             }
         }
 
