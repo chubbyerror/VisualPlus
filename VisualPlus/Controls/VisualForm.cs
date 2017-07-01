@@ -44,25 +44,25 @@
 
         private readonly MouseState mouseState;
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
-        private Rectangle actionBarBounds;
         private Border border;
         private Color buttonBackHoverColor = Settings.DefaultValue.Control.ControlHover.Colors[0];
         private Color buttonBackPressedColor = Settings.DefaultValue.Control.ControlPressed.Colors[0];
-        private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
+        private Color closeColor = Color.IndianRed;
         private bool headerMouseDown;
         private Rectangle maxButtonBounds;
+        private Color maxColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private bool maximized;
         private Rectangle minButtonBounds;
+        private Color minColor = Settings.DefaultValue.Control.FlatButtonEnabled;
         private Point previousLocation;
         private Size previousSize;
         private ResizeDirection resizeDir;
         private Rectangle statusBarBounds;
-
         private Alignment.TextAlignment titleAlignment = Alignment.TextAlignment.Center;
         private Size titleTextSize;
-        private VisualBitmap vsImage = new VisualBitmap(Resources.Icon, new Size(16, 16));
+        private VisualBitmap vsImage;
         private Color windowBarColor = Settings.DefaultValue.Control.Background(1);
         private int windowBarHeight = 30;
         private Rectangle xButtonBounds;
@@ -86,6 +86,8 @@
                     Thickness = 3,
                     Type = BorderType.Rectangle
                 };
+
+            vsImage = new VisualBitmap(Resources.Icon, new Size(16, 16)) { Visible = true };
 
             // This enables the form to trigger the MouseMove event even when mouse is over another control
             Application.AddMessageFilter(new MouseMessageFilter());
@@ -171,16 +173,48 @@
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.Common.Color)]
-        public Color ButtonColor
+        public Color ButtonCloseColor
         {
             get
             {
-                return buttonColor;
+                return closeColor;
             }
 
             set
             {
-                buttonColor = value;
+                closeColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color ButtonMaximizeColor
+        {
+            get
+            {
+                return maxColor;
+            }
+
+            set
+            {
+                maxColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color ButtonMinimizeColor
+        {
+            get
+            {
+                return minColor;
+            }
+
+            set
+            {
+                minColor = value;
                 Invalidate();
             }
         }
@@ -197,20 +231,6 @@
             set
             {
                 buttonSize = value;
-                Invalidate();
-            }
-        }
-
-        public new Bitmap Icon
-        {
-            get
-            {
-                return vsImage.Image;
-            }
-
-            set
-            {
-                vsImage.Image = value;
                 Invalidate();
             }
         }
@@ -315,7 +335,6 @@
         #region Events
 
         public const int HT_CAPTION = 0x2;
-
         public const int WM_LBUTTONDBLCLK = 0x0203;
         public const int WM_LBUTTONDOWN = 0x0201;
         public const int WM_LBUTTONUP = 0x0202;
@@ -467,9 +486,7 @@
             {
                 MaximizeWindow(!maximized);
             }
-            else if ((m.Msg == WM_MOUSEMOVE) && maximized &&
-                     (statusBarBounds.Contains(PointToClient(Cursor.Position)) || actionBarBounds.Contains(PointToClient(Cursor.Position))) &&
-                     !(minButtonBounds.Contains(PointToClient(Cursor.Position)) || maxButtonBounds.Contains(PointToClient(Cursor.Position)) || xButtonBounds.Contains(PointToClient(Cursor.Position))))
+            else if ((m.Msg == WM_MOUSEMOVE) && maximized && statusBarBounds.Contains(PointToClient(Cursor.Position)) && !(minButtonBounds.Contains(PointToClient(Cursor.Position)) || maxButtonBounds.Contains(PointToClient(Cursor.Position)) || xButtonBounds.Contains(PointToClient(Cursor.Position))))
             {
                 if (headerMouseDown)
                 {
@@ -491,9 +508,7 @@
                     Native.SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
                 }
             }
-            else if ((m.Msg == WM_LBUTTONDOWN) &&
-                     (statusBarBounds.Contains(PointToClient(Cursor.Position)) || actionBarBounds.Contains(PointToClient(Cursor.Position))) &&
-                     !(minButtonBounds.Contains(PointToClient(Cursor.Position)) || maxButtonBounds.Contains(PointToClient(Cursor.Position)) || xButtonBounds.Contains(PointToClient(Cursor.Position))))
+            else if ((m.Msg == WM_LBUTTONDOWN) && statusBarBounds.Contains(PointToClient(Cursor.Position)) && !(minButtonBounds.Contains(PointToClient(Cursor.Position)) || maxButtonBounds.Contains(PointToClient(Cursor.Position)) || xButtonBounds.Contains(PointToClient(Cursor.Position))))
             {
                 if (!maximized)
                 {
@@ -592,50 +607,52 @@
             // When MaximizeButton == false, the minimize button will be painted in its place
             DrawMinimizeOverMaximizeButton(graphics, showMin, showMax, hoverBrush, downBrush);
 
-            using (Pen formButtonsPen = new Pen(buttonColor, 2))
+            var penWidth = 2;
+            Pen minPen = new Pen(minColor, penWidth);
+            Pen maxPen = new Pen(maxColor, penWidth);
+            Pen closePen = new Pen(closeColor, penWidth);
+
+            // Minimize button.
+            if (showMin)
             {
-                // Minimize button.
-                if (showMin)
-                {
-                    int x = showMax ? minButtonBounds.X : maxButtonBounds.X;
-                    int y = showMax ? minButtonBounds.Y : maxButtonBounds.Y;
+                int x = showMax ? minButtonBounds.X : maxButtonBounds.X;
+                int y = showMax ? minButtonBounds.Y : maxButtonBounds.Y;
 
-                    graphics.DrawLine(
-                        formButtonsPen,
-                        x + (int)(minButtonBounds.Width * 0.33),
-                        y + (int)(minButtonBounds.Height * 0.66),
-                        x + (int)(minButtonBounds.Width * 0.66),
-                        y + (int)(minButtonBounds.Height * 0.66));
-                }
+                graphics.DrawLine(
+                    minPen,
+                    x + (int)(minButtonBounds.Width * 0.33),
+                    y + (int)(minButtonBounds.Height * 0.66),
+                    x + (int)(minButtonBounds.Width * 0.66),
+                    y + (int)(minButtonBounds.Height * 0.66));
+            }
 
-                // Maximize button
-                if (showMax)
-                {
-                    graphics.DrawRectangle(
-                        formButtonsPen,
-                        maxButtonBounds.X + (int)(maxButtonBounds.Width * 0.33),
-                        maxButtonBounds.Y + (int)(maxButtonBounds.Height * 0.36),
-                        (int)(maxButtonBounds.Width * 0.39),
-                        (int)(maxButtonBounds.Height * 0.31));
-                }
+            // Maximize button
+            if (showMax)
+            {
+                graphics.DrawRectangle(
+                    maxPen,
+                    maxButtonBounds.X + (int)(maxButtonBounds.Width * 0.33),
+                    maxButtonBounds.Y + (int)(maxButtonBounds.Height * 0.36),
+                    (int)(maxButtonBounds.Width * 0.39),
+                    (int)(maxButtonBounds.Height * 0.31));
+            }
 
-                // Close button
-                if (ControlBox)
-                {
-                    graphics.DrawLine(
-                        formButtonsPen,
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
+            // Close button
+            if (ControlBox)
+            {
+                graphics.DrawLine(
+                    closePen,
+                    xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
+                    xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
+                    xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
+                    xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
 
-                    graphics.DrawLine(
-                        formButtonsPen,
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
-                        xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
-                        xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
-                }
+                graphics.DrawLine(
+                    closePen,
+                    xButtonBounds.X + (int)(xButtonBounds.Width * 0.66),
+                    xButtonBounds.Y + (int)(xButtonBounds.Height * 0.33),
+                    xButtonBounds.X + (int)(xButtonBounds.Width * 0.33),
+                    xButtonBounds.Y + (int)(xButtonBounds.Height * 0.66));
             }
         }
 
