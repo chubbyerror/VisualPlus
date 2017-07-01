@@ -170,7 +170,7 @@
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            return (sourceType == typeof(string)) || base.CanConvertFrom(context, sourceType);
+            return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
         }
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
@@ -193,8 +193,9 @@
             result = null;
             visualBitmap = value as VisualBitmap;
 
-            if ((visualBitmap != null) && (destinationType == typeof(string)))
+            if (visualBitmap != null && destinationType == typeof(string))
             {
+                // result = borderStyle.ToString();
                 result = "Image Settings";
             }
 

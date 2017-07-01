@@ -235,7 +235,22 @@
             }
         }
 
-        [TypeConverter(typeof(BorderConverter))]
+        [Browsable(false)]
+        public new Icon Icon
+        {
+            get
+            {
+                return base.Icon;
+            }
+
+            set
+            {
+                base.Icon = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(VisualBitmapConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.Category.Appearance)]
         public VisualBitmap Image
