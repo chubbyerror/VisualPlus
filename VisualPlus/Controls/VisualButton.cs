@@ -14,6 +14,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Localization;
+    using VisualPlus.Properties;
     using VisualPlus.Styles;
 
     #endregion
@@ -29,25 +30,20 @@
         #region Variables
 
         private readonly MouseState mouseState;
-
         private bool animation;
         private Shape buttonShape;
         private GraphicsPath controlGraphicsPath;
         private VFXManager effectsManager;
         private Color foreColor;
         private VFXManager hoverEffectsManager;
-        private GraphicsPath iconGraphicsPath;
-        private Point imagePoint = new Point(0, 0);
-        private Rectangle imageRectangle;
-        private Size imageSize = new Size(24, 24);
-        private bool imageVisible;
         private bool moveable = Settings.DefaultValue.Moveable;
         private StyleManager styleManager = new StyleManager();
-        private Rectangle textBoxRectangle;
+       // private Rectangle textBoxRectangle;
         private Color textDisabledColor;
         private TextImageRelation textImageRelation = TextImageRelation.Overlay;
         private Point textPoint = new Point(0, 0);
         private TextRenderingHint textRendererHint;
+        private VisualBitmap vsImage;
 
         #endregion
 
@@ -64,12 +60,20 @@
 
             mouseState = new MouseState(this);
 
+            vsImage = new VisualBitmap(Resources.Icon, new Size(24, 24))
+                {
+                    Visible = false
+                };
+
+            vsImage.Point = new Point(0, (Height / 2) - (vsImage.Size.Height / 2));
+
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             AutoSize = false;
             BackColor = Color.Transparent;
             Margin = new Padding(4, 6, 4, 6);
             Padding = new Padding(0);
             Size = new Size(140, 45);
+            MinimumSize = new Size(90, 25);
 
             ConfigureStyleManager();
             ConfigureAnimation();
@@ -139,35 +143,19 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
-        [Description(Localize.Description.Common.Size)]
-        public Size ImageSize
+        [TypeConverter(typeof(VisualBitmapConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.Category.Appearance)]
+        public new VisualBitmap Image
         {
             get
             {
-                return imageSize;
+                return vsImage;
             }
 
             set
             {
-                imageSize = value;
-                Invalidate();
-            }
-        }
-
-        [DefaultValue(false)]
-        [Category(Localize.Category.Behavior)]
-        [Description(Localize.Description.Common.Visible)]
-        public bool ImageVisible
-        {
-            get
-            {
-                return imageVisible;
-            }
-
-            set
-            {
-                imageVisible = value;
+                vsImage = value;
                 Invalidate();
             }
         }
@@ -336,9 +324,9 @@
             }
 
             DrawBackground(graphics);
-            DrawImage(graphics);
+            VisualBitmap.DrawImage(graphics, vsImage.Border, vsImage.Point, vsImage.Image, vsImage.Size, vsImage.Visible);
 
-            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textBoxRectangle);
+            graphics.DrawString(Text, Font, new SolidBrush(foreColor), textPoint);
 
             DrawAnimation(graphics);
         }
@@ -362,14 +350,8 @@
 
         private void ConfigureComponents(Graphics graphics)
         {
-            textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, imageRectangle, Text, Font, ClientRectangle, false);
-            textBoxRectangle.Location = textPoint;
-            imagePoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, imageRectangle, Text, Font, ClientRectangle, true);
-            imageRectangle = new Rectangle(imagePoint, imageSize);
-            iconGraphicsPath = new GraphicsPath();
-            iconGraphicsPath.AddRectangle(imageRectangle);
-            iconGraphicsPath.CloseAllFigures();
-
+            vsImage.Point = GDI.ApplyTextImageRelation(graphics, textImageRelation, new Rectangle(vsImage.Point, vsImage.Size), Text, Font, ClientRectangle, true);
+            textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, new Rectangle(vsImage.Point, vsImage.Size), Text, Font, ClientRectangle, false);
             controlGraphicsPath = Border.GetBorderShape(ClientRectangle, buttonShape.Border.Type, buttonShape.Border.Rounding);
         }
 
@@ -486,26 +468,6 @@
             graphics.FillPath(gradientBrush, controlGraphicsPath);
 
             Border.DrawBorderStyle(graphics, buttonShape.Border, mouseState.State, controlGraphicsPath);
-        }
-
-        private void DrawImage(Graphics graphics)
-        {
-            if (Image != null)
-            {
-                if (string.IsNullOrEmpty(Text))
-                {
-                    // Center Image
-                    imageRectangle.X += 2;
-                    imageRectangle.Y += 2;
-                }
-
-                imageRectangle.Location = imagePoint;
-
-                if (imageVisible)
-                {
-                    graphics.DrawImage(Image, imageRectangle);
-                }
-            }
         }
 
         #endregion

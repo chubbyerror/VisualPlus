@@ -155,6 +155,9 @@
                         newImagePoint.Y = newPosition.Y + textSize.Height + 4;
                         break;
                     }
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(relation), relation, null);
             }
 
             if (imagePoint)

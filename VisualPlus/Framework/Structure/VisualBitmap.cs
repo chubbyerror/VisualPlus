@@ -137,19 +137,22 @@
         /// <param name="_visible">The visibility.</param>
         public static void DrawImage(Graphics graphics, Border _border, Point _imagePoint, Bitmap _image, Size _imageSize, bool _visible)
         {
-            using (GraphicsPath imagePath = new GraphicsPath())
+            if (_image != null)
             {
-                imagePath.AddRectangle(new Rectangle(_imagePoint, _imageSize));
-
-                if (_border.Visible)
+                using (GraphicsPath imagePath = new GraphicsPath())
                 {
-                    Border.DrawBorder(graphics, imagePath, _border.Thickness, _border.Color);
-                }
-            }
+                    imagePath.AddRectangle(new Rectangle(_imagePoint, _imageSize));
 
-            if (_visible)
-            {
-                graphics.DrawImage(_image, new Rectangle(_imagePoint, _imageSize));
+                    if (_border.Visible)
+                    {
+                        Border.DrawBorder(graphics, imagePath, _border.Thickness, _border.Color);
+                    }
+                }
+
+                if (_visible)
+                {
+                    graphics.DrawImage(_image, new Rectangle(_imagePoint, _imageSize));
+                }
             }
         }
 
