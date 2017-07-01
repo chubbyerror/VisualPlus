@@ -28,6 +28,18 @@
             Right
         }
 
+        public enum TextAlignment
+        {
+            /// <summary>The center.</summary>
+            Center,
+
+            /// <summary>The left.</summary>
+            Left,
+
+            /// <summary>The right.</summary>
+            Right
+        }
+
         public enum Vertical
         {
             /// <summary>Up alignment.</summary>

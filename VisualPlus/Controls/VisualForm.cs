@@ -43,7 +43,6 @@
             };
 
         private readonly MouseState mouseState;
-
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
         private Rectangle actionBarBounds;
         private Border border;
@@ -60,6 +59,8 @@
         private Size previousSize;
         private ResizeDirection resizeDir;
         private Rectangle statusBarBounds;
+
+        private Alignment.TextAlignment titleAlignment = Alignment.TextAlignment.Center;
         private Size titleTextSize;
         private VisualBitmap vsImage = new VisualBitmap(Resources.Icon, new Size(16, 16));
         private Color windowBarColor = Settings.DefaultValue.Control.Background(1);
@@ -247,6 +248,22 @@
         }
 
         public bool Sizable { get; set; }
+
+        [Category(Localize.Category.Appearance)]
+        [Description(Localize.Description.Common.Alignment)]
+        public Alignment.TextAlignment TitleAlignment
+        {
+            get
+            {
+                return titleAlignment;
+            }
+
+            set
+            {
+                titleAlignment = value;
+                Invalidate();
+            }
+        }
 
         [Category(Localize.Category.Appearance)]
         [Description(Localize.Description.Common.Color)]
@@ -664,8 +681,36 @@
         private void DrawTitle(Graphics graphics)
         {
             titleTextSize = GDI.GetTextSize(graphics, Text, Font);
-            Rectangle textRectangle = new Rectangle(5 + vsImage.Size.Width + 5, (windowBarHeight / 2) - (titleTextSize.Height / 2), Width, titleTextSize.Height);
-            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textRectangle, new StringFormat { LineAlignment = StringAlignment.Center });
+            Point titlePoint;
+
+            switch (titleAlignment)
+            {
+                case Alignment.TextAlignment.Center:
+                    {
+                        titlePoint = new Point((Width / 2) - (titleTextSize.Width / 2), (windowBarHeight / 2) - (titleTextSize.Height / 2));
+                        break;
+                    }
+
+                case Alignment.TextAlignment.Left:
+                    {
+                        titlePoint = new Point(5 + vsImage.Size.Width + 5, (windowBarHeight / 2) - (titleTextSize.Height / 2));
+                        break;
+                    }
+
+                case Alignment.TextAlignment.Right:
+                    {
+                        titlePoint = new Point(minButtonBounds.Left - 5 - titleTextSize.Width, (windowBarHeight / 2) - (titleTextSize.Height / 2));
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
+            Rectangle textRectangle = new Rectangle(titlePoint.X, titlePoint.Y, Width, titleTextSize.Height);
+            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textRectangle);
         }
 
         private void MaximizeWindow(bool maximize)
@@ -718,20 +763,34 @@
             switch (direction)
             {
                 case ResizeDirection.BottomLeft:
-                    dir = HTBOTTOMLEFT;
-                    break;
+                    {
+                        dir = HTBOTTOMLEFT;
+                        break;
+                    }
+
                 case ResizeDirection.Left:
-                    dir = HTLEFT;
-                    break;
+                    {
+                        dir = HTLEFT;
+                        break;
+                    }
+
                 case ResizeDirection.Right:
-                    dir = HTRIGHT;
-                    break;
+                    {
+                        dir = HTRIGHT;
+                        break;
+                    }
+
                 case ResizeDirection.BottomRight:
-                    dir = HTBOTTOMRIGHT;
-                    break;
+                    {
+                        dir = HTBOTTOMRIGHT;
+                        break;
+                    }
+
                 case ResizeDirection.Bottom:
-                    dir = HTBOTTOM;
-                    break;
+                    {
+                        dir = HTBOTTOM;
+                        break;
+                    }
             }
 
             Native.ReleaseCapture();
