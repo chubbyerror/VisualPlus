@@ -11,7 +11,6 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Localization;
 
     #endregion
 
@@ -79,7 +78,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient Line
         {
             get
@@ -94,7 +93,7 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Orientation)]
         public Orientation Orientation
         {
@@ -133,7 +132,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient Shadow
         {
             get
@@ -148,7 +147,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Visible)]
         public bool ShadowVisible
         {

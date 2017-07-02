@@ -12,7 +12,6 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Localization;
     using VisualPlus.Styles;
 
     #endregion
@@ -67,7 +66,7 @@
 
         #region Properties
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color Background
         {
@@ -85,7 +84,7 @@
 
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Border Border
         {
             get
@@ -102,7 +101,7 @@
 
         [TypeConverter(typeof(ExpanderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Expander Expander
         {
             get
@@ -117,7 +116,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public MouseStates MouseState
         {
             get
@@ -134,7 +133,7 @@
 
         [TypeConverter(typeof(StyleManagerConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public StyleManager StyleManager
         {
             get

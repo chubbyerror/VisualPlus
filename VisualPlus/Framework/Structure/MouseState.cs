@@ -7,7 +7,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Controls;
-    using VisualPlus.Localization;
 
     #endregion
 
@@ -36,20 +35,6 @@
         public MouseState(Control control)
         {
             mouseState = MouseStates.Normal;
-
-            if (control is VisualButton)
-            {
-                control.MouseDown += OnMouseDown;
-                control.MouseEnter += OnMouseEnter;
-                control.MouseLeave += OnMouseLeave;
-                control.MouseUp += OnMouseUp;
-            }
-
-            if (control is VisualCheckBox)
-            {
-                control.MouseEnter += OnMouseEnter;
-                control.MouseLeave += OnMouseLeave;
-            }
 
             if (control is VisualColorPicker)
             {

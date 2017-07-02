@@ -1,7 +1,9 @@
-﻿namespace VisualPlus.Localization
+﻿namespace VisualPlus.Framework
 {
-    public class Localize
+    internal class Localize
     {
+        private const string DefaultCategoryText = "VisualExtension";
+
         public struct Description
         {
             public struct Border
@@ -13,6 +15,7 @@
 
             public struct Checkmark
             {
+                public const string Checked = "Indicates whether the component is in the checked state.";
                 public const string Character = "The checkmark character.";
                 public const string CheckType = "The checkmark type.";
             }
@@ -76,19 +79,50 @@
 
 #if DEBUG
 
-        public struct Category
+        public struct EventsCategory
         {
-            public const string Accessibility = "VisualExtension";
-            public const string Appearance = "VisualExtension";
-            public const string Behavior = "VisualExtension";
-            public const string Data = "VisualExtension";
-            public const string Design = "VisualExtension";
-            public const string Focus = "VisualExtension";
-            public const string Layout = "VisualExtension";
+            public const string Action = DefaultCategoryText;
+            public const string Appearance = DefaultCategoryText;
+            public const string Behavior = DefaultCategoryText;
+            public const string Data = DefaultCategoryText;
+            public const string DragDrop = DefaultCategoryText;
+            public const string Focus = DefaultCategoryText;
+            public const string Key = DefaultCategoryText;
+            public const string Layout = DefaultCategoryText;
+            public const string Misc = DefaultCategoryText;
+            public const string Mouse = DefaultCategoryText;
+            public const string PropertyChanged = DefaultCategoryText;
+        }
+
+        public struct PropertiesCategory
+        {
+            public const string Accessibility = DefaultCategoryText;
+            public const string Appearance = DefaultCategoryText;
+            public const string Behavior = DefaultCategoryText;
+            public const string Data = DefaultCategoryText;
+            public const string Design = DefaultCategoryText;
+            public const string Focus = DefaultCategoryText;
+            public const string Layout = DefaultCategoryText;
         }
 
 #else
-        public struct Category
+
+        public struct EventsCategory
+        {
+            public const string Action = "Action";
+            public const string Appearance = "Appearance";
+            public const string Behavior = "Behavior";
+            public const string Data = "Data";
+            public const string DragDrop = "Drag Drop";
+            public const string Focus = "Focus";
+            public const string Key = "Key";
+            public const string Layout = "Layout";
+            public const string Misc = "Misc";
+            public const string Mouse = "Mouse";
+            public const string PropertyChanged = "Property Changed";
+        }
+
+        public struct PropertiesCategory
         {
             public const string Accessibility = "Accessibility";
             public const string Appearance = "Appearance";

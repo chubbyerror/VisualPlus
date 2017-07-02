@@ -14,7 +14,6 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Localization;
     using VisualPlus.Styles;
 
     #endregion
@@ -100,7 +99,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient Background
         {
             get
@@ -117,7 +116,7 @@
 
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Border Border
         {
             get
@@ -132,7 +131,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color ButtonColor
         {
@@ -148,7 +147,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Direction)]
         public Alignment.Horizontal ButtonHorizontal
         {
@@ -164,7 +163,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Type)]
         public DropDownButtons ButtonStyles
         {
@@ -181,7 +180,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Visible)]
         public bool ButtonVisible
         {
@@ -197,7 +196,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Size)]
         public int ButtonWidth
         {
@@ -215,7 +214,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient DisabledBackground
         {
             get
@@ -247,7 +246,7 @@
 
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Border Item
         {
             get
@@ -262,7 +261,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color MenuItemHover
         {
@@ -278,7 +277,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color MenuItemNormal
         {
@@ -294,7 +293,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color MenuTextColor
         {
@@ -310,7 +309,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public MouseStates MouseState
         {
             get
@@ -325,7 +324,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color SeparatorColor
         {
@@ -341,7 +340,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color SeparatorShadowColor
         {
@@ -358,7 +357,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Visible)]
         public bool SeparatorVisible
         {
@@ -374,7 +373,7 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.StartIndex)]
         public int StartIndex
         {
@@ -401,7 +400,7 @@
 
         [TypeConverter(typeof(StyleManagerConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public StyleManager StyleManager
         {
             get
@@ -416,7 +415,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Alignment)]
         public StringAlignment TextAlignment
         {
@@ -432,7 +431,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
         {
@@ -448,7 +447,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
@@ -466,7 +465,7 @@
 
         [TypeConverter(typeof(WatermarkConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public Watermark Watermark
         {
             get

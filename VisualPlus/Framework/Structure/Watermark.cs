@@ -7,7 +7,6 @@
     using System.Drawing;
     using System.Globalization;
 
-    using VisualPlus.Localization;
     using VisualPlus.Styles;
 
     #endregion

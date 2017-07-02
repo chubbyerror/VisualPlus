@@ -13,7 +13,6 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Localization;
 
     #endregion
 
@@ -164,7 +163,7 @@
         // Invalidate();
         // }
         // }
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description("Draw graduation strings inside or outside the knob circle")]
         [DefaultValue(false)]
         public bool DrawDivInside
@@ -182,7 +181,7 @@
         }
 
         [Description("Set the end angle to display graduations (max 450)")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [DefaultValue(405)]
         public float EndAngle
         {
@@ -204,7 +203,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient Knob
         {
             get
@@ -221,7 +220,7 @@
 
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Border KnobBorder
         {
             get
@@ -237,7 +236,7 @@
         }
 
         [Description(Localize.Description.Common.Size)]
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         public int KnobDistance
         {
             get
@@ -253,7 +252,7 @@
         }
 
         [Description(Localize.Description.Common.Size)]
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         public Size KnobSize
         {
             get
@@ -269,7 +268,7 @@
         }
 
         [Description("Set the style of the knob pointer: a circle or a line")]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public PointerStyle KnobStyle
         {
             get
@@ -285,7 +284,7 @@
         }
 
         [Description(Localize.Description.Common.Size)]
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         public Size KnobTickSize
         {
             get
@@ -302,7 +301,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient KnobTop
         {
             get
@@ -319,7 +318,7 @@
 
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Border KnobTopBorder
         {
             get
@@ -335,7 +334,7 @@
         }
 
         [Description(Localize.Description.Common.Size)]
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         public Size KnobTopSize
         {
             get
@@ -351,7 +350,7 @@
         }
 
         [Description("set the value for the large changes")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public int LargeChange
         {
             get
@@ -367,7 +366,7 @@
         }
 
         [Description("set the maximum value for the knob control")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public int Maximum
         {
             get
@@ -393,7 +392,7 @@
         }
 
         [Description("set the minimum value for the knob control")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public int Minimum
         {
             get
@@ -408,7 +407,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public MouseStates MouseState
         {
             get
@@ -424,7 +423,7 @@
         }
 
         [Description("Set to how many parts is bar divided when using mouse wheel")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [DefaultValue(10)]
         public int MouseWheelBarPartitions
         {
@@ -447,7 +446,7 @@
         }
 
         [Description(Localize.Description.Common.Color)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Color PointerColor
         {
             get
@@ -463,7 +462,7 @@
         }
 
         [Description("Set the number of intervals between minimum and maximum")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public int ScaleDivisions
         {
             get
@@ -480,7 +479,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient ScaleGradient
         {
             get
@@ -496,7 +495,7 @@
         }
 
         [Description("Set the number of subdivisions between main divisions of graduation.")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public int ScaleSubDivisions
         {
             get
@@ -515,7 +514,7 @@
         }
 
         [Description("Show or hide graduations")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public bool ShowLargeScale
         {
             get
@@ -535,7 +534,7 @@
         }
 
         [Description("Show or hide subdivisions of graduations")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public bool ShowSmallScale
         {
             get
@@ -564,7 +563,7 @@
         }
 
         [Description("set the minimum value for the small changes")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public int SmallChange
         {
             get
@@ -580,7 +579,7 @@
         }
 
         [Description("Set the start angle to display graduations (min 90)")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [DefaultValue(135)]
         public float StartAngle
         {
@@ -601,7 +600,7 @@
         }
 
         [Description(Localize.Description.Common.Color)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public Color TickColor
         {
             get
@@ -617,7 +616,7 @@
         }
 
         [Description("set the current value of the knob control")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public int Value
         {
             get
@@ -638,7 +637,7 @@
         }
 
         [Description("Displays the value text")]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public bool ValueVisible
         {
             get

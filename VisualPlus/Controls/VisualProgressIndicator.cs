@@ -11,7 +11,6 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Localization;
 
     #endregion
 
@@ -55,7 +54,7 @@
 
         #region Properties
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color AnimationColor
         {
@@ -70,7 +69,7 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.AnimationSpeed)]
         public int AnimationSpeed
         {
@@ -85,7 +84,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color BaseColor
         {
@@ -101,7 +100,7 @@
         }
 
         [DefaultValue(45F)]
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Amount)]
         public float Circles
         {
@@ -118,7 +117,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Size)]
         public Size CircleSize
         {
@@ -135,7 +134,7 @@
         }
 
         [DefaultValue(7.5F)]
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Diameter)]
         public float Diameter
         {

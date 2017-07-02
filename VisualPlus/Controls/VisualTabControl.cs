@@ -14,7 +14,6 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Localization;
 
     #endregion
 
@@ -122,7 +121,7 @@
 
         #region Properties
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Alignment)]
         public new TabAlignment Alignment
         {
@@ -167,7 +166,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Visible)]
         public bool ArrowSelectorVisible
         {
@@ -183,7 +182,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Spacing)]
         public int ArrowSpacing
         {
@@ -199,7 +198,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Size)]
         public int ArrowThickness
         {
@@ -215,7 +214,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color BackgroundColor
         {
@@ -238,7 +237,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient HoverGradient
         {
             get
@@ -253,7 +252,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Size)]
         public new Size ItemSize
         {
@@ -270,7 +269,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public StringAlignment LineAlignment
         {
             get
@@ -285,7 +284,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public MouseStates MouseState
         {
             get
@@ -302,7 +301,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient NormalGradient
         {
             get
@@ -319,7 +318,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient SelectedGradient
         {
             get
@@ -334,7 +333,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Alignment)]
         public TabAlignment SelectorAlignment
         {
@@ -350,7 +349,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Alignment)]
         public TabAlignment SelectorAlignment2
         {
@@ -366,7 +365,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Size)]
         public int SelectorThickness
         {
@@ -382,7 +381,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Visible)]
         public bool SelectorVisible
         {
@@ -398,7 +397,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Visible)]
         public bool SelectorVisible2
         {
@@ -414,7 +413,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color Separator
         {
@@ -430,7 +429,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Spacing)]
         public int SeparatorSpacing
         {
@@ -446,7 +445,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Size)]
         public float SeparatorThickness
         {
@@ -463,7 +462,7 @@
         }
 
         [DefaultValue(false)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         public bool SeparatorVisible
         {
             get
@@ -478,7 +477,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color TabMenu
         {
@@ -496,7 +495,7 @@
 
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Border TabPageBorder
         {
             get
@@ -511,7 +510,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color TabSelector
         {
@@ -527,7 +526,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public StringAlignment TextAlignment
         {
             get
@@ -542,7 +541,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color TextNormal
         {
@@ -558,7 +557,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
@@ -574,7 +573,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color TextSelected
         {

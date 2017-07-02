@@ -10,7 +10,6 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Localization;
     using VisualPlus.Styles;
 
     #endregion

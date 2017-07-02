@@ -14,7 +14,6 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Localization;
     using VisualPlus.Styles;
 
     #endregion
@@ -106,7 +105,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient Background
         {
             get
@@ -122,7 +121,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.BarAmount)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Progressbar.Bars)]
         public int BarAmount
         {
@@ -138,7 +137,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Size)]
         public Point BarSize
         {
@@ -154,7 +153,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Spacing)]
         public int BarSpacing
         {
@@ -170,7 +169,7 @@
             }
         }
 
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Type)]
         public BarTypes BarStyle
         {
@@ -201,7 +200,7 @@
 
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Border Border
         {
             get
@@ -231,7 +230,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color HatchBackColor
         {
@@ -247,7 +246,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color HatchForeColor
         {
@@ -263,7 +262,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [DefaultValue(Settings.DefaultValue.HatchSize)]
         [Description(Localize.Description.Common.Size)]
         public float HatchSize
@@ -280,7 +279,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Type)]
         public HatchStyle HatchStyle
         {
@@ -297,7 +296,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.HatchVisible)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Visible)]
         public bool HatchVisible
         {
@@ -313,7 +312,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public MouseStates MouseState
         {
             get
@@ -329,7 +328,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Visible)]
         public bool PercentageVisible
         {
@@ -347,7 +346,7 @@
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient Progress
         {
             get
@@ -362,7 +361,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Strings.Font)]
         public Font ProgressFont
         {
@@ -380,7 +379,7 @@
 
         [TypeConverter(typeof(StyleManagerConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         public StyleManager StyleManager
         {
             get
@@ -395,7 +394,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRendering
         {
@@ -411,7 +410,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Alignment)]
         public StringAlignment ValueAlignment
         {

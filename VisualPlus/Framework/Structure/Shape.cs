@@ -8,7 +8,6 @@
     using System.Drawing.Drawing2D;
     using System.Globalization;
 
-    using VisualPlus.Localization;
     using VisualPlus.Properties;
 
     #endregion
@@ -139,7 +138,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        public VisualBitmap Image
+        public VisualBitmap BackgroundImage
         {
             get
             {
@@ -195,10 +194,10 @@
         /// <param name="backgroundPath">The path.</param>
         public static void DrawBackground(Graphics graphics, Shape shape, Brush linearGradientBrush, GraphicsPath backgroundPath)
         {
-            if (shape.Image.Visible)
+            if (shape.BackgroundImage.Visible)
             {
-                Point tempLocation = shape.CenteredImage ? new Point((shape.Rectangle.X + (shape.Rectangle.Width / 2)) - (shape.Image.Size.Width / 2), (shape.Rectangle.Y + (shape.Rectangle.Height / 2)) - (shape.Image.Size.Height / 2)) : shape.Image.Point;
-                graphics.DrawImage(shape.Image.Image, new Rectangle(tempLocation, shape.Image.Size));
+                Point tempLocation = shape.CenteredImage ? new Point((shape.Rectangle.X + (shape.Rectangle.Width / 2)) - (shape.BackgroundImage.Size.Width / 2), (shape.Rectangle.Y + (shape.Rectangle.Height / 2)) - (shape.BackgroundImage.Size.Height / 2)) : shape.BackgroundImage.Point;
+                graphics.DrawImage(shape.BackgroundImage.Image, new Rectangle(tempLocation, shape.BackgroundImage.Size));
             }
             else
             {

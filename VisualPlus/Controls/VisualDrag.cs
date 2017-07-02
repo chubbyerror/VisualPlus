@@ -7,7 +7,7 @@
     using System.Drawing;
     using System.Windows.Forms;
 
-    using VisualPlus.Localization;
+    using VisualPlus.Framework;
 
     #endregion
 
@@ -38,7 +38,7 @@
         #region Properties
 
         [DefaultValue(true)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Toggle)]
         public bool Movable
         {

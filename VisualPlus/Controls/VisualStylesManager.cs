@@ -9,7 +9,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Localization;
     using VisualPlus.Styles;
 
     #endregion
@@ -103,7 +102,7 @@
         #region Properties
 
         [DefaultValue(Settings.DefaultValue.Animation)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Animation)]
         public bool Animation
         {
@@ -119,7 +118,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.BarAmount)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Progressbar.Bars)]
         public int BarAmount
         {
@@ -135,7 +134,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.BorderHoverVisible)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Visible)]
         public bool BorderHoverVisible
         {
@@ -151,7 +150,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.Rounding.Default)]
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Border.Rounding)]
         public int BorderRounding
         {
@@ -170,7 +169,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.BorderThickness)]
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Border.Thickness)]
         public int BorderThickness
         {
@@ -189,7 +188,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.BorderType)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Type)]
         public BorderType BorderType
         {
@@ -205,7 +204,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.BorderVisible)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Visible)]
         public bool BorderVisible
         {
@@ -220,7 +219,7 @@
             }
         }
 
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [DefaultValue(Settings.DefaultValue.HatchSize)]
         [Description(Localize.Description.Common.Size)]
         public float HatchSize
@@ -237,7 +236,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.HatchVisible)]
-        [Category(Localize.Category.Behavior)]
+        [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Visible)]
         public bool HatchVisible
         {
@@ -255,7 +254,7 @@
         public bool Initialized { get; }
 
         [DefaultValue(Settings.DefaultValue.ProgressSize)]
-        [Category(Localize.Category.Layout)]
+        [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Size)]
         public float ProgressSize
         {
@@ -270,7 +269,7 @@
             }
         }
 
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Strings.TextRenderingHint)]
         public TextRenderingHint TextRenderingHint
         {
@@ -286,7 +285,7 @@
         }
 
         [DefaultValue(Settings.DefaultValue.TextVisible)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Visible)]
         public bool TextVisible
         {
@@ -303,7 +302,7 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Category(Localize.Category.Appearance)]
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Type)]
         public Styles.Style VisualStyle
         {
