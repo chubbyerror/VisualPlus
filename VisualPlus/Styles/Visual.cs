@@ -11,7 +11,7 @@
 
     #endregion
 
-    public class Visual : IBorder, ICheckmark, IControl, IFont, IProgress, ITab, IWatermark
+    public class Visual : IBorder, ICheckmark, IControl, IControlState, IFont, IProgress, ITab, IWatermark
     {
         #region Variables
 
@@ -137,6 +137,54 @@
             }
         }
 
+        public Color FlatButtonDisabled
+        {
+            get
+            {
+                return Color.FromArgb(243, 243, 243);
+            }
+        }
+
+        public Color FlatButtonEnabled
+        {
+            get
+            {
+                return Color.FromArgb(119, 119, 118);
+            }
+        }
+
+        public Color ItemEnabled
+        {
+            get
+            {
+                return Color.White;
+            }
+        }
+
+        public Color ItemHover
+        {
+            get
+            {
+                return Color.FromArgb(241, 241, 241);
+            }
+        }
+
+        public Color Line
+        {
+            get
+            {
+                return Color.FromArgb(224, 222, 220);
+            }
+        }
+
+        public Color Shadow
+        {
+            get
+            {
+                return Color.FromArgb(250, 249, 249);
+            }
+        }
+
         public Gradient ControlDisabled
         {
             get
@@ -218,54 +266,6 @@
                     };
 
                 return controlPressed;
-            }
-        }
-
-        public Color FlatButtonDisabled
-        {
-            get
-            {
-                return Color.FromArgb(243, 243, 243);
-            }
-        }
-
-        public Color FlatButtonEnabled
-        {
-            get
-            {
-                return Color.FromArgb(119, 119, 118);
-            }
-        }
-
-        public Color ItemEnabled
-        {
-            get
-            {
-                return Color.White;
-            }
-        }
-
-        public Color ItemHover
-        {
-            get
-            {
-                return Color.FromArgb(241, 241, 241);
-            }
-        }
-
-        public Color Line
-        {
-            get
-            {
-                return Color.FromArgb(224, 222, 220);
-            }
-        }
-
-        public Color Shadow
-        {
-            get
-            {
-                return Color.FromArgb(250, 249, 249);
             }
         }
 

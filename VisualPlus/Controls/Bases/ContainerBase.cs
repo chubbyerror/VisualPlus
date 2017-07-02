@@ -3,7 +3,6 @@
     #region Namespace
 
     using System.ComponentModel;
-    using System.ComponentModel.Design;
     using System.Drawing;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
@@ -24,7 +23,6 @@
         #region Variables
 
         private Color backgroundColor;
-        private Border border;
 
         #endregion
 
@@ -38,13 +36,8 @@
 
         public delegate void BackgroundChangedEventHandler();
 
-        public delegate void BorderChangedEventHandler();
-
         [Category(Localize.EventsCategory.Appearance)]
         public event BackgroundChangedEventHandler BackgroundChanged;
-
-        [Category(Localize.EventsCategory.Appearance)]
-        public event BorderChangedEventHandler BorderChanged;
 
         #endregion
 
@@ -74,13 +67,12 @@
         {
             get
             {
-                return border;
+                return ControlBorder;
             }
 
             set
             {
-                border = value;
-                OnBorderChanged();
+                ControlBorder = value;
                 Invalidate();
             }
         }
@@ -94,12 +86,6 @@
         {
             ExceptionManager.ApplyContainerBackColorChange(this, backgroundColor);
             BackgroundChanged?.Invoke();
-        }
-
-        /// <summary>Fires the OnBorderChanged event.</summary>
-        protected virtual void OnBorderChanged()
-        {
-            BorderChanged?.Invoke();
         }
 
         protected override void OnControlAdded(ControlEventArgs e)
@@ -126,22 +112,11 @@
         {
             if (StyleManager.VisualStylesManager != null)
             {
-                IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
                 IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
-
-                border.Color = borderStyle.Color;
-                border.HoverColor = borderStyle.HoverColor;
-                border.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
-                border.Rounding = StyleManager.VisualStylesManager.BorderRounding;
-                border.Type = StyleManager.VisualStylesManager.BorderType;
-                border.Thickness = StyleManager.VisualStylesManager.BorderThickness;
-                border.Visible = StyleManager.VisualStylesManager.BorderVisible;
-
                 backgroundColor = controlStyle.Background(0);
             }
             else
             {
-                border = new Border();
                 backgroundColor = Settings.DefaultValue.Control.Background(0);
             }
         }

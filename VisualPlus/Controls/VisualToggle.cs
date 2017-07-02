@@ -471,14 +471,14 @@
             backgroundEnabledGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
             backgroundEnabledGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
 
-            backgroundDisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
-            backgroundDisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
+            backgroundDisabledGradient.Colors = Settings.DefaultValue.ControlState.ControlDisabled.Colors;
+            backgroundDisabledGradient.Positions = Settings.DefaultValue.ControlState.ControlDisabled.Positions;
 
-            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
-            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+            buttonGradient.Colors = Settings.DefaultValue.ControlState.ControlEnabled.Colors;
+            buttonGradient.Positions = Settings.DefaultValue.ControlState.ControlEnabled.Positions;
 
-            buttonDisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
-            buttonDisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
+            buttonDisabledGradient.Colors = Settings.DefaultValue.ControlState.ControlDisabled.Colors;
+            buttonDisabledGradient.Positions = Settings.DefaultValue.ControlState.ControlDisabled.Positions;
         }
 
         private void DrawToggleType(Graphics graphics)

@@ -21,13 +21,13 @@ namespace VisualPlus.Controls.Bases
     [DesignerCategory("code")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
-    public abstract class ToggleButtonBase : ControlBase
+    public abstract class ToggleButtonBase : ControlBase, IControlState
     {
         #region Variables
 
         private bool _checked;
         private bool animation;
-        private Shape boxShape;
+        private Rectangle box;
         private int boxSpacing = 2;
         private Checkmark checkMark;
         private Point mouseLocation;
@@ -40,6 +40,8 @@ namespace VisualPlus.Controls.Bases
         protected ToggleButtonBase()
         {
             SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
+
+            box = new Rectangle(0, 0, 14, 14);
 
             InitializeTheme();
             ConfigureAnimation();
@@ -77,19 +79,19 @@ namespace VisualPlus.Controls.Bases
             }
         }
 
-        [TypeConverter(typeof(ShapeConverter))]
+        [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.PropertiesCategory.Appearance)]
-        public Shape Box
+        public Border Border
         {
             get
             {
-                return boxShape;
+                return ControlBorder;
             }
 
             set
             {
-                boxShape = value;
+                ControlBorder = value;
                 Invalidate();
             }
         }
@@ -153,6 +155,74 @@ namespace VisualPlus.Controls.Bases
             }
         }
 
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.ColorGradient)]
+        [Category(Localize.PropertiesCategory.Appearance)]
+        public Gradient ControlDisabled
+        {
+            get
+            {
+                return ControlBrushCollection[3];
+            }
+
+            set
+            {
+                ControlBrushCollection[3] = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.ColorGradient)]
+        [Category(Localize.PropertiesCategory.Appearance)]
+        public Gradient ControlEnabled
+        {
+            get
+            {
+                return ControlBrushCollection[0];
+            }
+
+            set
+            {
+                ControlBrushCollection[0] = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.ColorGradient)]
+        [Category(Localize.PropertiesCategory.Appearance)]
+        public Gradient ControlHover
+        {
+            get
+            {
+                return ControlBrushCollection[1];
+            }
+
+            set
+            {
+                ControlBrushCollection[1] = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.ColorGradient)]
+        [Category(Localize.PropertiesCategory.Appearance)]
+        public Gradient ControlPressed
+        {
+            get
+            {
+                return ControlBrushCollection[2];
+            }
+
+            set
+            {
+                ControlBrushCollection[2] = value;
+            }
+        }
+
         #endregion
 
         #region Events
@@ -161,43 +231,23 @@ namespace VisualPlus.Controls.Bases
         {
             if (StyleManager.VisualStylesManager != null)
             {
-                // Load style manager settings 
-                IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
-                IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
+                ICheckmark checkmarkStyle = StyleManager.VisualStylesManager.CheckmarkStyle;
 
                 animation = StyleManager.VisualStylesManager.Animation;
 
-                boxShape.Border.Color = borderStyle.Color;
-                boxShape.Border.HoverColor = borderStyle.HoverColor;
-                boxShape.Border.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
-                boxShape.Border.Rounding = StyleManager.VisualStylesManager.BorderRounding;
-                boxShape.Border.Type = StyleManager.VisualStylesManager.BorderType;
-                boxShape.Border.Thickness = StyleManager.VisualStylesManager.BorderThickness;
-                boxShape.Border.Visible = StyleManager.VisualStylesManager.BorderVisible;
-
-                boxShape.EnabledGradient.Colors = controlStyle.ControlEnabled.Colors;
-                boxShape.EnabledGradient.Positions = controlStyle.ControlEnabled.Positions;
-                boxShape.DisabledGradient.Colors = controlStyle.ControlDisabled.Colors;
-                boxShape.DisabledGradient.Positions = controlStyle.ControlDisabled.Positions;
-                boxShape.HoverGradient.Colors = controlStyle.ControlHover.Colors;
-                boxShape.HoverGradient.Positions = controlStyle.ControlHover.Positions;
-                boxShape.PressedGradient.Colors = controlStyle.ControlPressed.Colors;
-                boxShape.PressedGradient.Positions = controlStyle.ControlPressed.Positions;
+                checkMark.EnabledGradient = checkmarkStyle.EnabledGradient;
+                checkMark.DisabledGradient = checkmarkStyle.DisabledGradient;
             }
             else
             {
                 animation = Settings.DefaultValue.Animation;
-                boxShape = new Shape(ClientRectangle);
                 checkMark = new Checkmark(ClientRectangle);
             }
         }
 
         protected virtual void OnCheckedChanged(EventArgs e)
         {
-            if (CheckedChanged != null)
-            {
-                CheckedChanged(this, e);
-            }
+            CheckedChanged?.Invoke(this, e);
         }
 
         protected override void OnCreateControl()
@@ -223,7 +273,7 @@ namespace VisualPlus.Controls.Bases
                 {
                     MouseState = MouseStates.Down;
 
-                    if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(mouseLocation, boxShape.Rectangle))
+                    if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(mouseLocation, box))
                     {
                         rippleEffectsManager.SecondaryIncrement = 0;
                         rippleEffectsManager.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
@@ -237,7 +287,7 @@ namespace VisualPlus.Controls.Bases
             MouseMove += (sender, args) =>
                 {
                     mouseLocation = args.Location;
-                    Cursor = GDI.IsMouseInBounds(mouseLocation, boxShape.Rectangle) ? Cursors.Hand : Cursors.Default;
+                    Cursor = GDI.IsMouseInBounds(mouseLocation, box) ? Cursors.Hand : Cursors.Default;
                 };
         }
 
@@ -255,18 +305,20 @@ namespace VisualPlus.Controls.Bases
             {
                 InitializeTheme();
             }
-            
-            boxShape.Rectangle = new Rectangle(new Point(0, (ClientRectangle.Height / 2) - (boxShape.Rectangle.Height / 2)), boxShape.Rectangle.Size);
-            GraphicsPath boxPath = Border.GetBorderShape(boxShape.Rectangle, boxShape.Border.Type, boxShape.Border.Rounding);
 
-            Shape.DrawBackground(graphics, boxShape, ClientRectangle, Enabled);
+            box = new Rectangle(new Point(0, (ClientRectangle.Height / 2) - (box.Height / 2)), box.Size);
+            GraphicsPath boxPath = Border.GetBorderShape(box, Border.Type, Border.Rounding);
+            LinearGradientBrush controlGraphicsBrush = GDI.GetControlBrush(graphics, Enabled, MouseState, ControlBrushCollection, ClientRectangle);
+            GDI.FillBackground(graphics, boxPath, controlGraphicsBrush);
 
             if (Checked)
             {
-                Checkmark.DrawCheckmark(graphics, checkMark, boxShape, Enabled, TextRenderingHint);
+                graphics.SetClip(boxPath);
+                Checkmark.DrawCheckmark(graphics, checkMark, box, Enabled, TextRenderingHint);
+                graphics.ResetClip();
             }
 
-            Border.DrawBorderStyle(graphics, boxShape.Border, MouseState, boxPath);
+            Border.DrawBorderStyle(graphics, Border, MouseState, boxPath);
 
             DrawText(graphics);
             DrawAnimation(graphics);
@@ -299,10 +351,10 @@ namespace VisualPlus.Controls.Bases
                 {
                     double animationValue = rippleEffectsManager.GetProgress(i);
 
-                    Point animationSource = new Point(boxShape.Rectangle.X + (boxShape.Rectangle.Width / 2), boxShape.Rectangle.Y + (boxShape.Rectangle.Height / 2));
+                    Point animationSource = new Point(box.X + (box.Width / 2), box.Y + (box.Height / 2));
                     SolidBrush animationBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), (bool)rippleEffectsManager.GetData(i)[0] ? Color.Black : checkMark.EnabledGradient.Colors[0]));
 
-                    int height = boxShape.Rectangle.Height;
+                    int height = box.Height;
                     int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + (0.2d * animationValue))) : height;
 
                     GraphicsPath path = GDI.DrawRoundedRectangle(animationSource.X - (size / 2), animationSource.Y - (size / 2), size, size, size / 2);
@@ -315,7 +367,7 @@ namespace VisualPlus.Controls.Bases
         private void DrawText(Graphics graphics)
         {
             StringFormat stringFormat = new StringFormat { LineAlignment = StringAlignment.Center };
-            Point textPoint = new Point(boxShape.Rectangle.X + boxShape.Rectangle.Width + boxSpacing, ClientRectangle.Height / 2);
+            Point textPoint = new Point(box.X + box.Width + boxSpacing, ClientRectangle.Height / 2);
             graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textPoint, stringFormat);
         }
 

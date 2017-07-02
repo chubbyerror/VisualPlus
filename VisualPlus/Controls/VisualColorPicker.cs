@@ -33,7 +33,7 @@
         private static readonly object EventLargeChangeChanged = new object();
         private static readonly object EventSelectionSizeChanged = new object();
         private static readonly object EventSmallChangeChanged = new object();
-        private readonly Color buttonColor = Settings.DefaultValue.Control.ControlEnabled.Colors[0];
+        private readonly Color buttonColor = Settings.DefaultValue.ControlState.ControlEnabled.Colors[0];
         private readonly MouseState mouseState;
         private LinearGradientBrush _blackBottomGradient;
         private Bitmap _canvas;

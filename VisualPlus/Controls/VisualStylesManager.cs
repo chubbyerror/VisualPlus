@@ -31,6 +31,9 @@
         public IControl ControlStyle;
 
         [Browsable(false)]
+        public IControlState ControlStateStyle;
+
+        [Browsable(false)]
         public IFont FontStyle;
 
         [Browsable(false)]
@@ -372,6 +375,7 @@
             BorderStyle = (IBorder)Styles.GetInterfaceObject(style);
             CheckmarkStyle = (ICheckmark)Styles.GetInterfaceObject(style);
             ControlStyle = (IControl)Styles.GetInterfaceObject(style);
+            ControlStateStyle = (IControlState)Styles.GetInterfaceObject(style);
             FontStyle = (IFont)Styles.GetInterfaceObject(style);
             ProgressStyle = (IProgress)Styles.GetInterfaceObject(style);
             TabStyle = (ITab)Styles.GetInterfaceObject(style);

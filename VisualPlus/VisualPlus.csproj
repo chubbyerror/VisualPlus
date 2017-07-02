@@ -135,7 +135,6 @@
     <Compile Include="Framework\GDI\VFXManager.cs" />
     <Compile Include="Framework\Handlers\MathManager.cs" />
     <Compile Include="Enums\Styles.cs" />
-    <Compile Include="Framework\Structure\Shape.cs" />
     <Compile Include="Framework\Structure\StyleManager.cs" />
     <Compile Include="Framework\Structure\VisualBitmap.cs" />
     <Compile Include="Framework\Structure\Watermark.cs" />

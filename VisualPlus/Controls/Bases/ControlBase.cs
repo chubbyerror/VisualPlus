@@ -24,6 +24,13 @@
     {
         #region Variables
 
+        internal Border ControlBorder;
+        internal Gradient[] ControlBrushCollection;
+
+        #endregion
+
+        #region Variables
+
         private readonly MouseState mouseState;
         private Color foreColorDisabled;
         private StyleManager styleManager;
@@ -37,11 +44,12 @@
         {
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
 
+            DefaultConstructor();
+
             // DoubleBuffered = true;
             mouseState = new MouseState(this);
-            foreColorDisabled = Settings.DefaultValue.Font.ForeColorDisabled;
             styleManager = new StyleManager();
-            textRendererHint = Settings.DefaultValue.TextRenderingHint;
+            InitializeTheme();
         }
 
         public delegate void ForeColorDisabledChangedEventHandler();
@@ -188,27 +196,6 @@
             ForeColor = Enabled ? ForeColor : ForeColorDisabled;
         }
 
-        private void InitializeTheme()
-        {
-            if (StyleManager.LockedStyle)
-            {
-                if (StyleManager.VisualStylesManager != null)
-                {
-                    IFont fontStyle = StyleManager.VisualStylesManager.FontStyle;
-
-                    Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-                    ForeColor = fontStyle.ForeColor;
-                    foreColorDisabled = fontStyle.ForeColorDisabled;
-                }
-                else
-                {
-                    Font = Settings.DefaultValue.DefaultFont;
-                    ForeColor = Settings.DefaultValue.Font.ForeColor;
-                    foreColorDisabled = Settings.DefaultValue.Font.ForeColorDisabled;
-                }
-            }
-        }
-
         /// <summary>Fires the OnStyleManagerChanged event.</summary>
         protected virtual void OnStyleManagerChanged()
         {
@@ -219,6 +206,68 @@
         protected virtual void OnTextRenderingHintChanged()
         {
             TextRenderingHintChanged?.Invoke();
+        }
+
+        private void DefaultConstructor()
+        {
+            Font = Settings.DefaultValue.DefaultFont;
+            ForeColor = Settings.DefaultValue.Font.ForeColor;
+            ForeColorDisabled = Settings.DefaultValue.Font.ForeColorDisabled;
+            textRendererHint = Settings.DefaultValue.TextRenderingHint;
+
+            ControlBorder = new Border();
+            ControlBrushCollection = new[]
+                {
+                    Settings.DefaultValue.ControlState.ControlEnabled,
+                    Settings.DefaultValue.ControlState.ControlHover,
+                    Settings.DefaultValue.ControlState.ControlPressed,
+                    Settings.DefaultValue.ControlState.ControlDisabled
+                };
+        }
+
+        private void InitializeTheme()
+        {
+            if (styleManager.LockedStyle)
+            {
+                if (StyleManager.VisualStylesManager != null)
+                {
+                    IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
+                    IControlState controlStateStyle = StyleManager.VisualStylesManager.ControlStateStyle;
+                    IFont fontStyle = StyleManager.VisualStylesManager.FontStyle;
+
+                    Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                    ForeColor = fontStyle.ForeColor;
+                    ForeColorDisabled = fontStyle.ForeColorDisabled;
+                    textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+
+                    ControlBorder = new Border
+                        {
+                            Color = borderStyle.Color,
+                            HoverColor = borderStyle.HoverColor,
+                            HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible,
+                            Rounding = StyleManager.VisualStylesManager.BorderRounding,
+                            Type = StyleManager.VisualStylesManager.BorderType,
+                            Thickness = StyleManager.VisualStylesManager.BorderThickness,
+                            Visible = StyleManager.VisualStylesManager.BorderVisible
+                        };
+
+                    ControlBrushCollection[0] = controlStateStyle.ControlEnabled;
+                    ControlBrushCollection[1] = controlStateStyle.ControlHover;
+                    ControlBrushCollection[2] = controlStateStyle.ControlPressed;
+                    ControlBrushCollection[3] = controlStateStyle.ControlDisabled;
+                }
+                else
+                {
+                    DefaultConstructor();
+
+                    ControlBorder = new Border();
+
+                    ControlBrushCollection[0] = Settings.DefaultValue.ControlState.ControlEnabled;
+                    ControlBrushCollection[1] = Settings.DefaultValue.ControlState.ControlHover;
+                    ControlBrushCollection[2] = Settings.DefaultValue.ControlState.ControlPressed;
+                    ControlBrushCollection[3] = Settings.DefaultValue.ControlState.ControlDisabled;
+                }
+            }
         }
 
         #endregion

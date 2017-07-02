@@ -299,23 +299,21 @@
         /// <param name="box">Shape type.</param>
         /// <param name="enabled">Control Enabled state.</param>
         /// <param name="textRendererHint">Text rendering hint.</param>
-        public static void DrawCheckmark(Graphics graphics, Checkmark checkmark, Shape box, bool enabled, TextRenderingHint textRendererHint)
+        public static void DrawCheckmark(Graphics graphics, Checkmark checkmark, Rectangle box, bool enabled, TextRenderingHint textRendererHint)
         {
             Gradient checkGradient = enabled ? checkmark.EnabledGradient : checkmark.DisabledGradient;
             Bitmap checkImage = enabled ? checkmark.EnabledImage : checkmark.DisabledImage;
 
-            var boxGradientPoints = GDI.GetGradientPoints(box.Rectangle);
+            var boxGradientPoints = GDI.GetGradientPoints(box);
             LinearGradientBrush checkmarkBrush = Gradient.CreateGradientBrush(checkGradient.Colors, boxGradientPoints, checkGradient.Angle, checkGradient.Positions);
-
-            GraphicsPath boxPath = Border.GetBorderShape(box.Rectangle, box.Border.Type, box.Border.Rounding);
 
             Size characterSize = GDI.GetTextSize(graphics, checkmark.Character.ToString(), checkmark.Font);
 
             int stylesCount = checkmark.Style.Count();
             var autoLocations = new Point[stylesCount];
-            autoLocations[0] = new Point((box.Rectangle.X + (box.Rectangle.Width / 2)) - (characterSize.Width / 2), (box.Rectangle.Y + (box.Rectangle.Height / 2)) - (characterSize.Height / 2));
-            autoLocations[1] = new Point((box.Rectangle.X + (box.Rectangle.Width / 2)) - (checkmark.ImageSize.Width / 2), (box.Rectangle.Y + (box.Rectangle.Height / 2)) - (checkmark.ImageSize.Height / 2));
-            autoLocations[2] = new Point((box.Rectangle.X + (box.Rectangle.Width / 2)) - (checkmark.ShapeSize.Width / 2), (box.Rectangle.Y + (box.Rectangle.Height / 2)) - (checkmark.ShapeSize.Height / 2));
+            autoLocations[0] = new Point((box.X + (box.Width / 2)) - (characterSize.Width / 2), (box.Y + (box.Height / 2)) - (characterSize.Height / 2));
+            autoLocations[1] = new Point((box.X + (box.Width / 2)) - (checkmark.ImageSize.Width / 2), (box.Y + (box.Height / 2)) - (checkmark.ImageSize.Height / 2));
+            autoLocations[2] = new Point((box.X + (box.Width / 2)) - (checkmark.ShapeSize.Width / 2), (box.Y + (box.Height / 2)) - (checkmark.ShapeSize.Height / 2));
 
             Point tempPoint;
             if (checkmark.AutoSize)
@@ -328,7 +326,6 @@
                 tempPoint = checkmark.Location;
             }
 
-            graphics.SetClip(boxPath);
             switch (checkmark.Style)
             {
                 case CheckType.Character:
@@ -357,8 +354,6 @@
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            graphics.ResetClip();
         }
 
         /// <summary>Draws the checkmark character.</summary>

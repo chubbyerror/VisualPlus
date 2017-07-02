@@ -443,7 +443,7 @@
             if (StyleManager.VisualStylesManager != null)
             {
                 IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
-                IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
+                IControlState controlStateStyle = StyleManager.VisualStylesManager.ControlStateStyle;
 
                 titleBorder.Color = borderStyle.Color;
                 titleBorder.HoverColor = borderStyle.HoverColor;
@@ -453,21 +453,12 @@
                 titleBorder.Thickness = StyleManager.VisualStylesManager.BorderThickness;
                 titleBorder.Visible = StyleManager.VisualStylesManager.BorderVisible;
 
-                titleGradient = new Gradient
-                    {
-                        Colors = controlStyle.ControlDisabled.Colors,
-                        Positions = controlStyle.ControlDisabled.Positions
-                    };
+                titleGradient = controlStateStyle.ControlEnabled;
             }
             else
             {
                 titleBorder = new Border();
-
-                titleGradient = new Gradient
-                    {
-                        Colors = Settings.DefaultValue.Control.ControlDisabled.Colors,
-                        Positions = Settings.DefaultValue.Control.ControlDisabled.Positions
-                    };
+                titleGradient = Settings.DefaultValue.ControlState.ControlDisabled;
             }
         }
 

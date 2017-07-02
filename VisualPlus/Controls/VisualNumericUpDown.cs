@@ -27,7 +27,6 @@
     {
         #region Variables
 
-        private Gradient backgroundDisabledGradient = new Gradient();
         private Gradient backgroundGradient = new Gradient();
         private Border border;
         private Border buttonBorder;
@@ -89,23 +88,6 @@
             set
             {
                 backgroundGradient = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(GradientConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient BackgroundDisabled
-        {
-            get
-            {
-                return backgroundDisabledGradient;
-            }
-
-            set
-            {
-                backgroundDisabledGradient = value;
                 Invalidate();
             }
         }
@@ -407,8 +389,8 @@
             buttonPath.AddRectangle(buttonRectangle);
             buttonPath.CloseAllFigures();
 
-            Gradient backgroundCheckTemp = Enabled ? backgroundGradient : backgroundDisabledGradient;
-            Gradient buttonCheckTemp = Enabled ? buttonGradient : backgroundDisabledGradient;
+            Gradient backgroundCheckTemp = Enabled ? backgroundGradient : ControlBrushCollection[3];
+            Gradient buttonCheckTemp = Enabled ? buttonGradient : ControlBrushCollection[3];
 
             graphics.SetClip(controlGraphicsPath);
 
@@ -449,22 +431,11 @@
         {
             if (StyleManager.VisualStylesManager != null)
             {
-                // Load style manager settings 
-                IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
                 IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
+                IControlState controlStateStyle = StyleManager.VisualStylesManager.ControlStateStyle;
                 IFont fontStyle = StyleManager.VisualStylesManager.FontStyle;
-
-                border.Color = borderStyle.Color;
-                border.HoverColor = borderStyle.HoverColor;
-                border.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
-                border.Rounding = StyleManager.VisualStylesManager.BorderRounding;
-                border.Type = StyleManager.VisualStylesManager.BorderType;
-                border.Thickness = StyleManager.VisualStylesManager.BorderThickness;
-                border.Visible = StyleManager.VisualStylesManager.BorderVisible;
-
-                buttonGradient.Colors = controlStyle.ControlEnabled.Colors;
-                buttonGradient.Positions = controlStyle.ControlEnabled.Positions;
-
+                
+                buttonGradient = controlStateStyle.ControlEnabled;
                 buttonColorText = fontStyle.ForeColor;
 
                 float[] backgroundGradientPosition = { 0, 1 };
@@ -477,14 +448,9 @@
 
                 backgroundGradient.Colors = backgroundColor;
                 backgroundGradient.Positions = backgroundGradientPosition;
-                backgroundDisabledGradient.Colors = controlStyle.ControlDisabled.Colors;
-                backgroundDisabledGradient.Positions = controlStyle.ControlDisabled.Positions;
             }
             else
             {
-                // Load default settings
-                border = new Border();
-
                 buttonBorder = new Border
                     {
                         HoverVisible = false,
@@ -505,14 +471,10 @@
                     ControlPaint.Light(Settings.DefaultValue.Control.Background(0))
                 };
 
-            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
-            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+            buttonGradient = Settings.DefaultValue.ControlState.ControlEnabled;
 
             backgroundGradient.Colors = backgroundColor;
             backgroundGradient.Positions = backgroundGradientPosition;
-
-            backgroundDisabledGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
-            backgroundDisabledGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
         }
 
         #endregion

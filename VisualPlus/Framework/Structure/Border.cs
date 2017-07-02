@@ -43,6 +43,11 @@
             visible = true;
         }
 
+        public delegate void BorderChangedEventHandler();
+
+        [Category(Localize.EventsCategory.Appearance)]
+        public event BorderChangedEventHandler BorderChanged;
+
         #endregion
 
         #region Properties
@@ -60,6 +65,7 @@
             set
             {
                 hoverVisible = value;
+                OnBorderChanged();
             }
         }
 
@@ -78,6 +84,7 @@
                 if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
                 {
                     rounding = value;
+                    OnBorderChanged();
                 }
             }
         }
@@ -97,6 +104,7 @@
                 if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
                 {
                     thickness = value;
+                    OnBorderChanged();
                 }
             }
         }
@@ -114,6 +122,7 @@
             set
             {
                 type = value;
+                OnBorderChanged();
             }
         }
 
@@ -130,6 +139,7 @@
             set
             {
                 visible = value;
+                OnBorderChanged();
             }
         }
 
@@ -146,6 +156,7 @@
             set
             {
                 color = value;
+                OnBorderChanged();
             }
         }
 
@@ -162,6 +173,7 @@
             set
             {
                 hoverColor = value;
+                OnBorderChanged();
             }
         }
 
@@ -272,6 +284,12 @@
 
             borderShape.CloseAllFigures();
             return borderShape;
+        }
+
+        /// <summary>Fires the OnBorderChanged event.</summary>
+        protected virtual void OnBorderChanged()
+        {
+            BorderChanged?.Invoke();
         }
 
         #endregion

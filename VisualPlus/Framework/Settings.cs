@@ -49,6 +49,7 @@ namespace VisualPlus.Framework
             public static readonly IBorder Border = (IBorder)Styles.GetInterfaceObject(DefaultStyle);
             public static readonly ICheckmark Checkmark = (ICheckmark)Styles.GetInterfaceObject(DefaultStyle);
             public static readonly IControl Control = (IControl)Styles.GetInterfaceObject(DefaultStyle);
+            public static readonly IControlState ControlState = (IControlState)Styles.GetInterfaceObject(DefaultStyle);
             public static readonly IFont Font = (IFont)Styles.GetInterfaceObject(DefaultStyle);
             public static readonly IProgress Progress = (IProgress)Styles.GetInterfaceObject(DefaultStyle);
             public static readonly ITab Tab = (ITab)Styles.GetInterfaceObject(DefaultStyle);

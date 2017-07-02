@@ -30,14 +30,8 @@
         #endregion
     }
 
-    public interface IControl
+    public interface IControlState
     {
-        #region Properties
-
-        Gradient BoxDisabled { get; }
-
-        Gradient BoxEnabled { get; }
-
         Gradient ControlDisabled { get; }
 
         Gradient ControlEnabled { get; }
@@ -45,6 +39,15 @@
         Gradient ControlHover { get; }
 
         Gradient ControlPressed { get; }
+    }
+
+    public interface IControl
+    {
+        #region Properties
+
+        Gradient BoxDisabled { get; }
+
+        Gradient BoxEnabled { get; }
 
         Color FlatButtonDisabled { get; }
 

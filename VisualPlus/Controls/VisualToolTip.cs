@@ -60,8 +60,8 @@
 
         public VisualToolTip()
         {
-            backgroundGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
-            backgroundGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+            backgroundGradient.Colors = Settings.DefaultValue.ControlState.ControlEnabled.Colors;
+            backgroundGradient.Positions = Settings.DefaultValue.ControlState.ControlEnabled.Positions;
 
             border = new Border();
 

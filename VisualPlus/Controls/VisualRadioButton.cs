@@ -28,17 +28,7 @@
             Cursor = Cursors.Hand;
             Size = new Size(125, 23);
 
-            Box = new Shape(new Rectangle(new Point(0, 0), new Size(14, 14)))
-                {
-                    Border = new Border
-                        {
-                            Rounding = Settings.DefaultValue.Rounding.RoundedRectangle
-                        },
-                    BackgroundImage =
-                        {
-                            Size = new Size(19, 16)
-                        }
-                };
+            Border = new Border { Rounding = Settings.DefaultValue.Rounding.RoundedRectangle };
 
             CheckMark = new Checkmark(ClientRectangle)
                 {

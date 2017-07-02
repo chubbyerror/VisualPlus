@@ -8,6 +8,8 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Framework.Structure;
+
     #endregion
 
     internal class GDI
@@ -418,6 +420,77 @@
         public static bool IsMouseInBounds(Point mousePoint, Rectangle bounds)
         {
             return bounds.Contains(mousePoint);
+        }
+
+        /// <summary>Draw background image.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="rectangle">The rectangle.</param>
+        /// <param name="image">The image.</param>
+        /// <param name="centered">Center image.</param>
+        internal static void DrawBackgroundImage(Graphics graphics, Rectangle rectangle, Bitmap image, bool centered = true)
+        {
+            if (image != null)
+            {
+                Point imageLocation = centered ? new Point((rectangle.X + (rectangle.Width / 2)) - (image.Size.Width / 2), (rectangle.Y + (rectangle.Height / 2)) - (image.Size.Height / 2)) : new Point(0, 0);
+                graphics.DrawImage(image, new Rectangle(imageLocation, image.Size));
+            }
+        }
+
+        /// <summary>Fills the background.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="graphicsPath">The graphics path.</param>
+        /// <param name="gradientBrush">The gradient brush.</param>
+        internal static void FillBackground(Graphics graphics, GraphicsPath graphicsPath, Brush gradientBrush)
+        {
+            graphics.FillPath(gradientBrush, graphicsPath);
+        }
+        
+        /// <summary>Gets the control brush.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="enabled">Enabled state.</param>
+        /// <param name="mouseState">Mouse state.</param>
+        /// <param name="controlStates">The gradient color states.</param>
+        /// <param name="rectangle">The rectangle</param>
+        /// <returns>Control brush state.</returns>
+        internal static LinearGradientBrush GetControlBrush(Graphics graphics, bool enabled, MouseStates mouseState, Gradient[] controlStates, Rectangle rectangle)
+        {
+            Gradient tempGradient;
+            if (enabled)
+            {
+                switch (mouseState)
+                {
+                    case MouseStates.Normal:
+                        {
+                            tempGradient = controlStates[0];
+                            break;
+                        }
+
+                    case MouseStates.Hover:
+                        {
+                            tempGradient = controlStates[1];
+                            break;
+                        }
+
+                    case MouseStates.Down:
+                        {
+                            tempGradient = controlStates[2];
+                            break;
+                        }
+
+                    default:
+                        {
+                            tempGradient = controlStates[0];
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                tempGradient = controlStates[3];
+            }
+
+            var gradientPoints = GetGradientPoints(rectangle);
+            return Gradient.CreateGradientBrush(tempGradient.Colors, gradientPoints, tempGradient.Angle, tempGradient.Positions);
         }
 
         #endregion

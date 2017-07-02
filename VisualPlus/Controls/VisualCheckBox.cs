@@ -7,6 +7,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Controls.Bases;
+    using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
 
@@ -27,14 +28,7 @@
             Cursor = Cursors.Hand;
             Size = new Size(125, 23);
 
-            Box = new Shape(new Rectangle(new Point(0, 0), new Size(14, 14)))
-                {
-                    BackgroundImage =
-                        {
-                            Size = new Size(19, 16),
-                            Point = new Point(-3, 3)
-                        }
-                };
+            Border = new Border { Rounding = Settings.DefaultValue.Rounding.BoxRounding };
 
             CheckMark = new Checkmark(ClientRectangle)
                 {

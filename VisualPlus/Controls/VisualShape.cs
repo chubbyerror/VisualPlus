@@ -329,7 +329,7 @@
             {
                 // Load style manager settings 
                 IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
-                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
+                IControlState controlStateStyle = styleManager.VisualStylesManager.ControlStateStyle;
                 IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
 
                 animation = styleManager.VisualStylesManager.Animation;
@@ -340,8 +340,8 @@
                 border.Type = styleManager.VisualStylesManager.BorderType;
                 border.Visible = styleManager.VisualStylesManager.BorderVisible;
 
-                background.Colors = controlStyle.ControlEnabled.Colors;
-                background.Positions = controlStyle.ControlEnabled.Positions;
+                background.Colors = controlStateStyle.ControlEnabled.Colors;
+                background.Positions = controlStateStyle.ControlEnabled.Positions;
             }
             else
             {
@@ -354,8 +354,8 @@
 
         private void DefaultGradient()
         {
-            background.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
-            background.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+            background.Colors = Settings.DefaultValue.ControlState.ControlEnabled.Colors;
+            background.Positions = Settings.DefaultValue.ControlState.ControlEnabled.Positions;
         }
 
         private void DrawAnimation(Graphics graphics)

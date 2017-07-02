@@ -44,8 +44,8 @@
         private readonly MouseState mouseState;
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
         private Border border;
-        private Color buttonBackHoverColor = Settings.DefaultValue.Control.ControlHover.Colors[0];
-        private Color buttonBackPressedColor = Settings.DefaultValue.Control.ControlPressed.Colors[0];
+        private Color buttonBackHoverColor = Settings.DefaultValue.ControlState.ControlHover.Colors[0];
+        private Color buttonBackPressedColor = Settings.DefaultValue.ControlState.ControlPressed.Colors[0];
         private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
         private Color closeColor = Color.IndianRed;

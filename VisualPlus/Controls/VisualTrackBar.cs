@@ -1435,9 +1435,9 @@
             progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
             progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
 
-            buttonGradient.Angle = Settings.DefaultValue.Control.ControlEnabled.Angle;
-            buttonGradient.Colors = Settings.DefaultValue.Control.ControlEnabled.Colors;
-            buttonGradient.Positions = Settings.DefaultValue.Control.ControlEnabled.Positions;
+            buttonGradient.Angle = Settings.DefaultValue.ControlState.ControlEnabled.Angle;
+            buttonGradient.Colors = Settings.DefaultValue.ControlState.ControlEnabled.Colors;
+            buttonGradient.Positions = Settings.DefaultValue.ControlState.ControlEnabled.Positions;
         }
 
         /// <summary>Draws the bar.</summary>
