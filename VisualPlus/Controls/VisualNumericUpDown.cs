@@ -28,7 +28,6 @@
         #region Variables
 
         private Gradient backgroundGradient = new Gradient();
-        private Border border;
         private Border buttonBorder;
         private Color buttonColorText;
         private Gradient buttonGradient = new Gradient();
@@ -58,7 +57,7 @@
             MinimumSize = new Size(62, 29);
             UpdateStyles();
 
-            ConfigureStyleManager();
+            InitializeTheme();
             DefaultGradient();
         }
 
@@ -99,12 +98,12 @@
         {
             get
             {
-                return border;
+                return ControlBorder;
             }
 
             set
             {
-                border = value;
+                ControlBorder = value;
                 Invalidate();
             }
         }
@@ -372,6 +371,8 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
+
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
@@ -379,10 +380,10 @@
 
             if (StyleManager.LockedStyle)
             {
-                ConfigureStyleManager();
+                InitializeTheme();
             }
 
-            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
             buttonPath = new GraphicsPath();
@@ -413,7 +414,7 @@
             // Button separator
             graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), buttonRectangle.X, buttonRectangle.Y + (buttonRectangle.Height / 2), buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + (buttonRectangle.Height / 2));
 
-            Border.DrawBorderStyle(graphics, border, MouseState, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
 
             // Draw value string
             Rectangle textboxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
@@ -427,14 +428,30 @@
             graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(ForeColor), textboxRectangle, stringFormat);
         }
 
-        private void ConfigureStyleManager()
+        private void DefaultGradient()
+        {
+            float[] backgroundGradientPosition = { 0, 1 };
+
+            Color[] backgroundColor =
+                {
+                    Settings.DefaultValue.Control.Background(0),
+                    ControlPaint.Light(Settings.DefaultValue.Control.Background(0))
+                };
+
+            buttonGradient = Settings.DefaultValue.ControlState.ControlEnabled;
+
+            backgroundGradient.Colors = backgroundColor;
+            backgroundGradient.Positions = backgroundGradientPosition;
+        }
+
+        private void InitializeTheme()
         {
             if (StyleManager.VisualStylesManager != null)
             {
                 IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
                 IControlState controlStateStyle = StyleManager.VisualStylesManager.ControlStateStyle;
                 IFont fontStyle = StyleManager.VisualStylesManager.FontStyle;
-                
+
                 buttonGradient = controlStateStyle.ControlEnabled;
                 buttonColorText = fontStyle.ForeColor;
 
@@ -459,22 +476,6 @@
 
                 buttonColorText = Settings.DefaultValue.Font.ForeColor;
             }
-        }
-
-        private void DefaultGradient()
-        {
-            float[] backgroundGradientPosition = { 0, 1 };
-
-            Color[] backgroundColor =
-                {
-                    Settings.DefaultValue.Control.Background(0),
-                    ControlPaint.Light(Settings.DefaultValue.Control.Background(0))
-                };
-
-            buttonGradient = Settings.DefaultValue.ControlState.ControlEnabled;
-
-            backgroundGradient.Colors = backgroundColor;
-            backgroundGradient.Positions = backgroundGradientPosition;
         }
 
         #endregion
