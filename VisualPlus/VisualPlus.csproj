@@ -53,6 +53,7 @@
     <Compile Include="Components\Symbols\Arrow.cs" />
     <Compile Include="Components\Symbols\Bars.cs" />
     <Compile Include="Components\Symbols\Star.cs" />
+    <Compile Include="Controls\Bases\ContainerBase.cs" />
     <Compile Include="Controls\Bases\CheckBoxBase.cs" />
     <Compile Include="Controls\Bases\RadioButtonBase.cs" />
     <Compile Include="Controls\Bases\ToggleButtonBase.cs" />
@@ -147,15 +148,11 @@
     <Compile Include="Controls\VisualComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualGroupBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualGroupBox.cs" />
     <Compile Include="Controls\VisualNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualPanel.cs" />
     <Compile Include="Controls\VisualProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>

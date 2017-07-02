@@ -2,7 +2,6 @@
 {
     #region Namespace
 
-    using System;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
@@ -43,11 +42,12 @@
         {
             SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
 
+            animation = true;
+
             visualBitmap = new VisualBitmap(Resources.Icon, new Size(24, 24))
                 {
                     Visible = false
                 };
-
             visualBitmap.Point = new Point(0, (Height / 2) - (visualBitmap.Size.Height / 2));
 
             textImageRelation = TextImageRelation.Overlay;
@@ -138,40 +138,6 @@
 
         #region Events
 
-        public void InitializeTheme()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                // Load style manager settings 
-                IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
-                IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
-
-                animation = StyleManager.VisualStylesManager.Animation;
-                buttonShape.Border.Color = borderStyle.Color;
-                buttonShape.Border.HoverColor = borderStyle.HoverColor;
-                buttonShape.Border.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
-                buttonShape.Border.Rounding = StyleManager.VisualStylesManager.BorderRounding;
-                buttonShape.Border.Type = StyleManager.VisualStylesManager.BorderType;
-                buttonShape.Border.Thickness = StyleManager.VisualStylesManager.BorderThickness;
-                buttonShape.Border.Visible = StyleManager.VisualStylesManager.BorderVisible;
-
-                buttonShape.EnabledGradient.Colors = controlStyle.ControlEnabled.Colors;
-                buttonShape.EnabledGradient.Positions = controlStyle.ControlEnabled.Positions;
-                buttonShape.DisabledGradient.Colors = controlStyle.ControlDisabled.Colors;
-                buttonShape.DisabledGradient.Positions = controlStyle.ControlDisabled.Positions;
-                buttonShape.HoverGradient.Colors = controlStyle.ControlHover.Colors;
-                buttonShape.HoverGradient.Positions = controlStyle.ControlHover.Positions;
-                buttonShape.PressedGradient.Colors = controlStyle.ControlPressed.Colors;
-                buttonShape.PressedGradient.Positions = controlStyle.ControlPressed.Positions;
-            }
-            else
-            {
-                // Load default settings
-                animation = Settings.DefaultValue.Animation;
-                buttonShape = new Shape(ClientRectangle);
-            }
-        }
-
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
@@ -209,43 +175,12 @@
                 };
         }
 
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-            MouseState = MouseStates.Down;
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            MouseState = MouseStates.Hover;
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            MouseState = MouseStates.Normal;
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-            MouseState = MouseStates.Hover;
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-
             Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-            if (StyleManager.LockedStyle)
-            {
-                InitializeTheme();
-            }
+            InitializeTheme();
 
             ConfigureComponents(graphics);
 
@@ -344,6 +279,43 @@
 
             Shape.DrawBackground(graphics, buttonShape, gradientBrush, controlGraphicsPath);
             Border.DrawBorderStyle(graphics, buttonShape.Border, MouseState, controlGraphicsPath);
+        }
+
+        private void InitializeTheme()
+        {
+            if (StyleManager.LockedStyle)
+            {
+                if (StyleManager.VisualStylesManager != null)
+                {
+                    // Load style manager settings 
+                    IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
+                    IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
+
+                    animation = StyleManager.VisualStylesManager.Animation;
+                    buttonShape.Border.Color = borderStyle.Color;
+                    buttonShape.Border.HoverColor = borderStyle.HoverColor;
+                    buttonShape.Border.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
+                    buttonShape.Border.Rounding = StyleManager.VisualStylesManager.BorderRounding;
+                    buttonShape.Border.Type = StyleManager.VisualStylesManager.BorderType;
+                    buttonShape.Border.Thickness = StyleManager.VisualStylesManager.BorderThickness;
+                    buttonShape.Border.Visible = StyleManager.VisualStylesManager.BorderVisible;
+
+                    buttonShape.EnabledGradient.Colors = controlStyle.ControlEnabled.Colors;
+                    buttonShape.EnabledGradient.Positions = controlStyle.ControlEnabled.Positions;
+                    buttonShape.DisabledGradient.Colors = controlStyle.ControlDisabled.Colors;
+                    buttonShape.DisabledGradient.Positions = controlStyle.ControlDisabled.Positions;
+                    buttonShape.HoverGradient.Colors = controlStyle.ControlHover.Colors;
+                    buttonShape.HoverGradient.Positions = controlStyle.ControlHover.Positions;
+                    buttonShape.PressedGradient.Colors = controlStyle.ControlPressed.Colors;
+                    buttonShape.PressedGradient.Positions = controlStyle.ControlPressed.Positions;
+                }
+                else
+                {
+                    // Load default settings
+                    animation = Settings.DefaultValue.Animation;
+                    buttonShape = new Shape(ClientRectangle);
+                }
+            }
         }
 
         #endregion

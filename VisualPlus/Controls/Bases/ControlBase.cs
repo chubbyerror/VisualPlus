@@ -2,8 +2,10 @@
 {
     #region Namespace
 
+    using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Drawing.Text;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
@@ -46,7 +48,7 @@
 
         public delegate void MouseStateChangedEventHandler();
 
-        public delegate void StyleChangedEventHandler();
+        public delegate void StyleManagerChangedEventHandler();
 
         public delegate void TextRenderingChangedEventHandler();
 
@@ -57,7 +59,7 @@
         public event MouseStateChangedEventHandler MouseStateChanged;
 
         [Category(Localize.EventsCategory.Appearance)]
-        public event StyleChangedEventHandler StyleManagerChanged;
+        public event StyleManagerChangedEventHandler StyleManagerChanged;
 
         [Category(Localize.EventsCategory.PropertyChanged)]
         public event TextRenderingChangedEventHandler TextRenderingHintChanged;
@@ -113,8 +115,8 @@
             set
             {
                 styleManager = value;
-                OnStyleManagerChanged();
                 Invalidate();
+                OnStyleManagerChanged();
             }
         }
 
@@ -139,23 +141,55 @@
 
         #region Events
 
-        /// <summary>Fires the OnForeColorDisabledChanged event.</summary>
         protected virtual void OnForeColorDisabledChanged()
         {
             ForeColorDisabledChanged?.Invoke();
         }
 
-        /// <summary>Fires the OnMouseStateChanged event.</summary>
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            MouseState = MouseStates.Down;
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            MouseState = MouseStates.Hover;
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            MouseState = MouseStates.Normal;
+        }
+
         protected virtual void OnMouseStateChanged()
         {
             MouseStateChanged?.Invoke();
         }
 
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            MouseState = MouseStates.Hover;
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
+            graphics.Clear(Parent.BackColor);
+            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.TextRenderingHint = textRendererHint;
 
+            InitializeTheme();
+
+            ForeColor = Enabled ? ForeColor : ForeColorDisabled;
+        }
+
+        private void InitializeTheme()
+        {
             if (StyleManager.LockedStyle)
             {
                 if (StyleManager.VisualStylesManager != null)
@@ -173,8 +207,6 @@
                     foreColorDisabled = Settings.DefaultValue.Font.ForeColorDisabled;
                 }
             }
-
-            ForeColor = Enabled ? ForeColor : ForeColorDisabled;
         }
 
         /// <summary>Fires the OnStyleManagerChanged event.</summary>

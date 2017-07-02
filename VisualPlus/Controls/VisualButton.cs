@@ -38,7 +38,7 @@
             Padding = new Padding(0);
             Size = new Size(140, 45);
             MinimumSize = new Size(90, 25);
-
+            DoubleBuffered = true;
             Button = new Shape(ClientRectangle);
         }
 

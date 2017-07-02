@@ -4,15 +4,13 @@
 
     using System;
     using System.ComponentModel;
-    using System.ComponentModel.Design;
     using System.Drawing;
     using System.Drawing.Drawing2D;
-    using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
-    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Styles;
 
@@ -23,33 +21,21 @@
     [DefaultEvent("Enter")]
     [DefaultProperty("Text")]
     [Description("The Visual GroupBox")]
-    [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public sealed class VisualGroupBox : GroupBox
+    public sealed class VisualGroupBox : ContainerBase
     {
         #region Variables
 
-        private readonly MouseState mouseState;
-
-        private Color backgroundColor;
-        private Border border;
-
         private GraphicsPath borderGraphicsPath;
-
         private Expander expander;
-
-        private Color foreColor;
-        private GroupBoxStyle groupBoxStyle = GroupBoxStyle.Default;
-        private StringAlignment stringAlignment = StringAlignment.Center;
-        private StyleManager styleManager = new StyleManager();
-        private Color textDisabledColor;
-        private TextRenderingHint textRendererHint;
-        private TitleAlignments titleAlign = TitleAlignments.Top;
+        private GroupBoxStyle groupBoxStyle;
+        private StringAlignment stringAlignment;
+        private TitleAlignments titleAlign;
         private Border titleBorder;
-        private int titleBoxHeight = 25;
+        private int titleBoxHeight;
         private GraphicsPath titleBoxPath;
         private Rectangle titleBoxRectangle;
-        private bool titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
-        private Gradient titleGradient = new Gradient();
+        private bool titleBoxVisible;
+        private Gradient titleGradient;
 
         #endregion
 
@@ -57,23 +43,22 @@
 
         public VisualGroupBox()
         {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer
-                | ControlStyles.SupportsTransparentBackColor,
-                true);
+            groupBoxStyle = GroupBoxStyle.Default;
+            stringAlignment = StringAlignment.Center;
+            titleAlign = TitleAlignments.Top;
+            titleBoxVisible = Settings.DefaultValue.TitleBoxVisible;
+            titleBoxHeight = 25;
+            titleGradient = new Gradient();
 
-            mouseState = new MouseState(this);
             Size = new Size(220, 180);
-            Padding = new Padding(5, 28, 5, 5);
-            UpdateStyles();
+            Padding = new Padding(5, titleBoxHeight + Border.Thickness, 5, 5);
 
             expander = new Expander(this, 25)
                 {
                     Visible = false
                 };
 
-            ConfigureStyleManager();
-            DefaultGradient();
+            InitializeTheme();
         }
 
         [Description("Occours when the expander toggle has changed.")]
@@ -104,41 +89,7 @@
         #region Properties
 
         [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color BackgroundColor
-        {
-            get
-            {
-                return backgroundColor;
-            }
-
-            set
-            {
-                backgroundColor = value;
-                ExceptionManager.ApplyContainerBackColorChange(this, backgroundColor);
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(BorderConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public Border Border
-        {
-            get
-            {
-                return border;
-            }
-
-            set
-            {
-                border = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description("The group box type.")]
+        [Description(Localize.Description.Common.Type)]
         public GroupBoxStyle BoxStyle
         {
             get
@@ -170,36 +121,6 @@
             }
         }
 
-        public new Color ForeColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                base.ForeColor = value;
-                foreColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Alignment)]
         public StringAlignment TextAlignment
@@ -212,38 +133,6 @@
             set
             {
                 stringAlignment = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color TextDisabledColor
-        {
-            get
-            {
-                return textDisabledColor;
-            }
-
-            set
-            {
-                textDisabledColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Strings.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
                 Invalidate();
             }
         }
@@ -336,49 +225,19 @@
 
         #region Events
 
-        protected override void OnControlAdded(ControlEventArgs e)
-        {
-            ExceptionManager.SetControlBackColor(e.Control, backgroundColor, false);
-        }
-
-        protected override void OnControlRemoved(ControlEventArgs e)
-        {
-            ExceptionManager.SetControlBackColor(e.Control, backgroundColor, true);
-        }
-
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
 
             if (expander.MouseOnButton)
             {
-                if (expander.Expanded)
-                {
-                    expander.Expanded = false;
-                }
-                else
-                {
-                    expander.Expanded = true;
-                }
-
+                expander.Expanded = !expander.Expanded;
                 ToggleExpanderChanged?.Invoke();
             }
             else
             {
                 Focus();
             }
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            mouseState.State = MouseStates.Hover;
-            Invalidate();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            mouseState.State = MouseStates.Normal;
-            Invalidate();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -388,30 +247,23 @@
             if (expander.Visible)
             {
                 expander.GetMouseOnButton(e.Location);
-
-                if (expander.MouseOnButton)
-                {
-                    Cursor = expander.Cursor;
-                }
-                else
-                {
-                    Cursor = Cursors.Default;
-                }
+                Cursor = expander.MouseOnButton ? expander.Cursor : Cursors.Default;
             }
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
+
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = textRendererHint;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
-            if (styleManager.LockedStyle)
+            if (StyleManager.LockedStyle)
             {
-                ConfigureStyleManager();
+                InitializeTheme();
             }
 
             Size textArea = GDI.GetTextSize(graphics, Text, Font);
@@ -421,12 +273,11 @@
             titleBoxRectangle = new Rectangle(title.X, title.Y, title.Width, title.Height);
             titleBoxPath = Border.GetBorderShape(titleBoxRectangle, titleBorder.Type, titleBorder.Rounding);
 
-            borderGraphicsPath = Border.GetBorderShape(group, border.Type, border.Rounding);
+            borderGraphicsPath = Border.GetBorderShape(group, Border.Type, Border.Rounding);
 
-            foreColor = Enabled ? foreColor : textDisabledColor;
-            graphics.FillPath(new SolidBrush(backgroundColor), borderGraphicsPath);
+            graphics.FillPath(new SolidBrush(Background), borderGraphicsPath);
 
-            Border.DrawBorderStyle(graphics, border, mouseState.State, borderGraphicsPath);
+            Border.DrawBorderStyle(graphics, Border, MouseState, borderGraphicsPath);
 
             if (titleBoxVisible)
             {
@@ -437,7 +288,7 @@
 
                 if (titleBorder.Visible)
                 {
-                    if ((mouseState.State == MouseStates.Hover) && titleBorder.HoverVisible)
+                    if ((MouseState == MouseStates.Hover) && titleBorder.HoverVisible)
                     {
                         Border.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.HoverColor);
                     }
@@ -450,8 +301,8 @@
 
             if (groupBoxStyle == GroupBoxStyle.Classic)
             {
-                graphics.FillRectangle(new SolidBrush(backgroundColor), titleBoxRectangle);
-                graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle);
+                graphics.FillRectangle(new SolidBrush(Background), titleBoxRectangle);
+                graphics.DrawString(Text, Font, new SolidBrush(ForeColor), titleBoxRectangle);
             }
             else
             {
@@ -461,7 +312,7 @@
                         LineAlignment = StringAlignment.Center
                     };
 
-                graphics.DrawString(Text, Font, new SolidBrush(foreColor), titleBoxRectangle, stringFormat);
+                graphics.DrawString(Text, Font, new SolidBrush(ForeColor), titleBoxRectangle, stringFormat);
             }
 
             if (expander.Visible)
@@ -515,43 +366,6 @@
             Rectangle groupBoxRectangle = new Rectangle(groupBoxPoint, groupBoxSize);
 
             return groupBoxRectangle;
-        }
-
-        private void ConfigureStyleManager()
-        {
-            if (styleManager.VisualStylesManager != null)
-            {
-                // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
-                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
-
-                border.Color = borderStyle.Color;
-                border.HoverColor = borderStyle.HoverColor;
-                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
-                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Type = styleManager.VisualStylesManager.BorderType;
-                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
-                border.Visible = styleManager.VisualStylesManager.BorderVisible;
-
-                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
-                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-                foreColor = fontStyle.ForeColor;
-                textDisabledColor = fontStyle.ForeColorDisabled;
-                backgroundColor = controlStyle.Background(0);
-            }
-            else
-            {
-                // Load default settings
-                border = new Border();
-                titleBorder = new Border();
-
-                textRendererHint = Settings.DefaultValue.TextRenderingHint;
-                Font = Settings.DefaultValue.DefaultFont;
-                foreColor = Settings.DefaultValue.Font.ForeColor;
-                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-                backgroundColor = Settings.DefaultValue.Control.Background(0);
-            }
         }
 
         private Rectangle ConfigureStyleTitleBox(Size textArea)
@@ -622,10 +436,37 @@
             return titleRectangle;
         }
 
-        private void DefaultGradient()
+        private void InitializeTheme()
         {
-            titleGradient.Colors = Settings.DefaultValue.Control.ControlDisabled.Colors;
-            titleGradient.Positions = Settings.DefaultValue.Control.ControlDisabled.Positions;
+            if (StyleManager.VisualStylesManager != null)
+            {
+                IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
+
+                titleBorder.Color = borderStyle.Color;
+                titleBorder.HoverColor = borderStyle.HoverColor;
+                titleBorder.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
+                titleBorder.Rounding = StyleManager.VisualStylesManager.BorderRounding;
+                titleBorder.Type = StyleManager.VisualStylesManager.BorderType;
+                titleBorder.Thickness = StyleManager.VisualStylesManager.BorderThickness;
+                titleBorder.Visible = StyleManager.VisualStylesManager.BorderVisible;
+
+                titleGradient = new Gradient
+                    {
+                        Colors = controlStyle.ControlDisabled.Colors,
+                        Positions = controlStyle.ControlDisabled.Positions
+                    };
+            }
+            else
+            {
+                titleBorder = new Border();
+
+                titleGradient = new Gradient
+                    {
+                        Colors = Settings.DefaultValue.Control.ControlDisabled.Colors,
+                        Positions = Settings.DefaultValue.Control.ControlDisabled.Positions
+                    };
+            }
         }
 
         #endregion

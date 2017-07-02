@@ -100,8 +100,6 @@
             Invalidate();
         }
 
-        /// <summary>Raises the CheckStateChanged event.</summary>
-        /// <param name="e">An EventArgs containing the event data.</param>
         protected virtual void OnCheckStateChanged(EventArgs e)
         {
             CheckStateChanged?.Invoke(this, e);
