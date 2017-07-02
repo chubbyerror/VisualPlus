@@ -8,6 +8,7 @@
     using System.Drawing.Drawing2D;
     using System.Globalization;
 
+    using VisualPlus.Framework.GDI;
     using VisualPlus.Properties;
 
     #endregion
@@ -23,10 +24,8 @@
 
         // iShape < -- >
         private Gradient disabledGradient;
-
         private Gradient enabledGradient;
         private Gradient hoverGradient;
-
         private Gradient pressedGradient;
 
         private Rectangle rectangle;
@@ -202,6 +201,33 @@
             else
             {
                 graphics.FillPath(linearGradientBrush, backgroundPath);
+            }
+        }
+        
+        /// <summary>Draws the background.</summary>
+        /// <param name="graphics">Graphics controller.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="rectangle">The rectangle.</param>
+        /// <param name="enabled">The enabled state.</param>
+        public static void DrawBackground(Graphics graphics, Shape shape, Rectangle rectangle, bool enabled)
+        {
+            GraphicsPath backgroundPath = new GraphicsPath();
+
+            Gradient backgroundGradient = enabled ? shape.EnabledGradient : shape.DisabledGradient;
+            shape.Rectangle = new Rectangle(new Point(0, (rectangle.Height / 2) - (shape.Rectangle.Height / 2)), shape.Rectangle.Size);
+            backgroundPath = Border.GetBorderShape(shape.Rectangle, shape.Border.Type, shape.Border.Rounding);
+
+            var boxGradientPoints = GDI.GetGradientPoints(rectangle);
+            LinearGradientBrush backgroundGradientBrush = Gradient.CreateGradientBrush(backgroundGradient.Colors, boxGradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
+            
+            if (shape.BackgroundImage.Visible)
+            {
+                Point tempLocation = shape.CenteredImage ? new Point((shape.Rectangle.X + (shape.Rectangle.Width / 2)) - (shape.BackgroundImage.Size.Width / 2), (shape.Rectangle.Y + (shape.Rectangle.Height / 2)) - (shape.BackgroundImage.Size.Height / 2)) : shape.BackgroundImage.Point;
+                graphics.DrawImage(shape.BackgroundImage.Image, new Rectangle(tempLocation, shape.BackgroundImage.Size));
+            }
+            else
+            {
+                graphics.FillPath(backgroundGradientBrush, backgroundPath);
             }
         }
 

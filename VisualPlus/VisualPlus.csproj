@@ -149,9 +149,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\VisualGroupBox.cs" />
-    <Compile Include="Controls\VisualNumericUpDown.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualNumericUpDown.cs" />
     <Compile Include="Controls\VisualPanel.cs" />
     <Compile Include="Controls\VisualProgressBar.cs">
       <SubType>Component</SubType>

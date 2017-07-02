@@ -27,10 +27,6 @@ namespace VisualPlus.Controls.Bases
 
         private bool _checked;
         private bool animation;
-
-        private Gradient boxGradient = new Gradient();
-        private LinearGradientBrush boxGradientBrush;
-        private GraphicsPath boxPath;
         private Shape boxShape;
         private int boxSpacing = 2;
         private Checkmark checkMark;
@@ -259,15 +255,11 @@ namespace VisualPlus.Controls.Bases
             {
                 InitializeTheme();
             }
-
-            boxGradient = Enabled ? boxShape.EnabledGradient : boxShape.DisabledGradient;
+            
             boxShape.Rectangle = new Rectangle(new Point(0, (ClientRectangle.Height / 2) - (boxShape.Rectangle.Height / 2)), boxShape.Rectangle.Size);
-            boxPath = Border.GetBorderShape(boxShape.Rectangle, boxShape.Border.Type, boxShape.Border.Rounding);
+            GraphicsPath boxPath = Border.GetBorderShape(boxShape.Rectangle, boxShape.Border.Type, boxShape.Border.Rounding);
 
-            var boxGradientPoints = GDI.GetGradientPoints(ClientRectangle);
-            boxGradientBrush = Gradient.CreateGradientBrush(boxGradient.Colors, boxGradientPoints, boxGradient.Angle, boxGradient.Positions);
-
-            Shape.DrawBackground(graphics, boxShape, boxGradientBrush, boxPath);
+            Shape.DrawBackground(graphics, boxShape, ClientRectangle, Enabled);
 
             if (Checked)
             {
@@ -275,6 +267,7 @@ namespace VisualPlus.Controls.Bases
             }
 
             Border.DrawBorderStyle(graphics, boxShape.Border, MouseState, boxPath);
+
             DrawText(graphics);
             DrawAnimation(graphics);
         }

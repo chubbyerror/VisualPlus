@@ -6,9 +6,9 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
-    using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
@@ -23,29 +23,24 @@
     [DefaultProperty("Value")]
     [Description("The Visual NumericUpDown")]
     [Designer(ControlManager.FilterProperties.VisualNumericUpDown)]
-    public sealed class VisualNumericUpDown : Control
+    public sealed class VisualNumericUpDown : ControlBase
     {
         #region Variables
-
-        private readonly MouseState mouseState;
 
         private Gradient backgroundDisabledGradient = new Gradient();
         private Gradient backgroundGradient = new Gradient();
         private Border border;
         private Border buttonBorder;
+        private Color buttonColorText;
         private Gradient buttonGradient = new Gradient();
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 19;
         private GraphicsPath controlGraphicsPath = new GraphicsPath();
-        private Color foreColor;
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
         private long numericValue;
-        private StyleManager styleManager = new StyleManager();
-        private Color textDisabledColor;
-        private TextRenderingHint textRendererHint;
         private int xValue;
         private int yValue;
 
@@ -55,12 +50,8 @@
 
         public VisualNumericUpDown()
         {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer
-                | ControlStyles.SupportsTransparentBackColor,
-                true);
+            SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
 
-            mouseState = new MouseState(this);
             BackColor = Color.Transparent;
             minimumValue = 0;
             maximumValue = 100;
@@ -70,6 +61,15 @@
 
             ConfigureStyleManager();
             DefaultGradient();
+        }
+
+        public enum ButtonSetup
+        {
+            /// <summary>The above.</summary>
+            Above,
+
+            /// <summary>The beside.</summary>
+            Beside
         }
 
         #endregion
@@ -161,6 +161,22 @@
             }
         }
 
+        [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color ButtonColorText
+        {
+            get
+            {
+                return buttonColorText;
+            }
+
+            set
+            {
+                buttonColorText = value;
+                Invalidate();
+            }
+        }
+
         [Category(Localize.PropertiesCategory.Layout)]
         [Description(Localize.Description.Common.Size)]
         public int ButtonWidth
@@ -173,21 +189,6 @@
             set
             {
                 buttonWidth = value;
-                Invalidate();
-            }
-        }
-
-        public new Color ForeColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                base.ForeColor = value;
-                foreColor = value;
                 Invalidate();
             }
         }
@@ -236,70 +237,6 @@
                     numericValue = MinimumValue;
                 }
 
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(StyleManagerConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public StyleManager StyleManager
-        {
-            get
-            {
-                return styleManager;
-            }
-
-            set
-            {
-                styleManager = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color TextDisabledColor
-        {
-            get
-            {
-                return textDisabledColor;
-            }
-
-            set
-            {
-                textDisabledColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Strings.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
                 Invalidate();
             }
         }
@@ -410,20 +347,6 @@
             Invalidate();
         }
 
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            mouseState.State = MouseStates.Hover;
-            Invalidate();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            mouseState.State = MouseStates.Normal;
-            Invalidate();
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -471,9 +394,8 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = textRendererHint;
 
-            if (styleManager.LockedStyle)
+            if (StyleManager.LockedStyle)
             {
                 ConfigureStyleManager();
             }
@@ -484,9 +406,6 @@
             buttonPath = new GraphicsPath();
             buttonPath.AddRectangle(buttonRectangle);
             buttonPath.CloseAllFigures();
-
-            // Set control state color
-            foreColor = Enabled ? foreColor : textDisabledColor;
 
             Gradient backgroundCheckTemp = Enabled ? backgroundGradient : backgroundDisabledGradient;
             Gradient buttonCheckTemp = Enabled ? buttonGradient : backgroundDisabledGradient;
@@ -501,18 +420,18 @@
             LinearGradientBrush buttonGradientBrush = Gradient.CreateGradientBrush(buttonCheckTemp.Colors, gradientPoints, buttonCheckTemp.Angle, buttonCheckTemp.Positions);
             graphics.FillPath(buttonGradientBrush, buttonPath);
 
-            Border.DrawBorderStyle(graphics, buttonBorder, mouseState.State, buttonPath);
+            Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
 
             graphics.ResetClip();
 
             // Draw string
-            graphics.DrawString("+", Font, new SolidBrush(foreColor), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2) - 2, (Height / 4) - (buttonRectangle.Height / 4)));
-            graphics.DrawString("-", Font, new SolidBrush(foreColor), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2), Height / 2));
+            graphics.DrawString("+", Font, new SolidBrush(buttonColorText), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2) - 2, (Height / 4) - (buttonRectangle.Height / 4)));
+            graphics.DrawString("-", Font, new SolidBrush(buttonColorText), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2), Height / 2));
 
             // Button separator
             graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), buttonRectangle.X, buttonRectangle.Y + (buttonRectangle.Height / 2), buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + (buttonRectangle.Height / 2));
 
-            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, border, MouseState, controlGraphicsPath);
 
             // Draw value string
             Rectangle textboxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
@@ -523,32 +442,30 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(foreColor), textboxRectangle, stringFormat);
+            graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(ForeColor), textboxRectangle, stringFormat);
         }
 
         private void ConfigureStyleManager()
         {
-            if (styleManager.VisualStylesManager != null)
+            if (StyleManager.VisualStylesManager != null)
             {
                 // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
-                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+                IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
+                IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
+                IFont fontStyle = StyleManager.VisualStylesManager.FontStyle;
 
                 border.Color = borderStyle.Color;
                 border.HoverColor = borderStyle.HoverColor;
-                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
-                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Type = styleManager.VisualStylesManager.BorderType;
-                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
-                border.Visible = styleManager.VisualStylesManager.BorderVisible;
-                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
-                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-                foreColor = fontStyle.ForeColor;
-                textDisabledColor = fontStyle.ForeColorDisabled;
+                border.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
+                border.Rounding = StyleManager.VisualStylesManager.BorderRounding;
+                border.Type = StyleManager.VisualStylesManager.BorderType;
+                border.Thickness = StyleManager.VisualStylesManager.BorderThickness;
+                border.Visible = StyleManager.VisualStylesManager.BorderVisible;
 
                 buttonGradient.Colors = controlStyle.ControlEnabled.Colors;
                 buttonGradient.Positions = controlStyle.ControlEnabled.Positions;
+
+                buttonColorText = fontStyle.ForeColor;
 
                 float[] backgroundGradientPosition = { 0, 1 };
 
@@ -574,10 +491,7 @@
                         Type = BorderType.Rectangle
                     };
 
-                textRendererHint = Settings.DefaultValue.TextRenderingHint;
-                Font = Settings.DefaultValue.DefaultFont;
-                foreColor = Settings.DefaultValue.Font.ForeColor;
-                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+                buttonColorText = Settings.DefaultValue.Font.ForeColor;
             }
         }
 
