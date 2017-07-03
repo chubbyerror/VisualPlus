@@ -2,9 +2,12 @@
 {
     #region Namespace
 
+    using System;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Drawing;
     using System.Drawing.Text;
+    using System.Runtime.InteropServices;
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
@@ -17,7 +20,9 @@
     [ToolboxBitmap(typeof(Component))]
     [DefaultEvent("StyleChanged")]
     [Description("The visual style manager.")]
-    public class VisualStylesManager : Component
+    [ClassInterface(ClassInterfaceType.AutoDispatch)]
+    [ComVisible(true)]
+    public sealed class VisualStylesManager : Component
     {
         #region Variables
 
@@ -40,6 +45,19 @@
         #endregion
 
         #region Constructors
+
+        public VisualStylesManager(IContainer container) : this()
+        {
+            Debug.Assert(container != null);
+
+            // Validate reference parameter
+            if (container == null)
+            {
+                throw new ArgumentNullException("container");
+            }
+
+            container.Add(this);
+        }
 
         public VisualStylesManager()
         {
@@ -332,17 +350,6 @@
 
         #region Events
 
-        protected virtual void OnStyleChanged(Styles.Style newStyle)
-        {
-            LoadStyleSettings(newStyle);
-
-            StyleChangedEventHandler msc = VisualButton;
-            msc += VisualCheckBox;
-            msc(newStyle);
-
-            StyleChanged?.Invoke(newStyle);
-        }
-
         /// <summary>Loads the themes style.</summary>
         /// <param name="style">The style.</param>
         private void LoadStyleSettings(Styles.Style style)
@@ -355,6 +362,17 @@
             VisualStylesInterface.ProgressStyle = (IProgress)Styles.GetInterfaceObject(style);
             VisualStylesInterface.TabStyle = (ITab)Styles.GetInterfaceObject(style);
             VisualStylesInterface.WatermarkStyle = (IWatermark)Styles.GetInterfaceObject(style);
+        }
+
+        private void OnStyleChanged(Styles.Style newstyle)
+        {
+            LoadStyleSettings(newstyle);
+
+            StyleChangedEventHandler msc = VisualButton;
+            msc += VisualCheckBox;
+            msc(newstyle);
+
+            StyleChanged?.Invoke(newstyle);
         }
 
         private void VisualButton(Styles.Style newStyle)

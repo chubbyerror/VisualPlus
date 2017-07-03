@@ -6,12 +6,11 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
-    using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Framework.Structure;
     using VisualPlus.Styles;
 
     #endregion
@@ -22,14 +21,12 @@
     [DefaultProperty("Value")]
     [Description("The Visual Circle ProgressBar")]
     [Designer(ControlManager.FilterProperties.VisualCircleProgressBar)]
-    public sealed class VisualCircleProgressBar : ProgressBar
+    public sealed class VisualCircleProgressBar : ProgressBase
     {
         #region Variables
 
         private Color backgroundCircleColor;
         private bool backgroundCircleVisible = true;
-        private Font font;
-        private Color foreColor;
         private Color foregroundCircleColor;
         private bool foregroundCircleVisible = true;
         private float gradientRotation;
@@ -42,9 +39,6 @@
         private Color progressGradient2;
         private ProgressShape progressShapeVal = ProgressShape.Round;
         private float progressSize = 5F;
-        private StyleManager styleManager = new StyleManager();
-        private Color textDisabledColor;
-        private TextRenderingHint textRendererHint;
         private bool textVisible;
 
         #endregion
@@ -53,14 +47,10 @@
 
         public VisualCircleProgressBar()
         {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer
-                | ControlStyles.SupportsTransparentBackColor,
-                true);
+            SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
 
             BackColor = Color.Transparent;
             MinimumSize = new Size(100, 100);
-            UpdateStyles();
 
             textVisible = true;
 
@@ -116,21 +106,6 @@
             }
         }
 
-        public new Font Font
-        {
-            get
-            {
-                return font;
-            }
-
-            set
-            {
-                base.Font = value;
-                font = value;
-                Invalidate();
-            }
-        }
-
         [DefaultValue(true)]
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Visible)]
@@ -144,21 +119,6 @@
             set
             {
                 foregroundCircleVisible = value;
-                Invalidate();
-            }
-        }
-
-        public new Color ForeColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                base.ForeColor = value;
-                foreColor = value;
                 Invalidate();
             }
         }
@@ -308,39 +268,6 @@
             }
         }
 
-        [TypeConverter(typeof(StyleManagerConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public StyleManager StyleManager
-        {
-            get
-            {
-                return styleManager;
-            }
-
-            set
-            {
-                styleManager = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Strings.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [DefaultValue(Settings.DefaultValue.TextVisible)]
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Visible)]
@@ -362,21 +289,13 @@
 
         #region Events
 
-        public void Decrement(int val)
-        {
-            Value -= val;
-            Invalidate();
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
-            Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = textRendererHint;
+            base.OnPaint(e);
 
-            if (styleManager.LockedStyle)
+            Graphics graphics = e.Graphics;
+
+            if (StyleManager.LockedStyle)
             {
                 ConfigureStyleManager();
             }
@@ -400,16 +319,9 @@
 
         private void ConfigureStyleManager()
         {
-            if (styleManager.VisualStylesManager != null)
+            if (StyleManager.VisualStylesManager != null)
             {
-                // Load style manager settings 
-                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
-                IProgress progressStyle = styleManager.VisualStylesManager.VisualStylesInterface.ProgressStyle;
-
-                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
-                font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-                foreColor = fontStyle.ForeColor;
-                textDisabledColor = fontStyle.ForeColorDisabled;
+                IProgress progressStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ProgressStyle;
 
                 backgroundCircleColor = progressStyle.BackCircle;
                 foregroundCircleColor = progressStyle.ForeCircle;
@@ -419,12 +331,6 @@
             }
             else
             {
-                // Load default settings
-                textRendererHint = Settings.DefaultValue.TextRenderingHint;
-                font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
-                foreColor = Settings.DefaultValue.Font.ForeColor;
-                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-
                 backgroundCircleColor = Settings.DefaultValue.Progress.BackCircle;
                 foregroundCircleColor = Settings.DefaultValue.Progress.ForeCircle;
 
@@ -500,8 +406,7 @@
                 SizeF measuredString = graphics.MeasureString(Convert.ToString(Convert.ToInt32((100 / Maximum) * Value)), Font);
                 Point textPoint = new Point(Convert.ToInt32((Width / 2) - (measuredString.Width / 2)), Convert.ToInt32((Height / 2) - (measuredString.Height / 2)));
                 string stringValue = Convert.ToString(Convert.ToInt32((100 / Maximum) * Value)) + @"%";
-                foreColor = Enabled ? foreColor : textDisabledColor;
-                graphics.DrawString(stringValue, font, new SolidBrush(foreColor), textPoint);
+                graphics.DrawString(stringValue, Font, new SolidBrush(ForeColor), textPoint);
             }
         }
 

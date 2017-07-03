@@ -55,6 +55,7 @@
     <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Controls\Bases\ContainerBase.cs" />
     <Compile Include="Controls\Bases\CheckBoxBase.cs" />
+    <Compile Include="Controls\Bases\ProgressBase.cs" />
     <Compile Include="Controls\Bases\RadioButtonBase.cs" />
     <Compile Include="Controls\Bases\ToggleButtonBase.cs" />
     <Compile Include="Controls\Bases\ButtonBase.cs" />
@@ -140,17 +141,13 @@
     <Compile Include="Controls\VisualGroupBox.cs" />
     <Compile Include="Controls\VisualNumericUpDown.cs" />
     <Compile Include="Controls\VisualPanel.cs" />
-    <Compile Include="Controls\VisualProgressBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualProgressBar.cs" />
     <Compile Include="Controls\VisualProgressIndicator.cs" />
     <Compile Include="Controls\VisualRadioButton.cs" />
     <Compile Include="Controls\VisualRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualCircleProgressBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualCircleProgressBar.cs" />
     <Compile Include="Controls\VisualSeparator.cs" />
     <Compile Include="Controls\VisualTabControl.cs">
       <SubType>Component</SubType>
