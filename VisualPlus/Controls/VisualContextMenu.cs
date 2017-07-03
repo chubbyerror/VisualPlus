@@ -245,9 +245,9 @@
             if (styleManager.VisualStylesManager != null)
             {
                 // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
-                IControl controlStyle = styleManager.VisualStylesManager.ControlStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+                IBorder borderStyle = styleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
+                IControl controlStyle = styleManager.VisualStylesManager.VisualStylesInterface.ControlStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
 
                 border.Color = borderStyle.Color;
                 border.HoverColor = borderStyle.HoverColor;

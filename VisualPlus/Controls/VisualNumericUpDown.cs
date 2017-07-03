@@ -11,9 +11,9 @@
     using VisualPlus.Controls.Bases;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
+    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
 
     #endregion
 
@@ -28,13 +28,20 @@
         #region Variables
 
         private Gradient backgroundGradient = new Gradient();
+
         private Border buttonBorder;
         private Color buttonColorText;
+
+        private Font buttonFont;
         private Gradient buttonGradient = new Gradient();
+
+        private Orientation buttonOrientation = Orientation.Horizontal;
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
-        private int buttonWidth = 19;
+        private int buttonWidth = 50;
         private GraphicsPath controlGraphicsPath = new GraphicsPath();
+        private Point[] decrementButtonPoints = new Point[2];
+        private Point[] incrementButtonPoints = new Point[2];
         private bool keyboardNum;
         private long maximumValue;
         private long minimumValue;
@@ -53,9 +60,10 @@
             BackColor = Color.Transparent;
             minimumValue = 0;
             maximumValue = 100;
-            Size = new Size(70, 29);
-            MinimumSize = new Size(62, 29);
-            UpdateStyles();
+            Size = new Size(125, 25);
+            MinimumSize = new Size(0, 0);
+
+            buttonFont = new Font(Settings.DefaultValue.DefaultFont.FontFamily, 14, FontStyle.Bold);
 
             InitializeTheme();
             DefaultGradient();
@@ -154,6 +162,38 @@
             set
             {
                 buttonColorText = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Strings.Font)]
+        public Font ButtonFont
+        {
+            get
+            {
+                return buttonFont;
+            }
+
+            set
+            {
+                buttonFont = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Common.Alignment)]
+        public Orientation ButtonOrientation
+        {
+            get
+            {
+                return buttonOrientation;
+            }
+
+            set
+            {
+                buttonOrientation = value;
                 Invalidate();
             }
         }
@@ -300,29 +340,72 @@
         {
             OnMouseClick(e);
 
-            // Check if mouse in X position.
-            if ((xValue > Width - buttonRectangle.Width) && (xValue < Width))
+            switch (buttonOrientation)
             {
-                // Determine the button middle separator by checking for the Y position.
-                if ((yValue > buttonRectangle.Y) && (yValue < Height / 2))
-                {
-                    if (Value + 1 <= maximumValue)
+                case Orientation.Vertical:
                     {
-                        numericValue++;
+                        // Check if mouse in X position.
+                        if ((xValue > Width - buttonRectangle.Width) && (xValue < Width))
+                        {
+                            // Determine the button middle separator by checking for the Y position.
+                            if ((yValue > buttonRectangle.Y) && (yValue < Height / 2))
+                            {
+                                if (Value + 1 <= maximumValue)
+                                {
+                                    numericValue++;
+                                }
+                            }
+                            else if ((yValue > Height / 2) && (yValue < Height))
+                            {
+                                if (Value - 1 >= minimumValue)
+                                {
+                                    numericValue--;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            keyboardNum = !keyboardNum;
+                            Focus();
+                        }
+
+                        break;
                     }
-                }
-                else if ((yValue > Height / 2) && (yValue < Height))
-                {
-                    if (Value - 1 >= minimumValue)
+
+                case Orientation.Horizontal:
                     {
-                        numericValue--;
+                        // Check if mouse in X position.
+                        if ((xValue > Width - buttonRectangle.Width) && (xValue < Width))
+                        {
+                            // Determine the button middle separator by checking for the X position.
+                            if ((xValue > buttonRectangle.X) && (xValue < buttonRectangle.X + (buttonRectangle.Width / 2)))
+                            {
+                                if (Value + 1 <= maximumValue)
+                                {
+                                    numericValue++;
+                                }
+                            }
+                            else if ((xValue > buttonRectangle.X + (buttonRectangle.Width / 2)) && (xValue < Width))
+                            {
+                                if (Value - 1 >= minimumValue)
+                                {
+                                    numericValue--;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            keyboardNum = !keyboardNum;
+                            Focus();
+                        }
+
+                        break;
                     }
-                }
-            }
-            else
-            {
-                keyboardNum = !keyboardNum;
-                Focus();
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
             }
 
             Invalidate();
@@ -342,7 +425,7 @@
             }
             else
             {
-                Cursor = Cursors.Default;
+                Cursor = Cursors.Hand;
             }
         }
 
@@ -386,6 +469,49 @@
             controlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
+            Size incrementSize = GDI.GetTextSize(graphics, "+", buttonFont);
+            Size decrementSize = GDI.GetTextSize(graphics, "-", buttonFont);
+
+            incrementButtonPoints[0] = new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - (incrementSize.Width / 2), (buttonRectangle.Y + (buttonRectangle.Height / 2)) - (buttonRectangle.Height / 4) - (incrementSize.Height / 2));
+            decrementButtonPoints[0] = new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - (decrementSize.Width / 2), (buttonRectangle.Y + (buttonRectangle.Height / 2) + (buttonRectangle.Height / 4)) - (decrementSize.Height / 2));
+
+            incrementButtonPoints[1] = new Point((buttonRectangle.X + (buttonRectangle.Width / 4)) - (incrementSize.Width / 2), (Height / 2) - (incrementSize.Height / 2));
+            decrementButtonPoints[1] = new Point((buttonRectangle.X + (buttonRectangle.Width / 2) + (buttonRectangle.Width / 4)) - (decrementSize.Width / 2), (Height / 2) - (decrementSize.Height / 2));
+
+            var verticalSeparator = new Point[2];
+            verticalSeparator[0] = new Point(buttonRectangle.X, buttonRectangle.Y + (buttonRectangle.Height / 2));
+            verticalSeparator[1] = new Point(buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + (buttonRectangle.Height / 2));
+
+            var horizontalSeparator = new Point[2];
+            horizontalSeparator[0] = new Point(buttonRectangle.X + (buttonRectangle.Width / 2), buttonRectangle.Y);
+            horizontalSeparator[1] = new Point(buttonRectangle.X + (buttonRectangle.Width / 2), buttonRectangle.Y + buttonRectangle.Height);
+
+            Point[] tempSeparator;
+
+            int toggleInt;
+
+            switch (buttonOrientation)
+            {
+                case Orientation.Vertical:
+                    {
+                        toggleInt = 0;
+                        tempSeparator = verticalSeparator;
+                        break;
+                    }
+
+                case Orientation.Horizontal:
+                    {
+                        toggleInt = 1;
+                        tempSeparator = horizontalSeparator;
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+            }
+
             buttonPath = new GraphicsPath();
             buttonPath.AddRectangle(buttonRectangle);
             buttonPath.CloseAllFigures();
@@ -395,7 +521,7 @@
 
             graphics.SetClip(controlGraphicsPath);
 
-            var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
+            var gradientPoints = GDI.GetGradientPoints(ClientRectangle);
 
             LinearGradientBrush backgroundGradientBrush = Gradient.CreateGradientBrush(backgroundCheckTemp.Colors, gradientPoints, backgroundCheckTemp.Angle, backgroundCheckTemp.Positions);
             graphics.FillPath(backgroundGradientBrush, controlGraphicsPath);
@@ -407,12 +533,10 @@
 
             graphics.ResetClip();
 
-            // Draw string
-            graphics.DrawString("+", Font, new SolidBrush(buttonColorText), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2) - 2, (Height / 4) - (buttonRectangle.Height / 4)));
-            graphics.DrawString("-", Font, new SolidBrush(buttonColorText), new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - ((int)Font.SizeInPoints / 2), Height / 2));
+            graphics.DrawString("+", buttonFont, new SolidBrush(buttonColorText), incrementButtonPoints[toggleInt]);
+            graphics.DrawString("-", buttonFont, new SolidBrush(buttonColorText), decrementButtonPoints[toggleInt]);
 
-            // Button separator
-            graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), buttonRectangle.X, buttonRectangle.Y + (buttonRectangle.Height / 2), buttonRectangle.X + buttonRectangle.Width, buttonRectangle.Y + (buttonRectangle.Height / 2));
+            graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), tempSeparator[0], tempSeparator[1]);
 
             Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
 
@@ -448,19 +572,15 @@
         {
             if (StyleManager.VisualStylesManager != null)
             {
-                IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
-                IControlState controlStateStyle = StyleManager.VisualStylesManager.ControlStateStyle;
-                IFont fontStyle = StyleManager.VisualStylesManager.FontStyle;
-
-                buttonGradient = controlStateStyle.ControlEnabled;
-                buttonColorText = fontStyle.ForeColor;
+                buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlEnabled;
+                buttonColorText = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle.ForeColor;
 
                 float[] backgroundGradientPosition = { 0, 1 };
 
                 Color[] backgroundColor =
                     {
-                        controlStyle.Background(0),
-                        controlStyle.Background(1)
+                        StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle.Background(0),
+                        StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle.Background(1)
                     };
 
                 backgroundGradient.Colors = backgroundColor;
@@ -474,7 +594,7 @@
                         Type = BorderType.Rectangle
                     };
 
-                buttonColorText = Settings.DefaultValue.Font.ForeColor;
+                buttonColorText = Color.Gray;
             }
         }
 

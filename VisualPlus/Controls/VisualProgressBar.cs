@@ -545,8 +545,8 @@
             if (styleManager.VisualStylesManager != null)
             {
                 // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+                IBorder borderStyle = styleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
 
                 border.Color = borderStyle.Color;
                 border.HoverColor = borderStyle.HoverColor;

@@ -231,7 +231,7 @@ namespace VisualPlus.Controls.Bases
         {
             if (StyleManager.VisualStylesManager != null)
             {
-                ICheckmark checkmarkStyle = StyleManager.VisualStylesManager.CheckmarkStyle;
+                ICheckmark checkmarkStyle = StyleManager.VisualStylesManager.VisualStylesInterface.CheckmarkStyle;
 
                 animation = StyleManager.VisualStylesManager.Animation;
 

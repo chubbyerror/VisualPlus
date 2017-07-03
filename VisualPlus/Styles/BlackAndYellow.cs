@@ -11,7 +11,7 @@
 
     #endregion
 
-    public class BlackAndYellow : IBorder, ICheckmark, IControl, IFont, IProgress, ITab, IWatermark
+    public class BlackAndYellow : IBorder, ICheckmark, IControl, IControlState, IFont, IProgress, ITab, IWatermark
     {
         #region Variables
 

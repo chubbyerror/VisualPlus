@@ -10,6 +10,29 @@ namespace VisualPlus.Framework
 
     #endregion
 
+    public interface IVisualStyle
+    {
+        #region Properties
+
+        IBorder BorderStyle { get; set; }
+
+        ICheckmark CheckmarkStyle { get; set; }
+
+        IControlState ControlStateStyle { get; set; }
+
+        IControl ControlStyle { get; set; }
+
+        IFont FontStyle { get; set; }
+
+        IProgress ProgressStyle { get; set; }
+
+        ITab TabStyle { get; set; }
+
+        IWatermark WatermarkStyle { get; set; }
+
+        #endregion
+    }
+
     internal class Settings
     {
         #region Variables

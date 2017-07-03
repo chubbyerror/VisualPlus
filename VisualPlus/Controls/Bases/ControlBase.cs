@@ -12,7 +12,6 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
 
     #endregion
 
@@ -22,13 +21,6 @@
     [ComVisible(true)]
     public abstract class ControlBase : Control
     {
-        #region Variables
-
-        internal Border ControlBorder;
-        internal Gradient[] ControlBrushCollection;
-
-        #endregion
-
         #region Variables
 
         private readonly MouseState mouseState;
@@ -145,6 +137,12 @@
             }
         }
 
+        internal Border ControlBorder { get; set; }
+
+        internal Gradient[] ControlBrushCollection { get; set; }
+
+        internal IVisualStyle VisualStyleSheet { get; set; }
+
         #endregion
 
         #region Events
@@ -231,19 +229,17 @@
             {
                 if (StyleManager.VisualStylesManager != null)
                 {
-                    IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
-                    IControlState controlStateStyle = StyleManager.VisualStylesManager.ControlStateStyle;
-                    IFont fontStyle = StyleManager.VisualStylesManager.FontStyle;
+                    VisualStyleSheet = styleManager.VisualStylesManager.VisualStylesInterface;
 
-                    Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-                    ForeColor = fontStyle.ForeColor;
-                    ForeColorDisabled = fontStyle.ForeColorDisabled;
+                    Font = new Font(VisualStyleSheet.FontStyle.FontFamily, VisualStyleSheet.FontStyle.FontSize, VisualStyleSheet.FontStyle.FontStyle);
+                    ForeColor = VisualStyleSheet.FontStyle.ForeColor;
+                    ForeColorDisabled = VisualStyleSheet.FontStyle.ForeColorDisabled;
                     textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
 
                     ControlBorder = new Border
                         {
-                            Color = borderStyle.Color,
-                            HoverColor = borderStyle.HoverColor,
+                            Color = VisualStyleSheet.BorderStyle.Color,
+                            HoverColor = VisualStyleSheet.BorderStyle.HoverColor,
                             HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible,
                             Rounding = StyleManager.VisualStylesManager.BorderRounding,
                             Type = StyleManager.VisualStylesManager.BorderType,
@@ -251,10 +247,10 @@
                             Visible = StyleManager.VisualStylesManager.BorderVisible
                         };
 
-                    ControlBrushCollection[0] = controlStateStyle.ControlEnabled;
-                    ControlBrushCollection[1] = controlStateStyle.ControlHover;
-                    ControlBrushCollection[2] = controlStateStyle.ControlPressed;
-                    ControlBrushCollection[3] = controlStateStyle.ControlDisabled;
+                    ControlBrushCollection[0] = VisualStyleSheet.ControlStateStyle.ControlEnabled;
+                    ControlBrushCollection[1] = VisualStyleSheet.ControlStateStyle.ControlHover;
+                    ControlBrushCollection[2] = VisualStyleSheet.ControlStateStyle.ControlPressed;
+                    ControlBrushCollection[3] = VisualStyleSheet.ControlStateStyle.ControlDisabled;
                 }
                 else
                 {

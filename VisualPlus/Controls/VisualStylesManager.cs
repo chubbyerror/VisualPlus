@@ -21,34 +21,6 @@
     {
         #region Variables
 
-        [Browsable(false)]
-        public IBorder BorderStyle;
-
-        [Browsable(false)]
-        public ICheckmark CheckmarkStyle;
-
-        [Browsable(false)]
-        public IControl ControlStyle;
-
-        [Browsable(false)]
-        public IControlState ControlStateStyle;
-
-        [Browsable(false)]
-        public IFont FontStyle;
-
-        [Browsable(false)]
-        public IProgress ProgressStyle;
-
-        [Browsable(false)]
-        public ITab TabStyle;
-
-        [Browsable(false)]
-        public IWatermark WatermarkStyle;
-
-        #endregion
-
-        #region Variables
-
         private bool animation;
         private int barAmount;
         private bool borderHoverVisible;
@@ -321,6 +293,9 @@
             }
         }
 
+        [Browsable(false)]
+        public IVisualStyle VisualStylesInterface { get; set; }
+
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description("The watermark text.")]
@@ -372,14 +347,14 @@
         /// <param name="style">The style.</param>
         private void LoadStyleSettings(Styles.Style style)
         {
-            BorderStyle = (IBorder)Styles.GetInterfaceObject(style);
-            CheckmarkStyle = (ICheckmark)Styles.GetInterfaceObject(style);
-            ControlStyle = (IControl)Styles.GetInterfaceObject(style);
-            ControlStateStyle = (IControlState)Styles.GetInterfaceObject(style);
-            FontStyle = (IFont)Styles.GetInterfaceObject(style);
-            ProgressStyle = (IProgress)Styles.GetInterfaceObject(style);
-            TabStyle = (ITab)Styles.GetInterfaceObject(style);
-            WatermarkStyle = (IWatermark)Styles.GetInterfaceObject(style);
+            VisualStylesInterface.BorderStyle = (IBorder)Styles.GetInterfaceObject(style);
+            VisualStylesInterface.CheckmarkStyle = (ICheckmark)Styles.GetInterfaceObject(style);
+            VisualStylesInterface.ControlStyle = (IControl)Styles.GetInterfaceObject(style);
+            VisualStylesInterface.ControlStateStyle = (IControlState)Styles.GetInterfaceObject(style);
+            VisualStylesInterface.FontStyle = (IFont)Styles.GetInterfaceObject(style);
+            VisualStylesInterface.ProgressStyle = (IProgress)Styles.GetInterfaceObject(style);
+            VisualStylesInterface.TabStyle = (ITab)Styles.GetInterfaceObject(style);
+            VisualStylesInterface.WatermarkStyle = (IWatermark)Styles.GetInterfaceObject(style);
         }
 
         private void VisualButton(Styles.Style newStyle)

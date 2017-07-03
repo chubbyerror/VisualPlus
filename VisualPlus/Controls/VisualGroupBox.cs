@@ -442,8 +442,8 @@
         {
             if (StyleManager.VisualStylesManager != null)
             {
-                IBorder borderStyle = StyleManager.VisualStylesManager.BorderStyle;
-                IControlState controlStateStyle = StyleManager.VisualStylesManager.ControlStateStyle;
+                IBorder borderStyle = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
+                IControlState controlStateStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle;
 
                 titleBorder.Color = borderStyle.Color;
                 titleBorder.HoverColor = borderStyle.HoverColor;

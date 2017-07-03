@@ -403,8 +403,8 @@
             if (styleManager.VisualStylesManager != null)
             {
                 // Load style manager settings 
-                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
-                IProgress progressStyle = styleManager.VisualStylesManager.ProgressStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
+                IProgress progressStyle = styleManager.VisualStylesManager.VisualStylesInterface.ProgressStyle;
 
                 textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
                 font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);

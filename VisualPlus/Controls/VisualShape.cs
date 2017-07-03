@@ -328,9 +328,9 @@
             if (styleManager.VisualStylesManager != null)
             {
                 // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.BorderStyle;
-                IControlState controlStateStyle = styleManager.VisualStylesManager.ControlStateStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+                IBorder borderStyle = styleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
+                IControlState controlStateStyle = styleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
 
                 animation = styleManager.VisualStylesManager.Animation;
                 border.Color = borderStyle.Color;

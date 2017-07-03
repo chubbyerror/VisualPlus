@@ -269,7 +269,7 @@
             if (styleManager.VisualStylesManager != null)
             {
                 // Load style manager settings 
-                IFont fontStyle = styleManager.VisualStylesManager.FontStyle;
+                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
 
                 textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
                 Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);

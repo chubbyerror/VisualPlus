@@ -112,7 +112,7 @@
         {
             if (StyleManager.VisualStylesManager != null)
             {
-                IControl controlStyle = StyleManager.VisualStylesManager.ControlStyle;
+                IControl controlStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle;
                 backgroundColor = controlStyle.Background(0);
             }
             else
