@@ -30,7 +30,7 @@
         private Gradient backgroundGradient = new Gradient();
 
         private Border buttonBorder;
-        private Color buttonColorText;
+        private Color buttonForeColor;
 
         private Font buttonFont;
         private Gradient buttonGradient = new Gradient();
@@ -152,16 +152,16 @@
 
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
-        public Color ButtonColorText
+        public Color ButtonForeColor
         {
             get
             {
-                return buttonColorText;
+                return buttonForeColor;
             }
 
             set
             {
-                buttonColorText = value;
+                buttonForeColor = value;
                 Invalidate();
             }
         }
@@ -533,8 +533,8 @@
 
             graphics.ResetClip();
 
-            graphics.DrawString("+", buttonFont, new SolidBrush(buttonColorText), incrementButtonPoints[toggleInt]);
-            graphics.DrawString("-", buttonFont, new SolidBrush(buttonColorText), decrementButtonPoints[toggleInt]);
+            graphics.DrawString("+", buttonFont, new SolidBrush(buttonForeColor), incrementButtonPoints[toggleInt]);
+            graphics.DrawString("-", buttonFont, new SolidBrush(buttonForeColor), decrementButtonPoints[toggleInt]);
 
             graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), tempSeparator[0], tempSeparator[1]);
 
@@ -573,7 +573,7 @@
             if (StyleManager.VisualStylesManager != null)
             {
                 buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlEnabled;
-                buttonColorText = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle.ForeColor;
+                buttonForeColor = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle.ForeColor;
 
                 float[] backgroundGradientPosition = { 0, 1 };
 
@@ -594,7 +594,7 @@
                         Type = BorderType.Rectangle
                     };
 
-                buttonColorText = Color.Gray;
+                buttonForeColor = Color.Gray;
             }
         }
 
