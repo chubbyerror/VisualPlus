@@ -9,22 +9,30 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
 
     #endregion
 
-    /// <summary>The visual ProgressIndicator.</summary>
+    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(ProgressBar))]
     [Designer(ControlManager.FilterProperties.VisualProgressIndicator)]
-    public sealed class VisualProgressIndicator : Control
+    [DefaultEvent("Click")]
+    [DefaultProperty("Enabled")]
+    [Description("The Visual Progress Indicator")]
+    public sealed class VisualProgressIndicator : ControlBase
     {
         #region Variables
+
+        private SolidBrush animationColor = new SolidBrush(Color.DimGray);
 
         private Timer animationSpeed = new Timer();
         private SolidBrush baseColor = new SolidBrush(Color.DarkGray);
         private BufferedGraphics buffGraphics;
         private float circles = 45F;
+
+        private Size circleSize = new Size(15, 15);
         private float diameter = 7.5F;
         private PointF[] floatPoint;
         private BufferedGraphicsContext graphicsContext = BufferedGraphicsManager.Current;
@@ -39,10 +47,8 @@
 
         public VisualProgressIndicator()
         {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
+            SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
 
-            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             Size = new Size(80, 80);
             MinimumSize = new Size(80, 80);
             SetPoints();
@@ -181,11 +187,9 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
+            base.OnPaint(e);
 
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            Graphics graphics = e.Graphics;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
             buffGraphics.Graphics.Clear(BackColor);
@@ -215,15 +219,11 @@
             SetPoints();
         }
 
-        private static SolidBrush animationColor = new SolidBrush(Color.DimGray);
-
         private static X AssignValues<X>(ref X run, X length)
         {
             run = length;
             return length;
         }
-
-        private static Size circleSize = new Size(15, 15);
 
         private void AnimationSpeedTick(object sender, EventArgs e)
         {

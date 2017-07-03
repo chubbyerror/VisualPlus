@@ -83,9 +83,7 @@
     <Compile Include="Controls\FilterProperties\VisualCheckBoxDesigner.cs" />
     <Compile Include="Controls\VisualButton.cs" />
     <Compile Include="Controls\VisualCheckBox.cs" />
-    <Compile Include="Controls\VisualColorPicker.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualColorPicker.cs" />
     <Compile Include="Controls\VisualContainer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -153,9 +151,7 @@
     <Compile Include="Controls\VisualProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualProgressIndicator.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualProgressIndicator.cs" />
     <Compile Include="Controls\VisualRadioButton.cs" />
     <Compile Include="Controls\VisualRichTextBox.cs">
       <SubType>Component</SubType>
