@@ -4,7 +4,6 @@
 
     using System;
     using System.ComponentModel;
-    using System.ComponentModel.Design;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
@@ -20,7 +19,6 @@
     [DefaultEvent("Paint")]
     [DefaultProperty("Enabled")]
     [Description("The Visual Panel")]
-    [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     public sealed class VisualPanel : ContainerBase
     {
         #region Variables

@@ -8,7 +8,9 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
 
     #endregion
 
@@ -17,7 +19,8 @@
     [DefaultEvent("RatingChanged")]
     [DefaultProperty("Value")]
     [Description("The Visual Rating")]
-    public sealed class VisualRating : Control
+    [Designer(ControlManager.FilterProperties.VisualRating)]
+    public sealed class VisualRating : ControlBase
     {
         #region Variables
 
@@ -457,6 +460,8 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
+
             bufferedGraphics.Graphics.Clear(BackColor);
             DrawDullStars();
             DrawIlluminatedStars();

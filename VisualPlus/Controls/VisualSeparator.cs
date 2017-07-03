@@ -8,6 +8,7 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
@@ -20,7 +21,7 @@
     [DefaultProperty("Enabled")]
     [Description("The Visual Separator")]
     [Designer(ControlManager.FilterProperties.VisualSeparator)]
-    public sealed class VisualSeparator : Control
+    public sealed class VisualSeparator : ControlBase
     {
         #region Variables
 
@@ -37,10 +38,7 @@
 
         public VisualSeparator()
         {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer
-                | ControlStyles.SupportsTransparentBackColor,
-                true);
+            SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
 
             BackColor = Color.Transparent;
 
@@ -51,9 +49,9 @@
 
             Color[] lineColor =
                 {
-                    ControlPaint.Light(Settings.DefaultValue.Control.Line),
                     Settings.DefaultValue.Control.Line,
-                    ControlPaint.Light(Settings.DefaultValue.Control.Line)
+                    ControlPaint.Light(Settings.DefaultValue.Control.Line),
+                    Settings.DefaultValue.Control.Line
                 };
 
             Color[] shadowColor =
@@ -169,16 +167,15 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            base.OnPaint(e);
 
-            Point linePosition = new Point();
-            Size lineSize = new Size();
-            Point shadowPosition = new Point();
-            Size shadowSize = new Size();
-            Point[] gradientPoints = { };
+            Graphics graphics = e.Graphics;
+
+            Point linePosition;
+            Size lineSize;
+            Point shadowPosition;
+            Size shadowSize;
+            Point[] gradientPoints;
 
             switch (separatorOrientation)
             {
@@ -205,6 +202,9 @@
                         gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
                         break;
                     }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             lineRectangle = new Rectangle(linePosition, lineSize);

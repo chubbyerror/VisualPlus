@@ -6,9 +6,7 @@
     using System.Drawing;
     using System.Windows.Forms;
 
-    using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Framework.Structure;
 
     using ButtonBase = VisualPlus.Controls.Bases.ButtonBase;
 
@@ -22,12 +20,6 @@
     [Designer(ControlManager.FilterProperties.VisualButton)]
     public sealed class VisualButton : ButtonBase
     {
-        #region Variables
-
-        private bool moveable = Settings.DefaultValue.Moveable;
-
-        #endregion
-
         #region Constructors
 
         public VisualButton()
@@ -39,45 +31,6 @@
             Size = new Size(140, 45);
             MinimumSize = new Size(90, 25);
             DoubleBuffered = true;
-        }
-
-        public delegate void ControlMovedEventHandler();
-
-        public event ControlMovedEventHandler ControlMoved;
-
-        #endregion
-
-        #region Properties
-
-        [DefaultValue(Settings.DefaultValue.Moveable)]
-        [Category(Localize.PropertiesCategory.Behavior)]
-        [Description(Localize.Description.Common.Toggle)]
-        public bool Moveable
-        {
-            get
-            {
-                return moveable;
-            }
-
-            set
-            {
-                moveable = value;
-            }
-        }
-
-        #endregion
-
-        #region Events
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-
-            this.ToggleMove(moveable);
-            if (moveable)
-            {
-                ControlMoved?.Invoke();
-            }
         }
 
         #endregion

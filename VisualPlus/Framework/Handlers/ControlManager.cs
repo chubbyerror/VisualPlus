@@ -39,62 +39,59 @@
             /// <summary>The visual context menu.</summary>
             VisualContextMenu = 5,
 
-            /// <summary>The visual drag.</summary>
-            VisualDrag = 6,
-
             /// <summary>The visual group box.</summary>
-            VisualGroupBox = 7,
+            VisualGroupBox = 6,
 
             /// <summary>The visual knob.</summary>
-            VisualKnob = 8,
+            VisualKnob = 7,
 
             /// <summary>The visual label.</summary>
-            VisualLabel = 9,
+            VisualLabel = 8,
 
             /// <summary>The visual list box.</summary>
-            VisualListBox = 10,
+            VisualListBox = 9,
 
             /// <summary>The visual list view.</summary>
-            VisualListView = 11,
+            VisualListView = 10,
 
             /// <summary>The visual numeric up down.</summary>
-            VisualNumericUpDown = 12,
+            VisualNumericUpDown = 11,
 
             /// <summary>The visual panel.</summary>
-            VisualPanel = 13,
+            VisualPanel = 12,
 
             /// <summary>The visual progress bar.</summary>
-            VisualProgressBar = 14,
+            VisualProgressBar = 13,
 
             /// <summary>The visual progress indicator.</summary>
-            VisualProgressIndicator = 15,
+            VisualProgressIndicator = 14,
 
             /// <summary>The visual radio button.</summary>
-            VisualRadioButton = 16,
+            VisualRadioButton = 15,
 
             /// <summary>The visual rating.</summary>
-            VisualRating = 17,
+            VisualRating = 16,
 
             /// <summary>The visual rich text box.</summary>
-            VisualRichTextBox = 18,
+            VisualRichTextBox = 17,
 
             /// <summary>The visual separator.</summary>
-            VisualSeparator = 19,
+            VisualSeparator = 18,
 
             /// <summary>The visual shape.</summary>
-            VisualShape = 20,
+            VisualShape = 19,
 
             /// <summary>The visual tab control.</summary>
-            VisualTabControl = 21,
+            VisualTabControl = 20,
 
             /// <summary>The visual text box.</summary>
-            VisualTextBox = 22,
+            VisualTextBox = 21,
 
             /// <summary>The visual toggle.</summary>
-            VisualToggle = 23,
+            VisualToggle = 22,
 
             /// <summary>The visual track bar.</summary>
-            VisualTrackBar = 24
+            VisualTrackBar = 23
         }
 
         public enum UnsortedControl
@@ -213,6 +210,7 @@
             public const string VisualProgressBar = DesignerFilterPath + "ProgressBar" + DesignerSuffix;
             public const string VisualProgressIndicator = DesignerFilterPath + "ProgressIndicator" + DesignerSuffix;
             public const string VisualRadioButton = DesignerFilterPath + "RadioButton" + DesignerSuffix;
+            public const string VisualRating = DesignerFilterPath + "Rating" + DesignerSuffix;
             public const string VisualRichTextBox = DesignerFilterPath + "RichTextBox" + DesignerSuffix;
             public const string VisualSeparator = DesignerFilterPath + "Separator" + DesignerSuffix;
             public const string VisualTabControl = DesignerFilterPath + "TabControl" + DesignerSuffix;

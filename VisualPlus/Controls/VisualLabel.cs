@@ -9,11 +9,11 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
 
     #endregion
 
@@ -23,11 +23,15 @@
     [DefaultProperty("Text")]
     [Description("The Visual Label")]
     [Designer(ControlManager.FilterProperties.VisualLabel)]
-    public sealed class VisualLabel : Label
+    public sealed class VisualLabel : ControlBase
     {
         #region Variables
 
+        private Gradient _foreDisabledGradient = new Gradient();
+        private Gradient _foreGradient = new Gradient();
+
         private bool autoSize;
+        private bool gradientString;
         private Orientation orientation = Orientation.Horizontal;
         private bool outline;
         private Color outlineColor = Color.Red;
@@ -37,15 +41,12 @@
         private int reflectionSpacing;
         private bool shadow;
         private Color shadowColor = Color.Black;
+        private int ShadowDepth = 4;
         private int shadowDirection = 315;
         private Point shadowLocation = new Point(0, 0);
         private int shadowOpacity = 100;
-
-        private StyleManager styleManager = new StyleManager();
+        private float ShadowSmooth = 1.5f;
         private Rectangle textBoxRectangle;
-        private Gradient textDisabledGradient = new Gradient();
-        private Gradient textGradient = new Gradient();
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
 
@@ -87,6 +88,57 @@
                 {
                     base.AutoSize = value;
                 }
+            }
+        }
+
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.PropertiesCategory.Appearance)]
+        public Gradient ForeGradient
+        {
+            get
+            {
+                return _foreGradient;
+            }
+
+            set
+            {
+                _foreGradient = value;
+                Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(GradientConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.PropertiesCategory.Appearance)]
+        public Gradient ForeGradientDisabled
+        {
+            get
+            {
+                return _foreDisabledGradient;
+            }
+
+            set
+            {
+                _foreDisabledGradient = value;
+                Invalidate();
+            }
+        }
+
+        [DefaultValue(false)]
+        [Category(Localize.PropertiesCategory.Behavior)]
+        [Description(Localize.Description.Common.Toggle)]
+        public bool GradientString
+        {
+            get
+            {
+                return gradientString;
+            }
+
+            set
+            {
+                gradientString = value;
+                Invalidate();
             }
         }
 
@@ -289,91 +341,24 @@
             }
         }
 
-        [TypeConverter(typeof(StyleManagerConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public StyleManager StyleManager
-        {
-            get
-            {
-                return styleManager;
-            }
-
-            set
-            {
-                styleManager = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(GradientConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient TextColor
-        {
-            get
-            {
-                return textGradient;
-            }
-
-            set
-            {
-                textGradient = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(GradientConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient TextDisabledColor
-        {
-            get
-            {
-                return textDisabledGradient;
-            }
-
-            set
-            {
-                textDisabledGradient = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Strings.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         #endregion
 
         #region Events
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
+
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = textRendererHint;
 
-            if (styleManager.LockedStyle)
+            if (StyleManager.LockedStyle)
             {
                 ConfigureStyleManager();
             }
 
-            Gradient foreGradient = Enabled ? textGradient : textDisabledGradient;
+            Gradient foreGradient = Enabled ? _foreGradient : _foreDisabledGradient;
 
             if (reflection && (orientation == Orientation.Vertical))
             {
@@ -385,7 +370,7 @@
             }
 
             var gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
-            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(foreGradient.Colors, gradientPoints, textGradient.Angle, textGradient.Positions);
+            LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(foreGradient.Colors, gradientPoints, _foreGradient.Angle, _foreGradient.Positions);
 
             // Draw the text outline
             if (outline)
@@ -406,29 +391,26 @@
             }
 
             // Draw text
-            graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle, GetStringFormat());
-        }
-
-        private const int ShadowDepth = 4;
-        private const float ShadowSmooth = 1.5f;
-
-        private void ConfigureStyleManager()
-        {
-            if (styleManager.VisualStylesManager != null)
+            if (gradientString)
             {
-                // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IControl controlStyle = styleManager.VisualStylesManager.VisualStylesInterface.ControlStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
-
-                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
-                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+                graphics.DrawString(Text, Font, gradientBrush, textBoxRectangle, GetStringFormat());
             }
             else
             {
-                // Load default settings
-                textRendererHint = Settings.DefaultValue.TextRenderingHint;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
+                graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textBoxRectangle, GetStringFormat());
+            }
+        }
+
+        private void ConfigureStyleManager()
+        {
+            if (StyleManager.VisualStylesManager != null)
+            {
+                // IFont fontStyle = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
+                // Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
+            }
+            else
+            {
+                // Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             }
         }
 
@@ -448,11 +430,11 @@
 
             float[] gradientPosition = { 0, 1 };
 
-            textGradient.Colors = foreColor;
-            textGradient.Positions = gradientPosition;
+            _foreGradient.Colors = foreColor;
+            _foreGradient.Positions = gradientPosition;
 
-            textDisabledGradient.Colors = textDisabledColor;
-            textDisabledGradient.Positions = gradientPosition;
+            _foreDisabledGradient.Colors = textDisabledColor;
+            _foreDisabledGradient.Positions = gradientPosition;
         }
 
         private void DrawOutline(Graphics graphics)

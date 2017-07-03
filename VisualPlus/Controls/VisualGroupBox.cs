@@ -4,7 +4,6 @@
 
     using System;
     using System.ComponentModel;
-    using System.ComponentModel.Design;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
@@ -22,7 +21,6 @@
     [DefaultEvent("Enter")]
     [DefaultProperty("Text")]
     [Description("The Visual GroupBox")]
-    [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
     public sealed class VisualGroupBox : ContainerBase
     {
         #region Variables

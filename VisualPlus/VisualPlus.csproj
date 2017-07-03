@@ -62,6 +62,7 @@
     <Compile Include="Controls\FilterProperties\VisualCircleProgressBarDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualContextMenuDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualLabelDesigner.cs" />
+    <Compile Include="Controls\FilterProperties\VisualRatingDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualListBoxDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualListViewDesigner.cs" />
     <Compile Include="Controls\FilterProperties\VisualToolTipDesigner.cs" />
@@ -90,27 +91,18 @@
     <Compile Include="Controls\VisualContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualDrag.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\VisualForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls\VisualLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualLabel.cs" />
     <Compile Include="Controls\VisualListBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\VisualListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualRating.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\VisualShape.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualRating.cs" />
+    <Compile Include="Controls\VisualShape.cs" />
     <Compile Include="Controls\VisualStylesManager.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -159,9 +151,7 @@
     <Compile Include="Controls\VisualCircleProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualSeparator.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualSeparator.cs" />
     <Compile Include="Controls\VisualTabControl.cs">
       <SubType>Component</SubType>
     </Compile>

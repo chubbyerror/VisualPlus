@@ -8,6 +8,7 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
@@ -21,7 +22,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("ShapeForm")]
     [Description("The Visual Shape")]
-    public sealed class VisualShape : Control
+    public sealed class VisualShape : ControlBase
     {
         #region Variables
 
@@ -29,12 +30,10 @@
 
         private bool animation;
         private Gradient background = new Gradient();
-        private Border border;
         private GraphicsPath controlGraphicsPath;
         private VFXManager effectsManager;
         private VFXManager hoverEffectsManager;
         private ShapeType shapeType;
-        private StyleManager styleManager = new StyleManager();
 
         #endregion
 
@@ -42,10 +41,7 @@
 
         public VisualShape()
         {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
-                ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
-                true);
+            SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
 
             UpdateStyles();
             shapeType = ShapeType.Rectangle;
@@ -54,7 +50,6 @@
 
             mouseState = new MouseState(this);
 
-            DefaultGradient();
             ConfigureStyleManager();
             ConfigureAnimation();
         }
@@ -124,12 +119,12 @@
         {
             get
             {
-                return border;
+                return ControlBorder;
             }
 
             set
             {
-                border = value;
+                ControlBorder = value;
                 Invalidate();
             }
         }
@@ -161,23 +156,6 @@
             set
             {
                 shapeType = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(StyleManagerConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public StyleManager StyleManager
-        {
-            get
-            {
-                return styleManager;
-            }
-
-            set
-            {
-                styleManager = value;
                 Invalidate();
             }
         }
@@ -237,14 +215,13 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
+
             Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
 
             ConfigureComponents(graphics);
 
-            if (styleManager.LockedStyle)
+            if (StyleManager.LockedStyle)
             {
                 ConfigureStyleManager();
             }
@@ -291,7 +268,7 @@
 
                 case ShapeType.Rectangle:
                     {
-                        controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+                        controlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
                         graphics.FillPath(gradientBrush, controlGraphicsPath);
 
                         break;
@@ -320,42 +297,26 @@
                     }
             }
 
-            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, ControlBorder, mouseState.State, controlGraphicsPath);
         }
 
         private void ConfigureStyleManager()
         {
-            if (styleManager.VisualStylesManager != null)
+            if (StyleManager.VisualStylesManager != null)
             {
                 // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IControlState controlStateStyle = styleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
+                IBorder borderStyle = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
+                IControlState controlStateStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle;
+                IFont fontStyle = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
 
-                animation = styleManager.VisualStylesManager.Animation;
-                border.Color = borderStyle.Color;
-                border.HoverColor = borderStyle.HoverColor;
-                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
-                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Type = styleManager.VisualStylesManager.BorderType;
-                border.Visible = styleManager.VisualStylesManager.BorderVisible;
-
-                background.Colors = controlStateStyle.ControlEnabled.Colors;
-                background.Positions = controlStateStyle.ControlEnabled.Positions;
+                animation = StyleManager.VisualStylesManager.Animation;
+                background = controlStateStyle.ControlEnabled;
             }
             else
             {
-                // Load default settings
                 animation = Settings.DefaultValue.Animation;
-
-                border = new Border();
+                background = Settings.DefaultValue.ControlState.ControlEnabled;
             }
-        }
-
-        private void DefaultGradient()
-        {
-            background.Colors = Settings.DefaultValue.ControlState.ControlEnabled.Colors;
-            background.Positions = Settings.DefaultValue.ControlState.ControlEnabled.Positions;
         }
 
         private void DrawAnimation(Graphics graphics)

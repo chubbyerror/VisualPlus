@@ -7,7 +7,7 @@
 
     #endregion
 
-    internal class VisualLabelDesigner : ControlDesigner
+    internal class VisualRatingDesigner : ControlDesigner
     {
         #region Events
 
@@ -29,6 +29,8 @@
             properties.Remove("BackgroundImageLayout");
             properties.Remove("UseVisualStyleBackColor");
             properties.Remove("RightToLeft");
+            properties.Remove("MouseState");
+            properties.Remove("StyleManager");
 
             base.PreFilterProperties(properties);
         }
