@@ -36,12 +36,6 @@
         {
             mouseState = MouseStates.Normal;
 
-            if (control is VisualColorPicker)
-            {
-                control.MouseEnter += OnMouseEnter;
-                control.MouseLeave += OnMouseLeave;
-            }
-
             if (control is VisualComboBox)
             {
                 control.MouseEnter += OnMouseEnter;
@@ -65,28 +59,6 @@
             // if (!(control is VisualCheckBox))
             // {
             // // Add here
-            // }
-
-            // if (control is VisualNumericUpDown)
-            // {
-            // control.MouseEnter += OnMouseEnter;
-            // control.MouseLeave += OnMouseLeave;
-
-            // //   control.Invalidate();
-
-            // // TODO: Doesn't seem to be registering the OnMouseLeave() event Invalidate() after on the control properly.
-            // }
-
-            // if (control is VisualRichTextBox)
-            // {
-            // control.Enter += OnMouseEnter;
-            // //  control.Leave += OnMouseLeave;
-            // }
-
-            // if (control is VisualTextBox)
-            // {
-            // control.Enter += OnMouseEnter;
-            // // control.Leave += OnMouseLeave;
             // }
         }
 

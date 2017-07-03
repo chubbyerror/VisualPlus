@@ -5,6 +5,7 @@
     using System;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Design;
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
@@ -168,6 +169,8 @@
         }
 
         [Category(Localize.PropertiesCategory.Appearance)]
+        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
+        [Localizable(false)]
         public override string Text
         {
             get
