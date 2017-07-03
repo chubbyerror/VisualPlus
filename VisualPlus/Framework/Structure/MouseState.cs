@@ -55,24 +55,12 @@
                 control.MouseLeave += OnMouseLeave;
             }
 
-            if (control is VisualGroupBox)
-            {
-                control.MouseEnter += OnMouseEnter;
-                control.MouseLeave += OnMouseLeave;
-            }
-
             if (control is VisualKnob)
             {
                 control.MouseEnter += OnMouseEnter;
                 control.MouseLeave += OnMouseLeave;
             }
-
-            if (control is VisualNumericUpDown)
-            {
-                control.MouseEnter += OnMouseEnter;
-                control.MouseLeave += OnMouseLeave;
-            }
-
+            
             // Specific controls might need to ignore some events
             // if (!(control is VisualCheckBox))
             // {

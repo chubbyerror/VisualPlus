@@ -27,15 +27,12 @@
     {
         #region Variables
 
-        private Gradient backgroundGradient = new Gradient();
-
+        private Gradient backgroundGradient;
         private Border buttonBorder;
-        private Color buttonForeColor;
-
         private Font buttonFont;
-        private Gradient buttonGradient = new Gradient();
-
-        private Orientation buttonOrientation = Orientation.Horizontal;
+        private Color buttonForeColor;
+        private Gradient buttonGradient;
+        private Orientation buttonOrientation;
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 50;
@@ -64,18 +61,8 @@
             MinimumSize = new Size(0, 0);
 
             buttonFont = new Font(Settings.DefaultValue.DefaultFont.FontFamily, 14, FontStyle.Bold);
-
+            buttonOrientation = Orientation.Horizontal;
             InitializeTheme();
-            DefaultGradient();
-        }
-
-        public enum ButtonSetup
-        {
-            /// <summary>The above.</summary>
-            Above,
-
-            /// <summary>The beside.</summary>
-            Beside
         }
 
         #endregion
@@ -151,22 +138,6 @@
         }
 
         [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color ButtonForeColor
-        {
-            get
-            {
-                return buttonForeColor;
-            }
-
-            set
-            {
-                buttonForeColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Strings.Font)]
         public Font ButtonFont
         {
@@ -178,6 +149,22 @@
             set
             {
                 buttonFont = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color ButtonForeColor
+        {
+            get
+            {
+                return buttonForeColor;
+            }
+
+            set
+            {
+                buttonForeColor = value;
                 Invalidate();
             }
         }
@@ -541,7 +528,7 @@
             Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
 
             // Draw value string
-            Rectangle textboxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
+            Rectangle textBoxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
 
             StringFormat stringFormat = new StringFormat
                 {
@@ -549,23 +536,7 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(ForeColor), textboxRectangle, stringFormat);
-        }
-
-        private void DefaultGradient()
-        {
-            float[] backgroundGradientPosition = { 0, 1 };
-
-            Color[] backgroundColor =
-                {
-                    Settings.DefaultValue.Control.Background(0),
-                    ControlPaint.Light(Settings.DefaultValue.Control.Background(0))
-                };
-
-            buttonGradient = Settings.DefaultValue.ControlState.ControlEnabled;
-
-            backgroundGradient.Colors = backgroundColor;
-            backgroundGradient.Positions = backgroundGradientPosition;
+            graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(ForeColor), textBoxRectangle, stringFormat);
         }
 
         private void InitializeTheme()
@@ -574,17 +545,7 @@
             {
                 buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlEnabled;
                 buttonForeColor = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle.ForeColor;
-
-                float[] backgroundGradientPosition = { 0, 1 };
-
-                Color[] backgroundColor =
-                    {
-                        StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle.Background(0),
-                        StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle.Background(1)
-                    };
-
-                backgroundGradient.Colors = backgroundColor;
-                backgroundGradient.Positions = backgroundGradientPosition;
+                backgroundGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle.BoxEnabled;
             }
             else
             {
@@ -595,6 +556,8 @@
                     };
 
                 buttonForeColor = Color.Gray;
+                backgroundGradient = Settings.DefaultValue.Control.BoxEnabled;
+                buttonGradient = Settings.DefaultValue.ControlState.ControlEnabled;
             }
         }
 
