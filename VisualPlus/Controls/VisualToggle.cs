@@ -6,13 +6,12 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
-    using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
 
     #endregion
 
@@ -22,7 +21,7 @@
     [DefaultProperty("Toggled")]
     [Description("The Visual Toggle")]
     [Designer(ControlManager.FilterProperties.VisualToggle)]
-    public sealed class VisualToggle : Control
+    public sealed class VisualToggle : ControlBase
     {
         #region Variables
 
@@ -31,27 +30,20 @@
                 Interval = 1
             };
 
-        private readonly MouseState mouseState;
-
-        private Gradient backgroundDisabledGradient = new Gradient();
-        private Gradient backgroundEnabledGradient = new Gradient();
-        private Border border;
+        private Gradient backgroundDisabledGradient;
+        private Gradient backgroundEnabledGradient;
         private Border buttonBorder;
-        private Gradient buttonDisabledGradient = new Gradient();
-        private Gradient buttonGradient = new Gradient();
+        private Gradient buttonDisabledGradient;
+        private Gradient buttonGradient;
         private Rectangle buttonRectangle;
-        private Size buttonSize = new Size(20, 20);
+        private Size buttonSize;
         private GraphicsPath controlGraphicsPath;
         private Point endPoint;
-        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
         private Point startPoint;
-        private StyleManager styleManager = new StyleManager();
-        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
         private string textProcessor;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
         private bool toggled;
         private int toggleLocation;
-        private ToggleTypes toggleType = ToggleTypes.YesNo;
+        private ToggleTypes toggleType;
 
         #endregion
 
@@ -59,19 +51,16 @@
 
         public VisualToggle()
         {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
-                ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
-                true);
-            mouseState = new MouseState(this);
-            UpdateStyles();
+            SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
 
             BackColor = Color.Transparent;
             Size = new Size(50, 25);
             Font = Settings.DefaultValue.DefaultFont;
             animationTimer.Tick += AnimationTimerTick;
 
-            DefaultGradient();
+            toggleType = ToggleTypes.YesNo;
+            buttonSize = new Size(20, 20);
+
             ConfigureStyleManager();
         }
 
@@ -136,12 +125,12 @@
         {
             get
             {
-                return border;
+                return ControlBorder;
             }
 
             set
             {
-                border = value;
+                ControlBorder = value;
                 Invalidate();
             }
         }
@@ -213,85 +202,6 @@
             }
         }
 
-        public new Color ForeColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                base.ForeColor = value;
-                foreColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(StyleManagerConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public StyleManager StyleManager
-        {
-            get
-            {
-                return styleManager;
-            }
-
-            set
-            {
-                styleManager = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color TextDisabledColor
-        {
-            get
-            {
-                return textDisabledColor;
-            }
-
-            set
-            {
-                textDisabledColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Strings.TextRenderingHint)]
-        public TextRenderingHint TextRendering
-        {
-            get
-            {
-                return textRendererHint;
-            }
-
-            set
-            {
-                textRendererHint = value;
-                Invalidate();
-            }
-        }
-
         [DefaultValue(false)]
         [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Common.Toggle)]
@@ -337,20 +247,6 @@
             animationTimer.Start();
         }
 
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            mouseState.State = MouseStates.Hover;
-            Invalidate();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            mouseState.State = MouseStates.Normal;
-            Invalidate();
-        }
-
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
@@ -359,18 +255,16 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.TextRenderingHint = textRendererHint;
+            base.OnPaint(e);
 
-            if (styleManager.LockedStyle)
+            Graphics graphics = e.Graphics;
+
+            if (StyleManager.LockedStyle)
             {
                 ConfigureStyleManager();
             }
 
-            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
 
             // Update button location points
             startPoint = new Point(0 + 2, (ClientRectangle.Height / 2) - (buttonSize.Height / 2));
@@ -385,7 +279,7 @@
 
             graphics.FillPath(backgroundGradientBrush, controlGraphicsPath);
 
-            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
 
             // Determines button state to draw
             Point buttonPoint = toggled ? endPoint : startPoint;
@@ -396,12 +290,14 @@
             GraphicsPath buttonPath = Border.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
             graphics.FillPath(buttonGradientBrush, buttonPath);
 
-            Border.DrawBorderStyle(graphics, buttonBorder, mouseState.State, buttonPath);
+            Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
         }
 
+        /// <summary>Create a slide animation when toggled.</summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event args.</param>
         private void AnimationTimerTick(object sender, EventArgs e)
         {
-            // Create a slide animation when toggled.
             if (toggled)
             {
                 if (toggleLocation >= 100)
@@ -421,36 +317,24 @@
 
         private void ConfigureStyleManager()
         {
-            if (styleManager.VisualStylesManager != null)
+            if (StyleManager.VisualStylesManager != null)
             {
-                // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
+                buttonBorder.Color = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle.Color;
+                buttonBorder.HoverColor = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle.HoverColor;
+                buttonBorder.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
+                buttonBorder.Rounding = StyleManager.VisualStylesManager.BorderRounding;
+                buttonBorder.Type = StyleManager.VisualStylesManager.BorderType;
+                buttonBorder.Thickness = StyleManager.VisualStylesManager.BorderThickness;
+                buttonBorder.Visible = StyleManager.VisualStylesManager.BorderVisible;
 
-                border.Color = borderStyle.Color;
-                border.HoverColor = borderStyle.HoverColor;
-                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
-                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Type = styleManager.VisualStylesManager.BorderType;
-                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
-                border.Visible = styleManager.VisualStylesManager.BorderVisible;
-
-                buttonBorder.Color = borderStyle.Color;
-                buttonBorder.HoverColor = borderStyle.HoverColor;
-                buttonBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
-                buttonBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                buttonBorder.Type = styleManager.VisualStylesManager.BorderType;
-                buttonBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
-                buttonBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
-
-                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-                foreColor = fontStyle.ForeColor;
-                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
+                backgroundEnabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ProgressStyle.Background;
+                backgroundDisabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlDisabled;
+                buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlEnabled;
+                buttonDisabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlDisabled;
             }
             else
             {
-                // Load default settings
-                border = new Border
+                ControlBorder = new Border
                     {
                         Rounding = Settings.DefaultValue.Rounding.ToggleBorder
                     };
@@ -460,25 +344,11 @@
                         Rounding = Settings.DefaultValue.Rounding.ToggleButton
                     };
 
-                Font = Settings.DefaultValue.DefaultFont;
-                foreColor = Settings.DefaultValue.Font.ForeColor;
-                textRendererHint = Settings.DefaultValue.TextRenderingHint;
+                backgroundEnabledGradient = Settings.DefaultValue.Progress.Background;
+                backgroundDisabledGradient = Settings.DefaultValue.ControlState.ControlDisabled;
+                buttonGradient = Settings.DefaultValue.ControlState.ControlEnabled;
+                buttonDisabledGradient = Settings.DefaultValue.ControlState.ControlDisabled;
             }
-        }
-
-        private void DefaultGradient()
-        {
-            backgroundEnabledGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
-            backgroundEnabledGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
-
-            backgroundDisabledGradient.Colors = Settings.DefaultValue.ControlState.ControlDisabled.Colors;
-            backgroundDisabledGradient.Positions = Settings.DefaultValue.ControlState.ControlDisabled.Positions;
-
-            buttonGradient.Colors = Settings.DefaultValue.ControlState.ControlEnabled.Colors;
-            buttonGradient.Positions = Settings.DefaultValue.ControlState.ControlEnabled.Positions;
-
-            buttonDisabledGradient.Colors = Settings.DefaultValue.ControlState.ControlDisabled.Colors;
-            buttonDisabledGradient.Positions = Settings.DefaultValue.ControlState.ControlDisabled.Positions;
         }
 
         private void DrawToggleType(Graphics graphics)
@@ -508,9 +378,6 @@
                     }
             }
 
-            // Set control state color
-            foreColor = Enabled ? foreColor : textDisabledColor;
-
             // Draw string
             Rectangle textBoxRectangle;
 
@@ -532,27 +399,12 @@
                     LineAlignment = StringAlignment.Center
                 };
 
-            // Draw the string
             graphics.DrawString(
                 textProcessor,
                 new Font(Font.FontFamily, 7f, Font.Style),
-                new SolidBrush(foreColor),
+                new SolidBrush(ForeColor),
                 textBoxRectangle,
                 stringFormat);
-        }
-
-        #endregion
-
-        #region Methods
-
-        public class PillStyle
-        {
-            #region Variables
-
-            public bool Left;
-            public bool Right;
-
-            #endregion
         }
 
         #endregion

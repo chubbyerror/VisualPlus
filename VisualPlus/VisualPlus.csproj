@@ -172,9 +172,7 @@
     <Compile Include="Controls\VisualTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualToggle.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualToggle.cs" />
     <Compile Include="Controls\VisualTrackBar.cs">
       <SubType>Component</SubType>
     </Compile>
