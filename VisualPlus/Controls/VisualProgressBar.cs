@@ -563,7 +563,7 @@
             // Draw border
             if (ControlBorder.Visible)
             {
-                if ((MouseState == MouseStates.Hover) && ControlBorder.HoverVisible)
+                if ((State == MouseStates.Hover) && ControlBorder.HoverVisible)
                 {
                     Border.DrawBorder(graphics, graphicsDefaultBorderPath, ControlBorder.Thickness, ControlBorder.HoverColor);
                 }
@@ -722,7 +722,7 @@
                 // Draw border
                 if (ControlBorder.Visible)
                 {
-                    if ((MouseState == MouseStates.Hover) && ControlBorder.HoverVisible)
+                    if ((State == MouseStates.Hover) && ControlBorder.HoverVisible)
                     {
                         Border.DrawBorder(graphics, barStylePath, ControlBorder.Thickness, ControlBorder.HoverColor);
                     }

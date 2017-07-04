@@ -15,6 +15,8 @@
     using VisualPlus.Framework.Structure;
     using VisualPlus.Styles;
 
+    using MouseStates = VisualPlus.Enums.MouseStates;
+
     #endregion
 
     [ToolboxItem(true)]
@@ -25,8 +27,6 @@
     public sealed class VisualShape : ControlBase
     {
         #region Variables
-
-        private readonly MouseState mouseState;
 
         private bool animation;
         private Gradient background = new Gradient();
@@ -47,8 +47,6 @@
             shapeType = ShapeType.Rectangle;
             BackColor = Color.Transparent;
             Size = new Size(100, 100);
-
-            mouseState = new MouseState(this);
 
             ConfigureStyleManager();
             ConfigureAnimation();
@@ -129,21 +127,6 @@
             }
         }
 
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.PropertiesCategory.Behavior)]
         [Description("The type of shape.")]
         public ShapeType ShapeForm
@@ -172,16 +155,16 @@
                 return;
             }
 
-            mouseState.State = MouseStates.Normal;
+            State = MouseStates.Normal;
             MouseEnter += (sender, args) =>
                 {
-                    mouseState.State = MouseStates.Hover;
+                    State = MouseStates.Hover;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.In);
                     Invalidate();
                 };
             MouseLeave += (sender, args) =>
                 {
-                    mouseState.State = MouseStates.Normal;
+                    State = MouseStates.Normal;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.Out);
                     Invalidate();
                 };
@@ -189,27 +172,27 @@
                 {
                     if (args.Button == MouseButtons.Left)
                     {
-                        mouseState.State = MouseStates.Down;
+                        State = MouseStates.Down;
                         effectsManager.StartNewAnimation(AnimationDirection.In, args.Location);
                         Invalidate();
                     }
                 };
             MouseUp += (sender, args) =>
                 {
-                    mouseState.State = MouseStates.Hover;
+                    State = MouseStates.Hover;
                     Invalidate();
                 };
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            mouseState.State = MouseStates.Hover;
+            State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            mouseState.State = MouseStates.Normal;
+            State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -297,7 +280,7 @@
                     }
             }
 
-            Border.DrawBorderStyle(graphics, ControlBorder, mouseState.State, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, ControlBorder, State, controlGraphicsPath);
         }
 
         private void ConfigureStyleManager()
@@ -306,16 +289,16 @@
             {
                 // Load style manager settings 
                 IBorder borderStyle = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IControlState controlStateStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle;
+                IControlState controlStatesStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle;
                 IFont fontStyle = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
 
                 animation = StyleManager.VisualStylesManager.Animation;
-                background = controlStateStyle.ControlEnabled;
+                background = controlStatesStyle.ControlEnabled;
             }
             else
             {
                 animation = Settings.DefaultValue.Animation;
-                background = Settings.DefaultValue.ControlState.ControlEnabled;
+                background = Settings.DefaultValue.ControlStates.ControlEnabled;
             }
         }
 

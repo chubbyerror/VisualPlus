@@ -9,6 +9,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
@@ -24,8 +25,6 @@
     public sealed class VisualKnob : UserControl
     {
         #region Variables
-
-        private readonly MouseState mouseState;
 
         private int _value;
         private int buttonDivisions = 30;
@@ -51,6 +50,8 @@
         private Size lineSize = new Size(1, 1);
         private int maximum = 100;
         private int minimum;
+
+        private MouseStates mouseState;
         private int mouseWheelBarPartitions = 10;
         private Graphics offGraphics;
         private Image offScreenImage;
@@ -78,7 +79,6 @@
                 true);
 
             UpdateStyles();
-            mouseState = new MouseState(this);
             knobFont = Font;
             ForeColor = Color.DimGray;
 
@@ -407,21 +407,6 @@
             }
         }
 
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
         [Description("Set to how many parts is bar divided when using mouse wheel")]
         [Category(Localize.PropertiesCategory.Behavior)]
         [DefaultValue(10)]
@@ -599,6 +584,22 @@
             }
         }
 
+        [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Common.MouseState)]
+        public MouseStates State
+        {
+            get
+            {
+                return mouseState;
+            }
+
+            set
+            {
+                mouseState = value;
+                Invalidate();
+            }
+        }
+
         [Description(Localize.Description.Common.Color)]
         [Category(Localize.PropertiesCategory.Behavior)]
         public Color TickColor
@@ -746,14 +747,14 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            mouseState.State = MouseStates.Hover;
+            State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            mouseState.State = MouseStates.Normal;
+            State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -1024,7 +1025,7 @@
 
             GraphicsPath borderPath = new GraphicsPath();
             borderPath.AddEllipse(knobRectangle);
-            Border.DrawBorderStyle(offGraphics, knobBorder, mouseState.State, borderPath);
+            Border.DrawBorderStyle(offGraphics, knobBorder, State, borderPath);
         }
 
         private void DrawKnobTop()
@@ -1037,7 +1038,7 @@
 
             GraphicsPath borderPath = new GraphicsPath();
             borderPath.AddEllipse(knobTopRectangle);
-            Border.DrawBorderStyle(offGraphics, knobTopBorder, mouseState.State, borderPath);
+            Border.DrawBorderStyle(offGraphics, knobTopBorder, State, borderPath);
 
             float cx = knobPoint.X;
             float cy = knobPoint.Y;

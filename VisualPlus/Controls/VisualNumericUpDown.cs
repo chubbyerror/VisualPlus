@@ -516,7 +516,7 @@
             LinearGradientBrush buttonGradientBrush = Gradient.CreateGradientBrush(buttonCheckTemp.Colors, gradientPoints, buttonCheckTemp.Angle, buttonCheckTemp.Positions);
             graphics.FillPath(buttonGradientBrush, buttonPath);
 
-            Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
+            Border.DrawBorderStyle(graphics, buttonBorder, State, buttonPath);
 
             graphics.ResetClip();
 
@@ -525,7 +525,7 @@
 
             graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), tempSeparator[0], tempSeparator[1]);
 
-            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, ControlBorder, State, controlGraphicsPath);
 
             // Draw value string
             Rectangle textBoxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
@@ -543,7 +543,7 @@
         {
             if (StyleManager.VisualStylesManager != null)
             {
-                buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlEnabled;
+                buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle.ControlEnabled;
                 buttonForeColor = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle.ForeColor;
                 backgroundGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle.BoxEnabled;
             }
@@ -557,7 +557,7 @@
 
                 buttonForeColor = Color.Gray;
                 backgroundGradient = Settings.DefaultValue.Control.BoxEnabled;
-                buttonGradient = Settings.DefaultValue.ControlState.ControlEnabled;
+                buttonGradient = Settings.DefaultValue.ControlStates.ControlEnabled;
             }
         }
 

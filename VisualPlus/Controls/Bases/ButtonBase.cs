@@ -214,16 +214,16 @@
                 return;
             }
 
-            MouseState = MouseStates.Normal;
+            State = MouseStates.Normal;
             MouseEnter += (sender, args) =>
                 {
-                    MouseState = MouseStates.Hover;
+                    State = MouseStates.Hover;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.In);
                     Invalidate();
                 };
             MouseLeave += (sender, args) =>
                 {
-                    MouseState = MouseStates.Normal;
+                    State = MouseStates.Normal;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.Out);
                     Invalidate();
                 };
@@ -231,14 +231,14 @@
                 {
                     if (args.Button == MouseButtons.Left)
                     {
-                        MouseState = MouseStates.Down;
+                        State = MouseStates.Down;
                         effectsManager.StartNewAnimation(AnimationDirection.In, args.Location);
                         Invalidate();
                     }
                 };
             MouseUp += (sender, args) =>
                 {
-                    MouseState = MouseStates.Hover;
+                    State = MouseStates.Hover;
                     Invalidate();
                 };
         }
@@ -306,9 +306,9 @@
 
         private void DrawBackground(Graphics graphics)
         {
-            LinearGradientBrush controlGraphicsBrush = GDI.GetControlBrush(graphics, Enabled, MouseState, ControlBrushCollection, ClientRectangle);
+            LinearGradientBrush controlGraphicsBrush = GDI.GetControlBrush(graphics, Enabled, State, ControlBrushCollection, ClientRectangle);
             GDI.FillBackground(graphics, controlGraphicsPath, controlGraphicsBrush);
-            Border.DrawBorderStyle(graphics, Border, MouseState, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, Border, State, controlGraphicsPath);
         }
 
         private void InitializeTheme()

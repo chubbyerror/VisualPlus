@@ -41,11 +41,10 @@
                 { HTBOTTOMRIGHT, WMSZ_BOTTOMRIGHT }
             };
 
-        private readonly MouseState mouseState;
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
         private Border border;
-        private Color buttonBackHoverColor = Settings.DefaultValue.ControlState.ControlHover.Colors[0];
-        private Color buttonBackPressedColor = Settings.DefaultValue.ControlState.ControlPressed.Colors[0];
+        private Color buttonBackHoverColor = Settings.DefaultValue.ControlStates.ControlHover.Colors[0];
+        private Color buttonBackPressedColor = Settings.DefaultValue.ControlStates.ControlPressed.Colors[0];
         private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
         private Color closeColor = Color.IndianRed;
@@ -55,6 +54,8 @@
         private bool maximized;
         private Rectangle minButtonBounds;
         private Color minColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+
+        private MouseStates mouseState;
         private Point previousLocation;
         private Size previousSize;
         private ResizeDirection resizeDir;
@@ -75,7 +76,6 @@
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             FormBorderStyle = FormBorderStyle.None;
             Sizable = true;
-            mouseState = new MouseState(this);
 
             // Padding-Left: 5 for icon
             Padding = new Padding(5, 0, 0, 0);
@@ -266,22 +266,23 @@
             }
         }
 
+        public bool Sizable { get; set; }
+
         [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
+        [Description(Localize.Description.Common.MouseState)]
+        public MouseStates State
         {
             get
             {
-                return mouseState.State;
+                return mouseState;
             }
 
             set
             {
-                mouseState.State = value;
+                mouseState = value;
                 Invalidate();
             }
         }
-
-        public bool Sizable { get; set; }
 
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Alignment)]
@@ -375,7 +376,7 @@
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            mouseState.State = MouseStates.Hover;
+            State = MouseStates.Hover;
             Invalidate();
         }
 
@@ -389,7 +390,7 @@
             }
 
             buttonState = ButtonState.None;
-            mouseState.State = MouseStates.Normal;
+            State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -607,7 +608,7 @@
         {
             GraphicsPath clientRectangle = new GraphicsPath();
             clientRectangle.AddRectangle(ClientRectangle);
-            Border.DrawBorderStyle(graphics, border, mouseState.State, clientRectangle);
+            Border.DrawBorderStyle(graphics, border, State, clientRectangle);
         }
 
         private void DrawButtons(Graphics graphics)

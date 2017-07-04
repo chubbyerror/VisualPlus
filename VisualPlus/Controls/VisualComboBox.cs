@@ -28,8 +28,6 @@
     {
         #region Variables
 
-        private readonly MouseState mouseState;
-
         private Border border;
         private Color buttonColor;
         private Alignment.Horizontal buttonHorizontal = Alignment.Horizontal.Right;
@@ -46,6 +44,8 @@
         private Color menuItemHover;
         private Color menuItemNormal;
         private Color menuTextColor;
+
+        private MouseStates mouseState;
         private Color separatorColor;
         private Color separatorShadowColor;
         private bool separatorVisible = Settings.DefaultValue.TextVisible;
@@ -69,8 +69,6 @@
 
             SetStyle((ControlStyles)139286, true);
             SetStyle(ControlStyles.Selectable, false);
-
-            mouseState = new MouseState(this);
 
             DrawMode = DrawMode.OwnerDrawFixed;
             DropDownStyle = ComboBoxStyle.DropDownList;
@@ -310,21 +308,6 @@
         }
 
         [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color SeparatorColor
         {
@@ -394,6 +377,22 @@
                     // ignored
                 }
 
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Common.MouseState)]
+        public MouseStates State
+        {
+            get
+            {
+                return mouseState;
+            }
+
+            set
+            {
+                mouseState = value;
                 Invalidate();
             }
         }
@@ -527,7 +526,7 @@
             SuspendLayout();
             Update();
             ResumeLayout();
-            mouseState.State = MouseStates.Normal;
+            State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -562,7 +561,7 @@
             LinearGradientBrush gradientBackgroundBrush = Gradient.CreateGradientBrush(controlCheckTemp.Colors, gradientPoints, controlCheckTemp.Angle, controlCheckTemp.Positions);
             graphics.FillPath(gradientBackgroundBrush, controlGraphicsPath);
 
-            Border.DrawBorderStyle(graphics, border, mouseState.State, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, border, State, controlGraphicsPath);
 
             Point textBoxPoint;
             Point buttonPoint;

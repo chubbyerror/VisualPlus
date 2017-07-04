@@ -11,6 +11,7 @@
     using System.Linq;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Structure;
@@ -26,8 +27,6 @@
     {
         #region Variables
 
-        private readonly MouseState mouseState;
-
         private TabAlignment alignment = TabAlignment.Top;
         private bool arrowSelectorVisible = true;
         private int arrowSpacing = 10;
@@ -37,6 +36,8 @@
         private Size itemSize = new Size(100, 25);
         private StringAlignment lineAlignment = StringAlignment.Near;
         private Point mouseLocation;
+
+        private MouseStates mouseState;
         private Gradient normal = new Gradient();
         private Gradient selected = new Gradient();
         private TabAlignment selectorAlignment = TabAlignment.Top;
@@ -71,7 +72,6 @@
                 true);
 
             UpdateStyles();
-            mouseState = new MouseState(this);
 
             Size = new Size(320, 160);
             MinimumSize = new Size(144, 85);
@@ -284,21 +284,6 @@
             }
         }
 
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.PropertiesCategory.Appearance)]
@@ -478,6 +463,22 @@
         }
 
         [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Common.MouseState)]
+        public MouseStates State
+        {
+            get
+            {
+                return mouseState;
+            }
+
+            set
+            {
+                mouseState = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color TabMenu
         {
@@ -630,13 +631,13 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            mouseState.State = MouseStates.Hover;
+            State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            mouseState.State = MouseStates.Normal;
+            State = MouseStates.Normal;
             if (TabPages.Cast<TabPage>().Any(Tab => Tab.DisplayRectangle.Contains(mouseLocation)))
             {
                 Invalidate();
@@ -703,7 +704,7 @@
 
                     GraphicsPath borderPath = new GraphicsPath();
                     borderPath.AddRectangle(tabPageRectangle);
-                    Border.DrawBorderStyle(graphics, tabPageBorder, mouseState.State, borderPath);
+                    Border.DrawBorderStyle(graphics, tabPageBorder, State, borderPath);
 
                     if (arrowSelectorVisible)
                     {
@@ -729,7 +730,7 @@
                     // Draw other TabPages
                     graphics.FillRectangle(normalBrush, tabPageRectangle);
 
-                    if ((mouseState.State == MouseStates.Hover) && tabPageRectangle.Contains(mouseLocation))
+                    if ((State == MouseStates.Hover) && tabPageRectangle.Contains(mouseLocation))
                     {
                         Cursor = Cursors.Hand;
 
@@ -749,7 +750,7 @@
 
                         GraphicsPath borderPath = new GraphicsPath();
                         borderPath.AddRectangle(tabPageRectangle);
-                        Border.DrawBorderStyle(graphics, tabPageBorder, mouseState.State, borderPath);
+                        Border.DrawBorderStyle(graphics, tabPageBorder, State, borderPath);
                     }
 
                     graphics.DrawString(

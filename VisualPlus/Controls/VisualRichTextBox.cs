@@ -9,6 +9,8 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    using VisualPlus.Controls.Bases;
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
@@ -22,7 +24,7 @@
     [DefaultProperty("Text")]
     [Description("The Visual RichTextBox")]
     [Designer(ControlManager.FilterProperties.VisualRichTextBox)]
-    public sealed class VisualRichTextBox : RichTextBox
+    public sealed class VisualRichTextBox : InputFieldBase
     {
         #region Variables
 
@@ -32,15 +34,9 @@
 
         #region Variables
 
-        private readonly MouseState mouseState;
-
         private Color backgroundColor;
         private Color backgroundDisabledColor;
-        private Border border;
         private GraphicsPath controlGraphicsPath;
-        private Color foreColor;
-        private StyleManager styleManager = new StyleManager();
-        private Color textDisabledColor;
 
         #endregion
 
@@ -53,15 +49,14 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            mouseState = new MouseState(this);
 
             CreateRichTextBox();
             Controls.Add(RichObject);
             BackColor = Color.Transparent;
             Size = new Size(150, 100);
-            WordWrap = true;
-            AutoWordSelection = false;
-            BorderStyle = BorderStyle.None;
+            //WordWrap = true;
+            //AutoWordSelection = false;
+            //BorderStyle = BorderStyle.None;
             TextChanged += TextBoxTextChanged;
             UpdateStyles();
 
@@ -111,62 +106,16 @@
         {
             get
             {
-                return border;
+                return ControlBorder;
             }
 
             set
             {
-                border = value;
+                ControlBorder = value;
                 Invalidate();
             }
         }
 
-        public new Color ForeColor
-        {
-            get
-            {
-                return foreColor;
-            }
-
-            set
-            {
-                base.ForeColor = value;
-                foreColor = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(StyleManagerConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public StyleManager StyleManager
-        {
-            get
-            {
-                return styleManager;
-            }
-
-            set
-            {
-                styleManager = value;
-                Invalidate();
-            }
-        }
 
         [Category(Localize.PropertiesCategory.Appearance)]
         [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
@@ -185,21 +134,6 @@
             }
         }
 
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color TextDisabledColor
-        {
-            get
-            {
-                return textDisabledColor;
-            }
-
-            set
-            {
-                textDisabledColor = value;
-                Invalidate();
-            }
-        }
 
         #endregion
 
@@ -227,7 +161,7 @@
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
-            mouseState.State = MouseStates.Hover;
+            State = MouseStates.Hover;
             Invalidate();
         }
 
@@ -247,42 +181,41 @@
 
         protected override void OnLeave(EventArgs e)
         {
-            base.OnLeave(e);
-            mouseState.State = MouseStates.Normal;
+          //  base.OnLeave(e);
+            State = MouseStates.Normal;
             Invalidate();
         }
 
-        protected override void OnPaintBackground(PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
             Graphics graphics = e.Graphics;
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-            if (styleManager.LockedStyle)
+            if (StyleManager.LockedStyle)
             {
                 ConfigureStyleManager();
             }
 
-            // Set control state color
-            foreColor = Enabled ? foreColor : textDisabledColor;
             Color controlTempColor = Enabled ? backgroundColor : backgroundDisabledColor;
 
             RichObject.BackColor = controlTempColor;
-            RichObject.ForeColor = foreColor;
+            RichObject.ForeColor = ForeColor;
 
-            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, border.Type, border.Rounding);
+            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
             graphics.FillPath(new SolidBrush(controlTempColor), controlGraphicsPath);
 
-            if (border.Visible)
+            if (ControlBorder.Visible)
             {
-                if ((mouseState.State == MouseStates.Hover) && border.HoverVisible)
+                if ((State == MouseStates.Hover) && ControlBorder.HoverVisible)
                 {
-                    Border.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.HoverColor);
+                    Border.DrawBorder(graphics, controlGraphicsPath, ControlBorder.Thickness, ControlBorder.HoverColor);
                 }
                 else
                 {
-                    Border.DrawBorder(graphics, controlGraphicsPath, border.Thickness, border.Color);
+                    Border.DrawBorder(graphics, controlGraphicsPath, ControlBorder.Thickness, ControlBorder.Color);
                 }
             }
 
@@ -297,37 +230,21 @@
 
         private void ConfigureStyleManager()
         {
-            if (styleManager.VisualStylesManager != null)
+            if (StyleManager.VisualStylesManager != null)
             {
-                // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IControl controlStyle = styleManager.VisualStylesManager.VisualStylesInterface.ControlStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
+                IControl controlStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle;
 
-                border.Color = borderStyle.Color;
-                border.HoverColor = borderStyle.HoverColor;
-                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
-                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Type = styleManager.VisualStylesManager.BorderType;
-                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
-                border.Visible = styleManager.VisualStylesManager.BorderVisible;
-                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
                 backgroundColor = controlStyle.Background(0);
                 backgroundDisabledColor = controlStyle.FlatButtonDisabled;
-                foreColor = fontStyle.ForeColor;
-                textDisabledColor = fontStyle.ForeColorDisabled;
+
             }
             else
             {
-                // Load default settings
-                border = new Border();
+
 
                 backgroundColor = Settings.DefaultValue.Control.Background(3);
                 backgroundDisabledColor = Settings.DefaultValue.Control.FlatButtonDisabled;
 
-                Font = Settings.DefaultValue.DefaultFont;
-                foreColor = Settings.DefaultValue.Font.ForeColor;
-                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
             }
         }
 

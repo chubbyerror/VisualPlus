@@ -9,6 +9,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
@@ -32,8 +33,6 @@
         #endregion
 
         #region Variables
-
-        private readonly MouseState mouseState;
 
         private Gradient backgroundGradient = new Gradient();
         private int barThickness = 10;
@@ -60,6 +59,8 @@
         private bool leftButtonDown;
         private bool lineTicksVisible = Settings.DefaultValue.TextVisible;
         private float mouseStartPos = -1;
+
+        private MouseStates mouseState;
         private string prefix;
         private bool progressFilling;
         private Gradient progressGradient = new Gradient();
@@ -91,7 +92,6 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            mouseState = new MouseState(this);
             UpdateStyles();
             Font = Settings.DefaultValue.DefaultFont;
             BackColor = Color.Transparent;
@@ -468,21 +468,6 @@
         }
 
         [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Orientation)]
         public new Orientation Orientation
         {
@@ -578,6 +563,22 @@
             set
             {
                 progressVisible = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Common.MouseState)]
+        public MouseStates State
+        {
+            get
+            {
+                return mouseState;
+            }
+
+            set
+            {
+                mouseState = value;
                 Invalidate();
             }
         }
@@ -897,7 +898,7 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             OnEnter(e);
-            mouseState.State = MouseStates.Hover;
+            State = MouseStates.Hover;
             Invalidate();
         }
 
@@ -911,7 +912,7 @@
         protected override void OnMouseLeave(EventArgs e)
         {
             OnLeave(e);
-            mouseState.State = MouseStates.Normal;
+            State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -1435,9 +1436,9 @@
             progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
             progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
 
-            buttonGradient.Angle = Settings.DefaultValue.ControlState.ControlEnabled.Angle;
-            buttonGradient.Colors = Settings.DefaultValue.ControlState.ControlEnabled.Colors;
-            buttonGradient.Positions = Settings.DefaultValue.ControlState.ControlEnabled.Positions;
+            buttonGradient.Angle = Settings.DefaultValue.ControlStates.ControlEnabled.Angle;
+            buttonGradient.Colors = Settings.DefaultValue.ControlStates.ControlEnabled.Colors;
+            buttonGradient.Positions = Settings.DefaultValue.ControlStates.ControlEnabled.Positions;
         }
 
         /// <summary>Draws the bar.</summary>
@@ -1465,7 +1466,7 @@
             LinearGradientBrush gradientBrush = Gradient.CreateGradientBrush(backgroundGradient.Colors, gradientPoints, backgroundGradient.Angle, backgroundGradient.Positions);
             graphics.FillPath(gradientBrush, trackBarPath);
 
-            Border.DrawBorderStyle(graphics, trackBarBorder, mouseState.State, trackBarPath);
+            Border.DrawBorderStyle(graphics, trackBarBorder, State, trackBarPath);
         }
 
         /// <summary>Draws the button.</summary>
@@ -1523,7 +1524,7 @@
                 buttonPath = Border.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
                 graphics.FillPath(gradientBrush, buttonPath);
 
-                Border.DrawBorderStyle(graphics, buttonBorder, mouseState.State, buttonPath);
+                Border.DrawBorderStyle(graphics, buttonBorder, State, buttonPath);
             }
         }
 

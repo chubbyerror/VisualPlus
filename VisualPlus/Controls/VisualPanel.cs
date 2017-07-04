@@ -107,7 +107,7 @@
             controlGraphicsPath = Border.GetBorderShape(ClientRectangle, Border.Type, Border.Rounding);
             graphics.FillPath(new SolidBrush(Background), controlGraphicsPath);
 
-            Border.DrawBorderStyle(graphics, Border, MouseState, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, Border, State, controlGraphicsPath);
 
             if (expander.Visible)
             {

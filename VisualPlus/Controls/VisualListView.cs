@@ -26,8 +26,6 @@
     {
         #region Variables
 
-        private readonly MouseState mouseState;
-
         private Border columnBorder;
         private Color columnHeaderBackground = Settings.DefaultValue.Control.FlatButtonDisabled;
 
@@ -40,6 +38,8 @@
         private Color itemHover = Settings.DefaultValue.Control.ItemHover;
         private int itemPadding = 12;
         private Color itemSelected = Settings.DefaultValue.Border.Color;
+
+        private MouseStates mouseState;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
         #endregion
@@ -50,8 +50,6 @@
         {
             SetStyle(
                 ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
-
-            mouseState = new MouseState(this);
 
             View = View.Details;
             MultiSelect = false;
@@ -235,21 +233,6 @@
         [Browsable(false)]
         public Point MouseLocation { get; set; }
 
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public MouseStates MouseState
-        {
-            get
-            {
-                return mouseState.State;
-            }
-
-            set
-            {
-                mouseState.State = value;
-                Invalidate();
-            }
-        }
-
         [DefaultValue(false)]
         [Category(Localize.PropertiesCategory.Behavior)]
         public bool StandardHeader
@@ -262,6 +245,22 @@
             set
             {
                 drawStandardHeader = value;
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Common.MouseState)]
+        public MouseStates State
+        {
+            get
+            {
+                return mouseState;
+            }
+
+            set
+            {
+                mouseState = value;
                 Invalidate();
             }
         }
@@ -313,7 +312,7 @@
                 e.Graphics.FillRectangle(new SolidBrush(columnHeaderBackground), columnHeaderRectangle);
             }
 
-            Border.DrawBorderStyle(graphics, columnBorder, mouseState.State, columnHeaderPath);
+            Border.DrawBorderStyle(graphics, columnBorder, State, columnHeaderPath);
 
             StringFormat stringFormat = new StringFormat
                 {
@@ -340,7 +339,7 @@
                 // selected background
                 graphics.FillRectangle(new SolidBrush(itemSelected), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
             }
-            else if (e.Bounds.Contains(MouseLocation) && (mouseState.State == MouseStates.Hover))
+            else if (e.Bounds.Contains(MouseLocation) && (State == MouseStates.Hover))
             {
                 // hover background
                 graphics.FillRectangle(new SolidBrush(itemHover), new Rectangle(new Point(e.Bounds.X, 0), e.Bounds.Size));
@@ -430,14 +429,14 @@
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            mouseState.State = MouseStates.Hover;
+            State = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            mouseState.State = MouseStates.Normal;
+            State = MouseStates.Normal;
             Invalidate();
         }
 
@@ -456,11 +455,11 @@
         {
             MouseEnter += delegate
                 {
-                    mouseState.State = MouseStates.Hover;
+                    State = MouseStates.Hover;
                 };
             MouseLeave += delegate
                 {
-                    mouseState.State = MouseStates.Normal;
+                    State = MouseStates.Normal;
                     MouseLocation = new Point(-1, -1);
                     HoveredItem = null;
                     Invalidate();
@@ -468,11 +467,11 @@
 
             MouseDown += delegate
                 {
-                    mouseState.State = MouseStates.Down;
+                    State = MouseStates.Down;
                 };
             MouseUp += delegate
                 {
-                    mouseState.State = MouseStates.Hover;
+                    State = MouseStates.Hover;
                 };
             MouseMove += delegate(object sender, MouseEventArgs args)
                 {

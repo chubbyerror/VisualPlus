@@ -8,7 +8,10 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework.Structure;
+
+    using MouseStates = VisualPlus.Enums.MouseStates;
 
     #endregion
 

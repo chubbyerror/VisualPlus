@@ -9,6 +9,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Controls.Bases;
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Structure;
@@ -277,7 +278,7 @@
 
             graphics.FillPath(new SolidBrush(Background), borderGraphicsPath);
 
-            Border.DrawBorderStyle(graphics, Border, MouseState, borderGraphicsPath);
+            Border.DrawBorderStyle(graphics, Border, State, borderGraphicsPath);
 
             if (titleBoxVisible)
             {
@@ -288,7 +289,7 @@
 
                 if (titleBorder.Visible)
                 {
-                    if ((MouseState == MouseStates.Hover) && titleBorder.HoverVisible)
+                    if ((State == MouseStates.Hover) && titleBorder.HoverVisible)
                     {
                         Border.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.HoverColor);
                     }
@@ -441,7 +442,7 @@
             if (StyleManager.VisualStylesManager != null)
             {
                 IBorder borderStyle = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IControlState controlStateStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle;
+                IControlState controlStatesStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle;
 
                 titleBorder.Color = borderStyle.Color;
                 titleBorder.HoverColor = borderStyle.HoverColor;
@@ -451,12 +452,12 @@
                 titleBorder.Thickness = StyleManager.VisualStylesManager.BorderThickness;
                 titleBorder.Visible = StyleManager.VisualStylesManager.BorderVisible;
 
-                titleGradient = controlStateStyle.ControlEnabled;
+                titleGradient = controlStatesStyle.ControlEnabled;
             }
             else
             {
                 titleBorder = new Border();
-                titleGradient = Settings.DefaultValue.ControlState.ControlDisabled;
+                titleGradient = Settings.DefaultValue.ControlStates.ControlDisabled;
             }
         }
 

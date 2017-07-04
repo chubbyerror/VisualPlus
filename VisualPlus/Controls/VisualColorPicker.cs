@@ -34,7 +34,7 @@
         private static readonly object EventLargeChangeChanged = new object();
         private static readonly object EventSelectionSizeChanged = new object();
         private static readonly object EventSmallChangeChanged = new object();
-        private readonly Color buttonColor = Settings.DefaultValue.ControlState.ControlEnabled.Colors[0];
+        private readonly Color buttonColor = Settings.DefaultValue.ControlStates.ControlEnabled.Colors[0];
         private LinearGradientBrush _blackBottomGradient;
         private Bitmap _canvas;
         private Graphics _graphicsBuffer;
@@ -544,7 +544,7 @@
                     }
             }
 
-            Border.DrawBorderStyle(graphics, border, MouseState, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, border, State, controlGraphicsPath);
 
             // Draws the button
             if (!Color.IsEmpty && pickerVisible)
@@ -693,7 +693,7 @@
             e.Graphics.FillPath(new SolidBrush(buttonColor), buttonGraphicsPath);
 
             // Draw border
-            Border.DrawBorderStyle(e.Graphics, pickerBorder, MouseState, buttonGraphicsPath);
+            Border.DrawBorderStyle(e.Graphics, pickerBorder, State, buttonGraphicsPath);
 
             if (Focused && includeFocus)
             {

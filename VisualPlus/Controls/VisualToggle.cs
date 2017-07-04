@@ -279,7 +279,7 @@
 
             graphics.FillPath(backgroundGradientBrush, controlGraphicsPath);
 
-            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, ControlBorder, State, controlGraphicsPath);
 
             // Determines button state to draw
             Point buttonPoint = toggled ? endPoint : startPoint;
@@ -290,7 +290,7 @@
             GraphicsPath buttonPath = Border.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
             graphics.FillPath(buttonGradientBrush, buttonPath);
 
-            Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
+            Border.DrawBorderStyle(graphics, buttonBorder, State, buttonPath);
         }
 
         /// <summary>Create a slide animation when toggled.</summary>
@@ -328,9 +328,9 @@
                 buttonBorder.Visible = StyleManager.VisualStylesManager.BorderVisible;
 
                 backgroundEnabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ProgressStyle.Background;
-                backgroundDisabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlDisabled;
-                buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlEnabled;
-                buttonDisabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStateStyle.ControlDisabled;
+                backgroundDisabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle.ControlDisabled;
+                buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle.ControlEnabled;
+                buttonDisabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle.ControlDisabled;
             }
             else
             {
@@ -345,9 +345,9 @@
                     };
 
                 backgroundEnabledGradient = Settings.DefaultValue.Progress.Background;
-                backgroundDisabledGradient = Settings.DefaultValue.ControlState.ControlDisabled;
-                buttonGradient = Settings.DefaultValue.ControlState.ControlEnabled;
-                buttonDisabledGradient = Settings.DefaultValue.ControlState.ControlDisabled;
+                backgroundDisabledGradient = Settings.DefaultValue.ControlStates.ControlDisabled;
+                buttonGradient = Settings.DefaultValue.ControlStates.ControlEnabled;
+                buttonDisabledGradient = Settings.DefaultValue.ControlStates.ControlDisabled;
             }
         }
 

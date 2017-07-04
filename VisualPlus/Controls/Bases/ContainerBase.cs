@@ -24,9 +24,10 @@
     {
         #region Variables
 
+        private Color _backgroundColor;
+
         private Point _lastPosition;
         private bool _movable;
-        private Color _backgroundColor;
 
         #endregion
 

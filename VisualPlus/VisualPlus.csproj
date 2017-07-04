@@ -55,6 +55,8 @@
     <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Controls\Bases\ContainerBase.cs" />
     <Compile Include="Controls\Bases\CheckBoxBase.cs" />
+    <Compile Include="Controls\Bases\InputFieldBase.cs" />
+    <Compile Include="Enums\MouseStates.cs" />
     <Compile Include="Controls\Bases\ProgressBase.cs" />
     <Compile Include="Controls\Bases\RadioButtonBase.cs" />
     <Compile Include="Controls\Bases\ToggleButtonBase.cs" />
@@ -112,10 +114,10 @@
     </Compile>
     <Compile Include="Enums\Alignment.cs" />
     <Compile Include="Enums\BorderType.cs" />
+    <Compile Include="Framework\Definitions.cs" />
     <Compile Include="Framework\Handlers\ControlManager.cs" />
     <Compile Include="Framework\Structure\Checkmark.cs" />
     <Compile Include="Framework\Structure\Expander.cs" />
-    <Compile Include="Framework\Structure\MouseState.cs" />
     <Compile Include="Framework\Structure\Moveable.cs" />
     <Compile Include="Framework\Handlers\ExceptionManager.cs" />
     <Compile Include="Framework\Structure\Border.cs" />
@@ -144,17 +146,13 @@
     <Compile Include="Controls\VisualProgressBar.cs" />
     <Compile Include="Controls\VisualProgressIndicator.cs" />
     <Compile Include="Controls\VisualRadioButton.cs" />
-    <Compile Include="Controls\VisualRichTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualRichTextBox.cs" />
     <Compile Include="Controls\VisualCircleProgressBar.cs" />
     <Compile Include="Controls\VisualSeparator.cs" />
     <Compile Include="Controls\VisualTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\VisualTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\VisualTextBox.cs" />
     <Compile Include="Controls\VisualToggle.cs" />
     <Compile Include="Controls\VisualTrackBar.cs">
       <SubType>Component</SubType>

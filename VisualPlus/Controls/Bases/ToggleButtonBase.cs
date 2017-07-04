@@ -259,19 +259,19 @@ namespace VisualPlus.Controls.Bases
                 return;
             }
 
-            MouseState = MouseStates.Normal;
+            State = MouseStates.Normal;
             MouseEnter += (sender, args) =>
                 {
-                    MouseState = MouseStates.Hover;
+                    State = MouseStates.Hover;
                 };
             MouseLeave += (sender, args) =>
                 {
                     mouseLocation = new Point(-1, -1);
-                    MouseState = MouseStates.Normal;
+                    State = MouseStates.Normal;
                 };
             MouseDown += (sender, args) =>
                 {
-                    MouseState = MouseStates.Down;
+                    State = MouseStates.Down;
 
                     if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(mouseLocation, box))
                     {
@@ -281,7 +281,7 @@ namespace VisualPlus.Controls.Bases
                 };
             MouseUp += (sender, args) =>
                 {
-                    MouseState = MouseStates.Hover;
+                    State = MouseStates.Hover;
                     rippleEffectsManager.SecondaryIncrement = 0.08;
                 };
             MouseMove += (sender, args) =>
@@ -308,7 +308,7 @@ namespace VisualPlus.Controls.Bases
 
             box = new Rectangle(new Point(0, (ClientRectangle.Height / 2) - (box.Height / 2)), box.Size);
             GraphicsPath boxPath = Border.GetBorderShape(box, Border.Type, Border.Rounding);
-            LinearGradientBrush controlGraphicsBrush = GDI.GetControlBrush(graphics, Enabled, MouseState, ControlBrushCollection, ClientRectangle);
+            LinearGradientBrush controlGraphicsBrush = GDI.GetControlBrush(graphics, Enabled, State, ControlBrushCollection, ClientRectangle);
             GDI.FillBackground(graphics, boxPath, controlGraphicsBrush);
 
             if (Checked)
@@ -318,7 +318,7 @@ namespace VisualPlus.Controls.Bases
                 graphics.ResetClip();
             }
 
-            Border.DrawBorderStyle(graphics, Border, MouseState, boxPath);
+            Border.DrawBorderStyle(graphics, Border, State, boxPath);
 
             DrawText(graphics);
             DrawAnimation(graphics);

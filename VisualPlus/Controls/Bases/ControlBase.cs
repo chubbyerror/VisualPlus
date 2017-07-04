@@ -10,6 +10,7 @@
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Structure;
 
@@ -19,12 +20,12 @@
     [DesignerCategory("code")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
-    public abstract class ControlBase : Control
+    public abstract class ControlBase : Control, IContainerStyle
     {
         #region Variables
 
-        private readonly MouseState mouseState;
         private Color foreColorDisabled;
+        private MouseStates mouseState;
         private StyleManager styleManager;
         private TextRenderingHint textRendererHint;
 
@@ -39,7 +40,7 @@
             DefaultConstructor();
 
             // DoubleBuffered = true;
-            mouseState = new MouseState(this);
+            mouseState = MouseStates.Normal;
             styleManager = new StyleManager();
             InitializeTheme();
         }
@@ -85,20 +86,21 @@
             }
         }
 
+        public Point LastPosition { get; private set; }
+
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.MouseState)]
-        public MouseStates MouseState
+        public MouseStates State
         {
             get
             {
-                return mouseState.State;
+                return mouseState;
             }
 
             set
             {
-                mouseState.State = value;
+                mouseState = value;
                 OnMouseStateChanged();
-                Invalidate();
             }
         }
 
@@ -155,19 +157,25 @@
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            MouseState = MouseStates.Down;
+            mouseState = MouseStates.Down;
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            MouseState = MouseStates.Hover;
+            mouseState = MouseStates.Hover;
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            MouseState = MouseStates.Normal;
+            mouseState = MouseStates.Normal;
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            LastPosition = e.Location;
         }
 
         protected virtual void OnMouseStateChanged()
@@ -178,7 +186,7 @@
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            MouseState = MouseStates.Hover;
+            mouseState = MouseStates.Hover;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -216,10 +224,10 @@
             ControlBorder = new Border();
             ControlBrushCollection = new[]
                 {
-                    Settings.DefaultValue.ControlState.ControlEnabled,
-                    Settings.DefaultValue.ControlState.ControlHover,
-                    Settings.DefaultValue.ControlState.ControlPressed,
-                    Settings.DefaultValue.ControlState.ControlDisabled
+                    Settings.DefaultValue.ControlStates.ControlEnabled,
+                    Settings.DefaultValue.ControlStates.ControlHover,
+                    Settings.DefaultValue.ControlStates.ControlPressed,
+                    Settings.DefaultValue.ControlStates.ControlDisabled
                 };
         }
 
@@ -247,10 +255,10 @@
                             Visible = StyleManager.VisualStylesManager.BorderVisible
                         };
 
-                    ControlBrushCollection[0] = VisualStyleSheet.ControlStateStyle.ControlEnabled;
-                    ControlBrushCollection[1] = VisualStyleSheet.ControlStateStyle.ControlHover;
-                    ControlBrushCollection[2] = VisualStyleSheet.ControlStateStyle.ControlPressed;
-                    ControlBrushCollection[3] = VisualStyleSheet.ControlStateStyle.ControlDisabled;
+                    ControlBrushCollection[0] = VisualStyleSheet.ControlStatesStyle.ControlEnabled;
+                    ControlBrushCollection[1] = VisualStyleSheet.ControlStatesStyle.ControlHover;
+                    ControlBrushCollection[2] = VisualStyleSheet.ControlStatesStyle.ControlPressed;
+                    ControlBrushCollection[3] = VisualStyleSheet.ControlStatesStyle.ControlDisabled;
                 }
                 else
                 {
@@ -258,10 +266,10 @@
 
                     ControlBorder = new Border();
 
-                    ControlBrushCollection[0] = Settings.DefaultValue.ControlState.ControlEnabled;
-                    ControlBrushCollection[1] = Settings.DefaultValue.ControlState.ControlHover;
-                    ControlBrushCollection[2] = Settings.DefaultValue.ControlState.ControlPressed;
-                    ControlBrushCollection[3] = Settings.DefaultValue.ControlState.ControlDisabled;
+                    ControlBrushCollection[0] = Settings.DefaultValue.ControlStates.ControlEnabled;
+                    ControlBrushCollection[1] = Settings.DefaultValue.ControlStates.ControlHover;
+                    ControlBrushCollection[2] = Settings.DefaultValue.ControlStates.ControlPressed;
+                    ControlBrushCollection[3] = Settings.DefaultValue.ControlStates.ControlDisabled;
                 }
             }
         }

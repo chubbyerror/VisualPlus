@@ -357,7 +357,7 @@
             VisualStylesInterface.BorderStyle = (IBorder)Styles.GetInterfaceObject(style);
             VisualStylesInterface.CheckmarkStyle = (ICheckmark)Styles.GetInterfaceObject(style);
             VisualStylesInterface.ControlStyle = (IControl)Styles.GetInterfaceObject(style);
-            VisualStylesInterface.ControlStateStyle = (IControlState)Styles.GetInterfaceObject(style);
+            VisualStylesInterface.ControlStatesStyle = (IControlState)Styles.GetInterfaceObject(style);
             VisualStylesInterface.FontStyle = (IFont)Styles.GetInterfaceObject(style);
             VisualStylesInterface.ProgressStyle = (IProgress)Styles.GetInterfaceObject(style);
             VisualStylesInterface.TabStyle = (ITab)Styles.GetInterfaceObject(style);

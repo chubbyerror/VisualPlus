@@ -51,7 +51,7 @@
 
             BackColor = Color.Transparent;
             MinimumSize = new Size(100, 100);
-
+            Maximum = 100;
             textVisible = true;
 
             // Attempt to center icon
