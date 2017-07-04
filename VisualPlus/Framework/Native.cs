@@ -7,7 +7,7 @@
     using System.Drawing;
     using System.Runtime.InteropServices;
 
-    using VisualPlus.Controls;
+    using VisualPlus.Toolkit.Controls;
 
     #endregion
 

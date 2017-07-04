@@ -6,7 +6,7 @@
     using System.ComponentModel;
     using System.Globalization;
 
-    using VisualPlus.Controls;
+    using VisualPlus.Toolkit.Controls;
 
     #endregion
 

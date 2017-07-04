@@ -6,7 +6,7 @@
     using System.Drawing;
     using System.Windows.Forms;
 
-    using VisualPlus.Controls;
+    using VisualPlus.Toolkit.Controls;
 
     #endregion
 
