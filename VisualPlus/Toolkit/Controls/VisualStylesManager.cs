@@ -12,16 +12,16 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Styles;
 
     #endregion
 
-    [ToolboxItem(true)]
+    [ToolboxItem(false)]
     [ToolboxBitmap(typeof(Component))]
     [DefaultEvent("StyleChanged")]
     [Description("The visual style manager.")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
+    [Obsolete("Disabled until code optimized.")]
     public sealed class VisualStylesManager : Component
     {
         #region Variables
@@ -38,7 +38,7 @@
         private float progressSize;
         private TextRenderingHint textRenderingHint;
         private bool textVisible;
-        private Styles.Style visualStyle;
+        private Styles visualStyle;
         private string watermarkText;
         private bool watermarkVisible;
 
@@ -65,7 +65,7 @@
             visualStyle = Settings.DefaultValue.DefaultStyle;
 
             // Load style
-            LoadStyleSettings(visualStyle);
+            // LoadStyleSettings(visualStyle);
 
             // Load settings
             animation = Settings.DefaultValue.Animation;
@@ -86,7 +86,7 @@
             Initialized = true;
         }
 
-        public delegate void StyleChangedEventHandler(Styles.Style newStyle);
+        public delegate void StyleChangedEventHandler(Styles style);
 
         public event StyleChangedEventHandler StyleChanged;
 
@@ -297,7 +297,7 @@
         [RefreshProperties(RefreshProperties.Repaint)]
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Type)]
-        public Styles.Style VisualStyle
+        public Styles VisualStyle
         {
             get
             {
@@ -307,12 +307,10 @@
             set
             {
                 visualStyle = value;
-                OnStyleChanged(visualStyle);
+
+                // OnStyleChanged(visualStyle);
             }
         }
-
-        [Browsable(false)]
-        public IVisualStyle VisualStylesInterface { get; set; }
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
@@ -350,36 +348,21 @@
 
         #region Events
 
-        /// <summary>Loads the themes style.</summary>
-        /// <param name="style">The style.</param>
-        private void LoadStyleSettings(Styles.Style style)
-        {
-            VisualStylesInterface.BorderStyle = (IBorder)Styles.GetInterfaceObject(style);
-            VisualStylesInterface.CheckmarkStyle = (ICheckmark)Styles.GetInterfaceObject(style);
-            VisualStylesInterface.ControlStyle = (IControl)Styles.GetInterfaceObject(style);
-            VisualStylesInterface.ControlStatesStyle = (IControlState)Styles.GetInterfaceObject(style);
-            VisualStylesInterface.FontStyle = (IFont)Styles.GetInterfaceObject(style);
-            VisualStylesInterface.ProgressStyle = (IProgress)Styles.GetInterfaceObject(style);
-            VisualStylesInterface.TabStyle = (ITab)Styles.GetInterfaceObject(style);
-            VisualStylesInterface.WatermarkStyle = (IWatermark)Styles.GetInterfaceObject(style);
-        }
+        // private void OnStyleChanged(Styles newstyle)
+        // {
+        // // LoadStyleSettings(newstyle);
 
-        private void OnStyleChanged(Styles.Style newstyle)
-        {
-            LoadStyleSettings(newstyle);
+        // StyleChangedEventHandler msc = VisualButton;
+        // msc += VisualCheckBox;
+        // msc(newstyle);
 
-            StyleChangedEventHandler msc = VisualButton;
-            msc += VisualCheckBox;
-            msc(newstyle);
-
-            StyleChanged?.Invoke(newstyle);
-        }
-
-        private void VisualButton(Styles.Style newStyle)
+        // StyleChanged?.Invoke(newstyle);
+        // }
+        private void VisualButton(Styles newStyle)
         {
         }
 
-        private void VisualCheckBox(Styles.Style newStyle)
+        private void VisualCheckBox(Styles newStyle)
         {
             // Todo
         }

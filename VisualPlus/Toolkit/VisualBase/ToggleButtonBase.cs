@@ -1,4 +1,4 @@
-namespace VisualPlus.Toolkit.Bases
+namespace VisualPlus.Toolkit.VisualBase
 {
     #region Namespace
 
@@ -21,7 +21,7 @@ namespace VisualPlus.Toolkit.Bases
     [DesignerCategory("code")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
-    public abstract class ToggleButtonBase : ControlBase, IControlState
+    public abstract class ToggleButtonBase : VisualControlBase, IControlState
     {
         #region Variables
 
@@ -43,7 +43,8 @@ namespace VisualPlus.Toolkit.Bases
 
             box = new Rectangle(0, 0, 14, 14);
 
-            InitializeTheme();
+            animation = Settings.DefaultValue.Animation;
+            checkMark = new Checkmark(ClientRectangle);
             ConfigureAnimation();
         }
 
@@ -227,24 +228,6 @@ namespace VisualPlus.Toolkit.Bases
 
         #region Events
 
-        public void InitializeTheme()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                ICheckmark checkmarkStyle = StyleManager.VisualStylesManager.VisualStylesInterface.CheckmarkStyle;
-
-                animation = StyleManager.VisualStylesManager.Animation;
-
-                checkMark.EnabledGradient = checkmarkStyle.EnabledGradient;
-                checkMark.DisabledGradient = checkmarkStyle.DisabledGradient;
-            }
-            else
-            {
-                animation = Settings.DefaultValue.Animation;
-                checkMark = new Checkmark(ClientRectangle);
-            }
-        }
-
         protected virtual void OnCheckedChanged(EventArgs e)
         {
             CheckedChanged?.Invoke(this, e);
@@ -259,19 +242,19 @@ namespace VisualPlus.Toolkit.Bases
                 return;
             }
 
-            State = MouseStates.Normal;
+            MouseState = MouseStates.Normal;
             MouseEnter += (sender, args) =>
                 {
-                    State = MouseStates.Hover;
+                    MouseState = MouseStates.Hover;
                 };
             MouseLeave += (sender, args) =>
                 {
                     mouseLocation = new Point(-1, -1);
-                    State = MouseStates.Normal;
+                    MouseState = MouseStates.Normal;
                 };
             MouseDown += (sender, args) =>
                 {
-                    State = MouseStates.Down;
+                    MouseState = MouseStates.Down;
 
                     if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(mouseLocation, box))
                     {
@@ -281,7 +264,7 @@ namespace VisualPlus.Toolkit.Bases
                 };
             MouseUp += (sender, args) =>
                 {
-                    State = MouseStates.Hover;
+                    MouseState = MouseStates.Hover;
                     rippleEffectsManager.SecondaryIncrement = 0.08;
                 };
             MouseMove += (sender, args) =>
@@ -289,6 +272,34 @@ namespace VisualPlus.Toolkit.Bases
                     mouseLocation = args.Location;
                     Cursor = GDI.IsMouseInBounds(mouseLocation, box) ? Cursors.Hand : Cursors.Default;
                 };
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            MouseState = MouseStates.Down;
+            Invalidate();
+        }
+
+        protected override void OnMouseHover(EventArgs e)
+        {
+            base.OnMouseHover(e);
+            MouseState = MouseStates.Hover;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            MouseState = MouseStates.Normal;
+            Invalidate();
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            MouseState = MouseStates.Hover;
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -301,14 +312,9 @@ namespace VisualPlus.Toolkit.Bases
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
-            if (StyleManager.LockedStyle)
-            {
-                InitializeTheme();
-            }
-
             box = new Rectangle(new Point(0, (ClientRectangle.Height / 2) - (box.Height / 2)), box.Size);
             GraphicsPath boxPath = Border.GetBorderShape(box, Border.Type, Border.Rounding);
-            LinearGradientBrush controlGraphicsBrush = GDI.GetControlBrush(graphics, Enabled, State, ControlBrushCollection, ClientRectangle);
+            LinearGradientBrush controlGraphicsBrush = GDI.GetControlBrush(graphics, Enabled, MouseState, ControlBrushCollection, ClientRectangle);
             GDI.FillBackground(graphics, boxPath, controlGraphicsBrush);
 
             if (Checked)
@@ -318,7 +324,7 @@ namespace VisualPlus.Toolkit.Bases
                 graphics.ResetClip();
             }
 
-            Border.DrawBorderStyle(graphics, Border, State, boxPath);
+            Border.DrawBorderStyle(graphics, Border, MouseState, boxPath);
 
             DrawText(graphics);
             DrawAnimation(graphics);

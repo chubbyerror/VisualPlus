@@ -11,8 +11,8 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
 
     #endregion
 
@@ -25,9 +25,9 @@
     {
         #region Variables
 
-        private ToolStripItemClickedEventArgs clickedEventArgs;
+        private StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
 
-        private StyleManager styleManager = new StyleManager();
+        private ToolStripItemClickedEventArgs clickedEventArgs;
 
         #endregion
 
@@ -160,23 +160,6 @@
             }
         }
 
-        [TypeConverter(typeof(StyleManagerConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public StyleManager StyleManager
-        {
-            get
-            {
-                return styleManager;
-            }
-
-            set
-            {
-                styleManager = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
@@ -242,52 +225,22 @@
 
         private void ConfigureStyleManager()
         {
-            if (styleManager.VisualStylesManager != null)
-            {
-                // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IControl controlStyle = styleManager.VisualStylesManager.VisualStylesInterface.ControlStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
+            border = new Border
+                {
+                    HoverVisible = false,
+                    Type = BorderType.Rectangle
+                };
 
-                border.Color = borderStyle.Color;
-                border.HoverColor = borderStyle.HoverColor;
-                border.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
-                border.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                border.Type = styleManager.VisualStylesManager.BorderType;
-                border.Thickness = styleManager.VisualStylesManager.BorderThickness;
-                border.Visible = styleManager.VisualStylesManager.BorderVisible;
+            Font = _styleManager.Font;
+            foreColor = _styleManager.FontStyle.ForeColor;
+            textDisabledColor = _styleManager.FontStyle.ForeColorDisabled;
 
-                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-                foreColor = fontStyle.ForeColor;
-                textDisabledColor = fontStyle.ForeColorDisabled;
+            BackColor = background;
+            arrowColor = _styleManager.ControlStyle.FlatButtonEnabled;
+            arrowDisabledColor = _styleManager.ControlStyle.FlatButtonDisabled;
+            contextMenuFont = Font;
 
-                BackColor = controlStyle.Background(0);
-                arrowColor = controlStyle.FlatButtonEnabled;
-                arrowDisabledColor = controlStyle.FlatButtonDisabled;
-                contextMenuFont = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-
-                background = controlStyle.Background(0);
-            }
-            else
-            {
-                // Load default settings
-                border = new Border
-                    {
-                        HoverVisible = false,
-                        Type = BorderType.Rectangle
-                    };
-
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
-                foreColor = Settings.DefaultValue.Font.ForeColor;
-                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-
-                BackColor = background;
-                arrowColor = Settings.DefaultValue.Control.FlatButtonEnabled;
-                arrowDisabledColor = Settings.DefaultValue.Control.FlatButtonDisabled;
-                contextMenuFont = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
-
-                background = Settings.DefaultValue.Control.Background(0);
-            }
+            background = _styleManager.ControlStyle.Background(0);
         }
 
         #endregion

@@ -11,7 +11,7 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -21,7 +21,7 @@
     [DefaultProperty("Enabled")]
     [Description("The Visual Separator")]
     [Designer(ControlManager.FilterProperties.VisualSeparator)]
-    public sealed class VisualSeparator : ControlBase
+    public sealed class VisualSeparator : VisualControlBase
     {
         #region Variables
 
@@ -49,16 +49,16 @@
 
             Color[] lineColor =
                 {
-                    Settings.DefaultValue.Control.Line,
-                    ControlPaint.Light(Settings.DefaultValue.Control.Line),
-                    Settings.DefaultValue.Control.Line
+                    StyleManager.ControlStyle.Line,
+                    ControlPaint.Light(StyleManager.ControlStyle.Line),
+                    StyleManager.ControlStyle.Line
                 };
 
             Color[] shadowColor =
                 {
-                    ControlPaint.Light(Settings.DefaultValue.Control.Shadow),
-                    Settings.DefaultValue.Control.Shadow,
-                    ControlPaint.Light(Settings.DefaultValue.Control.Shadow)
+                    ControlPaint.Light(StyleManager.ControlStyle.Shadow),
+                    StyleManager.ControlStyle.Shadow,
+                    ControlPaint.Light(StyleManager.ControlStyle.Shadow)
                 };
 
             lineGradient.Angle = angle;

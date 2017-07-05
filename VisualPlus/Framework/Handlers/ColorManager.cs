@@ -5,9 +5,6 @@
     using System;
     using System.Drawing;
     using System.Drawing.Imaging;
-    using System.Runtime.InteropServices;
-
-    using VisualPlus.Framework.GDI;
 
     #endregion
 
@@ -120,7 +117,6 @@
         /// <returns>The color.</returns>
         public static Color CurrentPointerColor()
         {
-
             Point cursor = new Point();
             Native.GetCursorPos(ref cursor);
             return GetColorFromPosition(cursor);

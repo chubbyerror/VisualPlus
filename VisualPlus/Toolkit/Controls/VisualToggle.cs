@@ -8,10 +8,11 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -21,7 +22,7 @@
     [DefaultProperty("Toggled")]
     [Description("The Visual Toggle")]
     [Designer(ControlManager.FilterProperties.VisualToggle)]
-    public sealed class VisualToggle : ControlBase
+    public sealed class VisualToggle : VisualControlBase
     {
         #region Variables
 
@@ -55,13 +56,26 @@
 
             BackColor = Color.Transparent;
             Size = new Size(50, 25);
-            Font = Settings.DefaultValue.DefaultFont;
+            Font = StyleManager.Font;
             animationTimer.Tick += AnimationTimerTick;
 
             toggleType = ToggleTypes.YesNo;
             buttonSize = new Size(20, 20);
 
-            ConfigureStyleManager();
+            ControlBorder = new Border
+                {
+                    Rounding = Settings.DefaultValue.Rounding.ToggleBorder
+                };
+
+            buttonBorder = new Border
+                {
+                    Rounding = Settings.DefaultValue.Rounding.ToggleButton
+                };
+
+            backgroundEnabledGradient = StyleManager.ProgressStyle.Background;
+            backgroundDisabledGradient = StyleManager.ControlStatesStyle.ControlDisabled;
+            buttonGradient = StyleManager.ControlStatesStyle.ControlEnabled;
+            buttonDisabledGradient = StyleManager.ControlStatesStyle.ControlDisabled;
         }
 
         public delegate void ToggledChangedEventHandler();
@@ -247,6 +261,20 @@
             animationTimer.Start();
         }
 
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            MouseState = MouseStates.Hover;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            MouseState = MouseStates.Normal;
+            Invalidate();
+        }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
@@ -258,11 +286,6 @@
             base.OnPaint(e);
 
             Graphics graphics = e.Graphics;
-
-            if (StyleManager.LockedStyle)
-            {
-                ConfigureStyleManager();
-            }
 
             controlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
 
@@ -279,7 +302,7 @@
 
             graphics.FillPath(backgroundGradientBrush, controlGraphicsPath);
 
-            Border.DrawBorderStyle(graphics, ControlBorder, State, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
 
             // Determines button state to draw
             Point buttonPoint = toggled ? endPoint : startPoint;
@@ -290,7 +313,7 @@
             GraphicsPath buttonPath = Border.GetBorderShape(buttonRectangle, buttonBorder.Type, buttonBorder.Rounding);
             graphics.FillPath(buttonGradientBrush, buttonPath);
 
-            Border.DrawBorderStyle(graphics, buttonBorder, State, buttonPath);
+            Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
         }
 
         /// <summary>Create a slide animation when toggled.</summary>
@@ -312,42 +335,6 @@
             {
                 toggleLocation -= 10;
                 Invalidate(false);
-            }
-        }
-
-        private void ConfigureStyleManager()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                buttonBorder.Color = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle.Color;
-                buttonBorder.HoverColor = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle.HoverColor;
-                buttonBorder.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
-                buttonBorder.Rounding = StyleManager.VisualStylesManager.BorderRounding;
-                buttonBorder.Type = StyleManager.VisualStylesManager.BorderType;
-                buttonBorder.Thickness = StyleManager.VisualStylesManager.BorderThickness;
-                buttonBorder.Visible = StyleManager.VisualStylesManager.BorderVisible;
-
-                backgroundEnabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ProgressStyle.Background;
-                backgroundDisabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle.ControlDisabled;
-                buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle.ControlEnabled;
-                buttonDisabledGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle.ControlDisabled;
-            }
-            else
-            {
-                ControlBorder = new Border
-                    {
-                        Rounding = Settings.DefaultValue.Rounding.ToggleBorder
-                    };
-
-                buttonBorder = new Border
-                    {
-                        Rounding = Settings.DefaultValue.Rounding.ToggleButton
-                    };
-
-                backgroundEnabledGradient = Settings.DefaultValue.Progress.Background;
-                backgroundDisabledGradient = Settings.DefaultValue.ControlStates.ControlDisabled;
-                buttonGradient = Settings.DefaultValue.ControlStates.ControlEnabled;
-                buttonDisabledGradient = Settings.DefaultValue.ControlStates.ControlDisabled;
             }
         }
 

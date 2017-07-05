@@ -2,7 +2,6 @@
 {
     #region Namespace
 
-    using System;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
@@ -12,8 +11,7 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -22,12 +20,10 @@
     [DefaultEvent("Enter")]
     [DefaultProperty("Text")]
     [Description("The Visual GroupBox")]
-    public sealed class VisualGroupBox : ContainerBase
+    public sealed class VisualGroupBox : ExpandableContainer
     {
         #region Variables
 
-        private GraphicsPath borderGraphicsPath;
-        private Expander expander;
         private GroupBoxStyle groupBoxStyle;
         private StringAlignment stringAlignment;
         private TitleAlignments titleAlign;
@@ -54,18 +50,14 @@
             Size = new Size(220, 180);
             Padding = new Padding(5, titleBoxHeight + Border.Thickness, 5, 5);
 
-            expander = new Expander(this, 25)
+            Expander = new Expandable(this, 25)
                 {
                     Visible = false
                 };
 
-            InitializeTheme();
+            titleBorder = new Border();
+            titleGradient = StyleManager.ControlStatesStyle.ControlDisabled;
         }
-
-        [Description("Occours when the expander toggle has changed.")]
-        public delegate void ToggleChangedEventHandler();
-
-        public event ToggleChangedEventHandler ToggleExpanderChanged;
 
         public enum GroupBoxStyle
         {
@@ -101,23 +93,6 @@
             set
             {
                 groupBoxStyle = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(ExpanderConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public Expander Expander
-        {
-            get
-            {
-                return expander;
-            }
-
-            set
-            {
-                expander = value;
                 Invalidate();
             }
         }
@@ -226,32 +201,6 @@
 
         #region Events
 
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-
-            if (expander.MouseOnButton)
-            {
-                expander.Expanded = !expander.Expanded;
-                ToggleExpanderChanged?.Invoke();
-            }
-            else
-            {
-                Focus();
-            }
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-
-            if (expander.Visible)
-            {
-                expander.GetMouseOnButton(e.Location);
-                Cursor = expander.MouseOnButton ? expander.Cursor : Cursors.Default;
-            }
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -262,11 +211,6 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
-            if (StyleManager.LockedStyle)
-            {
-                InitializeTheme();
-            }
-
             Size textArea = GDI.GetTextSize(graphics, Text, Font);
             Rectangle group = ConfigureStyleBox(textArea);
             Rectangle title = ConfigureStyleTitleBox(textArea);
@@ -274,11 +218,11 @@
             titleBoxRectangle = new Rectangle(title.X, title.Y, title.Width, title.Height);
             titleBoxPath = Border.GetBorderShape(titleBoxRectangle, titleBorder.Type, titleBorder.Rounding);
 
-            borderGraphicsPath = Border.GetBorderShape(group, Border.Type, Border.Rounding);
+            ControlGraphicsPath = Border.GetBorderShape(group, Border.Type, Border.Rounding);
 
-            graphics.FillPath(new SolidBrush(Background), borderGraphicsPath);
+            graphics.FillPath(new SolidBrush(Background), ControlGraphicsPath);
 
-            Border.DrawBorderStyle(graphics, Border, State, borderGraphicsPath);
+            Border.DrawBorderStyle(graphics, Border, MouseState, ControlGraphicsPath);
 
             if (titleBoxVisible)
             {
@@ -289,7 +233,7 @@
 
                 if (titleBorder.Visible)
                 {
-                    if ((State == MouseStates.Hover) && titleBorder.HoverVisible)
+                    if ((MouseState == MouseStates.Hover) && titleBorder.HoverVisible)
                     {
                         Border.DrawBorder(graphics, titleBoxPath, titleBorder.Thickness, titleBorder.HoverColor);
                     }
@@ -316,23 +260,10 @@
                 graphics.DrawString(Text, Font, new SolidBrush(ForeColor), titleBoxRectangle, stringFormat);
             }
 
-            if (expander.Visible)
+            if (Expander.Visible)
             {
-                Point buttonPoint = expander.GetAlignmentPoint(Size);
-                expander.Draw(graphics, buttonPoint);
+                Expander.Draw(graphics, Expander.GetAlignmentPoint(Size));
             }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            expander?.UpdateOriginal(Size);
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            expander?.UpdateOriginal(Size);
         }
 
         private Rectangle ConfigureStyleBox(Size textArea)
@@ -435,30 +366,6 @@
 
             Rectangle titleRectangle = new Rectangle(titlePoint, titleSize);
             return titleRectangle;
-        }
-
-        private void InitializeTheme()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                IBorder borderStyle = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IControlState controlStatesStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle;
-
-                titleBorder.Color = borderStyle.Color;
-                titleBorder.HoverColor = borderStyle.HoverColor;
-                titleBorder.HoverVisible = StyleManager.VisualStylesManager.BorderHoverVisible;
-                titleBorder.Rounding = StyleManager.VisualStylesManager.BorderRounding;
-                titleBorder.Type = StyleManager.VisualStylesManager.BorderType;
-                titleBorder.Thickness = StyleManager.VisualStylesManager.BorderThickness;
-                titleBorder.Visible = StyleManager.VisualStylesManager.BorderVisible;
-
-                titleGradient = controlStatesStyle.ControlEnabled;
-            }
-            else
-            {
-                titleBorder = new Border();
-                titleGradient = Settings.DefaultValue.ControlStates.ControlDisabled;
-            }
         }
 
         #endregion

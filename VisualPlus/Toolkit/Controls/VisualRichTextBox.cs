@@ -13,8 +13,7 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -49,18 +48,19 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
-
             CreateRichTextBox();
             Controls.Add(RichObject);
             BackColor = Color.Transparent;
             Size = new Size(150, 100);
-            //WordWrap = true;
-            //AutoWordSelection = false;
-            //BorderStyle = BorderStyle.None;
+
+            // WordWrap = true;
+            // AutoWordSelection = false;
+            // BorderStyle = BorderStyle.None;
             TextChanged += TextBoxTextChanged;
             UpdateStyles();
 
-            ConfigureStyleManager();
+            backgroundColor = StyleManager.ControlStyle.Background(3);
+            backgroundDisabledColor = StyleManager.ControlStyle.FlatButtonDisabled;
         }
 
         #endregion
@@ -116,7 +116,6 @@
             }
         }
 
-
         [Category(Localize.PropertiesCategory.Appearance)]
         [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
         [Localizable(false)]
@@ -133,7 +132,6 @@
                 Invalidate();
             }
         }
-
 
         #endregion
 
@@ -158,13 +156,6 @@
             RichObject.Text = Text;
         }
 
-        protected override void OnEnter(EventArgs e)
-        {
-            base.OnEnter(e);
-            State = MouseStates.Hover;
-            Invalidate();
-        }
-
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);
@@ -179,13 +170,6 @@
             Invalidate();
         }
 
-        protected override void OnLeave(EventArgs e)
-        {
-          //  base.OnLeave(e);
-            State = MouseStates.Normal;
-            Invalidate();
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -193,11 +177,6 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-            if (StyleManager.LockedStyle)
-            {
-                ConfigureStyleManager();
-            }
 
             Color controlTempColor = Enabled ? backgroundColor : backgroundDisabledColor;
 
@@ -209,7 +188,7 @@
 
             if (ControlBorder.Visible)
             {
-                if ((State == MouseStates.Hover) && ControlBorder.HoverVisible)
+                if ((MouseState == MouseStates.Hover) && ControlBorder.HoverVisible)
                 {
                     Border.DrawBorder(graphics, controlGraphicsPath, ControlBorder.Thickness, ControlBorder.HoverColor);
                 }
@@ -226,26 +205,6 @@
         {
             base.OnSizeChanged(e);
             RichObject.Size = new Size(Width - 13, Height - 11);
-        }
-
-        private void ConfigureStyleManager()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                IControl controlStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle;
-
-                backgroundColor = controlStyle.Background(0);
-                backgroundDisabledColor = controlStyle.FlatButtonDisabled;
-
-            }
-            else
-            {
-
-
-                backgroundColor = Settings.DefaultValue.Control.Background(3);
-                backgroundDisabledColor = Settings.DefaultValue.Control.FlatButtonDisabled;
-
-            }
         }
 
         #endregion

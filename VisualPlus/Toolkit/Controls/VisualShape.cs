@@ -12,10 +12,7 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
-    using VisualPlus.Toolkit.Bases;
-
-    using MouseStates = VisualPlus.Enums.MouseStates;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -24,7 +21,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("ShapeForm")]
     [Description("The Visual Shape")]
-    public sealed class VisualShape : ControlBase
+    public sealed class VisualShape : ContainerDrag
     {
         #region Variables
 
@@ -48,7 +45,9 @@
             BackColor = Color.Transparent;
             Size = new Size(100, 100);
 
-            ConfigureStyleManager();
+            animation = Settings.DefaultValue.Animation;
+            background = StyleManager.ControlStatesStyle.ControlEnabled;
+
             ConfigureAnimation();
         }
 
@@ -155,16 +154,16 @@
                 return;
             }
 
-            State = MouseStates.Normal;
+            MouseState = MouseStates.Normal;
             MouseEnter += (sender, args) =>
                 {
-                    State = MouseStates.Hover;
+                    MouseState = MouseStates.Hover;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.In);
                     Invalidate();
                 };
             MouseLeave += (sender, args) =>
                 {
-                    State = MouseStates.Normal;
+                    MouseState = MouseStates.Normal;
                     hoverEffectsManager.StartNewAnimation(AnimationDirection.Out);
                     Invalidate();
                 };
@@ -172,27 +171,27 @@
                 {
                     if (args.Button == MouseButtons.Left)
                     {
-                        State = MouseStates.Down;
+                        MouseState = MouseStates.Down;
                         effectsManager.StartNewAnimation(AnimationDirection.In, args.Location);
                         Invalidate();
                     }
                 };
             MouseUp += (sender, args) =>
                 {
-                    State = MouseStates.Hover;
+                    MouseState = MouseStates.Hover;
                     Invalidate();
                 };
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            State = MouseStates.Hover;
+            MouseState = MouseStates.Hover;
             Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            State = MouseStates.Normal;
+            MouseState = MouseStates.Normal;
             Invalidate();
         }
 
@@ -203,11 +202,6 @@
             Graphics graphics = e.Graphics;
 
             ConfigureComponents(graphics);
-
-            if (StyleManager.LockedStyle)
-            {
-                ConfigureStyleManager();
-            }
 
             DrawBackground(graphics);
             DrawAnimation(graphics);
@@ -280,26 +274,7 @@
                     }
             }
 
-            Border.DrawBorderStyle(graphics, ControlBorder, State, controlGraphicsPath);
-        }
-
-        private void ConfigureStyleManager()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                // Load style manager settings 
-                IBorder borderStyle = StyleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IControlState controlStatesStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle;
-                IFont fontStyle = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
-
-                animation = StyleManager.VisualStylesManager.Animation;
-                background = controlStatesStyle.ControlEnabled;
-            }
-            else
-            {
-                animation = Settings.DefaultValue.Animation;
-                background = Settings.DefaultValue.ControlStates.ControlEnabled;
-            }
+            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
         }
 
         private void DrawAnimation(Graphics graphics)

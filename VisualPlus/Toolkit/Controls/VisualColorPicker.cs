@@ -15,7 +15,7 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -24,7 +24,7 @@
     [DefaultEvent("ColorChanged")]
     [DefaultProperty("Color")]
     [Description("The Visual ColorPicker")]
-    public sealed class VisualColorPicker : ControlBase
+    public sealed class VisualColorPicker : VisualControlBase
     {
         #region Variables
 
@@ -34,11 +34,12 @@
         private static readonly object EventLargeChangeChanged = new object();
         private static readonly object EventSelectionSizeChanged = new object();
         private static readonly object EventSmallChangeChanged = new object();
-        private readonly Color buttonColor = Settings.DefaultValue.ControlStates.ControlEnabled.Colors[0];
+        private readonly Color buttonColor;
         private LinearGradientBrush _blackBottomGradient;
         private Bitmap _canvas;
         private Graphics _graphicsBuffer;
         private LinearGradientBrush _spectrumGradient;
+        private StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
         private LinearGradientBrush _whiteTopGradient;
         private Border border;
         private Brush brush;
@@ -64,6 +65,8 @@
         public VisualColorPicker()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Selectable | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick | ControlStyles.SupportsTransparentBackColor, true);
+
+            buttonColor = _styleManager.ControlStatesStyle.ControlEnabled.Colors[0];
 
             Color = Color.Black;
             ColorStep = 4;
@@ -544,7 +547,7 @@
                     }
             }
 
-            Border.DrawBorderStyle(graphics, border, State, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, border, MouseState, controlGraphicsPath);
 
             // Draws the button
             if (!Color.IsEmpty && pickerVisible)
@@ -693,7 +696,7 @@
             e.Graphics.FillPath(new SolidBrush(buttonColor), buttonGraphicsPath);
 
             // Draw border
-            Border.DrawBorderStyle(e.Graphics, pickerBorder, State, buttonGraphicsPath);
+            Border.DrawBorderStyle(e.Graphics, pickerBorder, MouseState, buttonGraphicsPath);
 
             if (Focused && includeFocus)
             {

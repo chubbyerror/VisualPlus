@@ -13,6 +13,7 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
 
     #endregion
@@ -26,18 +27,19 @@
     {
         #region Variables
 
-        private Border columnBorder;
-        private Color columnHeaderBackground = Settings.DefaultValue.Control.FlatButtonDisabled;
+        private StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
 
+        private Border columnBorder;
+        private Color columnHeaderBackground;
         private Size columnSize;
         private bool drawFocusRectangle;
         private bool drawStandardHeader;
         private Font headerFont = new Font("Helvetica", 10, FontStyle.Regular);
-        private Color headerText = Settings.DefaultValue.Font.ForeColor;
-        private Color itemBackground = Settings.DefaultValue.Control.ItemEnabled;
-        private Color itemHover = Settings.DefaultValue.Control.ItemHover;
+        private Color headerText;
+        private Color itemBackground;
+        private Color itemHover;
         private int itemPadding = 12;
-        private Color itemSelected = Settings.DefaultValue.Border.Color;
+        private Color itemSelected;
 
         private MouseStates mouseState;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
@@ -69,7 +71,17 @@
             AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
             UpdateStyles();
-            Font = new Font(Settings.DefaultValue.Font.FontFamily, Font.Size);
+
+            textRendererHint = Settings.DefaultValue.TextRenderingHint;
+            Font = new Font(_styleManager.FontStyle.FontFamily, _styleManager.FontStyle.FontSize, _styleManager.FontStyle.FontStyle);
+            ForeColor = _styleManager.FontStyle.ForeColor;
+
+            columnHeaderBackground = _styleManager.ControlStyle.FlatButtonDisabled;
+            headerText = _styleManager.FontStyle.ForeColor;
+            itemBackground = _styleManager.ControlStyle.ItemEnabled;
+            itemHover = _styleManager.ControlStyle.ItemHover;
+            itemSelected = _styleManager.BorderStyle.Color;
+
             MouseLocation = new Point(-1, -1);
 
             columnBorder = new Border
@@ -346,7 +358,7 @@
             }
 
             // Draw separator
-            graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), e.Bounds.Left, 0, e.Bounds.Right, 0);
+            graphics.DrawLine(new Pen(_styleManager.BorderStyle.Color), e.Bounds.Left, 0, e.Bounds.Right, 0);
 
             foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
             {

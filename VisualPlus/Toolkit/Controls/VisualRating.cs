@@ -10,7 +10,7 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -20,7 +20,7 @@
     [DefaultProperty("Value")]
     [Description("The Visual Rating")]
     [Designer(ControlManager.FilterProperties.VisualRating)]
-    public sealed class VisualRating : ControlBase
+    public sealed class VisualRating : VisualControlBase
     {
         #region Variables
 

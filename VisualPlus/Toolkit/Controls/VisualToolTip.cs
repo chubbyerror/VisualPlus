@@ -25,18 +25,20 @@
     {
         #region Variables
 
+        private StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
+
         private bool autoSize = true;
-        private Gradient backgroundGradient = new Gradient();
+        private Gradient backgroundGradient;
         private Border border;
-        private Font font = Settings.DefaultValue.DefaultFont;
-        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
+        private Font font;
+        private Color foreColor;
         private Image icon = Resources.Icon;
         private bool iconBorder;
         private GraphicsPath iconGraphicsPath;
         private Point iconPoint = new Point(0, 0);
         private Rectangle iconRectangle;
         private Size iconSize = new Size(24, 24);
-        private Color lineColor = Settings.DefaultValue.Control.Line;
+        private Color lineColor;
         private Padding padding = new Padding(4, 4, 4, 4);
         private Rectangle separator;
         private int separatorThickness = 1;
@@ -47,7 +49,7 @@
         private bool textShadow;
         private string title = "Title";
         private Color titleColor = Color.Gray;
-        private Font titleFont = Settings.DefaultValue.DefaultFont;
+        private Font titleFont;
         private Point titlePoint;
         private Size toolTipSize = new Size(100, 40);
         private ToolTipType toolTipType = ToolTipType.Default;
@@ -60,8 +62,12 @@
 
         public VisualToolTip()
         {
-            backgroundGradient.Colors = Settings.DefaultValue.ControlStates.ControlEnabled.Colors;
-            backgroundGradient.Positions = Settings.DefaultValue.ControlStates.ControlEnabled.Positions;
+            backgroundGradient = _styleManager.ControlStatesStyle.ControlEnabled;
+            font = _styleManager.Font;
+
+            foreColor = _styleManager.FontStyle.ForeColor;
+            lineColor = _styleManager.ControlStyle.Line;
+            titleFont = _styleManager.Font;
 
             border = new Border();
 

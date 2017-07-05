@@ -55,7 +55,7 @@
         private int mouseWheelBarPartitions = 10;
         private Graphics offGraphics;
         private Image offScreenImage;
-        private Color pointerColor = Settings.DefaultValue.Progress.Progress.Colors[0];
+        private Color pointerColor;
         private PointerStyle pointerStyle = PointerStyle.Circle;
         private bool rotating;
         private Gradient scale = new Gradient();
@@ -77,6 +77,10 @@
             SetStyle(
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
+
+            StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
+
+            pointerColor = _styleManager.ProgressStyle.Progress.Colors[0];
 
             UpdateStyles();
             knobFont = Font;

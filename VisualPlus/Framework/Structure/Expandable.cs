@@ -10,14 +10,17 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
 
     #endregion
 
-    [TypeConverter(typeof(ExpanderConverter))]
+    [TypeConverter(typeof(ExpandableConverter))]
     [Description("Expands the control.")]
-    public class Expander
+    public class Expandable
     {
         #region Variables
+
+        private readonly StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
 
         private Size buttonSize;
         private Color color;
@@ -34,7 +37,7 @@
 
         #region Constructors
 
-        public Expander(Control control, int contractHeight)
+        public Expandable(Control control, int contractHeight)
         {
             hookedControl = control;
             originalSize = hookedControl.Size;
@@ -42,7 +45,7 @@
 
             horizontal = Enums.Alignment.Horizontal.Left;
             buttonSize = new Size(12, 10);
-            color = Settings.DefaultValue.Control.FlatButtonEnabled;
+            color = _styleManager.ControlStyle.FlatButtonEnabled;
             cursor = Cursors.Hand;
             expanded = true;
             spacing = 3;
@@ -295,7 +298,7 @@
         #endregion
     }
 
-    public class ExpanderConverter : ExpandableObjectConverter
+    public class ExpandableConverter : ExpandableObjectConverter
     {
         #region Events
 
@@ -319,9 +322,9 @@
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             object result = null;
-            Expander expander = value as Expander;
+            Expandable expandable = value as Expandable;
 
-            if ((expander != null) && (destinationType == typeof(string)))
+            if ((expandable != null) && (destinationType == typeof(string)))
             {
                 // result = borderStyle.ToString();
                 result = "Expander Settings";
@@ -333,7 +336,7 @@
         #endregion
     }
 
-    [TypeConverter(typeof(ExpanderConverter))]
+    [TypeConverter(typeof(ExpandableConverter))]
     public class ObjectExpanderWrapper
     {
         #region Constructors

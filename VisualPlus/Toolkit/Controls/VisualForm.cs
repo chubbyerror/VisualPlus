@@ -42,18 +42,20 @@
             };
 
         private readonly Cursor[] resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
+
+        private StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
         private Border border;
-        private Color buttonBackHoverColor = Settings.DefaultValue.ControlStates.ControlHover.Colors[0];
-        private Color buttonBackPressedColor = Settings.DefaultValue.ControlStates.ControlPressed.Colors[0];
+        private Color buttonBackHoverColor;
+        private Color buttonBackPressedColor;
         private Size buttonSize = new Size(25, 25);
         private ButtonState buttonState = ButtonState.None;
         private Color closeColor = Color.IndianRed;
         private bool headerMouseDown;
         private Rectangle maxButtonBounds;
-        private Color maxColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+        private Color maxColor;
         private bool maximized;
         private Rectangle minButtonBounds;
-        private Color minColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+        private Color minColor;
 
         private MouseStates mouseState;
         private Point previousLocation;
@@ -63,7 +65,7 @@
         private Alignment.TextAlignment titleAlignment = Alignment.TextAlignment.Center;
         private Size titleTextSize;
         private VisualBitmap vsImage;
-        private Color windowBarColor = Settings.DefaultValue.Control.Background(1);
+        private Color windowBarColor;
         private int windowBarHeight = 30;
         private Rectangle xButtonBounds;
 
@@ -76,6 +78,14 @@
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             FormBorderStyle = FormBorderStyle.None;
             Sizable = true;
+
+            buttonBackHoverColor = _styleManager.ControlStatesStyle.ControlHover.Colors[0];
+            buttonBackPressedColor = _styleManager.ControlStatesStyle.ControlPressed.Colors[0];
+
+            maxColor = _styleManager.ControlStyle.FlatButtonEnabled;
+            minColor = _styleManager.ControlStyle.FlatButtonDisabled;
+
+            windowBarColor = _styleManager.ControlStyle.Background(0);
 
             // Padding-Left: 5 for icon
             Padding = new Padding(5, 0, 0, 0);

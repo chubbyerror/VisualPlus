@@ -23,11 +23,11 @@
 
         #region Properties
 
-        public Styles.Style StyleManagement
+        public Styles StyleManagement
         {
             get
             {
-                return Styles.Style.Visual;
+                return Styles.Visual;
             }
         }
 

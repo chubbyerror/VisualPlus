@@ -14,7 +14,6 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
 
     #endregion
 
@@ -34,6 +33,8 @@
 
         #region Variables
 
+        private StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
+
         private Gradient backgroundGradient = new Gradient();
         private int barThickness = 10;
         private int barTickSpacing = 8;
@@ -43,12 +44,12 @@
         private GraphicsPath buttonPath = new GraphicsPath();
         private Rectangle buttonRectangle;
         private Size buttonSize = new Size(27, 20);
-        private Color buttonTextColor = Settings.DefaultValue.Font.ForeColor;
+        private Color buttonTextColor;
         private bool buttonVisible = true;
         private int currentUsedPos;
         private ValueDivisor dividedValue = ValueDivisor.By1;
         private int fillingValue = 25;
-        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
+        private Color foreColor;
         private Point[] gradientPoints;
         private Color hatchForeColor = Color.FromArgb(40, hatchBackColor);
         private float hatchSize = Settings.DefaultValue.HatchSize;
@@ -59,20 +60,18 @@
         private bool leftButtonDown;
         private bool lineTicksVisible = Settings.DefaultValue.TextVisible;
         private float mouseStartPos = -1;
-
         private MouseStates mouseState;
         private string prefix;
         private bool progressFilling;
         private Gradient progressGradient = new Gradient();
         private bool progressValueVisible;
         private bool progressVisible = Settings.DefaultValue.TextVisible;
-        private StyleManager styleManager = new StyleManager();
         private string suffix;
         private Size textAreaSize;
-        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-        private Font textFont = Settings.DefaultValue.DefaultFont;
+        private Color textDisabledColor;
+        private Font textFont;
         private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
-        private Color tickColor = Settings.DefaultValue.Control.Line;
+        private Color tickColor;
         private int tickHeight = 4;
         private Border trackBarBorder;
         private Gradient trackBarDisabledGradient = new Gradient();
@@ -93,7 +92,6 @@
                 true);
 
             UpdateStyles();
-            Font = Settings.DefaultValue.DefaultFont;
             BackColor = Color.Transparent;
             DoubleBuffered = true;
             UpdateStyles();
@@ -101,8 +99,23 @@
             Size = new Size(200, 50);
             MinimumSize = new Size(0, 0);
 
-            DefaultGradient();
-            ConfigureStyleManager();
+            backgroundGradient = _styleManager.ProgressStyle.Background;
+            trackBarDisabledGradient = _styleManager.ProgressStyle.Background;
+            progressGradient = _styleManager.ProgressStyle.Progress;
+            buttonGradient = _styleManager.ControlStatesStyle.ControlEnabled;
+            hatchBackColor = _styleManager.ProgressStyle.Hatch;
+            tickColor = _styleManager.ControlStyle.Line;
+
+            trackBarBorder = new Border();
+            buttonBorder = new Border();
+
+            textRendererHint = Settings.DefaultValue.TextRenderingHint;
+            Font = _styleManager.Font;
+
+            textFont = Font;
+            foreColor = _styleManager.FontStyle.ForeColor;
+            buttonTextColor = ForeColor;
+            textDisabledColor = _styleManager.FontStyle.ForeColorDisabled;
         }
 
         public enum ValueDivisor
@@ -583,23 +596,6 @@
             }
         }
 
-        [TypeConverter(typeof(StyleManagerConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public StyleManager StyleManager
-        {
-            get
-            {
-                return styleManager;
-            }
-
-            set
-            {
-                styleManager = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.PropertiesCategory.Data)]
         [Description(Localize.Description.Common.Visible)]
         public string Suffix
@@ -1005,11 +1001,6 @@
 
             workingRectangle = Rectangle.Inflate(ClientRectangle, -indentWidth, -indentHeight);
 
-            if (styleManager.LockedStyle)
-            {
-                ConfigureStyleManager();
-            }
-
             // Set control state color
             foreColor = Enabled ? foreColor : textDisabledColor;
 
@@ -1144,50 +1135,9 @@
             return result;
         }
 
-        private static Color hatchBackColor = Settings.DefaultValue.Progress.Hatch;
+        private static Color hatchBackColor;
 
         private static Rectangle trackerRectangle = Rectangle.Empty;
-
-        private void ConfigureStyleManager()
-        {
-            if (styleManager.VisualStylesManager != null)
-            {
-                // Load style manager settings 
-                IBorder borderStyle = styleManager.VisualStylesManager.VisualStylesInterface.BorderStyle;
-                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
-
-                trackBarBorder.Color = borderStyle.Color;
-                trackBarBorder.HoverColor = borderStyle.HoverColor;
-                trackBarBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
-                trackBarBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                trackBarBorder.Type = styleManager.VisualStylesManager.BorderType;
-                trackBarBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
-                trackBarBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
-
-                buttonBorder.Color = borderStyle.Color;
-                buttonBorder.HoverColor = borderStyle.HoverColor;
-                buttonBorder.HoverVisible = styleManager.VisualStylesManager.BorderHoverVisible;
-                buttonBorder.Rounding = styleManager.VisualStylesManager.BorderRounding;
-                buttonBorder.Type = styleManager.VisualStylesManager.BorderType;
-                buttonBorder.Thickness = styleManager.VisualStylesManager.BorderThickness;
-                buttonBorder.Visible = styleManager.VisualStylesManager.BorderVisible;
-
-                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-
-                foreColor = fontStyle.ForeColor;
-                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
-            }
-            else
-            {
-                // Load default settings
-                trackBarBorder = new Border();
-                buttonBorder = new Border();
-
-                Font = Settings.DefaultValue.DefaultFont;
-                foreColor = Settings.DefaultValue.Font.ForeColor;
-                textRendererHint = Settings.DefaultValue.TextRenderingHint;
-            }
-        }
 
         /// <summary>Configures the tick style.</summary>
         /// <param name="graphics">Graphics input.</param>
@@ -1420,25 +1370,6 @@
                     VerticalStyle(graphics, workingRectangle, true);
                 }
             }
-        }
-
-        private void DefaultGradient()
-        {
-            backgroundGradient.Angle = Settings.DefaultValue.Progress.Background.Angle;
-            backgroundGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
-            backgroundGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
-
-            trackBarDisabledGradient.Angle = Settings.DefaultValue.Progress.Background.Angle;
-            trackBarDisabledGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
-            trackBarDisabledGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
-
-            progressGradient.Angle = Settings.DefaultValue.Progress.Progress.Angle;
-            progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
-            progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
-
-            buttonGradient.Angle = Settings.DefaultValue.ControlStates.ControlEnabled.Angle;
-            buttonGradient.Colors = Settings.DefaultValue.ControlStates.ControlEnabled.Colors;
-            buttonGradient.Positions = Settings.DefaultValue.ControlStates.ControlEnabled.Positions;
         }
 
         /// <summary>Draws the bar.</summary>

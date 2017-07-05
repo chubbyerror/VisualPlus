@@ -7,6 +7,7 @@
     using System.Drawing;
     using System.Globalization;
 
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Styles;
 
     #endregion
@@ -36,9 +37,11 @@
 
         public Watermark()
         {
-            activeColor = Settings.DefaultValue.Watermark.ActiveColor;
-            font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
-            inactiveColor = Settings.DefaultValue.Watermark.InactiveColor;
+            StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
+
+            activeColor = _styleManager.WatermarkStyle.ActiveColor;
+            font = _styleManager.Font;
+            inactiveColor = _styleManager.WatermarkStyle.InactiveColor;
             text = Settings.DefaultValue.WatermarkText;
             visible = Settings.DefaultValue.WatermarkVisible;
 

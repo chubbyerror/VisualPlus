@@ -10,8 +10,7 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Styles;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -57,7 +56,11 @@
             // Attempt to center icon
             iconPoint = new Point((Width / 2) - (iconRectangle.Width / 2), (Height / 2) - (iconRectangle.Height / 2));
 
-            ConfigureStyleManager();
+            backgroundCircleColor = StyleManager.ProgressStyle.BackCircle;
+            foregroundCircleColor = StyleManager.ProgressStyle.ForeCircle;
+
+            progressGradient1 = StyleManager.ProgressStyle.Progress.Colors[0];
+            progressGradient2 = StyleManager.ProgressStyle.Progress.Colors[1];
         }
 
         public enum ProgressShape
@@ -295,11 +298,6 @@
 
             Graphics graphics = e.Graphics;
 
-            if (StyleManager.LockedStyle)
-            {
-                ConfigureStyleManager();
-            }
-
             DrawCircles(graphics);
             DrawImage(graphics);
             DrawText(graphics);
@@ -315,28 +313,6 @@
         {
             base.OnSizeChanged(e);
             SetStandardSize();
-        }
-
-        private void ConfigureStyleManager()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                IProgress progressStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ProgressStyle;
-
-                backgroundCircleColor = progressStyle.BackCircle;
-                foregroundCircleColor = progressStyle.ForeCircle;
-
-                progressGradient1 = progressStyle.Progress.Colors[0];
-                progressGradient2 = progressStyle.Progress.Colors[1];
-            }
-            else
-            {
-                backgroundCircleColor = Settings.DefaultValue.Progress.BackCircle;
-                foregroundCircleColor = Settings.DefaultValue.Progress.ForeCircle;
-
-                progressGradient1 = Settings.DefaultValue.Progress.Progress.Colors[0];
-                progressGradient2 = Settings.DefaultValue.Progress.Progress.Colors[1];
-            }
         }
 
         private void DrawCircles(Graphics graphics)

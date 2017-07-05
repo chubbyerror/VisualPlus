@@ -11,8 +11,6 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
 
     #endregion
 
@@ -26,14 +24,15 @@
     {
         #region Variables
 
-        private Color foreColor = Settings.DefaultValue.Font.ForeColor;
-        private Color itemBackground = Settings.DefaultValue.Control.Background(0);
-        private Color itemBackground2 = Settings.DefaultValue.Border.Color;
-        private Color itemSelected = Settings.DefaultValue.Border.HoverColor;
+        private StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
+
+        private Color foreColor;
+        private Color itemBackground;
+        private Color itemBackground2;
+        private Color itemSelected;
         private bool rotateItemColor = true;
-        private StyleManager styleManager = new StyleManager();
-        private Color textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-        private TextRenderingHint textRendererHint = Settings.DefaultValue.TextRenderingHint;
+        private Color textDisabledColor;
+        private TextRenderingHint textRendererHint;
 
         #endregion
 
@@ -54,6 +53,8 @@
             Size = new Size(250, 150);
             AutoSize = true;
             DrawMode = DrawMode.OwnerDrawVariable;
+
+            ConfigureStyleManager();
         }
 
         #endregion
@@ -139,23 +140,6 @@
             }
         }
 
-        [TypeConverter(typeof(StyleManagerConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public StyleManager StyleManager
-        {
-            get
-            {
-                return styleManager;
-            }
-
-            set
-            {
-                styleManager = value;
-                Invalidate();
-            }
-        }
-
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public Color TextDisabledColor
@@ -205,11 +189,6 @@
             graphics.TextRenderingHint = textRendererHint;
 
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
-
-            if (styleManager.LockedStyle)
-            {
-                ConfigureStyleManager();
-            }
 
             if (e.Index > -1)
             {
@@ -266,24 +245,13 @@
 
         private void ConfigureStyleManager()
         {
-            if (styleManager.VisualStylesManager != null)
-            {
-                // Load style manager settings 
-                IFont fontStyle = styleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
-
-                textRendererHint = styleManager.VisualStylesManager.TextRenderingHint;
-                Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
-                foreColor = fontStyle.ForeColor;
-                textDisabledColor = fontStyle.ForeColorDisabled;
-            }
-            else
-            {
-                // Load default settings
-                textRendererHint = Settings.DefaultValue.TextRenderingHint;
-                Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
-                foreColor = Settings.DefaultValue.Font.ForeColor;
-                textDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
-            }
+            textRendererHint = Settings.DefaultValue.TextRenderingHint;
+            Font = _styleManager.Font;
+            foreColor = _styleManager.FontStyle.ForeColor;
+            textDisabledColor = _styleManager.FontStyle.ForeColorDisabled;
+            itemBackground = _styleManager.ControlStyle.Background(0);
+            itemBackground2 = _styleManager.BorderStyle.Color;
+            itemSelected = _styleManager.BorderStyle.HoverColor;
         }
 
         #endregion

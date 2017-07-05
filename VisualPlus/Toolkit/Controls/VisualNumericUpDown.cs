@@ -13,7 +13,7 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -23,7 +23,7 @@
     [DefaultProperty("Value")]
     [Description("The Visual NumericUpDown")]
     [Designer(ControlManager.FilterProperties.VisualNumericUpDown)]
-    public sealed class VisualNumericUpDown : ControlBase
+    public sealed class VisualNumericUpDown : VisualControlBase
     {
         #region Variables
 
@@ -60,9 +60,18 @@
             Size = new Size(125, 25);
             MinimumSize = new Size(0, 0);
 
-            buttonFont = new Font(Settings.DefaultValue.DefaultFont.FontFamily, 14, FontStyle.Bold);
+            buttonFont = new Font(StyleManager.Font.FontFamily, 14, FontStyle.Bold);
             buttonOrientation = Orientation.Horizontal;
-            InitializeTheme();
+
+            buttonBorder = new Border
+                {
+                    HoverVisible = false,
+                    Type = BorderType.Rectangle
+                };
+
+            buttonForeColor = Color.Gray;
+            backgroundGradient = StyleManager.ControlStyle.BoxEnabled;
+            buttonGradient = StyleManager.ControlStatesStyle.ControlEnabled;
         }
 
         #endregion
@@ -398,6 +407,20 @@
             Invalidate();
         }
 
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            MouseState = MouseStates.Hover;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            MouseState = MouseStates.Normal;
+            Invalidate();
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -447,11 +470,6 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-            if (StyleManager.LockedStyle)
-            {
-                InitializeTheme();
-            }
 
             controlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
@@ -516,16 +534,16 @@
             LinearGradientBrush buttonGradientBrush = Gradient.CreateGradientBrush(buttonCheckTemp.Colors, gradientPoints, buttonCheckTemp.Angle, buttonCheckTemp.Positions);
             graphics.FillPath(buttonGradientBrush, buttonPath);
 
-            Border.DrawBorderStyle(graphics, buttonBorder, State, buttonPath);
+            Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
 
             graphics.ResetClip();
 
             graphics.DrawString("+", buttonFont, new SolidBrush(buttonForeColor), incrementButtonPoints[toggleInt]);
             graphics.DrawString("-", buttonFont, new SolidBrush(buttonForeColor), decrementButtonPoints[toggleInt]);
 
-            graphics.DrawLine(new Pen(Settings.DefaultValue.Border.Color), tempSeparator[0], tempSeparator[1]);
+            graphics.DrawLine(new Pen(StyleManager.BorderStyle.Color), tempSeparator[0], tempSeparator[1]);
 
-            Border.DrawBorderStyle(graphics, ControlBorder, State, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
 
             // Draw value string
             Rectangle textBoxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
@@ -537,28 +555,6 @@
                 };
 
             graphics.DrawString(Convert.ToString(Value), Font, new SolidBrush(ForeColor), textBoxRectangle, stringFormat);
-        }
-
-        private void InitializeTheme()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                buttonGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStatesStyle.ControlEnabled;
-                buttonForeColor = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle.ForeColor;
-                backgroundGradient = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle.BoxEnabled;
-            }
-            else
-            {
-                buttonBorder = new Border
-                    {
-                        HoverVisible = false,
-                        Type = BorderType.Rectangle
-                    };
-
-                buttonForeColor = Color.Gray;
-                backgroundGradient = Settings.DefaultValue.Control.BoxEnabled;
-                buttonGradient = Settings.DefaultValue.ControlStates.ControlEnabled;
-            }
         }
 
         #endregion

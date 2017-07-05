@@ -2,10 +2,11 @@
 {
     #region Namespace
 
+    using System.Drawing;
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework.Structure;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Styles;
 
     #endregion
@@ -19,13 +20,17 @@
         #endregion
     }
 
-    public interface IContainerStyle
+    public interface IControlStyle
     {
+        #region Properties
+
         StyleManager StyleManager { get; set; }
+
+        #endregion
     }
 
     // For controls with all the control state support
-    public interface IMouseControlStates
+    public interface IControlMouseStates
     {
         #region Properties
 
@@ -40,6 +45,10 @@
     public interface IMouseState
     {
         #region Properties
+
+        Color BorderColor { get; }
+
+        Color BorderHoverColor { get; }
 
         bool Hover { get; }
 

@@ -2,36 +2,11 @@ namespace VisualPlus.Framework
 {
     #region Namespace
 
-    using System.Drawing;
     using System.Drawing.Text;
 
     using VisualPlus.Enums;
-    using VisualPlus.Styles;
 
     #endregion
-
-    public interface IVisualStyle
-    {
-        #region Properties
-
-        IBorder BorderStyle { get; set; }
-
-        ICheckmark CheckmarkStyle { get; set; }
-
-        IControlState ControlStatesStyle { get; set; }
-
-        IControl ControlStyle { get; set; }
-
-        IFont FontStyle { get; set; }
-
-        IProgress ProgressStyle { get; set; }
-
-        ITab TabStyle { get; set; }
-
-        IWatermark WatermarkStyle { get; set; }
-
-        #endregion
-    }
 
     internal class Settings
     {
@@ -64,24 +39,13 @@ namespace VisualPlus.Framework
             public const bool TitleBoxVisible = true;
             public const bool HatchVisible = true;
             public const int BarAmount = 5;
-            public const Styles.Style DefaultStyle = Styles.Style.Visual;
+            public const Styles DefaultStyle = Styles.Visual;
             public const float HatchSize = 2F;
             public const bool Moveable = false;
             public const bool WatermarkVisible = false;
 
-            public static readonly IBorder Border = (IBorder)Styles.GetInterfaceObject(DefaultStyle);
-            public static readonly ICheckmark Checkmark = (ICheckmark)Styles.GetInterfaceObject(DefaultStyle);
-            public static readonly IControl Control = (IControl)Styles.GetInterfaceObject(DefaultStyle);
-            public static readonly IControlState ControlStates = (IControlState)Styles.GetInterfaceObject(DefaultStyle);
-            public static readonly IFont Font = (IFont)Styles.GetInterfaceObject(DefaultStyle);
-            public static readonly IProgress Progress = (IProgress)Styles.GetInterfaceObject(DefaultStyle);
-            public static readonly ITab Tab = (ITab)Styles.GetInterfaceObject(DefaultStyle);
-            public static readonly IWatermark Watermark = (IWatermark)Styles.GetInterfaceObject(DefaultStyle);
-
             public static readonly string WatermarkText = "Watermark text";
             public static TextRenderingHint TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-
-            public static Font DefaultFont = new Font(Font.FontFamily, Font.FontSize, Font.FontStyle);
 
             public struct Rounding
             {

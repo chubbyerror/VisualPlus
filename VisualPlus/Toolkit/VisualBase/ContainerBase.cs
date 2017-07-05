@@ -1,17 +1,18 @@
-﻿namespace VisualPlus.Toolkit.Bases
+﻿namespace VisualPlus.Toolkit.VisualBase
 {
     #region Namespace
 
+    using System;
     using System.ComponentModel;
     using System.ComponentModel.Design;
     using System.Drawing;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
 
     #endregion
 
@@ -20,14 +21,11 @@
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
     [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public abstract class ContainerBase : ControlBase
+    public abstract class ContainerBase : VisualControlBase
     {
         #region Variables
 
         private Color _backgroundColor;
-
-        private Point _lastPosition;
-        private bool _movable;
 
         #endregion
 
@@ -36,19 +34,14 @@
         protected ContainerBase()
         {
             SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
-            _movable = Settings.DefaultValue.Moveable;
-            InitializeTheme();
+            _backgroundColor = StyleManager.ControlStyle.Background(0);
         }
 
         public delegate void BackgroundChangedEventHandler();
 
-        public delegate void ControlMovedEventHandler();
-
         [Category(Localize.EventsCategory.Appearance)]
+        [Description(Localize.Description.Common.Color)]
         public event BackgroundChangedEventHandler BackgroundChanged;
-
-        [Category(Localize.EventsCategory.Behavior)]
-        public event ControlMovedEventHandler ControlMoved;
 
         #endregion
 
@@ -88,28 +81,10 @@
             }
         }
 
-        [DefaultValue(false)]
-        [Category(Localize.PropertiesCategory.Behavior)]
-        [Description(Localize.Description.Common.Toggle)]
-        public bool Movable
-        {
-            get
-            {
-                return _movable;
-            }
-
-            set
-            {
-                _movable = value;
-                Cursor = _movable ? Cursors.Hand : Cursors.Default;
-            }
-        }
-
         #endregion
 
         #region Events
 
-        /// <summary>Fires the OnBackgroundChanged event.</summary>
         protected virtual void OnBackgroundChanged()
         {
             ExceptionManager.ApplyContainerBackColorChange(this, _backgroundColor);
@@ -126,61 +101,18 @@
             ExceptionManager.SetControlBackColor(e.Control, _backgroundColor, true);
         }
 
-        protected override void OnMouseDown(MouseEventArgs e)
+        protected override void OnMouseHover(EventArgs e)
         {
-            base.OnMouseDown(e);
-
-            if (_movable)
-            {
-                _lastPosition = e.Location;
-                Cursor = Cursors.SizeAll;
-            }
+            base.OnMouseHover(e);
+            MouseState = MouseStates.Hover;
+            Invalidate();
         }
 
-        protected override void OnMouseMove(MouseEventArgs e)
+        protected override void OnMouseLeave(EventArgs e)
         {
-            base.OnMouseMove(e);
-
-            if (_movable && (e.Button == MouseButtons.Left))
-            {
-                Left += e.Location.X - _lastPosition.X;
-                Top += e.Location.Y - _lastPosition.Y;
-
-                ControlMoved?.Invoke();
-            }
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-
-            if (_movable)
-            {
-                Cursor = Cursors.Hand;
-            }
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-
-            if (StyleManager.LockedStyle)
-            {
-                InitializeTheme();
-            }
-        }
-
-        private void InitializeTheme()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                IControl controlStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle;
-                _backgroundColor = controlStyle.Background(0);
-            }
-            else
-            {
-                _backgroundColor = Settings.DefaultValue.Control.Background(0);
-            }
+            base.OnMouseLeave(e);
+            MouseState = MouseStates.Normal;
+            Invalidate();
         }
 
         #endregion

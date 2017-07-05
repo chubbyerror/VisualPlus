@@ -14,6 +14,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
 
     #endregion
@@ -27,16 +28,17 @@
     {
         #region Variables
 
+        private StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
+
         private TabAlignment alignment = TabAlignment.Top;
         private bool arrowSelectorVisible = true;
         private int arrowSpacing = 10;
         private int arrowThickness = 5;
-        private Color backgroundColor = Settings.DefaultValue.Control.Background(3);
+        private Color backgroundColor;
         private Gradient hover = new Gradient();
         private Size itemSize = new Size(100, 25);
         private StringAlignment lineAlignment = StringAlignment.Near;
         private Point mouseLocation;
-
         private MouseStates mouseState;
         private Gradient normal = new Gradient();
         private Gradient selected = new Gradient();
@@ -45,7 +47,7 @@
         private int selectorThickness = 4;
         private bool selectorVisible;
         private bool selectorVisible2;
-        private Color separator = Settings.DefaultValue.Control.Line;
+        private Color separator;
         private int separatorSpacing = 2;
         private float separatorThickness = 2F;
         private bool separatorVisible;
@@ -73,10 +75,13 @@
 
             UpdateStyles();
 
+            backgroundColor = _styleManager.ControlStyle.Background(3);
+            separator = _styleManager.ControlStyle.Line;
+            Font = _styleManager.Font;
+
             Size = new Size(320, 160);
             MinimumSize = new Size(144, 85);
             LineAlignment = StringAlignment.Center;
-            Font = new Font(Settings.DefaultValue.Font.FontFamily, Settings.DefaultValue.Font.FontSize, Settings.DefaultValue.Font.FontStyle);
             ItemSize = itemSize;
 
             tabPageBorder = new Border();
@@ -85,20 +90,20 @@
 
             Color[] tabHover =
                 {
-                    ControlPaint.Light(Settings.DefaultValue.Tab.TabSelected),
-                    Settings.DefaultValue.Tab.TabSelected
+                    ControlPaint.Light(_styleManager.TabStyle.TabSelected),
+                    _styleManager.TabStyle.TabSelected
                 };
 
             Color[] tabNormal =
                 {
-                    ControlPaint.Light(Settings.DefaultValue.Tab.TabEnabled),
-                    Settings.DefaultValue.Tab.TabEnabled
+                    ControlPaint.Light(_styleManager.TabStyle.TabEnabled),
+                    _styleManager.TabStyle.TabEnabled
                 };
 
             Color[] tabSelected =
                 {
-                    ControlPaint.Light(Settings.DefaultValue.Tab.TabSelected),
-                    Settings.DefaultValue.Tab.TabSelected
+                    ControlPaint.Light(_styleManager.TabStyle.TabSelected),
+                    _styleManager.TabStyle.TabSelected
                 };
 
             normal.Colors = tabNormal;

@@ -14,7 +14,7 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -24,7 +24,7 @@
     [DefaultProperty("Text")]
     [Description("The Visual Label")]
     [Designer(ControlManager.FilterProperties.VisualLabel)]
-    public sealed class VisualLabel : ControlBase
+    public sealed class VisualLabel : VisualControlBase
     {
         #region Variables
 
@@ -369,10 +369,7 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
 
-            if (StyleManager.LockedStyle)
-            {
-                ConfigureStyleManager();
-            }
+            ConfigureStyleManager();
 
             Gradient foreGradient = Enabled ? _foreGradient : _foreDisabledGradient;
 
@@ -419,7 +416,7 @@
 
         private void ConfigureStyleManager()
         {
-            if (StyleManager.VisualStylesManager != null)
+            if (StyleManager != null)
             {
                 // IFont fontStyle = StyleManager.VisualStylesManager.VisualStylesInterface.FontStyle;
                 // Font = new Font(fontStyle.FontFamily, fontStyle.FontSize, fontStyle.FontStyle);
@@ -434,14 +431,14 @@
         {
             Color[] foreColor =
                 {
-                    Settings.DefaultValue.Font.ForeColor,
-                    Settings.DefaultValue.Font.ForeColor
+                    StyleManager.FontStyle.ForeColor,
+                    StyleManager.FontStyle.ForeColor
                 };
 
             Color[] textDisabledColor =
                 {
-                    ControlPaint.Light(Settings.DefaultValue.Font.ForeColorDisabled),
-                    Settings.DefaultValue.Font.ForeColorDisabled
+                    ControlPaint.Light(StyleManager.FontStyle.ForeColorDisabled),
+                    StyleManager.FontStyle.ForeColorDisabled
                 };
 
             float[] gradientPosition = { 0, 1 };

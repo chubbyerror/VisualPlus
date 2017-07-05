@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Toolkit.Bases
+﻿namespace VisualPlus.Toolkit.VisualBase
 {
     #region Namespace
 
@@ -11,8 +11,7 @@
     [DesignerCategory("code")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
-    public abstract class InputFieldBase : ControlBase
+    public abstract class RepeatButton : ButtonContentBase
     {
-
     }
 }

@@ -11,8 +11,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework.Structure;
 
-    using MouseStates = VisualPlus.Enums.MouseStates;
-
     #endregion
 
     internal class GDI
@@ -447,7 +445,7 @@
         {
             graphics.FillPath(gradientBrush, graphicsPath);
         }
-        
+
         /// <summary>Gets the control brush.</summary>
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="enabled">Enabled state.</param>

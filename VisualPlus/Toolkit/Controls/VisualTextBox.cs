@@ -14,8 +14,7 @@
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Properties;
-    using VisualPlus.Styles;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -37,13 +36,13 @@
 
         private Color backgroundColor;
         private Border buttonBorder;
-        private Color buttonColor = Settings.DefaultValue.Control.FlatButtonEnabled;
+        private Color buttonColor;
         private Image buttonImage = Resources.search;
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private bool buttonVisible;
         private int buttonWidth = 19;
-        private Color controlDisabledColor = Settings.DefaultValue.Font.ForeColorDisabled;
+        private Color controlDisabledColor;
         private GraphicsPath controlGraphicsPath;
         private Size iconSize = new Size(13, 13);
         private int textBoxHeight = 20;
@@ -63,6 +62,12 @@
                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
                 true);
 
+            buttonColor = StyleManager.ControlStyle.FlatButtonEnabled;
+            controlDisabledColor = StyleManager.FontStyle.ForeColorDisabled;
+
+            Border = new Border();
+            buttonBorder = new Border();
+
             AutoSize = false;
             Size = new Size(135, 25);
             CreateTextBox();
@@ -72,7 +77,7 @@
 
             waterMarkContainer = null;
 
-            ConfigureStyleManager();
+            backgroundColor = StyleManager.ControlStyle.Background(3);
 
             if (watermark.Visible)
             {
@@ -296,29 +301,9 @@
             TextBoxObject.MouseLeave += OnLeave;
         }
 
-        private void OnEnter(object sender, EventArgs e)
-        {
-            State = MouseStates.Hover;
-        }
-
-        private void OnLeave(object sender, EventArgs e)
-        {
-            if (!TextBoxObject.Focused)
-            {
-                State = MouseStates.Normal;
-            }
-        }
-
-        private void OnMouseMove(object sender, MouseEventArgs e)
-        {
-            State = MouseStates.Hover;
-        }
-
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
-            State = MouseStates.Hover;
-            Invalidate();
 
             if (watermark.Visible)
             {
@@ -352,7 +337,6 @@
         {
             base.OnGotFocus(e);
             TextBoxObject.Focus();
-            State = MouseStates.Hover;
         }
 
         protected override void OnInvalidated(InvalidateEventArgs e)
@@ -370,11 +354,6 @@
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-
-
-
-            State = MouseStates.Normal;
-            Invalidate();
 
             if (watermark.Visible)
             {
@@ -414,7 +393,7 @@
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            State = MouseStates.Hover;
+            MouseState = MouseStates.Hover;
             xValue = e.Location.X;
             yValue = e.Location.Y;
             Invalidate();
@@ -436,11 +415,6 @@
             graphics.Clear(Parent.BackColor);
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-            if (StyleManager.LockedStyle)
-            {
-                ConfigureStyleManager();
-            }
 
             if (!TextBoxObject.Multiline)
             {
@@ -484,7 +458,7 @@
                 graphics.DrawImage(buttonImage, imageRectangle);
                 graphics.SetClip(controlGraphicsPath);
 
-                Border.DrawBorderStyle(graphics, buttonBorder, State, buttonPath);
+                Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
 
                 TextBoxObject.Width = buttonRectangle.X - 10;
             }
@@ -498,7 +472,7 @@
             // Draw border
             if (ControlBorder.Visible)
             {
-                if ((State == MouseStates.Hover) && ControlBorder.HoverVisible)
+                if ((MouseState == MouseStates.Hover) && ControlBorder.HoverVisible)
                 {
                     Border.DrawBorder(graphics, controlGraphicsPath, ControlBorder.Thickness, ControlBorder.HoverColor);
                 }
@@ -554,20 +528,6 @@
             }
         }
 
-        private void ConfigureStyleManager()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-                IControl controlStyle = StyleManager.VisualStylesManager.VisualStylesInterface.ControlStyle;
-                backgroundColor = controlStyle.Background(0);
-            }
-            else
-            {
-                buttonBorder = new Border();
-                backgroundColor = Settings.DefaultValue.Control.Background(3);
-            }
-        }
-
         private void DrawWaterMark()
         {
             if ((waterMarkContainer == null) && (TextBoxObject.TextLength <= 0))
@@ -586,6 +546,11 @@
             Text = TextBoxObject.Text;
         }
 
+        private void OnEnter(object sender, EventArgs e)
+        {
+            MouseState = MouseStates.Hover;
+        }
+
         private void OnKeyDown(object obj, KeyEventArgs e)
         {
             // Select all
@@ -601,6 +566,19 @@
                 TextBoxObject.Copy();
                 e.SuppressKeyPress = true;
             }
+        }
+
+        private void OnLeave(object sender, EventArgs e)
+        {
+            if (!TextBoxObject.Focused)
+            {
+                MouseState = MouseStates.Normal;
+            }
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            MouseState = MouseStates.Hover;
         }
 
         private void RemoveWaterMark()

@@ -13,7 +13,7 @@
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -72,8 +72,12 @@
             percentageVisible = true;
             DoubleBuffered = true;
 
-            DefaultGradient();
-            ConfigureStyleManager();
+            backgroundGradient.Colors = StyleManager.ProgressStyle.Background.Colors;
+            backgroundGradient.Positions = StyleManager.ProgressStyle.Background.Positions;
+            hatchBackColor = StyleManager.ProgressStyle.Hatch;
+            hatchForeColor = Color.FromArgb(40, hatchBackColor);
+            progressGradient.Colors = StyleManager.ProgressStyle.Progress.Colors;
+            progressGradient.Positions = StyleManager.ProgressStyle.Progress.Positions;
         }
 
         public enum BarTypes
@@ -389,11 +393,6 @@
 
             gradientPoints = new[] { new Point { X = ClientRectangle.Width, Y = 0 }, new Point { X = ClientRectangle.Width, Y = ClientRectangle.Height } };
 
-            if (StyleManager.LockedStyle)
-            {
-                ConfigureStyleManager();
-            }
-
             if ((barStyle == BarTypes.Horizontal) || (barStyle == BarTypes.Vertical))
             {
                 // Draw default progress
@@ -441,27 +440,6 @@
                         break;
                     }
             }
-        }
-
-        private void ConfigureStyleManager()
-        {
-            if (StyleManager.VisualStylesManager != null)
-            {
-            }
-            else
-            {
-                hatchBackColor = Settings.DefaultValue.Progress.Hatch;
-                hatchForeColor = Color.FromArgb(40, hatchBackColor);
-            }
-        }
-
-        private void DefaultGradient()
-        {
-            backgroundGradient.Colors = Settings.DefaultValue.Progress.Background.Colors;
-            backgroundGradient.Positions = Settings.DefaultValue.Progress.Background.Positions;
-
-            progressGradient.Colors = Settings.DefaultValue.Progress.Progress.Colors;
-            progressGradient.Positions = Settings.DefaultValue.Progress.Progress.Positions;
         }
 
         private void DrawDefaultProgress(BarTypes style, Graphics graphics)
@@ -563,7 +541,7 @@
             // Draw border
             if (ControlBorder.Visible)
             {
-                if ((State == MouseStates.Hover) && ControlBorder.HoverVisible)
+                if ((MouseState == MouseStates.Hover) && ControlBorder.HoverVisible)
                 {
                     Border.DrawBorder(graphics, graphicsDefaultBorderPath, ControlBorder.Thickness, ControlBorder.HoverColor);
                 }
@@ -722,7 +700,7 @@
                 // Draw border
                 if (ControlBorder.Visible)
                 {
-                    if ((State == MouseStates.Hover) && ControlBorder.HoverVisible)
+                    if ((MouseState == MouseStates.Hover) && ControlBorder.HoverVisible)
                     {
                         Border.DrawBorder(graphics, barStylePath, ControlBorder.Thickness, ControlBorder.HoverColor);
                     }

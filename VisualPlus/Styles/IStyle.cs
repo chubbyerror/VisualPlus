@@ -32,6 +32,8 @@
 
     public interface IControlState
     {
+        #region Properties
+
         Gradient ControlDisabled { get; }
 
         Gradient ControlEnabled { get; }
@@ -39,6 +41,8 @@
         Gradient ControlHover { get; }
 
         Gradient ControlPressed { get; }
+
+        #endregion
     }
 
     public interface IControl

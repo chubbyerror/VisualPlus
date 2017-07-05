@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Toolkit.Bases
+﻿namespace VisualPlus.Toolkit.VisualBase
 {
     #region Namespace
 
@@ -6,6 +6,7 @@
     using System.ComponentModel;
     using System.Runtime.InteropServices;
 
+    using VisualPlus.Enums;
     using VisualPlus.Framework;
 
     #endregion
@@ -14,7 +15,7 @@
     [DesignerCategory("code")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
-    public abstract class ProgressBase : ControlBase
+    public abstract class ProgressBase : VisualControlBase
     {
         #region Variables
 
@@ -235,6 +236,20 @@
                     OnValueChanged(EventArgs.Empty);
                 }
             }
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            MouseState = MouseStates.Hover;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            MouseState = MouseStates.Normal;
+            Invalidate();
         }
 
         protected virtual void OnValueChanged(EventArgs e)

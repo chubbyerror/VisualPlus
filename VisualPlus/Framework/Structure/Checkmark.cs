@@ -12,6 +12,7 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Styles;
 
     #endregion
@@ -21,6 +22,8 @@
     public class Checkmark : ICheckmark
     {
         #region Variables
+
+        private readonly StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
 
         private bool autoSize;
         private char checkCharacter;
@@ -44,12 +47,12 @@
         /// <param name="boundary">The boundary.</param>
         public Checkmark(Rectangle boundary)
         {
-            enabledGradient = Settings.DefaultValue.Checkmark.EnabledGradient;
-            disabledGradient = Settings.DefaultValue.Checkmark.DisabledGradient;
+            enabledGradient = _styleManager.CheckmarkStyle.EnabledGradient;
+            disabledGradient = _styleManager.CheckmarkStyle.DisabledGradient;
 
             autoSize = true;
             checkCharacter = '✔';
-            checkCharacterFont = Settings.DefaultValue.DefaultFont;
+            checkCharacterFont = _styleManager.Font;
             checkType = CheckType.Character;
 
             shapeRounding = Settings.DefaultValue.Rounding.BoxRounding;

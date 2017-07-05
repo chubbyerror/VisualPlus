@@ -11,7 +11,7 @@
 
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Toolkit.Bases;
+    using VisualPlus.Toolkit.VisualBase;
 
     #endregion
 
@@ -21,7 +21,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Enabled")]
     [Description("The Visual Progress Indicator")]
-    public sealed class VisualProgressIndicator : ControlBase
+    public sealed class VisualProgressIndicator : VisualControlBase
     {
         #region Variables
 

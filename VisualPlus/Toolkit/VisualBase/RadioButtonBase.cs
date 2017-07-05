@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Toolkit.Bases
+﻿namespace VisualPlus.Toolkit.VisualBase
 {
     #region Namespace
 

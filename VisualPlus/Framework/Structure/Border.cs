@@ -34,8 +34,10 @@
         /// <summary>Initializes a new instance of the <see cref="Border" /> class.</summary>
         public Border()
         {
-            color = Settings.DefaultValue.Border.Color;
-            hoverColor = Settings.DefaultValue.Border.HoverColor;
+            StyleManager styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
+
+            color = styleManager.BorderStyle.Color;
+            hoverColor = styleManager.BorderStyle.HoverColor;
             rounding = Settings.DefaultValue.Rounding.Default;
             thickness = Settings.DefaultValue.BorderThickness;
             type = Settings.DefaultValue.BorderType;
