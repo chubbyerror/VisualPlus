@@ -93,10 +93,7 @@
 
             Border.DrawBorderStyle(graphics, Border, MouseState, ControlGraphicsPath);
 
-            if (_expander.Visible)
-            {
-                _expander.Draw(graphics, _expander.GetAlignmentPoint(Size));
-            }
+            _expander.Draw(graphics, _expander.GetAlignmentPoint(Size));
         }
 
         #endregion

@@ -49,6 +49,15 @@
             return grayScale;
         }
 
+        /// <summary>Gets a bool value determining whether the object has the following method.</summary>
+        /// <param name="objectToCheck">Object to check.</param>
+        /// <param name="methodName">Method name to search.</param>
+        /// <returns>Returns bool value.</returns>
+        public static bool HasMethod(this object objectToCheck, string methodName)
+        {
+            return objectToCheck.GetType().GetMethod(methodName) != null;
+        }
+
         /// <summary>Check if the value is in range.</summary>
         /// <param name="value">The value.</param>
         /// <param name="minimum">The minimum value.</param>

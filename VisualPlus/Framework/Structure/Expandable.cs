@@ -16,7 +16,7 @@
     #endregion
 
     [TypeConverter(typeof(ExpandableConverter))]
-    [Description("Expands the control.")]
+    [Description("Expandable component extension.")]
     public class Expandable
     {
         #region Variables
@@ -59,6 +59,8 @@
             _control.MouseMove += ControlMouseMove;
             _control.Resize += ControlReSizeChanged;
             _control.SizeChanged += ControlReSizeChanged;
+
+            _control.MouseHover += ControlMouseHover;
         }
 
         [Category(Localize.EventsCategory.PropertyChanged)]
@@ -238,31 +240,34 @@
         /// <param name="buttonPoint">The button location.</param>
         public void Draw(Graphics graphics, Point buttonPoint)
         {
-            var points = new Point[3];
-            if (_expanded)
+            if (_visible)
             {
-                points[0].X = buttonPoint.X + _spacing + (ButtonSize.Width / 2);
-                points[0].Y = buttonPoint.Y + _spacing;
+                var points = new Point[3];
+                if (_expanded)
+                {
+                    points[0].X = buttonPoint.X + _spacing + (ButtonSize.Width / 2);
+                    points[0].Y = buttonPoint.Y + _spacing;
 
-                points[1].X = buttonPoint.X + _spacing;
-                points[1].Y = buttonPoint.Y + _spacing + ButtonSize.Height;
+                    points[1].X = buttonPoint.X + _spacing;
+                    points[1].Y = buttonPoint.Y + _spacing + ButtonSize.Height;
 
-                points[2].X = buttonPoint.X + _spacing + ButtonSize.Width;
-                points[2].Y = buttonPoint.Y + _spacing + ButtonSize.Height;
+                    points[2].X = buttonPoint.X + _spacing + ButtonSize.Width;
+                    points[2].Y = buttonPoint.Y + _spacing + ButtonSize.Height;
+                }
+                else
+                {
+                    points[0].X = buttonPoint.X + _spacing;
+                    points[0].Y = buttonPoint.Y + _spacing;
+
+                    points[1].X = buttonPoint.X + _spacing + ButtonSize.Width;
+                    points[1].Y = buttonPoint.Y + _spacing;
+
+                    points[2].X = buttonPoint.X + _spacing + (ButtonSize.Width / 2);
+                    points[2].Y = buttonPoint.Y + _spacing + ButtonSize.Height;
+                }
+
+                graphics.FillPolygon(new SolidBrush(_color), points);
             }
-            else
-            {
-                points[0].X = buttonPoint.X + _spacing;
-                points[0].Y = buttonPoint.Y + _spacing;
-
-                points[1].X = buttonPoint.X + _spacing + ButtonSize.Width;
-                points[1].Y = buttonPoint.Y + _spacing;
-
-                points[2].X = buttonPoint.X + _spacing + (ButtonSize.Width / 2);
-                points[2].Y = buttonPoint.Y + _spacing + ButtonSize.Height;
-            }
-
-            graphics.FillPolygon(new SolidBrush(_color), points);
         }
 
         /// <summary>Retrieves the alignment point from the control.</summary>
@@ -303,18 +308,21 @@
             }
         }
 
+        private void ControlMouseHover(object sender, EventArgs e)
+        {
+            if (_visible & MouseOnButton)
+            {
+                _control.Cursor = _cursor;
+            }
+            else if (_visible & !MouseOnButton)
+            {
+                _control.Cursor = Cursors.Default;
+            }
+        }
+
         private void ControlMouseMove(object sender, MouseEventArgs e)
         {
-            if (_visible)
-            {
-                MouseOnButton = GDI.IsMouseInBounds(e.Location, new Rectangle(GetAlignmentPoint(_originalSize), _buttonSize));
-            }
-            else
-            {
-                MouseOnButton = false;
-            }
-
-            _control.Cursor = MouseOnButton ? _cursor : Cursors.Default;
+            MouseOnButton = GDI.IsMouseInBounds(e.Location, new Rectangle(GetAlignmentPoint(_originalSize), _buttonSize));
         }
 
         private void ControlReSizeChanged(object sender, EventArgs e)

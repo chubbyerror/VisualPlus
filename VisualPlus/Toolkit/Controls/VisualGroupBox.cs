@@ -296,10 +296,7 @@
                 graphics.DrawString(Text, Font, new SolidBrush(ForeColor), titleBoxRectangle, stringFormat);
             }
 
-            if (_expander.Visible)
-            {
-                _expander.Draw(graphics, _expander.GetAlignmentPoint(Size));
-            }
+            _expander.Draw(graphics, _expander.GetAlignmentPoint(Size));
         }
 
         private Rectangle ConfigureStyleBox(Size textArea)

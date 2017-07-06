@@ -13,7 +13,7 @@
 
     #endregion
 
-    [Description("Allows you to drag any control.")]
+    [Description("Drag component extension.")]
     [TypeConverter(typeof(DragConverter))]
     public class Drag
     {
@@ -124,7 +124,7 @@
             {
                 _control.Left += e.Location.X - _lastPosition.X;
                 _control.Top += e.Location.Y - _lastPosition.Y;
-
+                _control.Cursor = _cursorMove;
                 IsDragging = true;
                 ControlDrag?.Invoke(new ControlDragEventArgs(e.Location));
             }
