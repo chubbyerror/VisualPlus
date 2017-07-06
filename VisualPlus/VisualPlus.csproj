@@ -54,6 +54,8 @@
     <Compile Include="Components\Symbols\Bars.cs" />
     <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Framework\Handlers\StyleManager.cs" />
+    <Compile Include="Framework\Structure\Badge.cs" />
+    <Compile Include="Toolkit\Delegates\BadgeDelegate.cs" />
     <Compile Include="Toolkit\Delegates\ControlExpandableDelegate.cs" />
     <Compile Include="Toolkit\VisualBase\ContainerBase.cs" />
     <Compile Include="Toolkit\VisualBase\CheckBoxBase.cs" />
