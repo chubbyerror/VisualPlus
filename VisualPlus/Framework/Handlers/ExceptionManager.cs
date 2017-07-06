@@ -35,7 +35,7 @@
         /// <returns>Bool value.</returns>
         public static bool ArgumentOutOfRangeException(int sourceValue, int minimumValue, int maximumValue)
         {
-            if (sourceValue >= minimumValue && sourceValue <= maximumValue)
+            if ((sourceValue >= minimumValue) && (sourceValue <= maximumValue))
             {
                 // Value in range
                 return true;
