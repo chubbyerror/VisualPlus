@@ -21,12 +21,14 @@
     [DefaultEvent("Click")]
     [DefaultProperty("ShapeForm")]
     [Description("The Visual Shape")]
-    public sealed class VisualShape : ContainerDrag
+    public sealed class VisualShape : VisualControlBase
     {
         #region Variables
 
+        private Drag _drag;
+
         private bool animation;
-        private Gradient background = new Gradient();
+        private Gradient background;
         private GraphicsPath controlGraphicsPath;
         private VFXManager effectsManager;
         private VFXManager hoverEffectsManager;
@@ -47,6 +49,8 @@
 
             animation = Settings.DefaultValue.Animation;
             background = StyleManager.ControlStatesStyle.ControlEnabled;
+
+            _drag = new Drag(this, Settings.DefaultValue.Moveable);
 
             ConfigureAnimation();
         }
@@ -123,6 +127,22 @@
             {
                 ControlBorder = value;
                 Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(DragConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.PropertiesCategory.Behavior)]
+        public Drag Drag
+        {
+            get
+            {
+                return _drag;
+            }
+
+            set
+            {
+                _drag = value;
             }
         }
 

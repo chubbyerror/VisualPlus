@@ -85,6 +85,7 @@
             public const string TextRenderingHintChanged = "Occours when the TextRenderingHint has changed.";
             public const string ToggleExpanderChanged = "Occours when the expander toggle has changed.";
             public const string ControlDragChanged = "Occours when the control is being dragged.";
+            public const string ControlDragToggleChanged = "Occours when the control drag toggle has been changed.";
         }
 
 #if DEBUG

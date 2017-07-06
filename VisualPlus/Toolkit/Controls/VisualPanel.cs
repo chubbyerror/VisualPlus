@@ -7,6 +7,7 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    using VisualPlus.Framework;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Toolkit.VisualBase;
 
@@ -17,8 +18,15 @@
     [DefaultEvent("Paint")]
     [DefaultProperty("Enabled")]
     [Description("The Visual Panel")]
-    public sealed class VisualPanel : ExpandableContainer
+    public sealed class VisualPanel : ContainerBase
     {
+        #region Variables
+
+        private Drag _drag;
+        private Expandable _expander;
+
+        #endregion
+
         #region Constructors
 
         public VisualPanel()
@@ -27,7 +35,44 @@
             Padding = new Padding(5, 5, 5, 5);
             DoubleBuffered = true;
 
-            Expander = new Expandable(this, 22);
+            _drag = new Drag(this, Settings.DefaultValue.Moveable);
+            _expander = new Expandable(this, 22);
+        }
+
+        #endregion
+
+        #region Properties
+
+        [TypeConverter(typeof(DragConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.PropertiesCategory.Behavior)]
+        public Drag Drag
+        {
+            get
+            {
+                return _drag;
+            }
+
+            set
+            {
+                _drag = value;
+            }
+        }
+
+        [TypeConverter(typeof(ExpandableConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.PropertiesCategory.Behavior)]
+        public Expandable Expandable
+        {
+            get
+            {
+                return _expander;
+            }
+
+            set
+            {
+                _expander = value;
+            }
         }
 
         #endregion
@@ -48,9 +93,9 @@
 
             Border.DrawBorderStyle(graphics, Border, MouseState, ControlGraphicsPath);
 
-            if (Expander.Visible)
+            if (_expander.Visible)
             {
-                Expander.Draw(graphics, Expander.GetAlignmentPoint(Size));
+                _expander.Draw(graphics, _expander.GetAlignmentPoint(Size));
             }
         }
 

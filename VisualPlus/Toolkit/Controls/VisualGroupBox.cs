@@ -20,10 +20,12 @@
     [DefaultEvent("Enter")]
     [DefaultProperty("Text")]
     [Description("The Visual GroupBox")]
-    public sealed class VisualGroupBox : ExpandableContainer
+    public sealed class VisualGroupBox : ContainerBase
     {
         #region Variables
 
+        private Drag _drag;
+        private Expandable _expander;
         private GroupBoxStyle groupBoxStyle;
         private StringAlignment stringAlignment;
         private TitleAlignments titleAlign;
@@ -50,7 +52,9 @@
             Size = new Size(220, 180);
             Padding = new Padding(5, titleBoxHeight + Border.Thickness, 5, 5);
 
-            Expander = new Expandable(this, 25)
+            _drag = new Drag(this, Settings.DefaultValue.Moveable);
+
+            _expander = new Expandable(this, 25)
                 {
                     Visible = false
                 };
@@ -94,6 +98,38 @@
             {
                 groupBoxStyle = value;
                 Invalidate();
+            }
+        }
+
+        [TypeConverter(typeof(DragConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.PropertiesCategory.Behavior)]
+        public Drag Drag
+        {
+            get
+            {
+                return _drag;
+            }
+
+            set
+            {
+                _drag = value;
+            }
+        }
+
+        [TypeConverter(typeof(ExpandableConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.PropertiesCategory.Behavior)]
+        public Expandable Expandable
+        {
+            get
+            {
+                return _expander;
+            }
+
+            set
+            {
+                _expander = value;
             }
         }
 
@@ -260,9 +296,9 @@
                 graphics.DrawString(Text, Font, new SolidBrush(ForeColor), titleBoxRectangle, stringFormat);
             }
 
-            if (Expander.Visible)
+            if (_expander.Visible)
             {
-                Expander.Draw(graphics, Expander.GetAlignmentPoint(Size));
+                _expander.Draw(graphics, _expander.GetAlignmentPoint(Size));
             }
         }
 

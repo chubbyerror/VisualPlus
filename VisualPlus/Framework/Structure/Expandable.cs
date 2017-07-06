@@ -11,6 +11,7 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
+    using VisualPlus.Toolkit.Delegates;
 
     #endregion
 
@@ -21,36 +22,60 @@
         #region Variables
 
         private readonly StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
+        private Alignment.Horizontal _alignmentHorizontal;
 
-        private Size buttonSize;
-        private Color color;
-        private int contractedHeight;
-        private Cursor cursor;
-        private bool expanded;
-        private Control hookedControl;
-        private Alignment.Horizontal horizontal;
-        private Size originalSize;
-        private int spacing;
-        private bool visible;
+        private Size _buttonSize;
+        private Color _color;
+        private int _contractedHeight;
+        private Control _control;
+        private Cursor _cursor;
+        private bool _expanded;
+        private Size _originalSize;
+        private int _spacing;
+        private bool _visible;
 
         #endregion
 
         #region Constructors
 
-        public Expandable(Control control, int contractHeight)
+        /// <summary>Initializes a new instance of the <see cref="Expandable" /> class.</summary>
+        /// <param name="control">The control.</param>
+        /// <param name="contractedHeight">The contracted height.</param>
+        public Expandable(Control control, int contractedHeight)
         {
-            hookedControl = control;
-            originalSize = hookedControl.Size;
-            contractedHeight = contractHeight;
+            _control = control;
+            _originalSize = _control.Size;
+            _contractedHeight = contractedHeight;
 
-            horizontal = Enums.Alignment.Horizontal.Left;
-            buttonSize = new Size(12, 10);
-            color = _styleManager.ControlStyle.FlatButtonEnabled;
-            cursor = Cursors.Hand;
-            expanded = true;
-            spacing = 3;
-            visible = true;
+            _alignmentHorizontal = Enums.Alignment.Horizontal.Left;
+            _buttonSize = new Size(12, 10);
+            _color = _styleManager.ControlStyle.FlatButtonEnabled;
+            _cursor = Cursors.Hand;
+            _expanded = true;
+            _spacing = 3;
+            _visible = true;
+
+            _control.Click += ControlMouseClick;
+            _control.MouseMove += ControlMouseMove;
+            _control.Resize += ControlReSizeChanged;
+            _control.SizeChanged += ControlReSizeChanged;
         }
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description(Localize.EventDescription.ToggleExpanderChanged)]
+        public event ExpanderClickEventHandler ExpanderClick;
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description(Localize.EventDescription.ToggleExpanderChanged)]
+        public event ExpanderContractedEventHandler ExpanderContracted;
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description(Localize.EventDescription.ToggleExpanderChanged)]
+        public event ExpanderExpandedEventHandler ExpanderExpanded;
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description(Localize.EventDescription.ToggleExpanderChanged)]
+        public event ExpanderToggledEventHandler ExpanderToggled;
 
         #endregion
 
@@ -63,12 +88,12 @@
         {
             get
             {
-                return horizontal;
+                return _alignmentHorizontal;
             }
 
             set
             {
-                horizontal = value;
+                _alignmentHorizontal = value;
             }
         }
 
@@ -79,12 +104,12 @@
         {
             get
             {
-                return buttonSize;
+                return _buttonSize;
             }
 
             set
             {
-                buttonSize = value;
+                _buttonSize = value;
             }
         }
 
@@ -95,12 +120,12 @@
         {
             get
             {
-                return color;
+                return _color;
             }
 
             set
             {
-                color = value;
+                _color = value;
             }
         }
 
@@ -111,12 +136,12 @@
         {
             get
             {
-                return contractedHeight;
+                return _contractedHeight;
             }
 
             set
             {
-                contractedHeight = value;
+                _contractedHeight = value;
             }
         }
 
@@ -127,12 +152,12 @@
         {
             get
             {
-                return cursor;
+                return _cursor;
             }
 
             set
             {
-                cursor = value;
+                _cursor = value;
             }
         }
 
@@ -143,13 +168,13 @@
         {
             get
             {
-                return expanded;
+                return _expanded;
             }
 
             set
             {
-                expanded = value;
-                hookedControl.Size = GetControlToggled();
+                _expanded = value;
+                _control.Size = GetControlToggled();
             }
         }
 
@@ -163,12 +188,12 @@
         {
             get
             {
-                return originalSize;
+                return _originalSize;
             }
 
             set
             {
-                originalSize = value;
+                _originalSize = value;
             }
         }
 
@@ -179,12 +204,12 @@
         {
             get
             {
-                return spacing;
+                return _spacing;
             }
 
             set
             {
-                spacing = value;
+                _spacing = value;
             }
         }
 
@@ -195,12 +220,12 @@
         {
             get
             {
-                return visible;
+                return _visible;
             }
 
             set
             {
-                visible = value;
+                _visible = value;
             }
         }
 
@@ -214,30 +239,30 @@
         public void Draw(Graphics graphics, Point buttonPoint)
         {
             var points = new Point[3];
-            if (expanded)
+            if (_expanded)
             {
-                points[0].X = buttonPoint.X + spacing + (ButtonSize.Width / 2);
-                points[0].Y = buttonPoint.Y + spacing;
+                points[0].X = buttonPoint.X + _spacing + (ButtonSize.Width / 2);
+                points[0].Y = buttonPoint.Y + _spacing;
 
-                points[1].X = buttonPoint.X + spacing;
-                points[1].Y = buttonPoint.Y + spacing + ButtonSize.Height;
+                points[1].X = buttonPoint.X + _spacing;
+                points[1].Y = buttonPoint.Y + _spacing + ButtonSize.Height;
 
-                points[2].X = buttonPoint.X + spacing + ButtonSize.Width;
-                points[2].Y = buttonPoint.Y + spacing + ButtonSize.Height;
+                points[2].X = buttonPoint.X + _spacing + ButtonSize.Width;
+                points[2].Y = buttonPoint.Y + _spacing + ButtonSize.Height;
             }
             else
             {
-                points[0].X = buttonPoint.X + spacing;
-                points[0].Y = buttonPoint.Y + spacing;
+                points[0].X = buttonPoint.X + _spacing;
+                points[0].Y = buttonPoint.Y + _spacing;
 
-                points[1].X = buttonPoint.X + spacing + ButtonSize.Width;
-                points[1].Y = buttonPoint.Y + spacing;
+                points[1].X = buttonPoint.X + _spacing + ButtonSize.Width;
+                points[1].Y = buttonPoint.Y + _spacing;
 
-                points[2].X = buttonPoint.X + spacing + (ButtonSize.Width / 2);
-                points[2].Y = buttonPoint.Y + spacing + ButtonSize.Height;
+                points[2].X = buttonPoint.X + _spacing + (ButtonSize.Width / 2);
+                points[2].Y = buttonPoint.Y + _spacing + ButtonSize.Height;
             }
 
-            graphics.FillPolygon(new SolidBrush(color), points);
+            graphics.FillPolygon(new SolidBrush(_color), points);
         }
 
         /// <summary>Retrieves the alignment point from the control.</summary>
@@ -245,33 +270,58 @@
         /// <returns>The expander button alignment point.</returns>
         public Point GetAlignmentPoint(Size control)
         {
-            Point newPoint = new Point { Y = spacing };
-            if (horizontal == Enums.Alignment.Horizontal.Left)
+            Point alignmentPoint = new Point { Y = _spacing };
+            if (_alignmentHorizontal == Enums.Alignment.Horizontal.Left)
             {
-                newPoint.X = spacing;
+                alignmentPoint.X = _spacing;
             }
             else
             {
-                newPoint.X = control.Width - buttonSize.Width - (spacing * 2);
+                alignmentPoint.X = control.Width - _buttonSize.Width - (_spacing * 2);
             }
 
-            return newPoint;
+            return alignmentPoint;
         }
 
-        /// <summary>Checks whether the mouse is on the button.</summary>
-        /// <param name="mousePoint">The mouse location.</param>
-        public void GetMouseOnButton(Point mousePoint)
+        private void ControlMouseClick(object sender, EventArgs e)
         {
-            MouseOnButton = GDI.IsMouseInBounds(mousePoint, new Rectangle(GetAlignmentPoint(originalSize), buttonSize));
-        }
-
-        /// <summary>Update the original size.</summary>
-        /// <param name="control">The parent control.</param>
-        public void UpdateOriginal(Size control)
-        {
-            if (expanded)
+            if (_visible && MouseOnButton)
             {
-                originalSize = control;
+                ExpanderClick?.Invoke();
+
+                if (_expanded)
+                {
+                    _expanded = false;
+                }
+                else
+                {
+                    _expanded = true;
+                }
+
+                ExpanderToggled?.Invoke();
+                _control.Size = GetControlToggled();
+            }
+        }
+
+        private void ControlMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_visible)
+            {
+                MouseOnButton = GDI.IsMouseInBounds(e.Location, new Rectangle(GetAlignmentPoint(_originalSize), _buttonSize));
+            }
+            else
+            {
+                MouseOnButton = false;
+            }
+
+            _control.Cursor = MouseOnButton ? _cursor : Cursors.Default;
+        }
+
+        private void ControlReSizeChanged(object sender, EventArgs e)
+        {
+            if (_expanded)
+            {
+                _originalSize = _control.Size;
             }
         }
 
@@ -281,18 +331,21 @@
         {
             int height;
 
-            if (!expanded)
+            if (!_expanded)
             {
-                height = contractedHeight;
-                expanded = false;
+                height = _contractedHeight;
+                _expanded = false;
+                ExpanderContracted?.Invoke();
             }
             else
             {
-                height = originalSize.Height;
-                expanded = true;
+                height = _originalSize.Height;
+                _expanded = true;
+                ExpanderExpanded?.Invoke();
             }
 
-            return new Size(originalSize.Width, height);
+            ExpanderToggled?.Invoke();
+            return new Size(_originalSize.Width, height);
         }
 
         #endregion

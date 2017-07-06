@@ -1,51 +1,11 @@
 ﻿namespace VisualPlus.Framework.Structure
 {
-    #region Namespace
-
     using System.Collections.Generic;
     using System.Drawing;
     using System.Windows.Forms;
 
-    #endregion
-
-    public static class Moveable
+    public class ControlDrag
     {
-        #region Events
-
-        /// <summary>Toggle move for control.</summary>
-        /// <param name="control">The control.</param>
-        /// <param name="enable">The toggle.</param>
-        public static void ToggleMove(this Control control, bool enable)
-        {
-            if (enable)
-            {
-                if (moveableDictionary.ContainsKey(control))
-                {
-                    // return if control is already draggable
-                    return;
-                }
-
-                // 'false' - initial state is 'not dragging'
-                moveableDictionary.Add(control, false);
-
-                control.MouseDown += ControlMouseDown;
-                control.MouseUp += ControlMouseUp;
-                control.MouseMove += ControlMouseMove;
-            }
-            else
-            {
-                if (!moveableDictionary.ContainsKey(control))
-                {
-                    // return if control is not draggable
-                    return;
-                }
-
-                control.MouseDown -= ControlMouseDown;
-                control.MouseUp -= ControlMouseUp;
-                control.MouseMove -= ControlMouseMove;
-                moveableDictionary.Remove(control);
-            }
-        }
 
         /// <summary>Control mouse down event.</summary>
         /// <param name="sender">The sender.</param>
@@ -84,8 +44,6 @@
         private static Size mouseOffset;
 
         // TKey is control to drag, TValue is a flag used while dragging
-        private static Dictionary<Control, bool> moveableDictionary = new Dictionary<Control, bool>();
-
-        #endregion
+        private Dictionary<Control, bool> moveableDictionary = new Dictionary<Control, bool>();
     }
 }

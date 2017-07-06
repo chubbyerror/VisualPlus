@@ -54,11 +54,10 @@
     <Compile Include="Components\Symbols\Bars.cs" />
     <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Framework\Handlers\StyleManager.cs" />
+    <Compile Include="Toolkit\Delegates\ControlExpandableDelegate.cs" />
     <Compile Include="Toolkit\VisualBase\ContainerBase.cs" />
     <Compile Include="Toolkit\VisualBase\CheckBoxBase.cs" />
     <Compile Include="Toolkit\VisualBase\VisualControlBase.cs" />
-    <Compile Include="Toolkit\VisualBase\ExpandableContainer.cs" />
-    <Compile Include="Toolkit\VisualBase\ContainerDrag.cs" />
     <Compile Include="Toolkit\VisualBase\InputFieldBase.cs" />
     <Compile Include="Enums\MouseStates.cs" />
     <Compile Include="Toolkit\VisualBase\ProgressBase.cs" />
@@ -125,7 +124,7 @@
     <Compile Include="Framework\Handlers\ControlManager.cs" />
     <Compile Include="Framework\Structure\Checkmark.cs" />
     <Compile Include="Framework\Structure\Expandable.cs" />
-    <Compile Include="Framework\Structure\Moveable.cs" />
+    <Compile Include="Framework\Structure\Drag.cs" />
     <Compile Include="Framework\Handlers\ExceptionManager.cs" />
     <Compile Include="Framework\Structure\Border.cs" />
     <Compile Include="Framework\Handlers\ColorManager.cs" />
