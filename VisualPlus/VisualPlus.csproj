@@ -61,6 +61,8 @@
     <Compile Include="Toolkit\Delegates\BadgeDelegate.cs" />
     <Compile Include="Toolkit\Delegates\BorderDelegate.cs" />
     <Compile Include="Toolkit\Delegates\ControlExpandableDelegate.cs" />
+    <Compile Include="Toolkit\Delegates\GradientDelegate.cs" />
+    <Compile Include="Toolkit\Delegates\WatermarkDelegate.cs" />
     <Compile Include="Toolkit\VisualBase\ContainerBase.cs" />
     <Compile Include="Toolkit\VisualBase\CheckBoxBase.cs" />
     <Compile Include="Toolkit\VisualBase\VisualControlBase.cs" />

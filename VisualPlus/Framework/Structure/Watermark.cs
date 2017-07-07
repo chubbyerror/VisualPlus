@@ -9,6 +9,7 @@
 
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Styles;
+    using VisualPlus.Toolkit.Delegates;
 
     #endregion
 
@@ -48,6 +49,26 @@
             Brush = new SolidBrush(inactiveColor);
         }
 
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the active color property has changed.")]
+        public event WatermarkActiveColorChangedEventHandler ActiveColorChanged;
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the font property has changed.")]
+        public event WatermarkFontChangedEventHandler FontChanged;
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the inactive property has changed.")]
+        public event WatermarkInactiveColorChangedEventHandler InactiveColorChanged;
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the text property has changed.")]
+        public event WatermarkTextChangedEventHandler TextChanged;
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the visible property has changed.")]
+        public event WatermarkVisibleChangedEventHandler VisibleChanged;
+
         #endregion
 
         #region Properties
@@ -65,6 +86,7 @@
             set
             {
                 font = value;
+                FontChanged?.Invoke();
             }
         }
 
@@ -81,6 +103,7 @@
             set
             {
                 text = value;
+                TextChanged?.Invoke();
             }
         }
 
@@ -97,6 +120,7 @@
             set
             {
                 visible = value;
+                VisibleChanged?.Invoke();
             }
         }
 
@@ -113,6 +137,7 @@
             set
             {
                 activeColor = value;
+                ActiveColorChanged?.Invoke();
             }
         }
 
@@ -129,6 +154,7 @@
             set
             {
                 inactiveColor = value;
+                InactiveColorChanged?.Invoke();
             }
         }
 

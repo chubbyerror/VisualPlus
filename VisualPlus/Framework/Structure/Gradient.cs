@@ -8,6 +8,8 @@
     using System.Drawing.Drawing2D;
     using System.Globalization;
 
+    using VisualPlus.Toolkit.Delegates;
+
     #endregion
 
     [TypeConverter(typeof(GradientConverter))]
@@ -37,6 +39,18 @@
             positions = new[] { 0, 1 / 2f, 1 };
         }
 
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the angle property has changed.")]
+        public event GradientAngleChangedEventHandler AngleChanged;
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the colors property has changed.")]
+        public event GradientColorChangedEventHandler ColorsChanged;
+
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the positions property has changed.")]
+        public event GradientPositionsChangedEventHandler PositionsChanged;
+
         #endregion
 
         #region Properties
@@ -54,6 +68,7 @@
             set
             {
                 angle = value;
+                AngleChanged?.Invoke();
             }
         }
 
@@ -70,6 +85,7 @@
             set
             {
                 colors = value;
+                ColorsChanged?.Invoke();
             }
         }
 
@@ -86,6 +102,7 @@
             set
             {
                 positions = value;
+                PositionsChanged?.Invoke();
             }
         }
 
