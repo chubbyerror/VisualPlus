@@ -228,7 +228,7 @@
             border = new Border
                 {
                     HoverVisible = false,
-                    Type = BorderType.Rectangle
+                    Type = ShapeType.Rectangle
                 };
 
             Font = _styleManager.Font;

@@ -37,7 +37,7 @@
         private Size imageSize;
         private int shapeRounding;
         private Size shapeSize;
-        private BorderType shapeType;
+        private ShapeType shapeType;
 
         #endregion
 
@@ -231,7 +231,7 @@
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Type)]
-        public BorderType ShapeType
+        public ShapeType ShapeType
         {
             get
             {

@@ -93,7 +93,7 @@
             border = new Border
                 {
                     Thickness = 3,
-                    Type = BorderType.Rectangle
+                    Type = ShapeType.Rectangle
                 };
 
             vsImage = new VisualBitmap(Resources.Icon, new Size(16, 16)) { Visible = true };

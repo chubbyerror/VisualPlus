@@ -86,7 +86,7 @@
 
             columnBorder = new Border
                 {
-                    Type = BorderType.Rectangle,
+                    Type = ShapeType.Rectangle,
                     HoverVisible = false
                 };
 

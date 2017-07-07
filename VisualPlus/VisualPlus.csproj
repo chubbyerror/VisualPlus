@@ -53,9 +53,13 @@
     <Compile Include="Components\Symbols\Arrow.cs" />
     <Compile Include="Components\Symbols\Bars.cs" />
     <Compile Include="Components\Symbols\Star.cs" />
+    <Compile Include="Enums\ShapeType.cs" />
     <Compile Include="Framework\Handlers\StyleManager.cs" />
     <Compile Include="Framework\Structure\Badge.cs" />
+    <Compile Include="Framework\Structure\Border.cs" />
+    <Compile Include="Framework\Structure\Shape.cs" />
     <Compile Include="Toolkit\Delegates\BadgeDelegate.cs" />
+    <Compile Include="Toolkit\Delegates\BorderDelegate.cs" />
     <Compile Include="Toolkit\Delegates\ControlExpandableDelegate.cs" />
     <Compile Include="Toolkit\VisualBase\ContainerBase.cs" />
     <Compile Include="Toolkit\VisualBase\CheckBoxBase.cs" />
@@ -121,14 +125,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Enums\Alignment.cs" />
-    <Compile Include="Enums\BorderType.cs" />
     <Compile Include="Framework\Definitions.cs" />
     <Compile Include="Framework\Handlers\ControlManager.cs" />
     <Compile Include="Framework\Structure\Checkmark.cs" />
     <Compile Include="Framework\Structure\Expandable.cs" />
     <Compile Include="Framework\Structure\Drag.cs" />
     <Compile Include="Framework\Handlers\ExceptionManager.cs" />
-    <Compile Include="Framework\Structure\Border.cs" />
     <Compile Include="Framework\Handlers\ColorManager.cs" />
     <Compile Include="Framework\Extensions.cs" />
     <Compile Include="Framework\Structure\Gradient.cs" />

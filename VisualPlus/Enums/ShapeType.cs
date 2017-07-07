@@ -1,6 +1,6 @@
 ﻿namespace VisualPlus.Enums
 {
-    public enum BorderType
+    public enum ShapeType
     {
         /// <summary>Rectangle shape.</summary>
         Rectangle,

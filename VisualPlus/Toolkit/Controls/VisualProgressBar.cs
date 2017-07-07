@@ -479,7 +479,7 @@
                         {
                             i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Width - 2));
 
-                            if (ControlBorder.Type == BorderType.Rectangle)
+                            if (ControlBorder.Type == ShapeType.Rectangle)
                             {
                                 progressPath = new GraphicsPath();
                                 progressPath.AddRectangle(new Rectangle(0, 0, i1 + 1, Height));
@@ -496,7 +496,7 @@
                         {
                             i1 = (int)Math.Round(((Value - Minimum) / (double)(Maximum - Minimum)) * (Height - 2));
 
-                            if (ControlBorder.Type == BorderType.Rectangle)
+                            if (ControlBorder.Type == ShapeType.Rectangle)
                             {
                                 progressPath = new GraphicsPath();
                                 progressPath.AddRectangle(new Rectangle(0, Height - i1 - 2, Width, i1));
@@ -647,7 +647,7 @@
                     case BarTypes.Bars:
                         {
                             // Create bars
-                            if (ControlBorder.Type == BorderType.Rounded)
+                            if (ControlBorder.Type == ShapeType.Rounded)
                             {
                                 // Rounded rectangle - makes it possible to make circles with full roundness.
                                 barStylePath.AddPath(GDI.DrawRoundedRectangle(barLocation.X, barLocation.Y, barSize.X, barSize.Y, ControlBorder.Rounding), true);

@@ -31,7 +31,7 @@
         private bool borderHoverVisible;
         private int borderRounding;
         private int borderThickness;
-        private BorderType borderType;
+        private ShapeType borderType;
         private bool borderVisible;
         private float hatchSize;
         private bool hatchVisible;
@@ -183,7 +183,7 @@
         [DefaultValue(Settings.DefaultValue.BorderType)]
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Type)]
-        public BorderType BorderType
+        public ShapeType BorderType
         {
             get
             {

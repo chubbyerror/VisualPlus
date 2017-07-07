@@ -66,7 +66,7 @@
             buttonBorder = new Border
                 {
                     HoverVisible = false,
-                    Type = BorderType.Rectangle
+                    Type = ShapeType.Rectangle
                 };
 
             buttonForeColor = Color.Gray;

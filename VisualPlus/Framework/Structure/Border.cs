@@ -7,25 +7,26 @@
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Globalization;
+    using System.Runtime.InteropServices;
 
     using VisualPlus.Enums;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Styles;
+    using VisualPlus.Toolkit.Delegates;
 
     #endregion
 
     [TypeConverter(typeof(BorderConverter))]
-    public class Border : IBorder
+    [ToolboxItem(false)]
+    [DesignerCategory("code")]
+    [ClassInterface(ClassInterfaceType.AutoDispatch)]
+    [ComVisible(true)]
+    public class Border : Shape, IBorder
     {
         #region Variables
 
-        private Color color;
         private Color hoverColor;
         private bool hoverVisible;
-        private int rounding;
-        private int thickness;
-        private BorderType type;
-        private bool visible;
 
         #endregion
 
@@ -36,19 +37,17 @@
         {
             StyleManager styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
 
-            color = styleManager.BorderStyle.Color;
             hoverColor = styleManager.BorderStyle.HoverColor;
-            rounding = Settings.DefaultValue.Rounding.Default;
-            thickness = Settings.DefaultValue.BorderThickness;
-            type = Settings.DefaultValue.BorderType;
             hoverVisible = true;
-            visible = true;
         }
 
-        public delegate void BorderChangedEventHandler();
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the hvoer color has been changed.")]
+        public event BorderHoverColorChangedEventHandler HoverColorChanged;
 
-        [Category(Localize.EventsCategory.Appearance)]
-        public event BorderChangedEventHandler BorderChanged;
+        [Category(Localize.EventsCategory.PropertyChanged)]
+        [Description("Occours when the hover visible has been changed.")]
+        public event BorderHoverVisibleChangedEventHandler HoverVisibleChanged;
 
         #endregion
 
@@ -67,98 +66,7 @@
             set
             {
                 hoverVisible = value;
-                OnBorderChanged();
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Border.Rounding)]
-        public int Rounding
-        {
-            get
-            {
-                return rounding;
-            }
-
-            set
-            {
-                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumRounding, Settings.MaximumRounding))
-                {
-                    rounding = value;
-                    OnBorderChanged();
-                }
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Border.Thickness)]
-        public int Thickness
-        {
-            get
-            {
-                return thickness;
-            }
-
-            set
-            {
-                if (ExceptionManager.ArgumentOutOfRangeException(value, Settings.MinimumBorderSize, Settings.MaximumBorderSize))
-                {
-                    thickness = value;
-                    OnBorderChanged();
-                }
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Border.Shape)]
-        public BorderType Type
-        {
-            get
-            {
-                return type;
-            }
-
-            set
-            {
-                type = value;
-                OnBorderChanged();
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Visible)]
-        public bool Visible
-        {
-            get
-            {
-                return visible;
-            }
-
-            set
-            {
-                visible = value;
-                OnBorderChanged();
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Color)]
-        public Color Color
-        {
-            get
-            {
-                return color;
-            }
-
-            set
-            {
-                color = value;
-                OnBorderChanged();
+                HoverVisibleChanged?.Invoke();
             }
         }
 
@@ -175,7 +83,7 @@
             set
             {
                 hoverColor = value;
-                OnBorderChanged();
+                HoverColorChanged?.Invoke();
             }
         }
 
@@ -255,7 +163,7 @@
         /// <param name="borderType">The shape.</param>
         /// <param name="borderRounding">The rounding.</param>
         /// <returns>The <see cref="GraphicsPath" />.</returns>
-        public static GraphicsPath GetBorderShape(Rectangle rectangle, BorderType borderType, int borderRounding)
+        public static GraphicsPath GetBorderShape(Rectangle rectangle, ShapeType borderType, int borderRounding)
         {
             Rectangle borderRectangle = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width - 1, rectangle.Height - 1);
 
@@ -263,13 +171,13 @@
 
             switch (borderType)
             {
-                case BorderType.Rectangle:
+                case ShapeType.Rectangle:
                     {
                         borderShape.AddRectangle(borderRectangle);
                         break;
                     }
 
-                case BorderType.Rounded:
+                case ShapeType.Rounded:
                     {
                         borderShape.AddArc(borderRectangle.X, borderRectangle.Y, borderRounding, borderRounding, 180.0F, 90.0F);
                         borderShape.AddArc(borderRectangle.Right - borderRounding, borderRectangle.Y, borderRounding, borderRounding, 270.0F, 90.0F);
@@ -286,12 +194,6 @@
 
             borderShape.CloseAllFigures();
             return borderShape;
-        }
-
-        /// <summary>Fires the OnBorderChanged event.</summary>
-        protected virtual void OnBorderChanged()
-        {
-            BorderChanged?.Invoke();
         }
 
         #endregion
@@ -312,7 +214,7 @@
 
             if (stringValue != null)
             {
-                return new ObjectBorderWrapper(stringValue);
+                return new ObjectShape2Wrapper(stringValue);
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -339,15 +241,15 @@
     }
 
     [TypeConverter(typeof(BorderConverter))]
-    public class ObjectBorderWrapper
+    public class ObjectShape2Wrapper
     {
         #region Constructors
 
-        public ObjectBorderWrapper()
+        public ObjectShape2Wrapper()
         {
         }
 
-        public ObjectBorderWrapper(string value)
+        public ObjectShape2Wrapper(string value)
         {
             Value = value;
         }
