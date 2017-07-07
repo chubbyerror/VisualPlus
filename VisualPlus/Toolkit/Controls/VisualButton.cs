@@ -11,9 +11,9 @@
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
+    using VisualPlus.Framework.Interface;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Properties;
-    using VisualPlus.Styles;
     using VisualPlus.Toolkit.VisualBase;
 
     #endregion
@@ -24,7 +24,7 @@
     [DefaultProperty("Text")]
     [Description("The Visual Button")]
     [Designer(ControlManager.FilterProperties.VisualButton)]
-    public sealed class VisualButton : ButtonContentBase, IControlState
+    public sealed class VisualButton : ButtonContentBase, IControlStates
     {
         #region Variables
 
@@ -147,7 +147,7 @@
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient ControlDisabled
+        public Gradient DisabledGradient
         {
             get
             {
@@ -164,7 +164,7 @@
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient ControlEnabled
+        public Gradient EnabledGradient
         {
             get
             {
@@ -181,7 +181,7 @@
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient ControlHover
+        public Gradient HoverGradient
         {
             get
             {
@@ -198,7 +198,7 @@
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient ControlPressed
+        public Gradient PressedGradient
         {
             get
             {
