@@ -8,7 +8,6 @@ namespace VisualPlus.Toolkit.VisualBase
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework;
 
     #endregion
 

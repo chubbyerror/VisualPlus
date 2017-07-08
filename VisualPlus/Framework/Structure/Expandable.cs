@@ -16,7 +16,7 @@
     #endregion
 
     [TypeConverter(typeof(ExpandableConverter))]
-    [Description("Expandable component extension.")]
+    [Description("Expandable component.")]
     public class Expandable
     {
         #region Variables

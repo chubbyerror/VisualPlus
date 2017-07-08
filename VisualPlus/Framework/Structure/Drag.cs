@@ -13,7 +13,7 @@
 
     #endregion
 
-    [Description("Drag component extension.")]
+    [Description("Drag component.")]
     [TypeConverter(typeof(DragConverter))]
     public class Drag
     {

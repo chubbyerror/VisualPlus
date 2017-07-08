@@ -12,6 +12,7 @@
 
     #endregion
 
+    [Description("The gradient.")]
     [TypeConverter(typeof(GradientConverter))]
     public class Gradient
     {

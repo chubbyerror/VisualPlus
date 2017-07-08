@@ -16,7 +16,7 @@
     #endregion
 
     [TypeConverter(typeof(BadgeConverter))]
-    [Description("Badge component extension.")]
+    [Description("Badge component.")]
     public class Badge
     {
         #region Variables

@@ -13,8 +13,8 @@
 
     #endregion
 
+    [Description("The watermark")]
     [TypeConverter(typeof(WatermarkConverter))]
-    [Description("The watermark class.")]
     public class Watermark : IWatermark
     {
         #region Variables

@@ -17,12 +17,12 @@
 
     #endregion
 
+    [Description("The checkmark.")]
     [TypeConverter(typeof(CheckMarkConverter))]
-    [Description("The checkmark class.")]
     public class Checkmark : ICheckmark
     {
         #region Variables
-        
+
         private readonly StyleManager _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
 
         private bool autoSize;

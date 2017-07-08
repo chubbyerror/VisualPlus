@@ -10,6 +10,7 @@
 
     #endregion
 
+    [Description("The VisualBitmap")]
     [TypeConverter(typeof(VisualBitmapConverter))]
     public class VisualBitmap
     {
