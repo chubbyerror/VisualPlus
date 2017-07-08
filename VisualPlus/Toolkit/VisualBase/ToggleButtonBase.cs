@@ -21,7 +21,7 @@ namespace VisualPlus.Toolkit.VisualBase
     [DesignerCategory("code")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
-    public abstract class ToggleButtonBase : VisualControlBase, IControlStates
+    public abstract class ToggleButtonBase : VisualControlBase, IAnimate, IControlStates
     {
         #region Variables
 
@@ -300,7 +300,7 @@ namespace VisualPlus.Toolkit.VisualBase
             ToggleChanged?.Invoke(this, e);
         }
 
-        private void ConfigureAnimation()
+        public void ConfigureAnimation()
         {
             VFXManager effectsManager = new VFXManager
                 {
@@ -319,7 +319,7 @@ namespace VisualPlus.Toolkit.VisualBase
             effectsManager.StartNewAnimation(Toggle ? AnimationDirection.In : AnimationDirection.Out);
         }
 
-        private void DrawAnimation(Graphics graphics)
+        public void DrawAnimation(Graphics graphics)
         {
             if (animation && rippleEffectsManager.IsAnimating())
             {

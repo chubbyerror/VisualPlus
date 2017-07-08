@@ -55,6 +55,7 @@
     <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Enums\ShapeType.cs" />
     <Compile Include="Framework\Handlers\StyleManager.cs" />
+    <Compile Include="Framework\Interface\IAnimate.cs" />
     <Compile Include="Framework\Interface\IControlState.cs" />
     <Compile Include="Framework\Structure\Badge.cs" />
     <Compile Include="Framework\Structure\Border.cs" />

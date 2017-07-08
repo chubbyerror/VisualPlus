@@ -24,7 +24,7 @@
     [DefaultProperty("Text")]
     [Description("The Visual Button")]
     [Designer(ControlManager.FilterProperties.VisualButton)]
-    public sealed class VisualButton : ButtonContentBase, IControlStates
+    public sealed class VisualButton : ButtonContentBase, IAnimate, IControlStates
     {
         #region Variables
 
@@ -110,39 +110,6 @@
             }
         }
 
-        [TypeConverter(typeof(VisualBitmapConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public VisualBitmap Image
-        {
-            get
-            {
-                return visualBitmap;
-            }
-
-            set
-            {
-                visualBitmap = value;
-                Invalidate();
-            }
-        }
-
-        [Category(Localize.PropertiesCategory.Behavior)]
-        [Description(Localize.Description.Common.TextImageRelation)]
-        public TextImageRelation TextImageRelation
-        {
-            get
-            {
-                return textImageRelation;
-            }
-
-            set
-            {
-                textImageRelation = value;
-                Invalidate();
-            }
-        }
-
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient DisabledGradient
@@ -188,6 +155,23 @@
             }
         }
 
+        [TypeConverter(typeof(VisualBitmapConverter))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Category(Localize.PropertiesCategory.Appearance)]
+        public VisualBitmap Image
+        {
+            get
+            {
+                return visualBitmap;
+            }
+
+            set
+            {
+                visualBitmap = value;
+                Invalidate();
+            }
+        }
+
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient PressedGradient
@@ -203,9 +187,64 @@
             }
         }
 
+        [Category(Localize.PropertiesCategory.Behavior)]
+        [Description(Localize.Description.Common.TextImageRelation)]
+        public TextImageRelation TextImageRelation
+        {
+            get
+            {
+                return textImageRelation;
+            }
+
+            set
+            {
+                textImageRelation = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region Events
+
+        public void ConfigureAnimation()
+        {
+            effectsManager = new VFXManager(false)
+                {
+                    Increment = 0.03,
+                    EffectType = EffectType.EaseOut
+                };
+            hoverEffectsManager = new VFXManager
+                {
+                    Increment = 0.07,
+                    EffectType = EffectType.Linear
+                };
+
+            hoverEffectsManager.OnAnimationProgress += sender => Invalidate();
+            effectsManager.OnAnimationProgress += sender => Invalidate();
+        }
+
+        public void DrawAnimation(Graphics graphics)
+        {
+            if (effectsManager.IsAnimating() && animation)
+            {
+                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                for (var i = 0; i < effectsManager.GetAnimationCount(); i++)
+                {
+                    double animationValue = effectsManager.GetProgress(i);
+                    Point animationSource = effectsManager.GetSource(i);
+
+                    using (Brush rippleBrush = new SolidBrush(Color.FromArgb((int)(101 - (animationValue * 100)), Color.Black)))
+                    {
+                        var rippleSize = (int)(animationValue * Width * 2);
+                        graphics.SetClip(ControlGraphicsPath);
+                        graphics.FillEllipse(rippleBrush, new Rectangle(animationSource.X - (rippleSize / 2), animationSource.Y - (rippleSize / 2), rippleSize, rippleSize));
+                    }
+                }
+
+                graphics.SmoothingMode = SmoothingMode.None;
+            }
+        }
 
         protected override void OnCreateControl()
         {
@@ -257,50 +296,11 @@
             DrawAnimation(graphics);
         }
 
-        private void ConfigureAnimation()
-        {
-            effectsManager = new VFXManager(false)
-                {
-                    Increment = 0.03,
-                    EffectType = EffectType.EaseOut
-                };
-            hoverEffectsManager = new VFXManager
-                {
-                    Increment = 0.07,
-                    EffectType = EffectType.Linear
-                };
-
-            hoverEffectsManager.OnAnimationProgress += sender => Invalidate();
-            effectsManager.OnAnimationProgress += sender => Invalidate();
-        }
-
         private void ConfigureComponents(Graphics graphics)
         {
             ControlGraphicsPath = Border.GetBorderShape(ClientRectangle, Border.Type, Border.Rounding);
             visualBitmap.Point = GDI.ApplyTextImageRelation(graphics, textImageRelation, new Rectangle(visualBitmap.Point, visualBitmap.Size), Text, Font, ClientRectangle, true);
             textPoint = GDI.ApplyTextImageRelation(graphics, textImageRelation, new Rectangle(visualBitmap.Point, visualBitmap.Size), Text, Font, ClientRectangle, false);
-        }
-
-        private void DrawAnimation(Graphics graphics)
-        {
-            if (effectsManager.IsAnimating() && animation)
-            {
-                graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                for (var i = 0; i < effectsManager.GetAnimationCount(); i++)
-                {
-                    double animationValue = effectsManager.GetProgress(i);
-                    Point animationSource = effectsManager.GetSource(i);
-
-                    using (Brush rippleBrush = new SolidBrush(Color.FromArgb((int)(101 - (animationValue * 100)), Color.Black)))
-                    {
-                        var rippleSize = (int)(animationValue * Width * 2);
-                        graphics.SetClip(ControlGraphicsPath);
-                        graphics.FillEllipse(rippleBrush, new Rectangle(animationSource.X - (rippleSize / 2), animationSource.Y - (rippleSize / 2), rippleSize, rippleSize));
-                    }
-                }
-
-                graphics.SmoothingMode = SmoothingMode.None;
-            }
         }
 
         private void DrawBackground(Graphics graphics)
