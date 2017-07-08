@@ -25,8 +25,8 @@ namespace VisualPlus.Toolkit.VisualBase
     {
         #region Variables
 
-        private bool _checked;
         private bool animation;
+
         private Rectangle box;
         private int boxSpacing = 2;
         private Checkmark checkMark;
@@ -49,8 +49,8 @@ namespace VisualPlus.Toolkit.VisualBase
         }
 
         [Category(Localize.EventsCategory.PropertyChanged)]
-        [Description(Localize.Description.Checkmark.Checked)]
-        public event EventHandler CheckedChanged;
+        [Description("Occours when the toggle has been changed on the control.")]
+        public event EventHandler ToggleChanged;
 
         #endregion
 
@@ -113,32 +113,6 @@ namespace VisualPlus.Toolkit.VisualBase
             }
         }
 
-        [DefaultValue(false)]
-        [Category(Localize.PropertiesCategory.Behavior)]
-        [Description(Localize.Description.Checkmark.Checked)]
-        public bool Checked
-        {
-            get
-            {
-                return _checked;
-            }
-
-            set
-            {
-                if (_checked != value)
-                {
-                    // Store new values
-                    _checked = value;
-
-                    // Generate events
-                    OnCheckedChanged(EventArgs.Empty);
-
-                    // Repaint
-                    Invalidate();
-                }
-            }
-        }
-
         [TypeConverter(typeof(CheckMarkConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Category(Localize.PropertiesCategory.Appearance)]
@@ -156,8 +130,10 @@ namespace VisualPlus.Toolkit.VisualBase
             }
         }
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal bool Toggle { get; set; }
+
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient DisabledGradient
@@ -173,8 +149,6 @@ namespace VisualPlus.Toolkit.VisualBase
             }
         }
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient EnabledGradient
@@ -190,8 +164,6 @@ namespace VisualPlus.Toolkit.VisualBase
             }
         }
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient HoverGradient
@@ -207,8 +179,6 @@ namespace VisualPlus.Toolkit.VisualBase
             }
         }
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient PressedGradient
@@ -227,11 +197,6 @@ namespace VisualPlus.Toolkit.VisualBase
         #endregion
 
         #region Events
-
-        protected virtual void OnCheckedChanged(EventArgs e)
-        {
-            CheckedChanged?.Invoke(this, e);
-        }
 
         protected override void OnCreateControl()
         {
@@ -259,7 +224,7 @@ namespace VisualPlus.Toolkit.VisualBase
                     if (animation && (args.Button == MouseButtons.Left) && GDI.IsMouseInBounds(mouseLocation, box))
                     {
                         rippleEffectsManager.SecondaryIncrement = 0;
-                        rippleEffectsManager.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
+                        rippleEffectsManager.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Toggle });
                     }
                 };
             MouseUp += (sender, args) =>
@@ -317,7 +282,7 @@ namespace VisualPlus.Toolkit.VisualBase
             LinearGradientBrush controlGraphicsBrush = GDI.GetControlBrush(graphics, Enabled, MouseState, ControlBrushCollection, ClientRectangle);
             GDI.FillBackground(graphics, boxPath, controlGraphicsBrush);
 
-            if (Checked)
+            if (Toggle)
             {
                 graphics.SetClip(boxPath);
                 Checkmark.DrawCheckmark(graphics, checkMark, box, Enabled, TextRenderingHint);
@@ -328,6 +293,11 @@ namespace VisualPlus.Toolkit.VisualBase
 
             DrawText(graphics);
             DrawAnimation(graphics);
+        }
+
+        protected virtual void OnToggleChanged(EventArgs e)
+        {
+            ToggleChanged?.Invoke(this, e);
         }
 
         private void ConfigureAnimation()
@@ -346,7 +316,7 @@ namespace VisualPlus.Toolkit.VisualBase
 
             effectsManager.OnAnimationProgress += sender => Invalidate();
             rippleEffectsManager.OnAnimationProgress += sender => Invalidate();
-            effectsManager.StartNewAnimation(Checked ? AnimationDirection.In : AnimationDirection.Out);
+            effectsManager.StartNewAnimation(Toggle ? AnimationDirection.In : AnimationDirection.Out);
         }
 
         private void DrawAnimation(Graphics graphics)

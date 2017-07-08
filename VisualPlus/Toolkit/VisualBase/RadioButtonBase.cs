@@ -19,27 +19,27 @@
     {
         #region Events
 
-        protected override void OnCheckedChanged(EventArgs e)
-        {
-            base.OnCheckedChanged(e);
-            AutoUpdateOthers();
-            Invalidate();
-        }
-
         protected override void OnClick(EventArgs e)
         {
-            if (!Checked)
+            if (!Toggle)
             {
-                Checked = true;
+                Toggle = true;
             }
 
             base.OnClick(e);
         }
 
+        protected override void OnToggleChanged(EventArgs e)
+        {
+            base.OnToggleChanged(e);
+            AutoUpdateOthers();
+            Invalidate();
+        }
+
         private void AutoUpdateOthers()
         {
             // Only un-check others if they are checked
-            if (Checked)
+            if (Toggle)
             {
                 Control parent = Parent;
                 if (parent != null)
@@ -54,10 +54,10 @@
                             VisualRadioButton radioButton = (VisualRadioButton)control;
 
                             // If target allows auto check changed and is currently checked
-                            if (radioButton.Checked)
+                            if (radioButton.Toggle)
                             {
                                 // Set back to not checked
-                                radioButton.Checked = false;
+                                radioButton.Toggle = false;
                             }
                         }
                     }

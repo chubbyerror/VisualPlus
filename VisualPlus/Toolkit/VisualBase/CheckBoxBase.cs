@@ -34,6 +34,32 @@
 
         #region Properties
 
+        [DefaultValue(false)]
+        [Category(Localize.PropertiesCategory.Behavior)]
+        [Description(Localize.Description.Checkmark.Checked)]
+        public bool Checked
+        {
+            get
+            {
+                return Toggle;
+            }
+
+            set
+            {
+                if (Toggle != value)
+                {
+                    // Store new values
+                    Toggle = value;
+
+                    // Generate events
+                    OnToggleChanged(EventArgs.Empty);
+
+                    // Repaint
+                    Invalidate();
+                }
+            }
+        }
+
         [DefaultValue(typeof(CheckState), "Unchecked")]
         [Category(Localize.PropertiesCategory.Behavior)]
         [Description(Localize.Description.Checkmark.Checked)]
@@ -57,7 +83,7 @@
                     // Generate events
                     if (checkedChanged)
                     {
-                        OnCheckedChanged(EventArgs.Empty);
+                        OnToggleChanged(EventArgs.Empty);
                     }
 
                     OnCheckStateChanged(EventArgs.Empty);
@@ -91,14 +117,6 @@
         #endregion
 
         #region Events
-
-        protected override void OnCheckedChanged(EventArgs e)
-        {
-            base.OnCheckedChanged(e);
-            _checkState = Checked ? CheckState.Checked : CheckState.Unchecked;
-            OnCheckStateChanged(EventArgs.Empty);
-            Invalidate();
-        }
 
         protected virtual void OnCheckStateChanged(EventArgs e)
         {
@@ -134,6 +152,14 @@
             }
 
             base.OnClick(e);
+        }
+
+        protected override void OnToggleChanged(EventArgs e)
+        {
+            base.OnToggleChanged(e);
+            _checkState = Checked ? CheckState.Checked : CheckState.Unchecked;
+            OnCheckStateChanged(EventArgs.Empty);
+            Invalidate();
         }
 
         #endregion
