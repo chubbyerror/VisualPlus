@@ -12,8 +12,8 @@ namespace VisualPlus.Toolkit.VisualBase
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.GDI;
+    using VisualPlus.Framework.Interface;
     using VisualPlus.Framework.Structure;
-    using VisualPlus.Styles;
 
     #endregion
 
@@ -21,7 +21,7 @@ namespace VisualPlus.Toolkit.VisualBase
     [DesignerCategory("code")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
-    public abstract class ToggleButtonBase : VisualControlBase, IControlState
+    public abstract class ToggleButtonBase : VisualControlBase, IControlStates
     {
         #region Variables
 
@@ -160,7 +160,7 @@ namespace VisualPlus.Toolkit.VisualBase
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient ControlDisabled
+        public Gradient DisabledGradient
         {
             get
             {
@@ -177,7 +177,7 @@ namespace VisualPlus.Toolkit.VisualBase
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient ControlEnabled
+        public Gradient EnabledGradient
         {
             get
             {
@@ -194,7 +194,7 @@ namespace VisualPlus.Toolkit.VisualBase
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient ControlHover
+        public Gradient HoverGradient
         {
             get
             {
@@ -211,7 +211,7 @@ namespace VisualPlus.Toolkit.VisualBase
         [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
-        public Gradient ControlPressed
+        public Gradient PressedGradient
         {
             get
             {
