@@ -143,8 +143,6 @@
             }
         }
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient DisabledGradient
@@ -160,8 +158,6 @@
             }
         }
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient EnabledGradient
@@ -177,8 +173,6 @@
             }
         }
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient HoverGradient
@@ -194,8 +188,6 @@
             }
         }
 
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient PressedGradient
