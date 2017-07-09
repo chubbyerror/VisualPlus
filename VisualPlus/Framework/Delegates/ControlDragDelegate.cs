@@ -1,10 +1,10 @@
-﻿namespace VisualPlus.Toolkit.Delegates
+﻿namespace VisualPlus.Framework.Delegates
 {
     #region Namespace
 
     using System;
 
-    using VisualPlus.Toolkit.EventArgs;
+    using VisualPlus.Framework.EventArgs;
 
     #endregion
 

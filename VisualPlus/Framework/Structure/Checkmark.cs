@@ -117,6 +117,22 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.ColorGradient)]
+        public Gradient DisabledGradient
+        {
+            get
+            {
+                return disabledGradient;
+            }
+
+            set
+            {
+                disabledGradient = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Image)]
         public Bitmap DisabledImage
         {
@@ -128,6 +144,22 @@
             set
             {
                 disabledImage = value;
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.ColorGradient)]
+        public Gradient EnabledGradient
+        {
+            get
+            {
+                return enabledGradient;
+            }
+
+            set
+            {
+                enabledGradient = value;
             }
         }
 
@@ -256,38 +288,6 @@
             set
             {
                 checkType = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.ColorGradient)]
-        public Gradient DisabledGradient
-        {
-            get
-            {
-                return disabledGradient;
-            }
-
-            set
-            {
-                disabledGradient = value;
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.ColorGradient)]
-        public Gradient EnabledGradient
-        {
-            get
-            {
-                return enabledGradient;
-            }
-
-            set
-            {
-                enabledGradient = value;
             }
         }
 

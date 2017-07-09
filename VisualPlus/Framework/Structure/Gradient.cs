@@ -8,7 +8,7 @@
     using System.Drawing.Drawing2D;
     using System.Globalization;
 
-    using VisualPlus.Toolkit.Delegates;
+    using VisualPlus.Framework.Delegates;
 
     #endregion
 

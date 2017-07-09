@@ -953,7 +953,7 @@
 
             #endregion
 
-            #region Properties
+            #region Events
 
             public bool PreFilterMessage(ref Message m)
             {
@@ -969,10 +969,6 @@
 
                 return false;
             }
-
-            #endregion
-
-            #region Events
 
             private const int WM_MOUSEMOVE = 0x0200;
 

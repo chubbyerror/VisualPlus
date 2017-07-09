@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Framework
+namespace VisualPlus.Framework
 {
     #region Namespace
 

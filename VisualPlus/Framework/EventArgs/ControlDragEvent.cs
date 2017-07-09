@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Toolkit.EventArgs
+﻿namespace VisualPlus.Framework.EventArgs
 {
     #region Namespace
 

@@ -10,9 +10,9 @@
     using System.Runtime.InteropServices;
 
     using VisualPlus.Enums;
+    using VisualPlus.Framework.Delegates;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Styles;
-    using VisualPlus.Toolkit.Delegates;
 
     #endregion
 
@@ -55,23 +55,6 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Visible)]
-        public bool HoverVisible
-        {
-            get
-            {
-                return hoverVisible;
-            }
-
-            set
-            {
-                hoverVisible = value;
-                HoverVisibleChanged?.Invoke();
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Common.Color)]
         public Color HoverColor
         {
@@ -84,6 +67,23 @@
             {
                 hoverColor = value;
                 HoverColorChanged?.Invoke();
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Visible)]
+        public bool HoverVisible
+        {
+            get
+            {
+                return hoverVisible;
+            }
+
+            set
+            {
+                hoverVisible = value;
+                HoverVisibleChanged?.Invoke();
             }
         }
 

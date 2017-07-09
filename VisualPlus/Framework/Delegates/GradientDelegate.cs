@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Toolkit.Delegates
+﻿namespace VisualPlus.Framework.Delegates
 {
     public delegate void GradientAngleChangedEventHandler();
 

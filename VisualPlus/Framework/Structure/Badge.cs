@@ -9,8 +9,8 @@
     using System.Globalization;
     using System.Windows.Forms;
 
+    using VisualPlus.Framework.Delegates;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Toolkit.Delegates;
 
     #endregion
 

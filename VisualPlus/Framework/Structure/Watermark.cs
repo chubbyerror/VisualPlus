@@ -7,9 +7,9 @@
     using System.Drawing;
     using System.Globalization;
 
+    using VisualPlus.Framework.Delegates;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Styles;
-    using VisualPlus.Toolkit.Delegates;
 
     #endregion
 
@@ -75,6 +75,23 @@
 
         [NotifyParentProperty(true)]
         [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Color)]
+        public Color ActiveColor
+        {
+            get
+            {
+                return activeColor;
+            }
+
+            set
+            {
+                activeColor = value;
+                ActiveColorChanged?.Invoke();
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
         [Description(Localize.Description.Strings.Font)]
         public Font Font
         {
@@ -87,6 +104,23 @@
             {
                 font = value;
                 FontChanged?.Invoke();
+            }
+        }
+
+        [NotifyParentProperty(true)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        [Description(Localize.Description.Common.Color)]
+        public Color InactiveColor
+        {
+            get
+            {
+                return inactiveColor;
+            }
+
+            set
+            {
+                inactiveColor = value;
+                InactiveColorChanged?.Invoke();
             }
         }
 
@@ -121,40 +155,6 @@
             {
                 visible = value;
                 VisibleChanged?.Invoke();
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Color)]
-        public Color ActiveColor
-        {
-            get
-            {
-                return activeColor;
-            }
-
-            set
-            {
-                activeColor = value;
-                ActiveColorChanged?.Invoke();
-            }
-        }
-
-        [NotifyParentProperty(true)]
-        [RefreshProperties(RefreshProperties.Repaint)]
-        [Description(Localize.Description.Common.Color)]
-        public Color InactiveColor
-        {
-            get
-            {
-                return inactiveColor;
-            }
-
-            set
-            {
-                inactiveColor = value;
-                InactiveColorChanged?.Invoke();
             }
         }
 

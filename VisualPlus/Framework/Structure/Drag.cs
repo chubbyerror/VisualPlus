@@ -8,8 +8,8 @@
     using System.Globalization;
     using System.Windows.Forms;
 
-    using VisualPlus.Toolkit.Delegates;
-    using VisualPlus.Toolkit.EventArgs;
+    using VisualPlus.Framework.Delegates;
+    using VisualPlus.Framework.EventArgs;
 
     #endregion
 

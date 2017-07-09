@@ -23,78 +23,40 @@
 
         #region Properties
 
-        public Styles StyleManagement
+        public Color ActiveColor
         {
             get
             {
-                return Styles.BlackAndYellow;
+                return Color.Gray;
             }
         }
 
-        public Color Color
+        public Color BackCircle
         {
             get
             {
-                return Color.FromArgb(180, 180, 180);
+                return Color.FromArgb(52, 73, 96);
             }
         }
 
-        public Color HoverColor
+        public Gradient Background
         {
             get
             {
-                return Color.FromArgb(120, 183, 230);
-            }
-        }
-
-        public Gradient DisabledGradient
-        {
-            get
-            {
-                Color[] disabledColors =
+                Color[] backgroundColors =
                     {
-                        ControlPaint.Light(Color.FromArgb(131, 129, 129)),
-                        Color.FromArgb(131, 129, 129)
+                        ControlPaint.Light(Color.FromArgb(137, 136, 136)),
+                        Color.FromArgb(137, 136, 136)
                     };
 
-                Gradient disabledGradient = new Gradient
+                Gradient backgroundGradient = new Gradient
                     {
-                        Colors = disabledColors,
+                        Colors = backgroundColors,
                         Positions = twoPosition
                     };
 
-                return disabledGradient;
+                return backgroundGradient;
             }
-        }
-
-        public Gradient EnabledGradient
-        {
-            get
-            {
-                Color[] enabledColors =
-                    {
-                        ControlPaint.Light(ColorTranslator.FromHtml("#2D882D")),
-                        ColorTranslator.FromHtml("#2D882D")
-                    };
-
-                Gradient enabledGradient = new Gradient
-                    {
-                        Colors = enabledColors,
-                        Positions = twoPosition
-                    };
-
-                return enabledGradient;
-            }
-        }
-
-        Color IControl.Background(int depth)
-        {
-            if (depth < GetBackgroundColor().Count)
-            {
-                return GetBackgroundColor()[depth];
-            }
-
-            return defaultBackgroundColorNoDepth;
         }
 
         public Gradient BoxDisabled
@@ -137,51 +99,11 @@
             }
         }
 
-        public Color FlatButtonDisabled
+        public Color Color
         {
             get
             {
-                return Color.FromArgb(243, 243, 243);
-            }
-        }
-
-        public Color FlatButtonEnabled
-        {
-            get
-            {
-                return Color.FromArgb(119, 119, 118);
-            }
-        }
-
-        public Color ItemEnabled
-        {
-            get
-            {
-                return Color.White;
-            }
-        }
-
-        public Color ItemHover
-        {
-            get
-            {
-                return Color.FromArgb(241, 241, 241);
-            }
-        }
-
-        public Color Line
-        {
-            get
-            {
-                return Color.FromArgb(224, 222, 220);
-            }
-        }
-
-        public Color Shadow
-        {
-            get
-            {
-                return Color.FromArgb(250, 249, 249);
+                return Color.FromArgb(180, 180, 180);
             }
         }
 
@@ -269,6 +191,62 @@
             }
         }
 
+        public Gradient DisabledGradient
+        {
+            get
+            {
+                Color[] disabledColors =
+                    {
+                        ControlPaint.Light(Color.FromArgb(131, 129, 129)),
+                        Color.FromArgb(131, 129, 129)
+                    };
+
+                Gradient disabledGradient = new Gradient
+                    {
+                        Colors = disabledColors,
+                        Positions = twoPosition
+                    };
+
+                return disabledGradient;
+            }
+        }
+
+        public Gradient EnabledGradient
+        {
+            get
+            {
+                Color[] enabledColors =
+                    {
+                        ControlPaint.Light(ColorTranslator.FromHtml("#2D882D")),
+                        ColorTranslator.FromHtml("#2D882D")
+                    };
+
+                Gradient enabledGradient = new Gradient
+                    {
+                        Colors = enabledColors,
+                        Positions = twoPosition
+                    };
+
+                return enabledGradient;
+            }
+        }
+
+        public Color FlatButtonDisabled
+        {
+            get
+            {
+                return Color.FromArgb(243, 243, 243);
+            }
+        }
+
+        public Color FlatButtonEnabled
+        {
+            get
+            {
+                return Color.FromArgb(119, 119, 118);
+            }
+        }
+
         public FontFamily FontFamily
         {
             get
@@ -290,6 +268,14 @@
             get
             {
                 return FontStyle.Regular;
+            }
+        }
+
+        public Color ForeCircle
+        {
+            get
+            {
+                return Color.FromArgb(48, 56, 68);
             }
         }
 
@@ -317,47 +303,59 @@
             }
         }
 
-        public Color BackCircle
-        {
-            get
-            {
-                return Color.FromArgb(52, 73, 96);
-            }
-        }
-
-        public Gradient Background
-        {
-            get
-            {
-                Color[] backgroundColors =
-                    {
-                        ControlPaint.Light(Color.FromArgb(137, 136, 136)),
-                        Color.FromArgb(137, 136, 136)
-                    };
-
-                Gradient backgroundGradient = new Gradient
-                    {
-                        Colors = backgroundColors,
-                        Positions = twoPosition
-                    };
-
-                return backgroundGradient;
-            }
-        }
-
-        public Color ForeCircle
-        {
-            get
-            {
-                return Color.FromArgb(48, 56, 68);
-            }
-        }
-
         public Color Hatch
         {
             get
             {
                 return Color.FromArgb(20, Color.Black);
+            }
+        }
+
+        public Color HoverColor
+        {
+            get
+            {
+                return Color.FromArgb(120, 183, 230);
+            }
+        }
+
+        public Color InactiveColor
+        {
+            get
+            {
+                return Color.LightGray;
+            }
+        }
+
+        public Color ItemEnabled
+        {
+            get
+            {
+                return Color.White;
+            }
+        }
+
+        public Color ItemHover
+        {
+            get
+            {
+                return Color.FromArgb(241, 241, 241);
+            }
+        }
+
+        public Color Line
+        {
+            get
+            {
+                return Color.FromArgb(224, 222, 220);
+            }
+        }
+
+        public Color Menu
+        {
+            get
+            {
+                return Color.FromArgb(55, 61, 73);
             }
         }
 
@@ -401,11 +399,19 @@
             }
         }
 
-        public Color Menu
+        public Color Shadow
         {
             get
             {
-                return Color.FromArgb(55, 61, 73);
+                return Color.FromArgb(250, 249, 249);
+            }
+        }
+
+        public Styles StyleManagement
+        {
+            get
+            {
+                return Styles.BlackAndYellow;
             }
         }
 
@@ -433,22 +439,6 @@
             }
         }
 
-        public Color ActiveColor
-        {
-            get
-            {
-                return Color.Gray;
-            }
-        }
-
-        public Color InactiveColor
-        {
-            get
-            {
-                return Color.LightGray;
-            }
-        }
-
         #endregion
 
         #region Events
@@ -464,6 +454,16 @@
                 };
 
             return list;
+        }
+
+        Color IControl.Background(int depth)
+        {
+            if (depth < GetBackgroundColor().Count)
+            {
+                return GetBackgroundColor()[depth];
+            }
+
+            return defaultBackgroundColorNoDepth;
         }
 
         #endregion
