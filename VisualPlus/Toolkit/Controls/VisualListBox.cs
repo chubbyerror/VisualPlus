@@ -9,8 +9,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Framework;
-    using VisualPlus.Framework.Handlers;
+    using VisualPlus.Handlers;
 
     #endregion
 

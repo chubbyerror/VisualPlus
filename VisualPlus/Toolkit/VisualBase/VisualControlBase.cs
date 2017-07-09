@@ -9,11 +9,10 @@
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
+    using VisualPlus.Delegates;
     using VisualPlus.Enums;
-    using VisualPlus.Framework;
-    using VisualPlus.Framework.Delegates;
-    using VisualPlus.Framework.Handlers;
-    using VisualPlus.Framework.Structure;
+    using VisualPlus.Handlers;
+    using VisualPlus.Structure;
 
     #endregion
 

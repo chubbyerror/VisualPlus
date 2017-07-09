@@ -10,9 +10,8 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Framework;
-    using VisualPlus.Framework.Handlers;
-    using VisualPlus.Framework.Structure;
+    using VisualPlus.Handlers;
+    using VisualPlus.Structure;
     using VisualPlus.Toolkit.VisualBase;
 
     #endregion

@@ -7,7 +7,6 @@
     using System.Runtime.InteropServices;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework;
 
     #endregion
 

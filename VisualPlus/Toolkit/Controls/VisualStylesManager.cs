@@ -10,8 +10,7 @@
     using System.Runtime.InteropServices;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework;
-    using VisualPlus.Framework.Handlers;
+    using VisualPlus.Handlers;
 
     #endregion
 

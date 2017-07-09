@@ -7,7 +7,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework.Structure;
+    using VisualPlus.Structure;
 
     #endregion
 

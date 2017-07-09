@@ -4,7 +4,7 @@
 
     using System.Drawing;
 
-    using VisualPlus.Framework.Structure;
+    using VisualPlus.Structure;
 
     #endregion
 

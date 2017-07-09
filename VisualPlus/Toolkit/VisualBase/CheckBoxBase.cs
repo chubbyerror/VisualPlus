@@ -7,8 +7,6 @@
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
-    using VisualPlus.Framework;
-
     #endregion
 
     [ToolboxItem(false)]

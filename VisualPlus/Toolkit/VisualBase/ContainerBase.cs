@@ -10,8 +10,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework;
-    using VisualPlus.Framework.Structure;
+    using VisualPlus.Structure;
     using VisualPlus.Toolkit.Controls;
 
     #endregion
