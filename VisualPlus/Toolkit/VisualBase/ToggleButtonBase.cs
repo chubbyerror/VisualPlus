@@ -11,6 +11,7 @@ namespace VisualPlus.Toolkit.VisualBase
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
+    using VisualPlus.Framework.Handlers;
     using VisualPlus.Framework.Structure;
 
     #endregion
