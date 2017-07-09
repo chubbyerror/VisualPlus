@@ -7,6 +7,8 @@
     using System.ComponentModel;
     using System.Windows.Forms;
 
+    using VisualPlus.Extensibility;
+
     #endregion
 
     internal class ControlManager

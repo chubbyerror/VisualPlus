@@ -54,6 +54,11 @@
     <Compile Include="Components\Symbols\Bars.cs" />
     <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Enums\ShapeType.cs" />
+    <Compile Include="Extensibility\BitmapExtension.cs" />
+    <Compile Include="Extensibility\EnumExtension.cs" />
+    <Compile Include="Extensibility\GraphicsPathExtension.cs" />
+    <Compile Include="Extensibility\PointExtension.cs" />
+    <Compile Include="Extensibility\RectangleExtension.cs" />
     <Compile Include="Handlers\StyleManager.cs" />
     <Compile Include="Structure\Badge.cs" />
     <Compile Include="Structure\Border.cs" />
@@ -134,7 +139,7 @@
     <Compile Include="Structure\Drag.cs" />
     <Compile Include="Handlers\ExceptionManager.cs" />
     <Compile Include="Handlers\ColorManager.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Extensibility\Extensions.cs" />
     <Compile Include="Structure\Gradient.cs" />
     <Compile Include="Handlers\VFXManager.cs" />
     <Compile Include="Handlers\MathManager.cs" />

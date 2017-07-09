@@ -327,7 +327,7 @@ namespace VisualPlus.Handlers
         private const double MaxValue = 1.00;
         private const double MinValue = 0.00;
 
-        private void AnimationTimerOnTick(object sender, System.EventArgs eventArgs)
+        private void AnimationTimerOnTick(object sender, EventArgs eventArgs)
         {
             for (var i = 0; i < effectsProgression.Count; i++)
             {

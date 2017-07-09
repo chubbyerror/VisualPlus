@@ -11,6 +11,7 @@
     using System.IO;
 
     using VisualPlus.Enums;
+    using VisualPlus.Extensibility;
     using VisualPlus.Handlers;
     using VisualPlus.Styles;
 
