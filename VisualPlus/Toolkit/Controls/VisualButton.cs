@@ -10,7 +10,6 @@
     using VisualPlus.Enums;
     using VisualPlus.Framework;
     using VisualPlus.Framework.Handlers;
-    using VisualPlus.Framework.Interface;
     using VisualPlus.Framework.Structure;
     using VisualPlus.Properties;
     using VisualPlus.Toolkit.VisualBase;

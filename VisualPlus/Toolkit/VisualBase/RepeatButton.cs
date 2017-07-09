@@ -9,7 +9,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Framework;
-    using VisualPlus.Framework.Interface;
     using VisualPlus.Framework.Structure;
 
     #endregion

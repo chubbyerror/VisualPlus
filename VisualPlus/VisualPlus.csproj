@@ -55,8 +55,6 @@
     <Compile Include="Components\Symbols\Star.cs" />
     <Compile Include="Enums\ShapeType.cs" />
     <Compile Include="Framework\Handlers\StyleManager.cs" />
-    <Compile Include="Framework\Interface\IAnimate.cs" />
-    <Compile Include="Framework\Interface\IControlState.cs" />
     <Compile Include="Framework\Structure\Badge.cs" />
     <Compile Include="Framework\Structure\Border.cs" />
     <Compile Include="Framework\Structure\Shape.cs" />
@@ -129,7 +127,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Enums\Alignment.cs" />
-    <Compile Include="Framework\Definitions.cs" />
+    <Compile Include="Framework\InterfaceTypes.cs" />
     <Compile Include="Framework\Handlers\ControlManager.cs" />
     <Compile Include="Framework\Structure\Checkmark.cs" />
     <Compile Include="Framework\Structure\Expandable.cs" />

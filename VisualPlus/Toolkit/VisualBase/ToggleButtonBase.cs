@@ -11,7 +11,6 @@ namespace VisualPlus.Toolkit.VisualBase
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
-    using VisualPlus.Framework.Interface;
     using VisualPlus.Framework.Structure;
 
     #endregion
@@ -129,10 +128,6 @@ namespace VisualPlus.Toolkit.VisualBase
             }
         }
 
-        [Browsable(false)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        internal bool Toggle { get; set; }
-
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient DisabledGradient
@@ -193,9 +188,53 @@ namespace VisualPlus.Toolkit.VisualBase
             }
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal bool Toggle { get; set; }
+
         #endregion
 
         #region Events
+
+        public void ConfigureAnimation()
+        {
+            VFXManager effectsManager = new VFXManager
+                {
+                    Increment = 0.05,
+                    EffectType = EffectType.EaseInOut
+                };
+            rippleEffectsManager = new VFXManager(false)
+                {
+                    Increment = 0.10,
+                    SecondaryIncrement = 0.08,
+                    EffectType = EffectType.Linear
+                };
+
+            effectsManager.OnAnimationProgress += sender => Invalidate();
+            rippleEffectsManager.OnAnimationProgress += sender => Invalidate();
+            effectsManager.StartNewAnimation(Toggle ? AnimationDirection.In : AnimationDirection.Out);
+        }
+
+        public void DrawAnimation(Graphics graphics)
+        {
+            if (animation && rippleEffectsManager.IsAnimating())
+            {
+                for (var i = 0; i < rippleEffectsManager.GetAnimationCount(); i++)
+                {
+                    double animationValue = rippleEffectsManager.GetProgress(i);
+
+                    Point animationSource = new Point(box.X + (box.Width / 2), box.Y + (box.Height / 2));
+                    SolidBrush animationBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), (bool)rippleEffectsManager.GetData(i)[0] ? Color.Black : checkMark.EnabledGradient.Colors[0]));
+
+                    int height = box.Height;
+                    int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + (0.2d * animationValue))) : height;
+
+                    GraphicsPath path = GDI.DrawRoundedRectangle(animationSource.X - (size / 2), animationSource.Y - (size / 2), size, size, size / 2);
+                    graphics.FillPath(animationBrush, path);
+                    animationBrush.Dispose();
+                }
+            }
+        }
 
         protected override void OnCreateControl()
         {
@@ -297,46 +336,6 @@ namespace VisualPlus.Toolkit.VisualBase
         protected virtual void OnToggleChanged(EventArgs e)
         {
             ToggleChanged?.Invoke(this, e);
-        }
-
-        public void ConfigureAnimation()
-        {
-            VFXManager effectsManager = new VFXManager
-                {
-                    Increment = 0.05,
-                    EffectType = EffectType.EaseInOut
-                };
-            rippleEffectsManager = new VFXManager(false)
-                {
-                    Increment = 0.10,
-                    SecondaryIncrement = 0.08,
-                    EffectType = EffectType.Linear
-                };
-
-            effectsManager.OnAnimationProgress += sender => Invalidate();
-            rippleEffectsManager.OnAnimationProgress += sender => Invalidate();
-            effectsManager.StartNewAnimation(Toggle ? AnimationDirection.In : AnimationDirection.Out);
-        }
-
-        public void DrawAnimation(Graphics graphics)
-        {
-            if (animation && rippleEffectsManager.IsAnimating())
-            {
-                for (var i = 0; i < rippleEffectsManager.GetAnimationCount(); i++)
-                {
-                    double animationValue = rippleEffectsManager.GetProgress(i);
-
-                    Point animationSource = new Point(box.X + (box.Width / 2), box.Y + (box.Height / 2));
-                    SolidBrush animationBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), (bool)rippleEffectsManager.GetData(i)[0] ? Color.Black : checkMark.EnabledGradient.Colors[0]));
-
-                    int height = box.Height;
-                    int size = rippleEffectsManager.GetDirection(i) == AnimationDirection.InOutIn ? (int)(height * (0.8d + (0.2d * animationValue))) : height;
-
-                    GraphicsPath path = GDI.DrawRoundedRectangle(animationSource.X - (size / 2), animationSource.Y - (size / 2), size, size, size / 2);
-                    graphics.FillPath(animationBrush, path);
-                    animationBrush.Dispose();
-                }
-            }
         }
 
         private void DrawText(Graphics graphics)
