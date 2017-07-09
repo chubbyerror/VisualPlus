@@ -8,7 +8,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Enumerators;
-    using VisualPlus.Handlers;
+    using VisualPlus.Managers;
     using VisualPlus.Properties;
     using VisualPlus.Structure;
     using VisualPlus.Toolkit.VisualBase;

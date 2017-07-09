@@ -6,7 +6,7 @@
     using System.Drawing;
     using System.Windows.Forms;
 
-    using VisualPlus.Handlers;
+    using VisualPlus.Managers;
     using VisualPlus.Structure;
     using VisualPlus.Toolkit.VisualBase;
 

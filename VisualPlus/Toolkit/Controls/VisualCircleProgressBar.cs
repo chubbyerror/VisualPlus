@@ -8,7 +8,7 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
-    using VisualPlus.Handlers;
+    using VisualPlus.Managers;
     using VisualPlus.Toolkit.VisualBase;
 
     #endregion

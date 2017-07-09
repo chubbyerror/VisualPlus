@@ -59,7 +59,7 @@
     <Compile Include="Extensibility\GraphicsPathExtension.cs" />
     <Compile Include="Extensibility\PointExtension.cs" />
     <Compile Include="Extensibility\RectangleExtension.cs" />
-    <Compile Include="Handlers\StyleManager.cs" />
+    <Compile Include="Managers\StyleManager.cs" />
     <Compile Include="Toolkit\Components\Badge.cs" />
     <Compile Include="Structure\Border.cs" />
     <Compile Include="Structure\Shape.cs" />
@@ -133,16 +133,16 @@
     </Compile>
     <Compile Include="Enumerators\Alignment.cs" />
     <Compile Include="InterfaceTypes.cs" />
-    <Compile Include="Handlers\ControlManager.cs" />
+    <Compile Include="Managers\ControlManager.cs" />
     <Compile Include="Structure\Checkmark.cs" />
     <Compile Include="Toolkit\Components\Expandable.cs" />
     <Compile Include="Toolkit\Components\Drag.cs" />
-    <Compile Include="Handlers\ExceptionManager.cs" />
-    <Compile Include="Handlers\ColorManager.cs" />
+    <Compile Include="Managers\ExceptionManager.cs" />
+    <Compile Include="Managers\ColorManager.cs" />
     <Compile Include="Extensibility\Extensions.cs" />
     <Compile Include="Structure\Gradient.cs" />
-    <Compile Include="Handlers\VFXManager.cs" />
-    <Compile Include="Handlers\MathManager.cs" />
+    <Compile Include="Managers\VFXManager.cs" />
+    <Compile Include="Managers\MathManager.cs" />
     <Compile Include="Enumerators\Styles.cs" />
     <Compile Include="Structure\VisualBitmap.cs" />
     <Compile Include="Structure\Watermark.cs" />

@@ -12,7 +12,7 @@
 
     using VisualPlus.Enumerators;
     using VisualPlus.Extensibility;
-    using VisualPlus.Handlers;
+    using VisualPlus.Managers;
     using VisualPlus.Styles;
 
     #endregion

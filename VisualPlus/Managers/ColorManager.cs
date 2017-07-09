@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Handlers
+﻿namespace VisualPlus.Managers
 {
     #region Namespace
 

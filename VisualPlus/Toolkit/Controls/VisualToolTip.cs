@@ -8,7 +8,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Handlers;
+    using VisualPlus.Managers;
     using VisualPlus.Properties;
     using VisualPlus.Structure;
 

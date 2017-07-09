@@ -10,7 +10,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Enumerators;
-    using VisualPlus.Handlers;
+    using VisualPlus.Managers;
     using VisualPlus.Structure;
 
     #endregion
