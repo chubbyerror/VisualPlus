@@ -9,6 +9,7 @@
 
     using VisualPlus.Enums;
     using VisualPlus.Structure;
+    using VisualPlus.Toolkit.Components;
     using VisualPlus.Toolkit.VisualBase;
 
     #endregion

@@ -8,6 +8,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Structure;
+    using VisualPlus.Toolkit.Components;
     using VisualPlus.Toolkit.VisualBase;
 
     #endregion

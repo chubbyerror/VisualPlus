@@ -9,10 +9,10 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    using VisualPlus.Components.Symbols;
     using VisualPlus.Enums;
     using VisualPlus.Handlers;
     using VisualPlus.Structure;
+    using VisualPlus.Toolkit.Components.Symbols;
 
     #endregion
 

@@ -50,9 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Symbols\Arrow.cs" />
-    <Compile Include="Components\Symbols\Bars.cs" />
-    <Compile Include="Components\Symbols\Star.cs" />
+    <Compile Include="Toolkit\Components\Symbols\Arrow.cs" />
+    <Compile Include="Toolkit\Components\Symbols\Bars.cs" />
+    <Compile Include="Toolkit\Components\Symbols\Star.cs" />
     <Compile Include="Enums\ShapeType.cs" />
     <Compile Include="Extensibility\BitmapExtension.cs" />
     <Compile Include="Extensibility\EnumExtension.cs" />
@@ -60,7 +60,7 @@
     <Compile Include="Extensibility\PointExtension.cs" />
     <Compile Include="Extensibility\RectangleExtension.cs" />
     <Compile Include="Handlers\StyleManager.cs" />
-    <Compile Include="Structure\Badge.cs" />
+    <Compile Include="Toolkit\Components\Badge.cs" />
     <Compile Include="Structure\Border.cs" />
     <Compile Include="Structure\Shape.cs" />
     <Compile Include="Delegates\BadgeDelegate.cs" />
@@ -135,8 +135,8 @@
     <Compile Include="InterfaceTypes.cs" />
     <Compile Include="Handlers\ControlManager.cs" />
     <Compile Include="Structure\Checkmark.cs" />
-    <Compile Include="Structure\Expandable.cs" />
-    <Compile Include="Structure\Drag.cs" />
+    <Compile Include="Toolkit\Components\Expandable.cs" />
+    <Compile Include="Toolkit\Components\Drag.cs" />
     <Compile Include="Handlers\ExceptionManager.cs" />
     <Compile Include="Handlers\ColorManager.cs" />
     <Compile Include="Extensibility\Extensions.cs" />

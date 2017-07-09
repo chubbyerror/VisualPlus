@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Structure
+﻿namespace VisualPlus.Toolkit.Components
 {
     #region Namespace
 
@@ -11,6 +11,7 @@
 
     using VisualPlus.Delegates;
     using VisualPlus.Handlers;
+    using VisualPlus.Structure;
 
     #endregion
 
