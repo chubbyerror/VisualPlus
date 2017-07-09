@@ -423,6 +423,16 @@
             return bounds.Contains(mousePoint);
         }
 
+        /// <summary>Sets the graphics using picture box size mode.</summary>
+        /// <param name="pictureBoxSizeMode">The picture box size mode.</param>
+        /// <returns>Graphics controller.</returns>
+        public Graphics SetPictureBoxSizeMode(PictureBoxSizeMode pictureBoxSizeMode)
+        {
+            Bitmap drawArea = new Bitmap(new PictureBox { SizeMode = pictureBoxSizeMode }.Size.Width, new PictureBox { SizeMode = pictureBoxSizeMode }.Size.Height);
+            new PictureBox { SizeMode = pictureBoxSizeMode }.Image = drawArea;
+            return Graphics.FromImage(drawArea);
+        }
+
         /// <summary>Draw background image.</summary>
         /// <param name="graphics">Graphics controller.</param>
         /// <param name="rectangle">The rectangle.</param>
