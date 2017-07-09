@@ -11,7 +11,7 @@
     using System.Linq;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
     using VisualPlus.Handlers;
     using VisualPlus.Structure;
 

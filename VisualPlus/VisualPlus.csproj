@@ -53,7 +53,7 @@
     <Compile Include="Toolkit\Components\Symbols\Arrow.cs" />
     <Compile Include="Toolkit\Components\Symbols\Bars.cs" />
     <Compile Include="Toolkit\Components\Symbols\Star.cs" />
-    <Compile Include="Enums\ShapeType.cs" />
+    <Compile Include="Enumerators\ShapeType.cs" />
     <Compile Include="Extensibility\BitmapExtension.cs" />
     <Compile Include="Extensibility\EnumExtension.cs" />
     <Compile Include="Extensibility\GraphicsPathExtension.cs" />
@@ -72,7 +72,7 @@
     <Compile Include="Toolkit\VisualBase\CheckBoxBase.cs" />
     <Compile Include="Toolkit\VisualBase\VisualControlBase.cs" />
     <Compile Include="Toolkit\VisualBase\InputFieldBase.cs" />
-    <Compile Include="Enums\MouseStates.cs" />
+    <Compile Include="Enumerators\MouseStates.cs" />
     <Compile Include="Toolkit\VisualBase\ProgressBase.cs" />
     <Compile Include="Toolkit\VisualBase\RadioButtonBase.cs" />
     <Compile Include="Toolkit\VisualBase\RepeatButton.cs" />
@@ -131,7 +131,7 @@
     <Compile Include="Toolkit\Controls\VisualToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Enums\Alignment.cs" />
+    <Compile Include="Enumerators\Alignment.cs" />
     <Compile Include="InterfaceTypes.cs" />
     <Compile Include="Handlers\ControlManager.cs" />
     <Compile Include="Structure\Checkmark.cs" />
@@ -143,7 +143,7 @@
     <Compile Include="Structure\Gradient.cs" />
     <Compile Include="Handlers\VFXManager.cs" />
     <Compile Include="Handlers\MathManager.cs" />
-    <Compile Include="Enums\Styles.cs" />
+    <Compile Include="Enumerators\Styles.cs" />
     <Compile Include="Structure\VisualBitmap.cs" />
     <Compile Include="Structure\Watermark.cs" />
     <Compile Include="Native.cs" />
@@ -151,7 +151,7 @@
     <Compile Include="Styles\IStyle.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Styles\Visual.cs" />
-    <Compile Include="Enums\Animation.cs" />
+    <Compile Include="Enumerators\Animation.cs" />
     <Compile Include="Toolkit\Controls\VisualComboBox.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Enums
+﻿namespace VisualPlus.Enumerators
 {
     public enum MouseStates
     {

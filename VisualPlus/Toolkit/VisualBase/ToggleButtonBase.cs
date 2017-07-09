@@ -9,7 +9,7 @@ namespace VisualPlus.Toolkit.VisualBase
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
     using VisualPlus.Handlers;
     using VisualPlus.Structure;
 

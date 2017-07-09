@@ -9,7 +9,7 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
     using VisualPlus.Handlers;
     using VisualPlus.Properties;
     using VisualPlus.Structure;

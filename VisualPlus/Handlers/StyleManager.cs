@@ -5,7 +5,7 @@
     using System;
     using System.Drawing;
 
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
     using VisualPlus.Styles;
 
     #endregion

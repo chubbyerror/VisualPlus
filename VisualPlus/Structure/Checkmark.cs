@@ -10,7 +10,7 @@
     using System.Globalization;
     using System.IO;
 
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
     using VisualPlus.Extensibility;
     using VisualPlus.Handlers;
     using VisualPlus.Styles;

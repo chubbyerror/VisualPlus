@@ -4,7 +4,7 @@ namespace VisualPlus
 
     using System.Drawing.Text;
 
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
 
     #endregion
 
@@ -39,7 +39,7 @@ namespace VisualPlus
             public const bool TitleBoxVisible = true;
             public const bool HatchVisible = true;
             public const int BarAmount = 5;
-            public const Enums.Styles DefaultStyle = Enums.Styles.Visual;
+            public const Enumerators.Styles DefaultStyle = Enumerators.Styles.Visual;
             public const float HatchSize = 2F;
             public const bool Moveable = false;
             public const bool WatermarkVisible = false;

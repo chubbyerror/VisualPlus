@@ -9,7 +9,7 @@
     using System.Drawing.Text;
     using System.Runtime.InteropServices;
 
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
     using VisualPlus.Handlers;
 
     #endregion

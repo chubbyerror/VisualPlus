@@ -8,7 +8,7 @@
     using System.Globalization;
 
     using VisualPlus.Delegates;
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
     using VisualPlus.Handlers;
 
     #endregion

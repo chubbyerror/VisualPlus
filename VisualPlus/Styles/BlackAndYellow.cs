@@ -6,7 +6,7 @@
     using System.Drawing;
     using System.Windows.Forms;
 
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
     using VisualPlus.Structure;
 
     #endregion

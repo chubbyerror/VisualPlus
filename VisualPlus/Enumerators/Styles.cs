@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Enums
+﻿namespace VisualPlus.Enumerators
 {
     #region Namespace
 

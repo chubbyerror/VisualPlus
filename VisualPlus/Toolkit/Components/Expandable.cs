@@ -9,7 +9,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Delegates;
-    using VisualPlus.Enums;
+    using VisualPlus.Enumerators;
     using VisualPlus.Handlers;
 
     #endregion
@@ -46,7 +46,7 @@
             _originalSize = _control.Size;
             _contractedHeight = contractedHeight;
 
-            _alignmentHorizontal = Enums.Alignment.Horizontal.Left;
+            _alignmentHorizontal = Enumerators.Alignment.Horizontal.Left;
             _buttonSize = new Size(12, 10);
             _color = _styleManager.ControlStyle.FlatButtonEnabled;
             _cursor = Cursors.Hand;
@@ -275,7 +275,7 @@
         public Point GetAlignmentPoint(Size control)
         {
             Point alignmentPoint = new Point { Y = _spacing };
-            if (_alignmentHorizontal == Enums.Alignment.Horizontal.Left)
+            if (_alignmentHorizontal == Enumerators.Alignment.Horizontal.Left)
             {
                 alignmentPoint.X = _spacing;
             }
