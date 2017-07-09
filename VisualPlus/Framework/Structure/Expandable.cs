@@ -9,7 +9,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Toolkit.Delegates;
 

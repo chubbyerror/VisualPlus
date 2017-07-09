@@ -11,7 +11,6 @@ namespace VisualPlus.Toolkit.VisualBase
 
     using VisualPlus.Enums;
     using VisualPlus.Framework;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Interface;
     using VisualPlus.Framework.Structure;
 

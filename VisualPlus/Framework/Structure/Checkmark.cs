@@ -11,7 +11,6 @@
     using System.IO;
 
     using VisualPlus.Enums;
-    using VisualPlus.Framework.GDI;
     using VisualPlus.Framework.Handlers;
     using VisualPlus.Styles;
 

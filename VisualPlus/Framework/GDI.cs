@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Framework.GDI
+﻿namespace VisualPlus.Framework
 {
     #region Namespace
 
