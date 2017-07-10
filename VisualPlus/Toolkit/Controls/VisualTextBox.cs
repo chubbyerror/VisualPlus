@@ -23,7 +23,7 @@
     [DefaultProperty("Text")]
     [Description("The Visual TextBox")]
     [Designer(ControlManager.FilterProperties.VisualTextBox)]
-    public sealed class VisualTextBox : InputFieldBase
+    public sealed class VisualTextBox : InputFieldBase, IInputMethods
     {
         #region Variables
 
@@ -331,10 +331,7 @@
             InternalTextBox.Cut();
         }
 
-        /// <summary>
-        ///     Specifies that the value of the SelectionLength property is zero so that no characters are selected in the
-        ///     control.
-        /// </summary>
+        /// <summary>Specifies that the value of the SelectionLength property is zero so that no characters are selected in the control.</summary>
         public void DeselectAll()
         {
             InternalTextBox.DeselectAll();

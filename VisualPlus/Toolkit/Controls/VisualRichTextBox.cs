@@ -23,7 +23,7 @@
     [DefaultProperty("Text")]
     [Description("The Visual RichTextBox")]
     [Designer(ControlManager.FilterProperties.VisualRichTextBox)]
-    public sealed class VisualRichTextBox : InputFieldBase
+    public sealed class VisualRichTextBox : InputFieldBase, IInputMethods
     {
         #region Variables
 

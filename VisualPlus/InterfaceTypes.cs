@@ -10,6 +10,45 @@ namespace VisualPlus
 
     #endregion
 
+    public interface IInputMethods
+    {
+        #region Events
+
+        void AppendText(string text);
+
+        void Clear();
+
+        void ClearUndo();
+
+        void Copy();
+
+        void Cut();
+
+        void DeselectAll();
+
+        int GetCharFromPosition(Point pt);
+
+        int GetCharIndexFromPosition(Point pt);
+
+        int GetFirstCharIndexFromLine(int lineNumber);
+
+        int GetLineFromCharIndex(int index);
+
+        Point GetPositionFromCharIndex(int index);
+
+        void Paste();
+
+        void ScrollToCaret();
+
+        void Select(int start, int length);
+
+        void SelectAll();
+
+        void Undo();
+
+        #endregion
+    }
+
     public interface IContainedInputControl
     {
         #region Properties
