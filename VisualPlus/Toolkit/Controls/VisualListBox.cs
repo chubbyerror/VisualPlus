@@ -52,6 +52,7 @@
             Size = new Size(250, 150);
             AutoSize = true;
             DrawMode = DrawMode.OwnerDrawVariable;
+            ScrollAlwaysVisible = true;
 
             ConfigureStyleManager();
         }
