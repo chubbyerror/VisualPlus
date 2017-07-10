@@ -27,7 +27,7 @@
     {
         #region Variables
 
-        public TextBox TextBoxObject = new TextBox();
+        public TextBox InternalTextBox = new TextBox();
 
         #endregion
 
@@ -70,7 +70,7 @@
             AutoSize = false;
             Size = new Size(135, 25);
             CreateTextBox();
-            Controls.Add(TextBoxObject);
+            Controls.Add(InternalTextBox);
             BackColor = Color.Transparent;
             UpdateStyles();
 
@@ -274,9 +274,34 @@
 
         #region Events
 
+        /// <summary>Appends text to the current text of a rich text box.</summary>
+        /// <param name="text">The text to append to the current contents of the text box.</param>
+        public void AppendText(string text)
+        {
+            InternalTextBox.AppendText(text);
+        }
+
+        /// <summary>Clears all text from the text box control.</summary>
+        public void Clear()
+        {
+            InternalTextBox.Clear();
+        }
+
+        /// <summary>Clears information about the most recent operation from the undo buffer of the rich text box.</summary>
+        public void ClearUndo()
+        {
+            InternalTextBox.ClearUndo();
+        }
+
+        /// <summary>Copies the current selection in the text box to the Clipboard.</summary>
+        public void Copy()
+        {
+            InternalTextBox.Copy();
+        }
+
         public void CreateTextBox()
         {
-            TextBox tb = TextBoxObject;
+            TextBox tb = InternalTextBox;
             tb.Size = new Size(Width, Height);
             tb.Location = new Point(5, 2);
             tb.Text = string.Empty;
@@ -289,15 +314,109 @@
             // tb.UseSystemPasswordChar = UseSystemPasswordChar;
             tb.Multiline = false;
 
-            TextBoxObject.KeyDown += OnKeyDown;
-            TextBoxObject.TextChanged += OnBaseTextBoxChanged;
+            InternalTextBox.KeyDown += OnKeyDown;
+            InternalTextBox.TextChanged += OnBaseTextBoxChanged;
 
-            TextBoxObject.MouseMove += OnMouseMove;
-            TextBoxObject.Leave += OnLeave;
-            TextBoxObject.Enter += OnEnter;
-            TextBoxObject.GotFocus += OnEnter;
-            TextBoxObject.LostFocus += OnLeave;
-            TextBoxObject.MouseLeave += OnLeave;
+            InternalTextBox.MouseMove += OnMouseMove;
+            InternalTextBox.Leave += OnLeave;
+            InternalTextBox.Enter += OnEnter;
+            InternalTextBox.GotFocus += OnEnter;
+            InternalTextBox.LostFocus += OnLeave;
+            InternalTextBox.MouseLeave += OnLeave;
+        }
+
+        /// <summary>Moves the current selection in the text box to the Clipboard.</summary>
+        public void Cut()
+        {
+            InternalTextBox.Cut();
+        }
+
+        /// <summary>
+        ///     Specifies that the value of the SelectionLength property is zero so that no characters are selected in the
+        ///     control.
+        /// </summary>
+        public void DeselectAll()
+        {
+            InternalTextBox.DeselectAll();
+        }
+
+        /// <summary>Retrieves the character that is closest to the specified location within the control.</summary>
+        /// <param name="pt">The location from which to seek the nearest character.</param>
+        /// <returns>The character at the specified location.</returns>
+        public int GetCharFromPosition(Point pt)
+        {
+            return InternalTextBox.GetCharFromPosition(pt);
+        }
+
+        /// <summary>Retrieves the index of the character nearest to the specified location.</summary>
+        /// <param name="pt">The location to search.</param>
+        /// <returns>The zero-based character index at the specified location.</returns>
+        public int GetCharIndexFromPosition(Point pt)
+        {
+            return InternalTextBox.GetCharIndexFromPosition(pt);
+        }
+
+        /// <summary>Retrieves the index of the first character of a given line.</summary>
+        /// <param name="lineNumber">The line for which to get the index of its first character.</param>
+        /// <returns>The zero-based character index in the specified line.</returns>
+        public int GetFirstCharIndexFromLine(int lineNumber)
+        {
+            return InternalTextBox.GetFirstCharIndexFromLine(lineNumber);
+        }
+
+        /// <summary>Retrieves the index of the first character of the current line.</summary>
+        /// <returns>The zero-based character index in the current line.</returns>
+        public int GetFirstCharIndexOfCurrentLine()
+        {
+            return InternalTextBox.GetFirstCharIndexOfCurrentLine();
+        }
+
+        /// <summary>Retrieves the line number from the specified character position within the text of the RichTextBox control.</summary>
+        /// <param name="index">The character index position to search.</param>
+        /// <returns>The zero-based line number in which the character index is located.</returns>
+        public int GetLineFromCharIndex(int index)
+        {
+            return InternalTextBox.GetLineFromCharIndex(index);
+        }
+
+        /// <summary>Retrieves the location within the control at the specified character index.</summary>
+        /// <param name="index">The index of the character for which to retrieve the location.</param>
+        /// <returns>The location of the specified character.</returns>
+        public Point GetPositionFromCharIndex(int index)
+        {
+            return InternalTextBox.GetPositionFromCharIndex(index);
+        }
+
+        /// <summary>Replaces the current selection in the text box with the contents of the Clipboard.</summary>
+        public void Paste()
+        {
+            InternalTextBox.Paste();
+        }
+
+        /// <summary>Scrolls the contents of the control to the current caret position.</summary>
+        public void ScrollToCaret()
+        {
+            InternalTextBox.ScrollToCaret();
+        }
+
+        /// <summary>Selects a range of text in the control.</summary>
+        /// <param name="start">The position of the first character in the current text selection within the text box.</param>
+        /// <param name="length">The number of characters to select.</param>
+        public void Select(int start, int length)
+        {
+            InternalTextBox.Select(start, length);
+        }
+
+        /// <summary>Selects all text in the control.</summary>
+        public void SelectAll()
+        {
+            InternalTextBox.SelectAll();
+        }
+
+        /// <summary>Undoes the last edit operation in the text box.</summary>
+        public void Undo()
+        {
+            InternalTextBox.Undo();
         }
 
         protected override void OnEnter(EventArgs e)
@@ -310,7 +429,7 @@
                 watermark.Brush = new SolidBrush(watermark.ActiveColor);
 
                 // Don't draw watermark if contains text.
-                if (TextBoxObject.TextLength <= 0)
+                if (InternalTextBox.TextLength <= 0)
                 {
                     RemoveWaterMark();
                     DrawWaterMark();
@@ -321,21 +440,21 @@
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);
-            TextBoxObject.Font = Font;
+            InternalTextBox.Font = Font;
             Invalidate();
         }
 
         protected override void OnForeColorChanged(EventArgs e)
         {
             base.OnForeColorChanged(e);
-            TextBoxObject.ForeColor = ForeColor;
+            InternalTextBox.ForeColor = ForeColor;
             Invalidate();
         }
 
         protected override void OnGotFocus(EventArgs e)
         {
             base.OnGotFocus(e);
-            TextBoxObject.Focus();
+            InternalTextBox.Focus();
         }
 
         protected override void OnInvalidated(InvalidateEventArgs e)
@@ -357,7 +476,7 @@
             if (watermark.Visible)
             {
                 // If the user has written something and left the control
-                if (TextBoxObject.TextLength > 0)
+                if (InternalTextBox.TextLength > 0)
                 {
                     // Remove the watermark
                     RemoveWaterMark();
@@ -415,7 +534,7 @@
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-            if (!TextBoxObject.Multiline)
+            if (!InternalTextBox.Multiline)
             {
                 Height = textBoxHeight;
             }
@@ -432,8 +551,8 @@
             // Set control state color
             Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
 
-            TextBoxObject.BackColor = controlTempColor;
-            TextBoxObject.ForeColor = ForeColor;
+            InternalTextBox.BackColor = controlTempColor;
+            InternalTextBox.ForeColor = ForeColor;
 
             // Setup internal text box object
             // TextBoxObject.TextAlign = TextAlign;
@@ -443,7 +562,7 @@
             graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
 
             // Setup button
-            if (!TextBoxObject.Multiline && buttonVisible)
+            if (!InternalTextBox.Multiline && buttonVisible)
             {
                 // Buttons background
                 graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
@@ -459,11 +578,11 @@
 
                 Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
 
-                TextBoxObject.Width = buttonRectangle.X - 10;
+                InternalTextBox.Width = buttonRectangle.X - 10;
             }
             else
             {
-                TextBoxObject.Width = Width - 10;
+                InternalTextBox.Width = Width - 10;
             }
 
             graphics.ResetClip();
@@ -492,9 +611,9 @@
             base.OnResize(e);
 
             // Multiline sizing
-            if (TextBoxObject.Multiline)
+            if (InternalTextBox.Multiline)
             {
-                TextBoxObject.Height = Height - 6;
+                InternalTextBox.Height = Height - 6;
             }
             else
             {
@@ -508,13 +627,13 @@
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
-            TextBoxObject.Text = Text;
+            InternalTextBox.Text = Text;
             Invalidate();
 
             if (watermark.Visible)
             {
                 // If the text of the text box is not empty.
-                if (TextBoxObject.TextLength > 0)
+                if (InternalTextBox.TextLength > 0)
                 {
                     // Remove the watermark
                     RemoveWaterMark();
@@ -529,7 +648,7 @@
 
         private void DrawWaterMark()
         {
-            if ((waterMarkContainer == null) && (TextBoxObject.TextLength <= 0))
+            if ((waterMarkContainer == null) && (InternalTextBox.TextLength <= 0))
             {
                 waterMarkContainer = new Panel(); // Creates the new panel instance
                 waterMarkContainer.Paint += WaterMarkContainer_Paint;
@@ -542,7 +661,7 @@
 
         private void OnBaseTextBoxChanged(object s, EventArgs e)
         {
-            Text = TextBoxObject.Text;
+            Text = InternalTextBox.Text;
         }
 
         private void OnEnter(object sender, EventArgs e)
@@ -555,21 +674,21 @@
             // Select all
             if (e.Control && (e.KeyCode == Keys.A))
             {
-                TextBoxObject.SelectAll();
+                InternalTextBox.SelectAll();
                 e.SuppressKeyPress = true;
             }
 
             // Copy
             if (e.Control && (e.KeyCode == Keys.C))
             {
-                TextBoxObject.Copy();
+                InternalTextBox.Copy();
                 e.SuppressKeyPress = true;
             }
         }
 
         private void OnLeave(object sender, EventArgs e)
         {
-            if (!TextBoxObject.Focused)
+            if (!InternalTextBox.Focused)
             {
                 MouseState = MouseStates.Normal;
             }
