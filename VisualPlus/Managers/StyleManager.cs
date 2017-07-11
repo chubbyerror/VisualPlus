@@ -84,9 +84,9 @@
                         break;
                     }
 
-                case Styles.BlackAndYellow:
+                case Styles.Enigma:
                     {
-                        interfaceObject = new BlackAndYellow();
+                        interfaceObject = new Enigma();
                         break;
                     }
 

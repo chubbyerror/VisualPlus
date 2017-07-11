@@ -147,7 +147,7 @@
     <Compile Include="Structure\VisualBitmap.cs" />
     <Compile Include="Structure\Watermark.cs" />
     <Compile Include="Native.cs" />
-    <Compile Include="Styles\BlackAndYellow.cs" />
+    <Compile Include="Styles\Enigma.cs" />
     <Compile Include="Styles\IStyle.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Styles\Visual.cs" />

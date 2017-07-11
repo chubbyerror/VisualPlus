@@ -14,8 +14,8 @@
         [Description("VisualPlus Style")]
         Visual = 0,
 
-        /// <summary>The black and yellow.</summary>
-        [Description("In Rush")]
-        BlackAndYellow = 1
+        /// <summary>The enigma.</summary>
+        [Description("The Enigma Style")]
+        Enigma = 1
     }
 }

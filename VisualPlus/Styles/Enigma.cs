@@ -11,7 +11,7 @@
 
     #endregion
 
-    public class BlackAndYellow : IBorder, ICheckmark, IControl, IControlState, IFont, IProgress, ITab, IWatermark
+    public class Enigma : IBorder, ICheckmark, IControl, IControlState, IFont, IProgress, ITab, IWatermark
     {
         #region Variables
 
@@ -411,7 +411,7 @@
         {
             get
             {
-                return Styles.BlackAndYellow;
+                return Styles.Enigma;
             }
         }
 
