@@ -376,7 +376,8 @@
             }
             else
             {
-                textBoxRectangle = new Rectangle(Width - (int)Font.SizeInPoints - (XOn * 2), 0, Width - 1, Height - 1);
+                Size textSize = GDI.GetTextSize(graphics, textProcessor, Font);
+                textBoxRectangle = new Rectangle(Width - (textSize.Width / 2) - (XOn * 2), 0, Width - 1, Height - 1);
             }
 
             StringFormat stringFormat = new StringFormat

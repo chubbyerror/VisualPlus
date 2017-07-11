@@ -34,7 +34,7 @@
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 50;
-        private GraphicsPath controlGraphicsPath = new GraphicsPath();
+      //  private GraphicsPath controlGraphicsPath = new GraphicsPath();
         private Point[] decrementButtonPoints = new Point[2];
         private Point[] incrementButtonPoints = new Point[2];
         private bool keyboardNum;
@@ -469,7 +469,7 @@
             graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
             graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
+            ControlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
             Size incrementSize = GDI.GetTextSize(graphics, "+", buttonFont);
@@ -522,12 +522,12 @@
             Gradient backgroundCheckTemp = Enabled ? backgroundGradient : ControlBrushCollection[3];
             Gradient buttonCheckTemp = Enabled ? buttonGradient : ControlBrushCollection[3];
 
-            graphics.SetClip(controlGraphicsPath);
+            graphics.SetClip(ControlGraphicsPath);
 
             var gradientPoints = GDI.GetGradientPoints(ClientRectangle);
 
             LinearGradientBrush backgroundGradientBrush = Gradient.CreateGradientBrush(backgroundCheckTemp.Colors, gradientPoints, backgroundCheckTemp.Angle, backgroundCheckTemp.Positions);
-            graphics.FillPath(backgroundGradientBrush, controlGraphicsPath);
+            graphics.FillPath(backgroundGradientBrush, ControlGraphicsPath);
 
             LinearGradientBrush buttonGradientBrush = Gradient.CreateGradientBrush(buttonCheckTemp.Colors, gradientPoints, buttonCheckTemp.Angle, buttonCheckTemp.Positions);
             graphics.FillPath(buttonGradientBrush, buttonPath);
@@ -541,7 +541,7 @@
 
             graphics.DrawLine(new Pen(StyleManager.BorderStyle.Color), tempSeparator[0], tempSeparator[1]);
 
-            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, controlGraphicsPath);
+            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, ControlGraphicsPath);
 
             // Draw value string
             Rectangle textBoxRectangle = new Rectangle(6, 0, Width - 1, Height - 1);
