@@ -107,7 +107,7 @@
     <Compile Include="Toolkit\Controls\VisualButton.cs" />
     <Compile Include="Toolkit\Controls\VisualCheckBox.cs" />
     <Compile Include="Toolkit\Controls\VisualColorPicker.cs" />
-    <Compile Include="Toolkit\Controls\VisualContainer.cs">
+    <Compile Include="Toolkit\Components\VisualContainer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Toolkit\Controls\VisualContextMenu.cs">
