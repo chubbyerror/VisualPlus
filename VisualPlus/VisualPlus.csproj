@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Toolkit\Components\ProgressDialog.cs" />
     <Compile Include="Toolkit\Components\Symbols\Arrow.cs" />
     <Compile Include="Toolkit\Components\Symbols\Bars.cs" />
     <Compile Include="Toolkit\Components\Symbols\Star.cs" />

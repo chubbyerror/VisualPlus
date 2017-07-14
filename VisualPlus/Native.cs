@@ -6,6 +6,7 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Runtime.InteropServices;
+    using System.Text;
 
     using VisualPlus.Toolkit.Controls;
 
@@ -30,6 +31,9 @@
 
         [DllImport("user32.dll")]
         public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        [DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
+        public static extern bool PathCompactPath(IntPtr hDc, [In] [Out] StringBuilder pszPath, int dx);
 
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
