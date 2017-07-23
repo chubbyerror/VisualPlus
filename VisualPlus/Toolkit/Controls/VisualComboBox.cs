@@ -12,6 +12,7 @@
     using VisualPlus.Enumerators;
     using VisualPlus.Managers;
     using VisualPlus.Structure;
+    using VisualPlus.Toolkit.ActionList;
     using VisualPlus.Toolkit.Components.Symbols;
 
     #endregion
@@ -21,7 +22,7 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ComboBox")]
-    [Designer(ControlManager.FilterProperties.VisualComboBox)]
+    [Designer(ControlManager.FilterProperties.VisualComboBox, typeof(VisualComboBoxTasks))]
     public class VisualComboBox : ComboBox
     {
         #region Variables

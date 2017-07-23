@@ -22,7 +22,7 @@
     [DefaultProperty("Items")]
     [DefaultBindingProperty("SelectedValue")]
     [Description("The Visual ListBox")]
-    [Designer(typeof(VisualListBoxDesigner))]
+    [Designer(typeof(VisualListBoxTasks))]
     public class VisualListBox : ContainedControlBase
     {
         #region Variables

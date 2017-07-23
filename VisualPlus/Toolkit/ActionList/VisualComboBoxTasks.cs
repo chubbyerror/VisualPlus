@@ -12,7 +12,7 @@
 
     #endregion
 
-    internal class VisualListBoxDesigner : ControlDesigner
+    internal class VisualComboBoxTasks : ControlDesigner
     {
         #region Variables
 
@@ -29,7 +29,7 @@
             {
                 if (actionListCollection == null)
                 {
-                    actionListCollection = new DesignerActionListCollection { new VisualListBoxActionList(Component) };
+                    actionListCollection = new DesignerActionListCollection { new VisualComboBoxActionList(Component) };
                 }
 
                 return actionListCollection;
@@ -39,23 +39,21 @@
         #endregion
     }
 
-    internal class VisualListBoxActionList : DesignerActionList
+    internal class VisualComboBoxActionList : DesignerActionList
     {
         #region Variables
 
-        private VisualListBox _listBox;
         private IComponentChangeService _service;
-
-        private VisualListBox buttonControl;
+        private VisualComboBox buttonControl;
         private DesignerActionUIService designerService;
 
         #endregion
 
         #region Constructors
 
-        public VisualListBoxActionList(IComponent component) : base(component)
+        public VisualComboBoxActionList(IComponent component) : base(component)
         {
-            buttonControl = (VisualListBox)component;
+            buttonControl = (VisualComboBox)component;
             designerService = (DesignerActionUIService)GetService(typeof(DesignerActionUIService));
         }
 
@@ -64,12 +62,12 @@
         #region Properties
 
         [Category("Data")]
-        [Description("The items in the VisualListBox.")]
+        [Description("The items in the VisualComboBox.")]
         [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [MergableProperty(false)]
         [Localizable(true)]
-        public virtual ListBox.ObjectCollection Items
+        public virtual ComboBox.ObjectCollection Items
         {
             get
             {
