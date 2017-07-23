@@ -20,7 +20,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Value")]
     [Description("The Visual Knob")]
-    public sealed class VisualKnob : UserControl
+    public class VisualKnob : UserControl
     {
         #region Variables
 
@@ -828,7 +828,7 @@
             if (valueVisible)
             {
                 string value = _value.ToString("0");
-                Size textAreaSize = GDI.GetTextSize(e.Graphics, value, Font);
+                Size textAreaSize = GDI.MeasureText(e.Graphics, value, Font);
                 graphics.DrawString(value, Font, new SolidBrush(ForeColor), (Width / 2) - (textAreaSize.Width / 2), (Height / 2) - (textAreaSize.Height / 2));
             }
         }

@@ -10,6 +10,22 @@ namespace VisualPlus
 
     #endregion
 
+    /// <summary>Exposes access to content values.</summary>
+    public interface IContentValues
+    {
+        #region Events
+
+        /// <summary>Gets the content long text.</summary>
+        /// <returns>String value.</returns>
+        string GetLongText();
+
+        /// <summary>Gets the content short text.</summary>
+        /// <returns>String value.</returns>
+        string GetShortText();
+
+        #endregion
+    }
+
     public interface IInputMethods
     {
         #region Events
@@ -102,6 +118,19 @@ namespace VisualPlus
         Gradient HoverGradient { get; }
 
         Gradient PressedGradient { get; }
+
+        #endregion
+    }
+
+    public interface IImageControl
+    {
+        #region Properties
+
+        Image Hover { get; set; }
+
+        Image Normal { get; set; }
+
+        Image Pressed { get; set; }
 
         #endregion
     }

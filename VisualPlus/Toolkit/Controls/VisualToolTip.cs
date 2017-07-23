@@ -20,7 +20,7 @@
     [DefaultProperty("Text")]
     [Description("The Visual ToolTip")]
     [Designer(ControlManager.FilterProperties.VisualToolTip)]
-    public sealed class VisualToolTip : ToolTip
+    public class VisualToolTip : ToolTip
     {
         #region Variables
 

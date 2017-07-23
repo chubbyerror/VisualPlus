@@ -10,6 +10,7 @@ namespace VisualPlus.Toolkit.VisualBase
     using System.Windows.Forms;
 
     using VisualPlus.Enumerators;
+    using VisualPlus.Extensibility;
     using VisualPlus.Managers;
     using VisualPlus.Structure;
 
@@ -25,6 +26,7 @@ namespace VisualPlus.Toolkit.VisualBase
 
         private bool animation;
 
+        // TODO: Separate 'box' into Size / Point var instead? 
         private Rectangle box;
         private int boxSpacing = 2;
         private Checkmark checkMark;
@@ -38,9 +40,8 @@ namespace VisualPlus.Toolkit.VisualBase
         protected ToggleButtonBase()
         {
             SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
-
+            AutoSize = true;
             box = new Rectangle(0, 0, 14, 14);
-
             animation = Settings.DefaultValue.Animation;
             checkMark = new Checkmark(ClientRectangle);
             ConfigureAnimation();
@@ -192,6 +193,27 @@ namespace VisualPlus.Toolkit.VisualBase
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal bool Toggle { get; set; }
 
+        [Description(Localize.Description.Common.Size)]
+        [Category(Localize.PropertiesCategory.Layout)]
+        public Size Box
+        {
+            get
+            {
+                return box.Size;
+            }
+
+            set
+            {
+                box.Size = value;
+                if (AutoSize)
+                {
+                    SetSize(Text.MeasureText(Font));
+                }
+
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region Events
@@ -305,6 +327,14 @@ namespace VisualPlus.Toolkit.VisualBase
             Invalidate();
         }
 
+
+
+        public bool IsBoxLarger { get; set; }
+
+        public Size TextSize { get; set; }
+        
+
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -315,7 +345,16 @@ namespace VisualPlus.Toolkit.VisualBase
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
-            box = new Rectangle(new Point(0, (ClientRectangle.Height / 2) - (box.Height / 2)), box.Size);
+            if (AutoSize)
+            {
+                box = new Rectangle(new Point(Padding.Left, (ClientRectangle.Height / 2) - (box.Height / 2)), box.Size);
+                SetSize(Text.MeasureText(Font));
+            }
+            else
+            {
+                box = new Rectangle(new Point(Padding.Left, (ClientRectangle.Height / 2) - (box.Height / 2)), box.Size);
+            }
+
             GraphicsPath boxPath = Border.GetBorderShape(box, Border.Type, Border.Rounding);
             LinearGradientBrush controlGraphicsBrush = GDI.GetControlBrush(graphics, Enabled, MouseState, ControlBrushCollection, ClientRectangle);
             GDI.FillBackground(graphics, boxPath, controlGraphicsBrush);
@@ -333,6 +372,20 @@ namespace VisualPlus.Toolkit.VisualBase
             DrawAnimation(graphics);
         }
 
+        private void SetSize(Size textSize)
+        {
+            if (GDI.TextLargerThanRectangle(textSize, box))
+            {
+                IsBoxLarger = false; // TODO: Remove after testing.
+                Size = new Size(box.X + box.Width + boxSpacing + textSize.Width, textSize.Height);
+            }
+            else
+            {
+                IsBoxLarger = true;
+                Size = new Size(box.X + box.Width + boxSpacing + textSize.Width, box.Height);
+            }
+        }
+
         protected virtual void OnToggleChanged(EventArgs e)
         {
             ToggleChanged?.Invoke(this, e);
@@ -340,9 +393,12 @@ namespace VisualPlus.Toolkit.VisualBase
 
         private void DrawText(Graphics graphics)
         {
-            StringFormat stringFormat = new StringFormat { LineAlignment = StringAlignment.Center };
-            Point textPoint = new Point(box.X + box.Width + boxSpacing, ClientRectangle.Height / 2);
-            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textPoint, stringFormat);
+            Size textSize = GDI.MeasureText(graphics, Text, Font);
+
+            TextSize = Text.MeasureText(Font);
+
+            Point textPoint = new Point(box.Right + boxSpacing, (ClientRectangle.Height / 2) - (textSize.Height / 2));
+            graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textPoint);
         }
 
         #endregion

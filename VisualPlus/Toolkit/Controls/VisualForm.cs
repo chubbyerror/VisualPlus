@@ -720,7 +720,7 @@
 
         private void DrawTitle(Graphics graphics)
         {
-            titleTextSize = GDI.GetTextSize(graphics, Text, Font);
+            titleTextSize = GDI.MeasureText(graphics, Text, Font);
             Point titlePoint;
 
             switch (titleAlignment)

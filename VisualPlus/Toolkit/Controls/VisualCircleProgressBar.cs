@@ -19,7 +19,7 @@
     [DefaultProperty("Value")]
     [Description("The Visual Circle ProgressBar")]
     [Designer(ControlManager.FilterProperties.VisualCircleProgressBar)]
-    public sealed class VisualCircleProgressBar : ProgressBase
+    public class VisualCircleProgressBar : ProgressBase
     {
         #region Variables
 

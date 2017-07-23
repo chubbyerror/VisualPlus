@@ -22,7 +22,7 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ListView")]
-    public sealed class VisualListView : ListView
+    public class VisualListView : ListView
     {
         #region Variables
 

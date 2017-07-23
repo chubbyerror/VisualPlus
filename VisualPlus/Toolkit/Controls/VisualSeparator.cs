@@ -20,7 +20,7 @@
     [DefaultProperty("Enabled")]
     [Description("The Visual Separator")]
     [Designer(ControlManager.FilterProperties.VisualSeparator)]
-    public sealed class VisualSeparator : VisualControlBase
+    public class VisualSeparator : VisualControlBase
     {
         #region Variables
 

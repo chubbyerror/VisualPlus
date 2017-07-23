@@ -22,14 +22,13 @@
     [DefaultProperty("Text")]
     [Description("The Visual Label")]
     [Designer(ControlManager.FilterProperties.VisualLabel)]
-    public sealed class VisualLabel : VisualControlBase
+    public class VisualLabel : VisualControlBase
     {
         #region Variables
 
         private Gradient _foreDisabledGradient = new Gradient();
         private Gradient _foreGradient = new Gradient();
 
-        private bool autoSize;
         private bool gradientString;
         private Orientation orientation = Orientation.Horizontal;
         private bool outline;
@@ -65,30 +64,6 @@
         #endregion
 
         #region Properties
-
-        [DefaultValue(false)]
-        [Category(Localize.PropertiesCategory.Layout)]
-        [Description(Localize.Description.Common.AutoSize)]
-        public override bool AutoSize
-        {
-            get
-            {
-                return base.AutoSize;
-            }
-
-            set
-            {
-                if ((autoSize != value) & (autoSize == false))
-                {
-                    base.AutoSize = false;
-                    autoSize = value;
-                }
-                else
-                {
-                    base.AutoSize = value;
-                }
-            }
-        }
 
         [TypeConverter(typeof(GradientConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
@@ -340,8 +315,7 @@
             }
         }
 
-        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
-        [Localizable(false)]
+     //   [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
         public override string Text
         {
             get
@@ -373,7 +347,7 @@
 
             if (reflection && (orientation == Orientation.Vertical))
             {
-                textBoxRectangle = new Rectangle(GDI.GetTextSize(graphics, Text, Font).Height, 0, ClientRectangle.Width, ClientRectangle.Height);
+                textBoxRectangle = new Rectangle(GDI.MeasureText(graphics, Text, Font).Height, 0, ClientRectangle.Width, ClientRectangle.Height);
             }
             else
             {
@@ -498,17 +472,17 @@
             {
                 case Orientation.Horizontal:
                     {
-                        imageGraphics.TranslateTransform(0, GDI.GetTextSize(graphics, Text, Font).Height);
+                        imageGraphics.TranslateTransform(0, GDI.MeasureText(graphics, Text, Font).Height);
                         imageGraphics.ScaleTransform(1, -1);
 
-                        reflectionLocation = new Point(0, textBoxRectangle.Y - (GDI.GetTextSize(graphics, Text, Font).Height / 2) - reflectionSpacing);
+                        reflectionLocation = new Point(0, textBoxRectangle.Y - (GDI.MeasureText(graphics, Text, Font).Height / 2) - reflectionSpacing);
                         break;
                     }
 
                 case Orientation.Vertical:
                     {
                         imageGraphics.ScaleTransform(-1, 1);
-                        reflectionLocation = new Point((textBoxRectangle.X - (GDI.GetTextSize(graphics, Text, Font).Width / 2)) + reflectionSpacing, 0);
+                        reflectionLocation = new Point((textBoxRectangle.X - (GDI.MeasureText(graphics, Text, Font).Width / 2)) + reflectionSpacing, 0);
                         break;
                     }
             }

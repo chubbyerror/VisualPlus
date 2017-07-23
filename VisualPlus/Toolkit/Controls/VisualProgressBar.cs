@@ -21,7 +21,7 @@
     [DefaultProperty("Value")]
     [Description("The Visual ProgressBar")]
     [Designer(ControlManager.FilterProperties.VisualProgressBar)]
-    public sealed class VisualProgressBar : ProgressBase
+    public class VisualProgressBar : ProgressBase
     {
         #region Variables
 

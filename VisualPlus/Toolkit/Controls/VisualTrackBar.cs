@@ -21,7 +21,7 @@
     [DefaultProperty("Value")]
     [Description("The Visual TrackBar")]
     [Designer(ControlManager.FilterProperties.VisualTrackBar)]
-    public sealed class VisualTrackBar : TrackBar
+    public class VisualTrackBar : TrackBar
     {
         #region Variables
 
@@ -1011,7 +1011,7 @@
                 DrawProgress(graphics);
             }
 
-            Size formattedProgressValue = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
+            Size formattedProgressValue = GDI.MeasureText(graphics, Maximum.ToString(), textFont);
 
             // Step 3 - Draw the Tracker
             DrawButton(graphics, formattedProgressValue);
@@ -1547,7 +1547,7 @@
             currentUsedPos = indentHeight;
             Point location;
             Size size;
-            textAreaSize = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
+            textAreaSize = GDI.MeasureText(graphics, Maximum.ToString(), textFont);
 
             if (line)
             {
@@ -1661,7 +1661,7 @@
             currentUsedPos = indentWidth;
             Point location;
             Size size;
-            textAreaSize = GDI.GetTextSize(graphics, Maximum.ToString(), textFont);
+            textAreaSize = GDI.MeasureText(graphics, Maximum.ToString(), textFont);
 
             if (line)
             {

@@ -20,7 +20,7 @@
     [DefaultEvent("Click")]
     [DefaultProperty("Enabled")]
     [Description("The Visual Progress Indicator")]
-    public sealed class VisualProgressIndicator : VisualControlBase
+    public class VisualProgressIndicator : VisualControlBase
     {
         #region Variables
 

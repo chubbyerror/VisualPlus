@@ -20,7 +20,7 @@
     [DefaultEvent("Opening")]
     [DefaultProperty("Items")]
     [Description("The Visual Context Menu Strip")]
-    public sealed class VisualContextMenuStrip : ContextMenuStrip
+    public class VisualContextMenuStrip : ContextMenuStrip
     {
         #region Variables
 

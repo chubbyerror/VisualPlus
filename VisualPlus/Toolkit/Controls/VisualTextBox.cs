@@ -23,7 +23,7 @@
     [DefaultProperty("Text")]
     [Description("The Visual TextBox")]
     [Designer(ControlManager.FilterProperties.VisualTextBox)]
-    public sealed class VisualTextBox : InputFieldBase, IInputMethods
+    public class VisualTextBox : InputFieldBase, IInputMethods
     {
         #region Variables
 
@@ -42,7 +42,6 @@
         private bool buttonVisible;
         private int buttonWidth = 19;
         private Color controlDisabledColor;
-        private GraphicsPath controlGraphicsPath;
         private Size iconSize = new Size(13, 13);
         private int textBoxHeight = 20;
         private Watermark watermark = new Watermark();
@@ -536,14 +535,14 @@
                 Height = textBoxHeight;
             }
 
-            controlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
+            ControlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
             buttonPath = new GraphicsPath();
             buttonPath.AddRectangle(buttonRectangle);
             buttonPath.CloseAllFigures();
 
-            graphics.SetClip(controlGraphicsPath);
+            graphics.SetClip(ControlGraphicsPath);
 
             // Set control state color
             Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
@@ -556,7 +555,7 @@
             // TextBoxObject.UseSystemPasswordChar = UseSystemPasswordChar;
 
             // Draw background back color
-            graphics.FillPath(new SolidBrush(backgroundColor), controlGraphicsPath);
+            graphics.FillPath(new SolidBrush(backgroundColor), ControlGraphicsPath);
 
             // Setup button
             if (!InternalTextBox.Multiline && buttonVisible)
@@ -571,7 +570,7 @@
 
                 graphics.SetClip(buttonPath);
                 graphics.DrawImage(buttonImage, imageRectangle);
-                graphics.SetClip(controlGraphicsPath);
+                graphics.SetClip(ControlGraphicsPath);
 
                 Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
 
@@ -589,11 +588,11 @@
             {
                 if ((MouseState == MouseStates.Hover) && ControlBorder.HoverVisible)
                 {
-                    Border.DrawBorder(graphics, controlGraphicsPath, ControlBorder.Thickness, ControlBorder.HoverColor);
+                    Border.DrawBorder(graphics, ControlGraphicsPath, ControlBorder.Thickness, ControlBorder.HoverColor);
                 }
                 else
                 {
-                    Border.DrawBorder(graphics, controlGraphicsPath, ControlBorder.Thickness, ControlBorder.Color);
+                    Border.DrawBorder(graphics, ControlGraphicsPath, ControlBorder.Thickness, ControlBorder.Color);
                 }
             }
 

@@ -50,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensibility\StringExtension.cs" />
+    <Compile Include="Toolkit\ActionList\BackupDesigner.cs" />
+    <Compile Include="Toolkit\ActionList\VisuaListBoxDesigner.cs" />
     <Compile Include="Toolkit\Components\ProgressDialog.cs" />
     <Compile Include="Toolkit\Components\Symbols\Arrow.cs" />
     <Compile Include="Toolkit\Components\Symbols\Bars.cs" />
@@ -69,8 +72,13 @@
     <Compile Include="Delegates\ControlExpandableDelegate.cs" />
     <Compile Include="Delegates\GradientDelegate.cs" />
     <Compile Include="Delegates\WatermarkDelegate.cs" />
-    <Compile Include="Toolkit\VisualBase\ContainerBase.cs" />
+    <Compile Include="Toolkit\Controls\VisualListBox.cs" />
+    <Compile Include="Toolkit\Controls\VisualScrollBar.cs" />
+    <Compile Include="Toolkit\VisualBase\FixedContentValues.cs" />
+    <Compile Include="Toolkit\VisualBase\SimpleBase.cs" />
+    <Compile Include="Toolkit\VisualBase\NestedControlsBase.cs" />
     <Compile Include="Toolkit\VisualBase\CheckBoxBase.cs" />
+    <Compile Include="Toolkit\VisualBase\ContainedControlBase.cs" />
     <Compile Include="Toolkit\VisualBase\VisualControlBase.cs" />
     <Compile Include="Toolkit\VisualBase\InputFieldBase.cs" />
     <Compile Include="Enumerators\MouseStates.cs" />
@@ -118,9 +126,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Toolkit\Controls\VisualLabel.cs" />
-    <Compile Include="Toolkit\Controls\VisualListBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Toolkit\Controls\VisualListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -200,7 +205,9 @@
   <ItemGroup>
     <None Include="Resources\Icon.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Toolkit\Experimental\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

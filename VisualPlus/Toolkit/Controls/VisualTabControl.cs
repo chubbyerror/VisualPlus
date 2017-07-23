@@ -22,7 +22,7 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("TabPages")]
     [Description("The Visual TabControl")]
-    public sealed class VisualTabControl : TabControl
+    public class VisualTabControl : TabControl
     {
         #region Variables
 

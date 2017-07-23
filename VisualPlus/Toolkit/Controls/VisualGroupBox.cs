@@ -19,7 +19,7 @@
     [DefaultEvent("Enter")]
     [DefaultProperty("Text")]
     [Description("The Visual GroupBox")]
-    public sealed class VisualGroupBox : ContainerBase
+    public class VisualGroupBox : NestedControlsBase
     {
         #region Variables
 
@@ -246,7 +246,7 @@
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.GammaCorrected;
 
-            Size textArea = GDI.GetTextSize(graphics, Text, Font);
+            Size textArea = GDI.MeasureText(graphics, Text, Font);
             Rectangle group = ConfigureStyleBox(textArea);
             Rectangle title = ConfigureStyleTitleBox(textArea);
 

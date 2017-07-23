@@ -21,7 +21,7 @@
     [DefaultProperty("Toggled")]
     [Description("The Visual Toggle")]
     [Designer(ControlManager.FilterProperties.VisualToggle)]
-    public sealed class VisualToggle : VisualControlBase
+    public class VisualToggle : VisualControlBase
     {
         #region Variables
 
@@ -376,7 +376,7 @@
             }
             else
             {
-                Size textSize = GDI.GetTextSize(graphics, textProcessor, Font);
+                Size textSize = GDI.MeasureText(graphics, textProcessor, Font);
                 textBoxRectangle = new Rectangle(Width - (textSize.Width / 2) - (XOn * 2), 0, Width - 1, Height - 1);
             }
 

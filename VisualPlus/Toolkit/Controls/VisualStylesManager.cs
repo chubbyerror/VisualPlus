@@ -21,7 +21,7 @@
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
     [Obsolete("Disabled until code optimized.")]
-    public sealed class VisualStylesManager : Component
+    public class VisualStylesManager : Component
     {
         #region Variables
 

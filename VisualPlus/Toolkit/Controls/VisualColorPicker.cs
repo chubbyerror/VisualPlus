@@ -22,7 +22,7 @@
     [DefaultEvent("ColorChanged")]
     [DefaultProperty("Color")]
     [Description("The Visual ColorPicker")]
-    public sealed class VisualColorPicker : VisualControlBase
+    public class VisualColorPicker : VisualControlBase
     {
         #region Variables
 

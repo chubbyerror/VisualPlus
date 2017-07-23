@@ -10,7 +10,6 @@
     using System.Windows.Forms;
 
     using VisualPlus.Enumerators;
-    using VisualPlus.Structure;
     using VisualPlus.Toolkit.Controls;
 
     #endregion
@@ -20,64 +19,13 @@
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
     [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public abstract class ContainerBase : VisualControlBase
+    public abstract class NestedControlsBase : SimpleBase
     {
-        #region Variables
-
-        private Color _backgroundColor;
-
-        #endregion
-
         #region Constructors
 
-        protected ContainerBase()
+        protected NestedControlsBase()
         {
-            SetStyle(ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
-            _backgroundColor = StyleManager.ControlStyle.Background(0);
-        }
-
-        public delegate void BackgroundChangedEventHandler();
-
-        [Category(Localize.EventsCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public event BackgroundChangedEventHandler BackgroundChanged;
-
-        #endregion
-
-        #region Properties
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color Background
-        {
-            get
-            {
-                return _backgroundColor;
-            }
-
-            set
-            {
-                _backgroundColor = value;
-                OnBackgroundChanged();
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(BorderConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public Border Border
-        {
-            get
-            {
-                return ControlBorder;
-            }
-
-            set
-            {
-                ControlBorder = value;
-                Invalidate();
-            }
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
         }
 
         #endregion
@@ -98,20 +46,20 @@
             }
         }
 
-        protected virtual void OnBackgroundChanged()
+        protected override void OnBackgroundChanged()
         {
-            ApplyContainerBackColorChange(this, _backgroundColor);
-            BackgroundChanged?.Invoke();
+            base.OnBackgroundChanged();
+            ApplyContainerBackColorChange(this, Background);
         }
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
-            SetControlBackColor(e.Control, _backgroundColor, false);
+            SetControlBackColor(e.Control, Background, false);
         }
 
         protected override void OnControlRemoved(ControlEventArgs e)
         {
-            SetControlBackColor(e.Control, _backgroundColor, true);
+            SetControlBackColor(e.Control, Background, true);
         }
 
         protected override void OnMouseHover(EventArgs e)

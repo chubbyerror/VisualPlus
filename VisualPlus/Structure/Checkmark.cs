@@ -310,7 +310,7 @@
             var boxGradientPoints = GDI.GetGradientPoints(box);
             LinearGradientBrush checkmarkBrush = Gradient.CreateGradientBrush(checkGradient.Colors, boxGradientPoints, checkGradient.Angle, checkGradient.Positions);
 
-            Size characterSize = GDI.GetTextSize(graphics, checkmark.Character.ToString(), checkmark.Font);
+            Size characterSize = GDI.MeasureText(graphics, checkmark.Character.ToString(), checkmark.Font);
 
             int stylesCount = checkmark.Style.Count();
             var autoLocations = new Point[stylesCount];

@@ -18,7 +18,7 @@
     [DefaultEvent("Paint")]
     [DefaultProperty("Enabled")]
     [Description("The Visual Panel")]
-    public sealed class VisualPanel : ContainerBase
+    public class VisualPanel : NestedControlsBase
     {
         #region Variables
 

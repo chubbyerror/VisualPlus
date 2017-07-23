@@ -21,7 +21,7 @@
     [DefaultProperty("Value")]
     [Description("The Visual NumericUpDown")]
     [Designer(ControlManager.FilterProperties.VisualNumericUpDown)]
-    public sealed class VisualNumericUpDown : VisualControlBase
+    public class VisualNumericUpDown : VisualControlBase
     {
         #region Variables
 
@@ -34,7 +34,6 @@
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private int buttonWidth = 50;
-      //  private GraphicsPath controlGraphicsPath = new GraphicsPath();
         private Point[] decrementButtonPoints = new Point[2];
         private Point[] incrementButtonPoints = new Point[2];
         private bool keyboardNum;
@@ -472,8 +471,8 @@
             ControlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
 
-            Size incrementSize = GDI.GetTextSize(graphics, "+", buttonFont);
-            Size decrementSize = GDI.GetTextSize(graphics, "-", buttonFont);
+            Size incrementSize = GDI.MeasureText(graphics, "+", buttonFont);
+            Size decrementSize = GDI.MeasureText(graphics, "-", buttonFont);
 
             incrementButtonPoints[0] = new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - (incrementSize.Width / 2), (buttonRectangle.Y + (buttonRectangle.Height / 2)) - (buttonRectangle.Height / 4) - (incrementSize.Height / 2));
             decrementButtonPoints[0] = new Point((buttonRectangle.X + (buttonRectangle.Width / 2)) - (decrementSize.Width / 2), (buttonRectangle.Y + (buttonRectangle.Height / 2) + (buttonRectangle.Height / 4)) - (decrementSize.Height / 2));

@@ -214,7 +214,7 @@
         {
             if (_visible)
             {
-                Size textSize = GDI.GetTextSize(graphics, _value.ToString(), _font);
+                Size textSize = GDI.MeasureText(graphics, _value.ToString(), _font);
                 Rectangle shapeRectangle = new Rectangle(badgePoint, new Size(textSize.Width + 1, textSize.Height));
                 Point textPoint = new Point((shapeRectangle.X + (shapeRectangle.Width / 2)) - (textSize.Width / 2), (shapeRectangle.Y + (shapeRectangle.Height / 2)) - (textSize.Height / 2));
                 GraphicsPath shapePath = Border.GetBorderShape(shapeRectangle, _border.Type, _border.Rounding);

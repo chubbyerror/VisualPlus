@@ -3,14 +3,50 @@
     #region Namespace
 
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Globalization;
+    using System.Linq;
+    using System.Windows.Forms;
 
     #endregion
 
     public static class Extensions
     {
+        #region Properties
+
+        /// <summary>Get the design mode state.</summary>
+        public static bool IsInDesignMode
+        {
+            get
+            {
+                bool isInDesignMode = (LicenseManager.UsageMode == LicenseUsageMode.Designtime) || Debugger.IsAttached;
+
+                if (!isInDesignMode)
+                {
+                    using (Process process = Process.GetCurrentProcess())
+                    {
+                        return process.ProcessName.ToLowerInvariant().Contains("devenv");
+                    }
+                }
+
+                return isInDesignMode;
+            }
+        }
+
+        #endregion
+
         #region Events
+
+        /// <summary>Gets a boolean determining whether the object holds any value or is empty/null.</summary>
+        /// <typeparam name="T">The type.</typeparam>
+        /// <param name="source">The source.</param>
+        /// <returns>The object elements exist.</returns>
+        public static bool AnyOrNotNull<T>(this IEnumerable<T> source)
+        {
+            return (source != null) && source.Any();
+        }
 
         /// <summary>Gets a bool value determining whether the object has the following method.</summary>
         /// <param name="objectToCheck">Object to check.</param>
@@ -49,6 +85,35 @@
             }
 
             return value;
+        }
+
+        public static void ScrollDown(this Panel p, int pos)
+        {
+            // pos passed in should be positive
+            using (Control c = new Control { Parent = p, Height = 1, Top = p.ClientSize.Height + pos })
+            {
+                p.ScrollControlIntoView(c);
+            }
+        }
+
+        /// <summary>Scroll to the bottom of the panel.</summary>
+        /// <param name="panel">The panel.</param>
+        public static void ScrollToBottom(this Panel panel)
+        {
+            using (Control c = new Control { Parent = panel, Dock = DockStyle.Bottom })
+            {
+                panel.ScrollControlIntoView(c);
+                c.Parent = null;
+            }
+        }
+
+        public static void ScrollUp(this Panel p, int pos)
+        {
+            // pos passed in should be negative
+            using (Control c = new Control { Parent = p, Height = 1, Top = pos })
+            {
+                p.ScrollControlIntoView(c);
+            }
         }
 
         #endregion

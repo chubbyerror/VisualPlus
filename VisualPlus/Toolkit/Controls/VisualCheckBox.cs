@@ -18,7 +18,7 @@
     [DefaultProperty("Checked")]
     [Description("The Visual CheckBox")]
     [Designer(ControlManager.FilterProperties.VisualCheckBox)]
-    public sealed class VisualCheckBox : CheckBoxBase
+    public class VisualCheckBox : CheckBoxBase
     {
         #region Constructors
 

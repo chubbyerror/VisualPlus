@@ -21,7 +21,7 @@
     [DefaultProperty("Text")]
     [Description("The Visual Button")]
     [Designer(ControlManager.FilterProperties.VisualButton)]
-    public sealed class VisualButton : ButtonContentBase, IAnimate, IControlStates
+    public class VisualButton : ButtonContentBase, IAnimate, IControlStates
     {
         #region Variables
 

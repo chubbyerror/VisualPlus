@@ -19,7 +19,7 @@
     [DefaultProperty("Value")]
     [Description("The Visual Rating")]
     [Designer(ControlManager.FilterProperties.VisualRating)]
-    public sealed class VisualRating : VisualControlBase
+    public class VisualRating : VisualControlBase
     {
         #region Variables
 

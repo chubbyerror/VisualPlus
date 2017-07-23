@@ -20,6 +20,7 @@
     [DesignerCategory("code")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public abstract class VisualControlBase : Control
     {
         #region Variables
@@ -35,7 +36,14 @@
 
         protected VisualControlBase()
         {
+            // Double buffering to reduce drawing flicker.
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+
+            // Repaint entire control whenever resizing.
+            SetStyle(ControlStyles.ResizeRedraw, true);
+
+            // Drawn double buffered by default
+            DoubleBuffered = true;
 
             _mouseState = MouseStates.Normal;
             _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
@@ -71,6 +79,10 @@
         #endregion
 
         #region Properties
+
+        [Category(Localize.PropertiesCategory.Layout)]
+        [Description(Localize.Description.Common.AutoSize)]
+        public new bool AutoSize { get; set; }
 
         [Category(Localize.PropertiesCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]

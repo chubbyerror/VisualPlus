@@ -79,7 +79,7 @@
             Point newPosition = new Point(0, 0);
             Point newImagePoint = new Point(0, 0);
             Point newTextPoint = new Point(0, 0);
-            Size textSize = GetTextSize(graphics, text, font);
+            Size textSize = MeasureText(graphics, text, font);
 
             switch (relation)
             {
@@ -171,6 +171,15 @@
             {
                 return newTextPoint;
             }
+        }
+
+        /// <summary>Draws the control.</summary>
+        /// <param name="control">The control to draw.</param>
+        /// <param name="point">The point.</param>
+        public static void DrawControl(Control control, Point point)
+        {
+            Bitmap _bitmap = new Bitmap(control.Size.Width, control.Size.Height);
+            control.DrawToBitmap(_bitmap, new Rectangle(point.X, point.Y, _bitmap.Width, _bitmap.Height));
         }
 
         /// <summary>Draws the rounded rectangle from specific values.</summary>
@@ -379,20 +388,6 @@
             return new[] { new Point { X = rectangle.Width, Y = 0 }, new Point { X = rectangle.Width, Y = rectangle.Height } };
         }
 
-        /// <summary>Measures the specified string when draw with the specified font.</summary>
-        /// <param name="graphics">Graphics input.</param>
-        /// <param name="text">The text.</param>
-        /// <param name="font">The text Font.</param>
-        /// <returns>Returns text size.</returns>
-        public static Size GetTextSize(Graphics graphics, string text, Font font)
-        {
-            int width = Convert.ToInt32(graphics.MeasureString(text, font).Width);
-            int height = Convert.ToInt32(graphics.MeasureString(text, font).Height);
-            Size textSize = new Size(width, height);
-
-            return textSize;
-        }
-
         /// <summary>Initialize the graphics processor.</summary>
         /// <param name="e">Paint event.</param>
         /// <param name="compositingMode">Compositing mode.</param>
@@ -421,6 +416,29 @@
         public static bool IsMouseInBounds(Point mousePoint, Rectangle bounds)
         {
             return bounds.Contains(mousePoint);
+        }
+
+        /// <summary>Measures the specified string when draw with the specified font.</summary>
+        /// <param name="graphics">Graphics input.</param>
+        /// <param name="text">The text to measure.</param>
+        /// <param name="font">The font to apply to the measured text.</param>
+        /// <returns>Measured text size.</returns>
+        public static Size MeasureText(Graphics graphics, string text, Font font)
+        {
+            int width = Convert.ToInt32(graphics.MeasureString(text, font).Width);
+            int height = Convert.ToInt32(graphics.MeasureString(text, font).Height);
+            Size textSize = new Size(width, height);
+
+            return textSize;
+        }
+
+        /// <summary>Checks if the text is larger than the rectangle.</summary>
+        /// <param name="text">The text.</param>
+        /// <param name="rectangle">The rectangle.</param>
+        /// <returns>Returns result.</returns>
+        public static bool TextLargerThanRectangle(Size text, Rectangle rectangle)
+        {
+            return text.Height > rectangle.Size.Height;
         }
 
         /// <summary>Sets the graphics using picture box size mode.</summary>

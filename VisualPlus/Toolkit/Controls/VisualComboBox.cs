@@ -22,7 +22,7 @@
     [DefaultProperty("Items")]
     [Description("The Visual ComboBox")]
     [Designer(ControlManager.FilterProperties.VisualComboBox)]
-    public sealed class VisualComboBox : ComboBox
+    public class VisualComboBox : ComboBox
     {
         #region Variables
 

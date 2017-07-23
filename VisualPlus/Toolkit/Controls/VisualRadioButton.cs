@@ -18,7 +18,7 @@
     [DefaultProperty("Checked")]
     [Description("The Visual RadioButton")]
     [Designer(ControlManager.FilterProperties.VisualRadioButton)]
-    public sealed class VisualRadioButton : RadioButtonBase
+    public class VisualRadioButton : RadioButtonBase
     {
         #region Constructors
 
