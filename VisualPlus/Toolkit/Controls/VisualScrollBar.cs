@@ -10,7 +10,7 @@
 
     #endregion
 
-    [ToolboxItem(true)]
+    [ToolboxItem(false)]
     [ToolboxBitmap(typeof(ScrollBar))]
     [DefaultEvent("Scroll")]
     [DefaultProperty("Value")]
