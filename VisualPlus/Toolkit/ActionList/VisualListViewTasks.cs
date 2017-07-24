@@ -1,4 +1,4 @@
-﻿namespace VisualPlus.Toolkit.ActionList
+namespace VisualPlus.Toolkit.ActionList
 {
     #region Namespace
 
