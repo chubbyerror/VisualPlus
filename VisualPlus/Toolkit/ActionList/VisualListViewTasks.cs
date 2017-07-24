@@ -47,6 +47,9 @@
         private VisualListView buttonControl;
         private DesignerActionUIService designerService;
 
+        private bool dockState;
+        private string dockText;
+
         #endregion
 
         #region Constructors
@@ -55,6 +58,9 @@
         {
             buttonControl = (VisualListView)component;
             designerService = (DesignerActionUIService)GetService(typeof(DesignerActionUIService));
+
+            dockText = "Dock in Parent Container.";
+            dockState = false;
         }
 
         #endregion
@@ -123,6 +129,24 @@
 
         #region Events
 
+        public void DockContainer()
+        {
+            if (!dockState)
+            {
+                buttonControl.Dock = DockStyle.None;
+                dockText = ContainerText.Docked;
+                dockState = true;
+            }
+            else
+            {
+                buttonControl.Dock = DockStyle.Fill;
+                dockText = ContainerText.Undock;
+                dockState = false;
+            }
+
+            designerService.Refresh(buttonControl);
+        }
+
         public override DesignerActionItemCollection GetSortedActionItems()
         {
             DesignerActionItemCollection items = new DesignerActionItemCollection
@@ -130,10 +154,21 @@
                     new DesignerActionPropertyItem("Items", "Edit Items..."),
                     new DesignerActionPropertyItem("Columns", "Edit Columns..."),
                     new DesignerActionPropertyItem("Groups", "Edit Groups..."),
-                    new DesignerActionPropertyItem("View", "View:")
+                    new DesignerActionPropertyItem("View", "View:"),
+                    new DesignerActionMethodItem(this, "DockContainer", dockText)
                 };
 
             return items;
+        }
+
+        #endregion
+
+        #region Methods
+
+        private struct ContainerText
+        {
+            public const string Docked = "Dock in Parent Container";
+            public const string Undock = "Undock in Parent Container.";
         }
 
         #endregion
