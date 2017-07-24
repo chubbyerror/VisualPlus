@@ -69,7 +69,7 @@
             _itemAlternate = StyleManager.BorderStyle.Color;
             _itemSelected = StyleManager.BorderStyle.HoverColor;
 
-            _listBox.DataSourceChanged += ListBoxDataSourceChanged;
+            _listBox.DataSourceChanged += ListBox_DataSourceChanged;
             _listBox.DisplayMemberChanged += ListBox_DisplayMemberChanged;
             _listBox.ValueMemberChanged += ListBox_ValueMemberChanged;
             _listBox.SelectedIndexChanged += ListBox_SelectedIndexChanged;
@@ -776,6 +776,11 @@
             ValueMemberChanged?.Invoke(this, e);
         }
 
+        private void ListBox_DataSourceChanged(object sender, EventArgs e)
+        {
+            OnDataSourceChanged(e);
+        }
+
         private void ListBox_DisplayMemberChanged(object sender, EventArgs e)
         {
             OnDisplayMemberChanged(e);
@@ -943,11 +948,6 @@
             OnValueMemberChanged(e);
         }
 
-        private void ListBoxDataSourceChanged(object sender, EventArgs e)
-        {
-            OnDataSourceChanged(e);
-        }
-
         private void UpdateContentFromItemIndex(int index)
         {
             IContentValues itemValues = Items[index] as IContentValues;
@@ -973,7 +973,5 @@
         }
 
         #endregion
-
-        // private Color backgroundColor;
     }
 }
