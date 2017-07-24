@@ -12,6 +12,7 @@
 
     using VisualPlus.Enumerators;
     using VisualPlus.Structure;
+    using VisualPlus.Toolkit.ActionList;
     using VisualPlus.Toolkit.VisualBase;
 
     #endregion
@@ -21,6 +22,7 @@
     [DefaultEvent("SelectedIndexChanged")]
     [DefaultProperty("Items")]
     [Description("The Visual ListView")]
+    [Designer(typeof(VisualListViewTasks))]
     public class VisualListView : ContainedControlBase, IContainedControl
     {
         #region Variables
@@ -294,6 +296,22 @@
             {
                 drawStandardHeader = value;
                 Invalidate();
+            }
+        }
+
+        [Category("Appearance")]
+        [Description("Selects one of five different views that can be shown in.")]
+        [DefaultValue(false)]
+        public virtual View View
+        {
+            get
+            {
+                return _listView.View;
+            }
+
+            set
+            {
+                _listView.View = value;
             }
         }
 

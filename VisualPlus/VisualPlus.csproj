@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Extensibility\StringExtension.cs" />
     <Compile Include="Toolkit\ActionList\BackupDesigner.cs" />
+    <Compile Include="Toolkit\ActionList\VisualListViewTasks.cs" />
     <Compile Include="Toolkit\ActionList\VisualComboBoxTasks.cs" />
     <Compile Include="Toolkit\ActionList\VisuaListBoxTasks.cs" />
     <Compile Include="Toolkit\Components\ProgressDialog.cs" />
