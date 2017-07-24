@@ -23,22 +23,17 @@
     [DefaultBindingProperty("SelectedValue")]
     [Description("The Visual ListBox")]
     [Designer(typeof(VisualListBoxTasks))]
-    public class VisualListBox : ContainedControlBase
+    public class VisualListBox : ContainedControlBase, IContainedControl
     {
         #region Variables
 
-        protected bool _alternateColors;
-
-        #endregion
-
-        #region Variables
+        private bool _alternateColors;
 
         private FixedContentValue _contentValues = new FixedContentValue();
         private Color _itemAlternate;
         private Color _itemNormal;
         private Color _itemSelected;
         private ListBox _listBox;
-        private Color backgroundColor;
 
         #endregion
 
@@ -46,19 +41,17 @@
 
         public VisualListBox()
         {
-            // Contains another control and needs marking as such for validation to work
+            // Contains another control
             SetStyle(ControlStyles.ContainerControl, true);
 
-            // Cannot select this control, only the child ListBox and does not generate a click event
+            // Cannot select this control, only the child ListView and does not generate a click event
             SetStyle(ControlStyles.Selectable | ControlStyles.StandardClick, false);
 
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-
-            backgroundColor = StyleManager.ControlStyle.Background(3);
+            Background = StyleManager.ControlStyle.Background(3);
 
             _listBox = new ListBox
                 {
-                    BackColor = backgroundColor,
+                    BackColor = Background,
                     Size = GetInternalControlSize(Size, Border),
                     BorderStyle = BorderStyle.None,
                     IntegralHeight = false,
@@ -70,7 +63,6 @@
 
             AutoSize = true;
             BackColor = Color.Transparent;
-            ResizeRedraw = true;
             Size = new Size(250, 150);
 
             _itemNormal = StyleManager.ControlStyle.Background(0);
@@ -157,44 +149,10 @@
             }
         }
 
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color BackgroundColor
-        {
-            get
-            {
-                return backgroundColor;
-            }
-
-            set
-            {
-                backgroundColor = value;
-                _listBox.BackColor = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(BorderConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public Border Border
-        {
-            get
-            {
-                return ControlBorder;
-            }
-
-            set
-            {
-                ControlBorder = value;
-                Invalidate();
-            }
-        }
-
-        /// <summary>Gets access to the contained input control.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [EditorBrowsable(EditorBrowsableState.Always)]
         [Browsable(false)]
+        [Description("Gets access to the contained control.")]
         public Control ContainedControl
         {
             get
@@ -203,7 +161,6 @@
             }
         }
 
-        /// <summary>Gets and sets the list that this control will use to gets its items.</summary>
         [Category("Data")]
         [Description("Indicates the list that this control will use to gets its items.")]
         [AttributeProvider(typeof(IListSource))]
@@ -222,7 +179,6 @@
             }
         }
 
-        /// <summary>Gets and sets the property to display for the items in this control.</summary>
         [Category("Data")]
         [Description("Indicates the property to display for the items in this control.")]
         [TypeConverter("System.Windows.Forms.Design.DataMemberFieldConverter, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
@@ -786,7 +742,12 @@
 
             graphics.SetClip(ControlGraphicsPath);
 
-            graphics.FillRectangle(new SolidBrush(backgroundColor), ClientRectangle);
+            if (Background != _listBox.BackColor)
+            {
+                _listBox.BackColor = Background;
+            }
+
+            graphics.FillRectangle(new SolidBrush(Background), ClientRectangle);
 
             graphics.ResetClip();
 
@@ -796,7 +757,6 @@
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-
             _listBox.Location = GetInternalControlLocation(ControlBorder);
             _listBox.Size = GetInternalControlSize(Size, ControlBorder);
         }
@@ -1013,5 +973,7 @@
         }
 
         #endregion
+
+        // private Color backgroundColor;
     }
 }

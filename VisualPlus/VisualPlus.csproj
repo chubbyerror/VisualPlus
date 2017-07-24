@@ -74,6 +74,7 @@
     <Compile Include="Delegates\GradientDelegate.cs" />
     <Compile Include="Delegates\WatermarkDelegate.cs" />
     <Compile Include="Toolkit\Controls\VisualListBox.cs" />
+    <Compile Include="Toolkit\Controls\VisualListView.cs" />
     <Compile Include="Toolkit\Controls\VisualScrollBar.cs" />
     <Compile Include="Toolkit\VisualBase\FixedContentValues.cs" />
     <Compile Include="Toolkit\VisualBase\SimpleBase.cs" />
@@ -127,9 +128,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Toolkit\Controls\VisualLabel.cs" />
-    <Compile Include="Toolkit\Controls\VisualListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Toolkit\Controls\VisualRating.cs" />
     <Compile Include="Toolkit\Controls\VisualShape.cs" />
     <Compile Include="Toolkit\Controls\VisualStylesManager.cs">

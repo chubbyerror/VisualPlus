@@ -44,6 +44,7 @@
 
             // Drawn double buffered by default
             DoubleBuffered = true;
+            ResizeRedraw = true;
 
             _mouseState = MouseStates.Normal;
             _styleManager = new StyleManager(Settings.DefaultValue.DefaultStyle);
@@ -54,7 +55,7 @@
             _textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
             ControlBorder = new Border();
-
+            
             ControlBrushCollection = new[]
                 {
                     _styleManager.ControlStatesStyle.ControlEnabled,

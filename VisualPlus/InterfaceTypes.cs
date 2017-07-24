@@ -65,9 +65,11 @@ namespace VisualPlus
         #endregion
     }
 
-    public interface IContainedInputControl
+    public interface IContainedControl
     {
         #region Properties
+
+        Border Border { get; set; }
 
         Control ContainedControl { get; }
 

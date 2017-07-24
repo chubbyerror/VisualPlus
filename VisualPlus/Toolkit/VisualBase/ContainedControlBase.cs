@@ -5,6 +5,7 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Runtime.InteropServices;
+    using System.Windows.Forms;
 
     using VisualPlus.Structure;
 
@@ -14,7 +15,7 @@
     [DesignerCategory("code")]
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
-    public abstract class ContainedControlBase : VisualControlBase
+    public abstract class ContainedControlBase : SimpleBase
     {
         #region Events
 
