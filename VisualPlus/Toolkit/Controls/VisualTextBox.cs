@@ -257,6 +257,7 @@
             set
             {
                 _textBox.Multiline = value;
+                _textBox.Invalidate();
                 Invalidate();
             }
         }
@@ -272,8 +273,17 @@
 
             set
             {
-                _textBox.Text = value;
-                base.Text = value;
+                if (_textBox.Text != value)
+                {
+                    if (!MultiLine)
+                    {
+                        string text = RemoveLineBreaks(value);
+                        value = text;
+                    }
+
+                    _textBox.Text = value;
+                    base.Text = value;
+                }
 
                 if (watermark.Visible)
                 {
@@ -645,6 +655,11 @@
             {
                 MouseState = MouseStates.Normal;
             }
+        }
+
+        private string RemoveLineBreaks(string text)
+        {
+            return text.Replace(Environment.NewLine, " ");
         }
 
         private void RemoveWaterMark()

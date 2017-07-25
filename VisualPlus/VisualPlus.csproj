@@ -53,6 +53,7 @@
     <Compile Include="EventArgs\ColorEventArgs.cs" />
     <Compile Include="Extensibility\StringExtension.cs" />
     <Compile Include="Toolkit\ActionList\BackupDesigner.cs" />
+    <Compile Include="Toolkit\ActionList\VisualRichBoxTasks.cs" />
     <Compile Include="Toolkit\ActionList\VisualTextBoxTasks.cs" />
     <Compile Include="Toolkit\ActionList\VisualListViewTasks.cs" />
     <Compile Include="Toolkit\ActionList\VisualComboBoxTasks.cs" />
