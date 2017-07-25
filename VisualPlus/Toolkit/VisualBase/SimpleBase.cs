@@ -8,7 +8,9 @@
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
+    using VisualPlus.Delegates;
     using VisualPlus.Enumerators;
+    using VisualPlus.EventArgs;
     using VisualPlus.Structure;
 
     #endregion
@@ -22,6 +24,7 @@
         #region Variables
 
         private Color _backgroundColor;
+        private Color _backgroundDisabledColor;
 
         #endregion
 
@@ -31,13 +34,16 @@
         {
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             _backgroundColor = StyleManager.ControlStyle.Background(0);
+            _backgroundDisabledColor = StyleManager.FontStyle.ForeColorDisabled;
         }
-
-        public delegate void BackgroundChangedEventHandler();
 
         [Category(Localize.EventsCategory.Appearance)]
         [Description(Localize.Description.Common.Color)]
         public event BackgroundChangedEventHandler BackgroundChanged;
+
+        [Category(Localize.EventsCategory.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public event BackgroundChangedEventHandler BackgroundDisabledChanged;
 
         #endregion
 
@@ -55,7 +61,24 @@
             set
             {
                 _backgroundColor = value;
-                OnBackgroundChanged();
+                OnBackgroundChanged(new ColorEventArgs(_backgroundColor));
+                Invalidate();
+            }
+        }
+
+        [Category(Localize.PropertiesCategory.Appearance)]
+        [Description(Localize.Description.Common.Color)]
+        public Color BackgroundDisabled
+        {
+            get
+            {
+                return _backgroundDisabledColor;
+            }
+
+            set
+            {
+                _backgroundDisabledColor = value;
+                OnBackgroundDisabledChanged(new ColorEventArgs(_backgroundDisabledColor));
                 Invalidate();
             }
         }
@@ -81,9 +104,14 @@
 
         #region Events
 
-        protected virtual void OnBackgroundChanged()
+        protected virtual void OnBackgroundChanged(ColorEventArgs e)
         {
-            BackgroundChanged?.Invoke();
+            BackgroundChanged?.Invoke(e);
+        }
+
+        protected virtual void OnBackgroundDisabledChanged(ColorEventArgs e)
+        {
+            BackgroundDisabledChanged?.Invoke(e);
         }
 
         protected override void OnMouseHover(EventArgs e)
@@ -98,6 +126,20 @@
             base.OnMouseLeave(e);
             MouseState = MouseStates.Normal;
             Invalidate();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            Color stateColor = Enabled ? _backgroundColor : _backgroundDisabledColor;
+            ControlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder);
+
+            Graphics graphics = e.Graphics;
+            graphics.SetClip(ControlGraphicsPath);
+            graphics.FillRectangle(new SolidBrush(stateColor), ClientRectangle);
+            graphics.ResetClip();
+            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, ControlGraphicsPath);
         }
 
         #endregion

@@ -55,7 +55,7 @@
             _textRendererHint = Settings.DefaultValue.TextRenderingHint;
 
             ControlBorder = new Border();
-            
+
             ControlBrushCollection = new[]
                 {
                     _styleManager.ControlStatesStyle.ControlEnabled,

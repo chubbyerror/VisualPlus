@@ -64,6 +64,19 @@
 
         #region Properties
 
+        public Color ForeColor
+        {
+            get
+            {
+                return buttonControl.ForeColor;
+            }
+
+            set
+            {
+                buttonControl.ForeColor = value;
+            }
+        }
+
         [Category("Data")]
         [Description("The items in the VisualListBox.")]
         [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
@@ -75,19 +88,6 @@
             get
             {
                 return buttonControl.Items;
-            }
-        }
-
-        public Color ForeColor
-        {
-            get
-            {
-                return buttonControl.ForeColor;
-            }
-
-            set
-            {
-                buttonControl.ForeColor = value;
             }
         }
 

@@ -10,9 +10,9 @@
     using System.Windows.Forms;
 
     using VisualPlus.Enumerators;
-    using VisualPlus.Managers;
     using VisualPlus.Properties;
     using VisualPlus.Structure;
+    using VisualPlus.Toolkit.ActionList;
     using VisualPlus.Toolkit.VisualBase;
 
     #endregion
@@ -22,29 +22,21 @@
     [DefaultEvent("TextChanged")]
     [DefaultProperty("Text")]
     [Description("The Visual TextBox")]
-    [Designer(ControlManager.FilterProperties.VisualTextBox)]
-    public class VisualTextBox : InputFieldBase, IInputMethods
+    [Designer(typeof(VisualTextBoxTasks))]
+    public class VisualTextBox : ContainedControlBase, IInputMethods
     {
         #region Variables
 
-        public TextBox InternalTextBox = new TextBox();
-
-        #endregion
-
-        #region Variables
-
-        private Color backgroundColor;
+        private TextBox _textBox;
         private Border buttonBorder;
         private Color buttonColor;
-        private Image buttonImage = Resources.search;
+        private Image buttonImage;
         private GraphicsPath buttonPath;
         private Rectangle buttonRectangle;
         private bool buttonVisible;
-        private int buttonWidth = 19;
-        private Color controlDisabledColor;
-        private Size iconSize = new Size(13, 13);
-        private int textBoxHeight = 20;
-        private Watermark watermark = new Watermark();
+        private int buttonWidth;
+        private Size iconSize;
+        private Watermark watermark;
         private Panel waterMarkContainer;
         private int xValue;
         private int yValue;
@@ -55,27 +47,51 @@
 
         public VisualTextBox()
         {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
-                ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor,
-                true);
+            SetStyle(ControlStyles.UserPaint | ControlStyles.SupportsTransparentBackColor, true);
+
+            // Contains another control
+            SetStyle(ControlStyles.ContainerControl, true);
+
+            // Cannot select this control, only the child and does not generate a click event
+            SetStyle(ControlStyles.Selectable | ControlStyles.StandardClick, false);
+
+            _textBox = new TextBox
+                {
+                    Size = GetInternalControlSize(Size, Border),
+                    Location = GetInternalControlLocation(Border),
+                    Text = string.Empty,
+                    BorderStyle = BorderStyle.None,
+                    TextAlign = HorizontalAlignment.Left,
+                    Font = Font,
+                    ForeColor = ForeColor,
+                    BackColor = Background,
+                    Multiline = false
+                };
+
+            buttonWidth = 19;
+            buttonImage = Resources.Icon;
+            iconSize = new Size(13, 13);
+
+            watermark = new Watermark();
 
             buttonColor = StyleManager.ControlStyle.FlatButtonEnabled;
-            controlDisabledColor = StyleManager.FontStyle.ForeColorDisabled;
 
-            Border = new Border();
             buttonBorder = new Border();
 
+            BackColor = Color.Transparent;
             AutoSize = false;
             Size = new Size(135, 25);
-            CreateTextBox();
-            Controls.Add(InternalTextBox);
-            BackColor = Color.Transparent;
-            UpdateStyles();
+
+            _textBox.KeyDown += OnKeyDown;
+            _textBox.Leave += OnLeave;
+            _textBox.Enter += OnEnter;
+            _textBox.GotFocus += OnEnter;
+            _textBox.LostFocus += OnLeave;
+            _textBox.MouseLeave += OnLeave;
+
+            Controls.Add(_textBox);
 
             waterMarkContainer = null;
-
-            backgroundColor = StyleManager.ControlStyle.Background(3);
 
             if (watermark.Visible)
             {
@@ -90,39 +106,6 @@
         #endregion
 
         #region Properties
-
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color BackgroundColor
-        {
-            get
-            {
-                return backgroundColor;
-            }
-
-            set
-            {
-                backgroundColor = value;
-                Invalidate();
-            }
-        }
-
-        [TypeConverter(typeof(BorderConverter))]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Category(Localize.PropertiesCategory.Appearance)]
-        public Border Border
-        {
-            get
-            {
-                return ControlBorder;
-            }
-
-            set
-            {
-                ControlBorder = value;
-                Invalidate();
-            }
-        }
 
         [TypeConverter(typeof(BorderConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
@@ -205,19 +188,43 @@
             }
         }
 
-        [Category(Localize.PropertiesCategory.Appearance)]
-        [Description(Localize.Description.Common.Color)]
-        public Color ControlDisabledColor
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Browsable(false)]
+        [Description("Gets access to the contained control.")]
+        public Control ContainedControl
         {
             get
             {
-                return controlDisabledColor;
+                return _textBox;
+            }
+        }
+
+        public new Font Font
+        {
+            get
+            {
+                return base.Font;
             }
 
             set
             {
-                controlDisabledColor = value;
-                Invalidate();
+                _textBox.Font = value;
+                base.Font = value;
+            }
+        }
+
+        public new Color ForeColor
+        {
+            get
+            {
+                return base.ForeColor;
+            }
+
+            set
+            {
+                _textBox.ForeColor = value;
+                base.ForeColor = value;
             }
         }
 
@@ -237,18 +244,51 @@
             }
         }
 
-        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
-        [Localizable(false)]
-        public override string Text
+        [Category("Behaviour")]
+        [Description("Gets or sets a value indicating whether this is a multiline TextBox control.")]
+        [DefaultValue(false)]
+        public virtual bool MultiLine
         {
             get
             {
-                return base.Text;
+                return _textBox.Multiline;
             }
 
             set
             {
+                _textBox.Multiline = value;
+                Invalidate();
+            }
+        }
+
+        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
+        [Localizable(false)]
+        public new string Text
+        {
+            get
+            {
+                return _textBox.Text;
+            }
+
+            set
+            {
+                _textBox.Text = value;
                 base.Text = value;
+
+                if (watermark.Visible)
+                {
+                    // If the text of the text box is not empty.
+                    if (_textBox.TextLength > 0)
+                    {
+                        // Remove the watermark
+                        RemoveWaterMark();
+                    }
+                    else
+                    {
+                        // But if the text is empty, draw the watermark again.
+                        DrawWaterMark();
+                    }
+                }
             }
         }
 
@@ -277,63 +317,40 @@
         /// <param name="text">The text to append to the current contents of the text box.</param>
         public void AppendText(string text)
         {
-            InternalTextBox.AppendText(text);
+            _textBox.AppendText(text);
         }
 
         /// <summary>Clears all text from the text box control.</summary>
         public void Clear()
         {
-            InternalTextBox.Clear();
+            _textBox.Clear();
         }
 
         /// <summary>Clears information about the most recent operation from the undo buffer of the rich text box.</summary>
         public void ClearUndo()
         {
-            InternalTextBox.ClearUndo();
+            _textBox.ClearUndo();
         }
 
         /// <summary>Copies the current selection in the text box to the Clipboard.</summary>
         public void Copy()
         {
-            InternalTextBox.Copy();
-        }
-
-        public void CreateTextBox()
-        {
-            TextBox tb = InternalTextBox;
-            tb.Size = new Size(Width, Height);
-            tb.Location = new Point(5, 2);
-            tb.Text = string.Empty;
-            tb.BorderStyle = BorderStyle.None;
-            tb.TextAlign = HorizontalAlignment.Left;
-            tb.Font = Font;
-            tb.ForeColor = ForeColor;
-            tb.BackColor = backgroundColor;
-
-            // tb.UseSystemPasswordChar = UseSystemPasswordChar;
-            tb.Multiline = false;
-
-            InternalTextBox.KeyDown += OnKeyDown;
-            InternalTextBox.TextChanged += OnBaseTextBoxChanged;
-
-            InternalTextBox.MouseMove += OnMouseMove;
-            InternalTextBox.Leave += OnLeave;
-            InternalTextBox.Enter += OnEnter;
-            InternalTextBox.GotFocus += OnEnter;
-            InternalTextBox.LostFocus += OnLeave;
-            InternalTextBox.MouseLeave += OnLeave;
+            _textBox.Copy();
         }
 
         /// <summary>Moves the current selection in the text box to the Clipboard.</summary>
         public void Cut()
         {
-            InternalTextBox.Cut();
+            _textBox.Cut();
         }
 
-        /// <summary>Specifies that the value of the SelectionLength property is zero so that no characters are selected in the control.</summary>
+        /// <summary>
+        ///     Specifies that the value of the SelectionLength property is zero so that no characters are selected in the
+        ///     control.
+        /// </summary>
         public void DeselectAll()
         {
-            InternalTextBox.DeselectAll();
+            _textBox.DeselectAll();
         }
 
         /// <summary>Retrieves the character that is closest to the specified location within the control.</summary>
@@ -341,7 +358,7 @@
         /// <returns>The character at the specified location.</returns>
         public int GetCharFromPosition(Point pt)
         {
-            return InternalTextBox.GetCharFromPosition(pt);
+            return _textBox.GetCharFromPosition(pt);
         }
 
         /// <summary>Retrieves the index of the character nearest to the specified location.</summary>
@@ -349,7 +366,7 @@
         /// <returns>The zero-based character index at the specified location.</returns>
         public int GetCharIndexFromPosition(Point pt)
         {
-            return InternalTextBox.GetCharIndexFromPosition(pt);
+            return _textBox.GetCharIndexFromPosition(pt);
         }
 
         /// <summary>Retrieves the index of the first character of a given line.</summary>
@@ -357,14 +374,14 @@
         /// <returns>The zero-based character index in the specified line.</returns>
         public int GetFirstCharIndexFromLine(int lineNumber)
         {
-            return InternalTextBox.GetFirstCharIndexFromLine(lineNumber);
+            return _textBox.GetFirstCharIndexFromLine(lineNumber);
         }
 
         /// <summary>Retrieves the index of the first character of the current line.</summary>
         /// <returns>The zero-based character index in the current line.</returns>
         public int GetFirstCharIndexOfCurrentLine()
         {
-            return InternalTextBox.GetFirstCharIndexOfCurrentLine();
+            return _textBox.GetFirstCharIndexOfCurrentLine();
         }
 
         /// <summary>Retrieves the line number from the specified character position within the text of the RichTextBox control.</summary>
@@ -372,7 +389,7 @@
         /// <returns>The zero-based line number in which the character index is located.</returns>
         public int GetLineFromCharIndex(int index)
         {
-            return InternalTextBox.GetLineFromCharIndex(index);
+            return _textBox.GetLineFromCharIndex(index);
         }
 
         /// <summary>Retrieves the location within the control at the specified character index.</summary>
@@ -380,19 +397,19 @@
         /// <returns>The location of the specified character.</returns>
         public Point GetPositionFromCharIndex(int index)
         {
-            return InternalTextBox.GetPositionFromCharIndex(index);
+            return _textBox.GetPositionFromCharIndex(index);
         }
 
         /// <summary>Replaces the current selection in the text box with the contents of the Clipboard.</summary>
         public void Paste()
         {
-            InternalTextBox.Paste();
+            _textBox.Paste();
         }
 
         /// <summary>Scrolls the contents of the control to the current caret position.</summary>
         public void ScrollToCaret()
         {
-            InternalTextBox.ScrollToCaret();
+            _textBox.ScrollToCaret();
         }
 
         /// <summary>Selects a range of text in the control.</summary>
@@ -400,19 +417,19 @@
         /// <param name="length">The number of characters to select.</param>
         public void Select(int start, int length)
         {
-            InternalTextBox.Select(start, length);
+            _textBox.Select(start, length);
         }
 
         /// <summary>Selects all text in the control.</summary>
         public void SelectAll()
         {
-            InternalTextBox.SelectAll();
+            _textBox.SelectAll();
         }
 
         /// <summary>Undoes the last edit operation in the text box.</summary>
         public void Undo()
         {
-            InternalTextBox.Undo();
+            _textBox.Undo();
         }
 
         protected override void OnEnter(EventArgs e)
@@ -425,7 +442,7 @@
                 watermark.Brush = new SolidBrush(watermark.ActiveColor);
 
                 // Don't draw watermark if contains text.
-                if (InternalTextBox.TextLength <= 0)
+                if (_textBox.TextLength <= 0)
                 {
                     RemoveWaterMark();
                     DrawWaterMark();
@@ -433,24 +450,10 @@
             }
         }
 
-        protected override void OnFontChanged(EventArgs e)
-        {
-            base.OnFontChanged(e);
-            InternalTextBox.Font = Font;
-            Invalidate();
-        }
-
-        protected override void OnForeColorChanged(EventArgs e)
-        {
-            base.OnForeColorChanged(e);
-            InternalTextBox.ForeColor = ForeColor;
-            Invalidate();
-        }
-
         protected override void OnGotFocus(EventArgs e)
         {
             base.OnGotFocus(e);
-            InternalTextBox.Focus();
+            _textBox.Focus();
         }
 
         protected override void OnInvalidated(InvalidateEventArgs e)
@@ -472,7 +475,7 @@
             if (watermark.Visible)
             {
                 // If the user has written something and left the control
-                if (InternalTextBox.TextLength > 0)
+                if (_textBox.TextLength > 0)
                 {
                     // Remove the watermark
                     RemoveWaterMark();
@@ -507,7 +510,6 @@
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            MouseState = MouseStates.Hover;
             xValue = e.Location.X;
             yValue = e.Location.Y;
             Invalidate();
@@ -525,41 +527,33 @@
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Graphics graphics = e.Graphics;
-            graphics.Clear(Parent.BackColor);
-            graphics.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            base.OnPaint(e);
 
-            if (!InternalTextBox.Multiline)
+            Graphics graphics = e.Graphics;
+
+            if (!_textBox.Multiline)
             {
-                Height = textBoxHeight;
+                Height = GetTextBoxHeight();
             }
 
-            ControlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder.Type, ControlBorder.Rounding);
             buttonRectangle = new Rectangle(Width - buttonWidth, 0, buttonWidth, Height);
-
-            buttonPath = new GraphicsPath();
-            buttonPath.AddRectangle(buttonRectangle);
-            buttonPath.CloseAllFigures();
 
             graphics.SetClip(ControlGraphicsPath);
 
-            // Set control state color
-            Color controlTempColor = Enabled ? backgroundColor : controlDisabledColor;
+            if (_textBox.BackColor != Background)
+            {
+                _textBox.BackColor = Background;
+            }
 
-            InternalTextBox.BackColor = controlTempColor;
-            InternalTextBox.ForeColor = ForeColor;
-
-            // Setup internal text box object
-            // TextBoxObject.TextAlign = TextAlign;
-            // TextBoxObject.UseSystemPasswordChar = UseSystemPasswordChar;
-
-            // Draw background back color
-            graphics.FillPath(new SolidBrush(backgroundColor), ControlGraphicsPath);
+            _textBox.ForeColor = ForeColor;
 
             // Setup button
-            if (!InternalTextBox.Multiline && buttonVisible)
+            if (!_textBox.Multiline && buttonVisible)
             {
+                buttonPath = new GraphicsPath();
+                buttonPath.AddRectangle(buttonRectangle);
+                buttonPath.CloseAllFigures();
+
                 // Buttons background
                 graphics.FillPath(new SolidBrush(buttonColor), buttonPath);
 
@@ -574,27 +568,10 @@
 
                 Border.DrawBorderStyle(graphics, buttonBorder, MouseState, buttonPath);
 
-                InternalTextBox.Width = buttonRectangle.X - 10;
-            }
-            else
-            {
-                InternalTextBox.Width = Width - 10;
+                _textBox.Width = buttonRectangle.X - 10;
             }
 
             graphics.ResetClip();
-
-            // Draw border
-            if (ControlBorder.Visible)
-            {
-                if ((MouseState == MouseStates.Hover) && ControlBorder.HoverVisible)
-                {
-                    Border.DrawBorder(graphics, ControlGraphicsPath, ControlBorder.Thickness, ControlBorder.HoverColor);
-                }
-                else
-                {
-                    Border.DrawBorder(graphics, ControlGraphicsPath, ControlBorder.Thickness, ControlBorder.Color);
-                }
-            }
 
             if (watermark.Visible)
             {
@@ -606,45 +583,18 @@
         {
             base.OnResize(e);
 
-            // Multiline sizing
-            if (InternalTextBox.Multiline)
+            if (!_textBox.Multiline)
             {
-                InternalTextBox.Height = Height - 6;
-            }
-            else
-            {
-                // Auto adjust the text box height depending on the font size.
-                textBoxHeight = (Convert.ToInt32(Font.Size) * 2) + 1;
+                Height = GetTextBoxHeight();
             }
 
-            // TODO Invalidate();
-        }
-
-        protected override void OnTextChanged(EventArgs e)
-        {
-            base.OnTextChanged(e);
-            InternalTextBox.Text = Text;
-            Invalidate();
-
-            if (watermark.Visible)
-            {
-                // If the text of the text box is not empty.
-                if (InternalTextBox.TextLength > 0)
-                {
-                    // Remove the watermark
-                    RemoveWaterMark();
-                }
-                else
-                {
-                    // But if the text is empty, draw the watermark again.
-                    DrawWaterMark();
-                }
-            }
+            _textBox.Location = GetInternalControlLocation(ControlBorder);
+            _textBox.Size = GetInternalControlSize(Size, ControlBorder);
         }
 
         private void DrawWaterMark()
         {
-            if ((waterMarkContainer == null) && (InternalTextBox.TextLength <= 0))
+            if ((waterMarkContainer == null) && (_textBox.TextLength <= 0))
             {
                 waterMarkContainer = new Panel(); // Creates the new panel instance
                 waterMarkContainer.Paint += WaterMarkContainer_Paint;
@@ -655,9 +605,16 @@
             }
         }
 
-        private void OnBaseTextBoxChanged(object s, EventArgs e)
+        private int GetTextBoxHeight()
         {
-            Text = InternalTextBox.Text;
+            if (_textBox.TextLength > 0)
+            {
+                return GDI.MeasureText(Text, Font).Height * 2;
+            }
+            else
+            {
+                return GDI.MeasureText("Hello World.", Font).Height * 2;
+            }
         }
 
         private void OnEnter(object sender, EventArgs e)
@@ -670,29 +627,24 @@
             // Select all
             if (e.Control && (e.KeyCode == Keys.A))
             {
-                InternalTextBox.SelectAll();
+                _textBox.SelectAll();
                 e.SuppressKeyPress = true;
             }
 
             // Copy
             if (e.Control && (e.KeyCode == Keys.C))
             {
-                InternalTextBox.Copy();
+                _textBox.Copy();
                 e.SuppressKeyPress = true;
             }
         }
 
         private void OnLeave(object sender, EventArgs e)
         {
-            if (!InternalTextBox.Focused)
+            if (!_textBox.Focused)
             {
                 MouseState = MouseStates.Normal;
             }
-        }
-
-        private void OnMouseMove(object sender, MouseEventArgs e)
-        {
-            MouseState = MouseStates.Hover;
         }
 
         private void RemoveWaterMark()

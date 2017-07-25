@@ -9,8 +9,6 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
-    using VisualPlus.Enumerators;
-    using VisualPlus.Structure;
     using VisualPlus.Toolkit.ActionList;
     using VisualPlus.Toolkit.VisualBase;
 
@@ -44,10 +42,8 @@
             // Contains another control
             SetStyle(ControlStyles.ContainerControl, true);
 
-            // Cannot select this control, only the child ListView and does not generate a click event
+            // Cannot select this control, only the child and does not generate a click event
             SetStyle(ControlStyles.Selectable | ControlStyles.StandardClick, false);
-
-            Background = StyleManager.ControlStyle.Background(3);
 
             _listBox = new ListBox
                 {
@@ -680,13 +676,6 @@
             DisplayMemberChanged?.Invoke(this, e);
         }
 
-        protected override void OnEnter(EventArgs e)
-        {
-            base.OnEnter(e);
-            MouseState = MouseStates.Hover;
-            Invalidate();
-        }
-
         protected virtual void OnFormat(ListControlConvertEventArgs e)
         {
             Format?.Invoke(this, e);
@@ -707,25 +696,6 @@
             FormattingEnabledChanged?.Invoke(this, e);
         }
 
-        protected override void OnGotFocus(EventArgs e)
-        {
-            base.OnGotFocus(e);
-            MouseState = MouseStates.Hover;
-        }
-
-        protected override void OnLeave(EventArgs e)
-        {
-            base.OnLeave(e);
-            MouseState = MouseStates.Normal;
-            Invalidate();
-        }
-
-        protected override void OnLostFocus(EventArgs e)
-        {
-            base.OnLostFocus(e);
-            MouseState = MouseStates.Normal;
-        }
-
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);
@@ -736,22 +706,10 @@
         {
             base.OnPaint(e);
 
-            Graphics graphics = e.Graphics;
-
-            ControlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder);
-
-            graphics.SetClip(ControlGraphicsPath);
-
-            if (Background != _listBox.BackColor)
+            if (_listBox.BackColor != Background)
             {
                 _listBox.BackColor = Background;
             }
-
-            graphics.FillRectangle(new SolidBrush(Background), ClientRectangle);
-
-            graphics.ResetClip();
-
-            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, ControlGraphicsPath);
         }
 
         protected override void OnResize(EventArgs e)

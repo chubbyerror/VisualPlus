@@ -23,11 +23,11 @@
 
         private uint _maximum = 100;
 
+        private IProgressDialog _progressDialog;
+
         private string _title = string.Empty;
 
         private uint _value;
-
-        private IProgressDialog _progressDialog;
 
         #endregion
 

@@ -10,6 +10,7 @@
     using System.Windows.Forms;
 
     using VisualPlus.Enumerators;
+    using VisualPlus.EventArgs;
     using VisualPlus.Toolkit.Controls;
 
     #endregion
@@ -19,7 +20,7 @@
     [ClassInterface(ClassInterfaceType.AutoDispatch)]
     [ComVisible(true)]
     [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public abstract class NestedControlsBase : SimpleBase
+    public abstract class NestedControlsBase : ContainedControlBase
     {
         #region Constructors
 
@@ -46,9 +47,9 @@
             }
         }
 
-        protected override void OnBackgroundChanged()
+        protected override void OnBackgroundChanged(ColorEventArgs e)
         {
-            base.OnBackgroundChanged();
+            base.OnBackgroundChanged(e);
             ApplyContainerBackColorChange(this, Background);
         }
 

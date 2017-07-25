@@ -126,7 +126,7 @@
                 _control.Top += e.Location.Y - _lastPosition.Y;
                 _control.Cursor = _cursorMove;
                 IsDragging = true;
-                ControlDrag?.Invoke(new ControlDragEventArgs(e.Location));
+                ControlDrag?.Invoke(new DragControlEventArgs(e.Location));
             }
         }
 

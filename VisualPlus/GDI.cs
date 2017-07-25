@@ -419,6 +419,15 @@
         }
 
         /// <summary>Measures the specified string when draw with the specified font.</summary>
+        /// <param name="text">The text to measure.</param>
+        /// <param name="font">The font to apply to the measured text.</param>
+        /// <returns>Measured text size.</returns>
+        public static Size MeasureText(string text, Font font)
+        {
+            return TextRenderer.MeasureText(text, font);
+        }
+
+        /// <summary>Measures the specified string when draw with the specified font.</summary>
         /// <param name="graphics">Graphics input.</param>
         /// <param name="text">The text to measure.</param>
         /// <param name="font">The font to apply to the measured text.</param>

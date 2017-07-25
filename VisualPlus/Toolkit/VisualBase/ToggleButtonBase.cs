@@ -28,6 +28,7 @@ namespace VisualPlus.Toolkit.VisualBase
 
         // TODO: Separate 'box' into Size / Point var instead? 
         private Rectangle box;
+
         private int boxSpacing = 2;
         private Checkmark checkMark;
         private Point mouseLocation;
@@ -92,6 +93,27 @@ namespace VisualPlus.Toolkit.VisualBase
             set
             {
                 ControlBorder = value;
+                Invalidate();
+            }
+        }
+
+        [Description(Localize.Description.Common.Size)]
+        [Category(Localize.PropertiesCategory.Layout)]
+        public Size Box
+        {
+            get
+            {
+                return box.Size;
+            }
+
+            set
+            {
+                box.Size = value;
+                if (AutoSize)
+                {
+                    SetSize(Text.MeasureText(Font));
+                }
+
                 Invalidate();
             }
         }
@@ -174,6 +196,8 @@ namespace VisualPlus.Toolkit.VisualBase
             }
         }
 
+        public bool IsBoxLarger { get; set; }
+
         [Description(Localize.Description.Common.ColorGradient)]
         [Category(Localize.PropertiesCategory.Appearance)]
         public Gradient PressedGradient
@@ -189,30 +213,11 @@ namespace VisualPlus.Toolkit.VisualBase
             }
         }
 
+        public Size TextSize { get; set; }
+
         [Browsable(false)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal bool Toggle { get; set; }
-
-        [Description(Localize.Description.Common.Size)]
-        [Category(Localize.PropertiesCategory.Layout)]
-        public Size Box
-        {
-            get
-            {
-                return box.Size;
-            }
-
-            set
-            {
-                box.Size = value;
-                if (AutoSize)
-                {
-                    SetSize(Text.MeasureText(Font));
-                }
-
-                Invalidate();
-            }
-        }
 
         #endregion
 
@@ -327,14 +332,6 @@ namespace VisualPlus.Toolkit.VisualBase
             Invalidate();
         }
 
-
-
-        public bool IsBoxLarger { get; set; }
-
-        public Size TextSize { get; set; }
-        
-
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -372,20 +369,6 @@ namespace VisualPlus.Toolkit.VisualBase
             DrawAnimation(graphics);
         }
 
-        private void SetSize(Size textSize)
-        {
-            if (GDI.TextLargerThanRectangle(textSize, box))
-            {
-                IsBoxLarger = false; // TODO: Remove after testing.
-                Size = new Size(box.X + box.Width + boxSpacing + textSize.Width, textSize.Height);
-            }
-            else
-            {
-                IsBoxLarger = true;
-                Size = new Size(box.X + box.Width + boxSpacing + textSize.Width, box.Height);
-            }
-        }
-
         protected virtual void OnToggleChanged(EventArgs e)
         {
             ToggleChanged?.Invoke(this, e);
@@ -399,6 +382,20 @@ namespace VisualPlus.Toolkit.VisualBase
 
             Point textPoint = new Point(box.Right + boxSpacing, (ClientRectangle.Height / 2) - (textSize.Height / 2));
             graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textPoint);
+        }
+
+        private void SetSize(Size textSize)
+        {
+            if (GDI.TextLargerThanRectangle(textSize, box))
+            {
+                IsBoxLarger = false; // TODO: Remove after testing.
+                Size = new Size(box.X + box.Width + boxSpacing + textSize.Width, textSize.Height);
+            }
+            else
+            {
+                IsBoxLarger = true;
+                Size = new Size(box.X + box.Width + boxSpacing + textSize.Width, box.Height);
+            }
         }
 
         #endregion

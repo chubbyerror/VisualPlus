@@ -53,8 +53,6 @@
 
             headerFont = StyleManager.Font;
 
-            Background = StyleManager.ControlStyle.Background(3);
-
             _listView = new ListView
                 {
                     BackColor = Background,
@@ -586,32 +584,6 @@
 
         #region Events
 
-        protected override void OnEnter(EventArgs e)
-        {
-            base.OnEnter(e);
-            MouseState = MouseStates.Hover;
-            Invalidate();
-        }
-
-        protected override void OnGotFocus(EventArgs e)
-        {
-            base.OnGotFocus(e);
-            MouseState = MouseStates.Hover;
-        }
-
-        protected override void OnLeave(EventArgs e)
-        {
-            base.OnLeave(e);
-            MouseState = MouseStates.Normal;
-            Invalidate();
-        }
-
-        protected override void OnLostFocus(EventArgs e)
-        {
-            base.OnLostFocus(e);
-            MouseState = MouseStates.Normal;
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -622,22 +594,10 @@
         {
             base.OnPaint(e);
 
-            Graphics graphics = e.Graphics;
-
-            ControlGraphicsPath = Border.GetBorderShape(ClientRectangle, ControlBorder);
-
-            graphics.SetClip(ControlGraphicsPath);
-
-            if (Background != _listView.BackColor)
+            if (_listView.BackColor != Background)
             {
                 _listView.BackColor = Background;
             }
-
-            graphics.FillRectangle(new SolidBrush(Background), ClientRectangle);
-
-            graphics.ResetClip();
-
-            Border.DrawBorderStyle(graphics, ControlBorder, MouseState, ControlGraphicsPath);
         }
 
         protected override void OnResize(EventArgs e)

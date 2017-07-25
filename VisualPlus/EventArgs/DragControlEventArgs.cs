@@ -8,7 +8,7 @@
 
     #endregion
 
-    public class ControlDragEventArgs : EventArgs
+    public class DragControlEventArgs : EventArgs
     {
         #region Variables
 
@@ -19,7 +19,7 @@
 
         #region Constructors
 
-        public ControlDragEventArgs(Point point)
+        public DragControlEventArgs(Point point)
         {
             _point = point;
             _dragRectangle = new Rectangle(_point, Size.Empty);

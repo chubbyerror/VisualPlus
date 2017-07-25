@@ -50,8 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventArgs\ColorEventArgs.cs" />
     <Compile Include="Extensibility\StringExtension.cs" />
     <Compile Include="Toolkit\ActionList\BackupDesigner.cs" />
+    <Compile Include="Toolkit\ActionList\VisualTextBoxTasks.cs" />
     <Compile Include="Toolkit\ActionList\VisualListViewTasks.cs" />
     <Compile Include="Toolkit\ActionList\VisualComboBoxTasks.cs" />
     <Compile Include="Toolkit\ActionList\VisuaListBoxTasks.cs" />
@@ -92,7 +94,7 @@
     <Compile Include="Toolkit\VisualBase\ButtonContentBase.cs" />
     <Compile Include="Delegates\ControlDelegate.cs" />
     <Compile Include="Delegates\ControlDragDelegate.cs" />
-    <Compile Include="EventArgs\ControlDragEvent.cs" />
+    <Compile Include="EventArgs\DragControlEventArgs.cs" />
     <Compile Include="Toolkit\FilterProperties\VisualCircleProgressBarDesigner.cs" />
     <Compile Include="Toolkit\FilterProperties\VisualContextMenuDesigner.cs" />
     <Compile Include="Toolkit\FilterProperties\VisualLabelDesigner.cs" />
